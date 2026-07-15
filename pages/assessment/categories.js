@@ -56,10 +56,11 @@ export default function Categories() {
           <nav style={styles.nav} className="navLinks">
             <Link href="/" style={styles.navLink}>الرئيسية</Link>
             <Link href="/scenarios" style={styles.navLink}>محاكي العميل</Link>
-            <Link href="/diagnostics" style={styles.navLink}>لوحة التشخيص</Link>
-            <Link href="/assessment/categories" style={{ ...styles.navLink, ...styles.activeLink }}>
+               <Link href="/assessment/categories" style={{ ...styles.navLink, ...styles.activeLink }}>
               التقييم التكيفي
             </Link>
+            <Link href="/diagnostics" style={styles.navLink}>لوحة التشخيص</Link>
+         
           </nav>
 
           <div style={styles.logo}>
