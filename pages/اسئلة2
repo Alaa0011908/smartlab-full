@@ -1,0 +1,2350 @@
+// data/questions/basics.js
+
+export const basicsQuestions = {
+  easy: [
+    // =============================================================
+    // 📌 أساسيات الشبكات - المفاهيم العامة (سهل)
+    // =============================================================
+    {
+      id: 'q1',
+      topic: 'Network Basics',
+      subSkill: 'Network_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هي الشبكة (Network) ببساطة؟',
+      options: ['جهاز كمبيوتر واحد', 'مجموعة أجهزة متصلة لتبادل البيانات', 'نظام تشغيل', 'برنامج تصفح'],
+      correct: 2
+    },
+    {
+      id: 'q2',
+      topic: 'Network Basics',
+      subSkill: 'Network_Devices',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي مما يلي يعتبر "جهازاً" في الشبكة؟',
+      options: ['كابل', 'راوتر (Router)', 'بروتوكول', 'منفذ'],
+      correct: 2
+    },
+    {
+      id: 'q3',
+      topic: 'Network Basics',
+      subSkill: 'Data_Transmission',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'البيانات التي ترسلها عبر الشبكة تسمى:',
+      options: ['كهرباء', 'حزم (Packets)', 'مجلدات', 'برامج'],
+      correct: 2
+    },
+    {
+      id: 'q4',
+      topic: 'Network Basics',
+      subSkill: 'Bandwidth',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'مصطلح "Bandwidth" يقصد به:',
+      options: ['عرض النطاق الترددي أو السرعة القصوى للبيانات', 'المسافة بين جهازين', 'عدد الأجهزة في الشبكة', 'قوة الإشارة اللاسلكية'],
+      correct: 1
+    },
+    {
+      id: 'q5',
+      topic: 'Network Basics',
+      subSkill: 'Bandwidth_Unit',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'وحدة قياس Bandwidth عادة تكون:',
+      options: ['متر في الثانية', 'بت في الثانية (bps)', 'كيلوغرام', 'فولت'],
+      correct: 2
+    },
+    {
+      id: 'q6',
+      topic: 'Network Basics',
+      subSkill: 'End_Devices',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يعتبر جهازاً طرفياً (End Device)؟',
+      options: ['سويتش', 'راوتر', 'جهاز كمبيوتر محمول', 'مودم'],
+      correct: 3
+    },
+    {
+      id: 'q7',
+      topic: 'Network Basics',
+      subSkill: 'Network_Types',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي نوع من الشبكات يغطي مساحة صغيرة مثل غرفة أو منزل؟',
+      options: ['WAN', 'MAN', 'LAN', 'PAN'],
+      correct: 3
+    },
+    {
+      id: 'q8',
+      topic: 'Network Basics',
+      subSkill: 'Network_Types',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال على شبكة LAN؟',
+      options: ['شبكة الإنترنت العالمية', 'شبكة داخل مبنى مدرسة', 'شبكة تربط دولاً مختلفة', 'شبكة بين هاتف وسماعة بلوتوث'],
+      correct: 2
+    },
+    {
+      id: 'q9',
+      topic: 'Network Basics',
+      subSkill: 'Client_Server',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'مصطلح "Client" في الشبكات يعني:',
+      options: ['جهاز خادم', 'جهاز يطلب خدمة من جهاز آخر', 'كابل رئيسي', 'بروتوكول'],
+      correct: 2
+    },
+    {
+      id: 'q10',
+      topic: 'Network Basics',
+      subSkill: 'Transmission_Media',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يعتبر وسيلة نقل لاسلكية؟',
+      options: ['كابل UTP', 'كابل ألياف بصرية', 'Wi-Fi', 'كابل محوري'],
+      correct: 3
+    },
+    {
+      id: 'q11',
+      topic: 'Network Basics',
+      subSkill: 'Unicast',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'Unicast يعني إرسال البيانات إلى:',
+      options: ['جهاز واحد محدد', 'جميع الأجهزة', 'مجموعة محددة من الأجهزة', 'لا أحد'],
+      correct: 1
+    },
+    {
+      id: 'q12',
+      topic: 'Network Basics',
+      subSkill: 'Broadcast',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'Broadcast يعني إرسال البيانات إلى:',
+      options: ['جهاز واحد', 'جميع الأجهزة في الشبكة', 'مجموعة محددة', 'الخادم فقط'],
+      correct: 2
+    },
+    {
+      id: 'q13',
+      topic: 'Network Basics',
+      subSkill: 'Wired_vs_Wireless',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الفرق بين الشبكة السلكية واللاسلكية من حيث الاعتمادية هو:',
+      options: ['اللاسلكية أكثر اعتمادية', 'السلكية عادة أكثر استقراراً وأقل عرضة للتداخل', 'لا فرق', 'السلكية أسرع دائماً'],
+      correct: 2
+    },
+    {
+      id: 'q14',
+      topic: 'Network Basics',
+      subSkill: 'Wireless_Disadvantages',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يعتبر عيباً رئيسياً للشبكات اللاسلكية (Wi-Fi) مقارنة بالسلكية؟',
+      options: ['سرعة أقل نظرياً', 'التأثر بالتداخل والجدران', 'صعوبة التركيب', 'غلاء التكلفة'],
+      correct: 2
+    },
+    {
+      id: 'q15',
+      topic: 'Network Basics',
+      subSkill: 'PAN',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'شبكة شخصية (PAN) تستخدم عادة لمسافة:',
+      options: ['كيلومترات', 'أمتار قليلة (مثل البلوتوث)', 'مئات الكيلومترات', 'دول بأكملها'],
+      correct: 2
+    },
+    {
+      id: 'q16',
+      topic: 'Network Basics',
+      subSkill: 'MAN',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'شبكة MAN (Metropolitan Area Network) تغطي:',
+      options: ['منزلاً', 'مدينة كاملة', 'دولة', 'العالم'],
+      correct: 2
+    },
+    {
+      id: 'q17',
+      topic: 'Network Basics',
+      subSkill: 'WAN',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الشبكة التي تربط عدة فروع لبنك في مدن مختلفة تصنف كـ:',
+      options: ['LAN', 'MAN', 'WAN', 'PAN'],
+      correct: 3
+    },
+    {
+      id: 'q18',
+      topic: 'Network Basics',
+      subSkill: 'Client_Server',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'في نموذج Client-Server، الخادم (Server) هو:',
+      options: ['جهاز يطلب الخدمات', 'جهاز يقدم الخدمات والموارد', 'كابل رئيسي', 'سويتش'],
+      correct: 2
+    },
+    {
+      id: 'q19',
+      topic: 'Network Basics',
+      subSkill: 'P2P',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'نموذج Peer-to-Peer (P2P) يتميز بأن:',
+      options: ['يوجد خادم مركزي واحد', 'جميع الأجهزة متساوية، كل جهاز عميل وخادم', 'يحتاج إلى راوتر قوي', 'يستخدم فقط في الشركات الكبيرة'],
+      correct: 2
+    },
+    {
+      id: 'q20',
+      topic: 'Network Basics',
+      subSkill: 'P2P_Scenario',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'application',
+      difficulty: 1,
+      question: 'أي سيناريو يناسب نموذج P2P؟',
+      options: ['شبكة بنك مركزية', 'مشاركة ملفات بين مجموعة أصدقاء بدون خادم', 'موقع فيسبوك', 'بريد Google'],
+      correct: 2
+    },
+    {
+      id: 'q21',
+      topic: 'Network Basics',
+      subSkill: 'Cables_UTP',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الكابلات النحاسية التالية هو الأكثر شيوعاً في الشبكات المنزلية؟',
+      options: ['كابل محوري (Coaxial)', 'UTP Cat5e أو Cat6', 'STP', 'كابل الهاتف'],
+      correct: 2
+    },
+    {
+      id: 'q22',
+      topic: 'Network Basics',
+      subSkill: 'Cables_UTP_Distance',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أقصى مسافة فعالة لكابل UTP في شبكات إيثرنت هي حوالي:',
+      options: ['10 أمتار', '100 متر', '500 متر', '2 كيلومتر'],
+      correct: 2
+    },
+    {
+      id: 'q23',
+      topic: 'Network Basics',
+      subSkill: 'UTP_vs_STP',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من العبارات التالية تصف الفرق بين UTP و STP بدقة؟',
+      options: ['UTP محمي، STP غير محمي', 'STP يحتوي على درع (Shield) لحماية من التداخل، UTP لا يحتوي', 'UTP أسرع من STP', 'لا فرق بينهما'],
+      correct: 2
+    },
+    {
+      id: 'q24',
+      topic: 'Network Basics',
+      subSkill: 'STP_Usage',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'application',
+      difficulty: 1,
+      question: 'متى نفضل استخدام كابل STP على UTP؟',
+      options: ['في المنازل العادية', 'في بيئات ذات تداخل كهرومغناطيسي عالٍ (مثل المصانع)', 'دائماً لأن STP أفضل', 'للمسافات الطويلة فقط'],
+      correct: 2
+    },
+    {
+      id: 'q25',
+      topic: 'Network Basics',
+      subSkill: 'Cables_Straight_Through',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الكابل المباشر (Straight-Through) يُستخدم عادة لتوصيل:',
+      options: ['كمبيوتر بكمبيوتر', 'كمبيوتر بسويتش', 'سويتش بسويتش', 'راوتر براوتر'],
+      correct: 2
+    },
+    {
+      id: 'q26',
+      topic: 'Network Basics',
+      subSkill: 'Cables_Crossover',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الكابل المتقاطع (Crossover) يُستخدم عادة لتوصيل:',
+      options: ['كمبيوتر بسويتش', 'كمبيوتر بكمبيوتر مباشرة', 'كمبيوتر براوتر', 'سويتش براوتر'],
+      correct: 2
+    },
+    {
+      id: 'q27',
+      topic: 'Network Basics',
+      subSkill: 'UTP_Pairs',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'في كابل UTP، عدد الأزواج الملتوية (Twisted Pairs) هو:',
+      options: ['زوجان (4 أسلاك)', '4 أزواج (8 أسلاك)', '8 أزواج (16 سلكاً)', 'زوج واحد'],
+      correct: 2
+    },
+    {
+      id: 'q28',
+      topic: 'Network Basics',
+      subSkill: 'UTP_Twisted_Pairs',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'لماذا تُستخدم الأزواج الملتوية (Twisted Pairs) في كابلات UTP؟',
+      options: ['لتقليل التداخل الكهرومغناطيسي بين الأسلاك', 'لزيادة السرعة', 'لتقليل التكلفة', 'لتسهيل التركيب'],
+      correct: 1
+    },
+    {
+      id: 'q29',
+      topic: 'Network Basics',
+      subSkill: 'Unicast_Example',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'application',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال على إرسال Unicast؟',
+      options: ['مشاهدة بث تلفزيوني مباشر', 'إرسال بريد إلكتروني لشخص واحد', 'إرسال إشعار لجميع الموظفين', 'مكالمة جماعية'],
+      correct: 2
+    },
+    {
+      id: 'q30',
+      topic: 'Network Basics',
+      subSkill: 'Multicast_Example',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'application',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال على إرسال Multicast؟',
+      options: ['إرسال بريد لشخص واحد', 'بث فيديو لمجموعة مشتركين في قناة محددة', 'إعلان لجميع الأجهزة في الشبكة', 'مكالمة خاصة بين شخصين'],
+      correct: 2
+    },
+    {
+      id: 'q31',
+      topic: 'Network Basics',
+      subSkill: 'Broadcast_Example',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'application',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال على إرسال Broadcast؟',
+      options: ['مشاهدة فيلم على Netflix', 'طلب عنوان IP من خادم DHCP (الذي يرسل Broadcast)', 'إرسال ملف لزميل واحد', 'مكالمة فيديو'],
+      correct: 2
+    },
+    {
+      id: 'q32',
+      topic: 'Network Basics',
+      subSkill: 'Broadcast_Domain',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'في شبكة سويتش واحدة (بدون راوتر)، إذا أرسل جهاز رسالة Broadcast، إلى أين تصل؟',
+      options: ['فقط إلى الراوتر', 'إلى جميع الأجهزة في نفس الشبكة المحلية (VLAN)', 'إلى جهاز واحد فقط', 'إلى الإنترنت كله'],
+      correct: 2
+    },
+    {
+      id: 'q33',
+      topic: 'Network Basics',
+      subSkill: 'Wireless_Security',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يعتبر عيباً رئيسياً للشبكات اللاسلكية في الشركات الكبيرة؟',
+      options: ['سهولة التركيب', 'صعوبة تأمينها بشكل كامل مقارنة بالسلكية', 'سرعة عالية', 'تكلفة منخفضة'],
+      correct: 2
+    },
+    {
+      id: 'q34',
+      topic: 'Network Basics',
+      subSkill: 'WAN_Infrastructure',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'شبكة WAN تعتمد عادة على:',
+      options: ['كابلات UTP فقط', 'خطوط مستأجرة من شركات الاتصالات أو الأقمار الصناعية', 'البلوتوث', 'كابلات USB'],
+      correct: 2
+    },
+    {
+      id: 'q35',
+      topic: 'Network Basics',
+      subSkill: 'LAN_vs_WAN',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من العبارات التالية تصف الفرق بين LAN و WAN بدقة؟',
+      options: ['LAN أبطأ من WAN', 'LAN مملوكة لمؤسسة واحدة، WAN عادة تستأجر خطوطاً', 'WAN تغطي مساحة أصغر', 'LAN تستخدم عناوين عامة فقط'],
+      correct: 2
+    },
+    {
+      id: 'q36',
+      topic: 'Network Basics',
+      subSkill: 'Client_Server_Failure',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'reasoning',
+      difficulty: 1,
+      question: 'في نموذج Client-Server، إذا تعطل الخادم (Server)، ماذا يحدث؟',
+      options: ['لا شيء', 'الأجهزة العميلة تفقد الخدمات التي يعتمد عليها', 'الشبكة تصبح أسرع', 'تتحول تلقائياً إلى P2P'],
+      correct: 2
+    },
+    {
+      id: 'q37',
+      topic: 'Network Basics',
+      subSkill: 'P2P_Advantage',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ميزة نموذج P2P مقارنة بـ Client-Server هي:',
+      options: ['أمان أعلى', 'لا يحتاج إلى خادم مركزي وبالتالي تكلفة أقل', 'أداء أفضل للقواعد البيانات الكبيرة', 'إدارة مركزية سهلة'],
+      correct: 2
+    },
+    {
+      id: 'q38',
+      topic: 'Network Basics',
+      subSkill: 'P2P_Disadvantage',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'عيب نموذج P2P مقارنة بـ Client-Server هو:',
+      options: ['صعوبة الإدارة المركزية والأمان', 'تكلفة أعلى', 'سرعة أقل دائماً', 'يحتاج إلى إنترنت'],
+      correct: 1
+    },
+    {
+      id: 'q39',
+      topic: 'Network Basics',
+      subSkill: 'Cables_Coaxial',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي نوع من الكابلات النحاسية يستخدم في شبكات التلفزيون القديمة (Cable TV)؟',
+      options: ['UTP', 'STP', 'Coaxial (محوري)', 'Fiber'],
+      correct: 3
+    },
+    {
+      id: 'q40',
+      topic: 'Network Basics',
+      subSkill: 'Coaxial_vs_UTP',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الكابل المحوري (Coaxial) يتميز عن UTP بأنه:',
+      options: ['أسرع دائماً', 'أقل عرضة للتداخل ويمكنه نقل إشارات لمسافات أطول', 'أرخص ثمناً', 'أسهل في التركيب'],
+      correct: 2
+    },
+    {
+      id: 'q41',
+      topic: 'Network Basics',
+      subSkill: 'Unicast_Destination',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'في الإرسال Unicast، عنوان الوجهة هو:',
+      options: ['عنوان MAC خاص بجهاز واحد', 'عنوان Broadcast', 'عنوان Multicast', 'لا عنوان'],
+      correct: 1
+    },
+    {
+      id: 'q42',
+      topic: 'Network Basics',
+      subSkill: 'Multicast_Destination',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'في الإرسال Multicast، عنوان الوجهة هو:',
+      options: ['عنوان جهاز واحد', 'عنوان مجموعة (Group Address)', 'عنوان Broadcast (FF:FF:FF:FF:FF:FF)', 'عنوان خاص بالخادم فقط'],
+      correct: 2
+    },
+    {
+      id: 'q43',
+      topic: 'Network Basics',
+      subSkill: 'Multicast_Use_Case',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'application',
+      difficulty: 1,
+      question: 'أي من السيناريوهات التالية يمثل استخداماً فعلياً للإرسال Multicast في الشبكات؟',
+      options: ['طلب صفحة ويب من خادم', 'بث فيديو مباشر (Live Streaming) لعدد كبير من المشاهدين', 'إرسال بريد إلكتروني', 'تحميل ملف من FTP'],
+      correct: 2
+    },
+    {
+      id: 'q44',
+      topic: 'Network Basics',
+      subSkill: 'Broadcast_Problem',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما المشكلة الأساسية في الإرسال Broadcast في شبكات كبيرة؟',
+      options: ['بطء شديد في الإرسال', 'يستهلك عرض النطاق ويصل لجميع الأجهزة مما يسبب ازدحاماً', 'لا يعمل مع IPv6', 'لا يدعمه السويتشات'],
+      correct: 2
+    },
+    {
+      id: 'q45',
+      topic: 'Network Basics',
+      subSkill: 'VLAN_vs_VPN',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الفرق بين VLAN و VPN هو:',
+      options: ['VLAN شبكة محلية افتراضية لتقسيم الشبكة داخلياً، VPN شبكة خاصة افتراضية عبر الإنترنت', 'لا فرق', 'VPN تستخدم في المكاتب فقط', 'VLAN للاتصال بالإنترنت'],
+      correct: 1
+    },
+    {
+      id: 'q46',
+      topic: 'Network Basics',
+      subSkill: 'VPN_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ VPN (Virtual Private Network) تستخدم لـ:',
+      options: ['تقسيم الشبكة المحلية', 'إنشاء اتصال آمن عبر شبكة عامة (مثل الإنترنت)', 'زيادة سرعة الإنترنت', 'توصيل الكابلات'],
+      correct: 2
+    },
+    {
+      id: 'q47',
+      topic: 'Network Basics',
+      subSkill: 'VLAN_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ VLAN (Virtual Local Area Network) تستخدم لـ:',
+      options: ['الاتصال بالإنترنت', 'تقسيم شبكة LAN واحدة إلى شبكات منطقية منفصلة', 'حماية الشبكة من الفيروسات', 'توصيل الأجهزة لاسلكياً'],
+      correct: 2
+    },
+    {
+      id: 'q48',
+      topic: 'Network Basics',
+      subSkill: 'Intranet_vs_Internet',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يمثل الفرق بين Intranet و Internet بدقة؟',
+      options: ['الإنترنت عالمي وعام، الإنترانت شبكة خاصة داخل مؤسسة تستخدم تقنيات الإنترنت', 'الإنترانت أسرع دائماً', 'لا فرق', 'الإنترنت يعمل بدون بروتوكولات'],
+      correct: 1
+    },
+    {
+      id: 'q49',
+      topic: 'Network Basics',
+      subSkill: 'Extranet_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'Extranet هي شبكة:',
+      options: ['عامة للجميع', 'خاصة تمتد لتشمل مستخدمين خارج المؤسسة (مثل الموردين)', 'داخل جهاز واحد', 'لاسلكية فقط'],
+      correct: 2
+    },
+    {
+      id: 'q50',
+      topic: 'Network Basics',
+      subSkill: 'VLAN_VPN_Access_Control',
+      cognitiveLevel: 'evaluating',
+      errorPattern: 'reasoning',
+      difficulty: 2,
+      question: 'شركة لديها شبكة LAN مقسمة إلى VLANs (المحاسبة، الموارد البشرية، الهندسة). تريد أن تسمح للموارد البشرية فقط بالوصول إلى خادم خاص خارجي عبر VPN آمن، دون أن تصل المحاسبة أو الهندسة إلى هذا الخادم. أي من المصطلحات التالية تجمع كل هذه الميزات (تقسيم منطقي + أمان اتصال خارجي + تحكم بالوصول)؟',
+      options: ['شبكة WAN فقط', 'VLAN + VPN + Access Control (تحكم بالوصول)', 'P2P فقط', 'LAN فقط'],
+      correct: 2
+    },
+
+    // =============================================================
+    // 🌐 IPv4 (سهل)
+    // =============================================================
+    {
+      id: 'q51',
+      topic: 'IPv4',
+      subSkill: 'IP_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هو عنوان IP؟',
+      options: ['عنوان فيزيائي موجود على كرت الشبكة', 'عنوان منطقي (رقمي) يُعطى للجهاز في الشبكة', 'نوع من الكابلات', 'بروتوكول أمان'],
+      correct: 2
+    },
+    {
+      id: 'q52',
+      topic: 'IPv4',
+      subSkill: 'IPv4_Bits',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'كم عدد البتات (Bits) في عنوان IPv4؟',
+      options: ['8 بت', '16 بت', '32 بت', '128 بت'],
+      correct: 3
+    },
+    {
+      id: 'q53',
+      topic: 'IPv4',
+      subSkill: 'IPv4_Octets',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'عنوان IPv4 يتكون من كم عدداً (Octets)؟',
+      options: ['2', '3', '4', '6'],
+      correct: 3
+    },
+    {
+      id: 'q54',
+      topic: 'IPv4',
+      subSkill: 'IPv4_Format',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال صحيح لعنوان IPv4؟',
+      options: ['192.168.1.1', '192.168.1', '192.168.1.1.1', '192.168.1.256'],
+      correct: 1
+    },
+    {
+      id: 'q55',
+      topic: 'IPv4',
+      subSkill: 'Subnet_Mask_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هو الـ Subnet Mask (قناع الشبكة الفرعية)؟',
+      options: ['عنوان جهاز معين', 'رقم يحدد أي جزء من عنوان IP يمثل الشبكة وأي جزء يمثل المضيف', 'نوع من الكابلات', 'بروتوكول توجيه'],
+      correct: 2
+    },
+    {
+      id: 'q56',
+      topic: 'IPv4',
+      subSkill: 'Subnet_Mask_Default',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال على Subnet Mask افتراضي؟',
+      options: ['255.0.0.0', '255.255.255.255', '0.0.0.0', '192.168.1.1'],
+      correct: 1
+    },
+    {
+      id: 'q57',
+      topic: 'IPv4',
+      subSkill: 'Gateway_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هو الـ Gateway (البوابة الافتراضية)؟',
+      options: ['جهاز يسمح للأجهزة بالخروج إلى شبكة أخرى (مثل الإنترنت)', 'عنوان MAC للجهاز', 'نوع كابل', 'بروتوكول تشفير'],
+      correct: 1
+    },
+    {
+      id: 'q58',
+      topic: 'IPv4',
+      subSkill: 'Loopback_Address',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'عنوان 127.0.0.1 يُعرف باسم:',
+      options: ['عنوان الشبكة', 'عنوان البث', 'Loopback (اختبار ذاتي للجهاز)', 'Gateway'],
+      correct: 3
+    },
+    {
+      id: 'q59',
+      topic: 'IPv4',
+      subSkill: 'IPv4_Parts',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'عنوان IPv4 يتكون من جزأين، هما:',
+      options: ['Network ID و Host ID', 'Source و Destination', 'MAC و IP', 'Public و Private'],
+      correct: 1
+    },
+    {
+      id: 'q60',
+      topic: 'IPv4',
+      subSkill: 'Subnet_Mask_Meaning',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ Subnet Mask 255.255.255.0 يعني أن:',
+      options: ['أول 24 بت للشبكة، وآخر 8 بت للمضيف', 'أول 8 بت للشبكة، وآخر 24 بت للمضيف', 'كل البتات للمضيف', 'كل البتات للشبكة'],
+      correct: 1
+    },
+    {
+      id: 'q61',
+      topic: 'IPv4',
+      subSkill: 'IP_Private_vs_Public',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من العناوين التالية هو عنوان خاص (Private) ولا يمكن توجيهه على الإنترنت؟',
+      options: ['8.8.8.8', '192.168.1.1', '13.107.42.14', '1.1.1.1'],
+      correct: 2
+    },
+    {
+      id: 'q62',
+      topic: 'IPv4',
+      subSkill: 'IP_Private_vs_Public',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من العناوين التالية هو عنوان عام (Public) يمكنه السفر على الإنترنت؟',
+      options: ['10.0.0.1', '172.16.1.1', '192.168.1.1', '8.8.8.8'],
+      correct: 4
+    },
+    {
+      id: 'q63',
+      topic: 'IPv4',
+      subSkill: 'IP_Private_Ranges',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'نطاق العناوين الخاصة للفئة A هو:',
+      options: ['192.168.0.0 - 192.168.255.255', '10.0.0.0 - 10.255.255.255', '172.16.0.0 - 172.31.255.255', '127.0.0.0 - 127.255.255.255'],
+      correct: 2
+    },
+    {
+      id: 'q64',
+      topic: 'IPv4',
+      subSkill: 'Broadcast_Calculation',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'عنوان البث (Broadcast Address) للشبكة 192.168.1.0/24 هو:',
+      options: ['192.168.1.0', '192.168.1.1', '192.168.1.255', '192.168.1.254'],
+      correct: 3
+    },
+    {
+      id: 'q65',
+      topic: 'IPv4',
+      subSkill: 'IP_Classification',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الفئة (Class) التي يبدأ عنوانها بالبت 0 (أي من 0-127) هي:',
+      options: ['Class A', 'Class B', 'Class C', 'Class D'],
+      correct: 1
+    },
+    {
+      id: 'q66',
+      topic: 'IPv4',
+      subSkill: 'IP_Classification',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الفئة (Class) التي يبدأ عنوانها بالبتين 10 (أي من 128-191) هي:',
+      options: ['Class A', 'Class B', 'Class C', 'Class D'],
+      correct: 2
+    },
+
+    // =============================================================
+    // 📊 Subnetting (سهل)
+    // =============================================================
+    {
+      id: 'q67',
+      topic: 'Subnetting',
+      subSkill: 'IP_Classification',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الفئة (Class) التي يبدأ عنوانها بالبتين 110 (أي من 192-223) هي:',
+      options: ['Class A', 'Class B', 'Class C', 'Class D'],
+      correct: 3
+    },
+    {
+      id: 'q68',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Default',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ Subnet Mask الافتراضي للفئة B هو:',
+      options: ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.255'],
+      correct: 2
+    },
+    {
+      id: 'q69',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_CIDR',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'الـ Subnet Mask 255.255.255.224 يعادل في كتابة CIDR (/x):',
+      options: ['/24', '/25', '/26', '/27'],
+      correct: 4
+    },
+    {
+      id: 'q70',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_CIDR',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'الـ Subnet Mask 255.255.255.240 يعادل في كتابة CIDR (/x):',
+      options: ['/26', '/27', '/28', '/29'],
+      correct: 3
+    },
+    {
+      id: 'q71',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Count',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'شبكة عنوانها 192.168.1.0/26، كم عدد الشبكات الفرعية التي تم الحصول عليها من الفئة C الأصلية (/24)؟',
+      options: ['2 شبكتان', '4 شبكات', '8 شبكات', '16 شبكة'],
+      correct: 2
+    },
+    {
+      id: 'q72',
+      topic: 'Subnetting',
+      subSkill: 'Host_Calculation',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'شبكة عنوانها 192.168.1.0/27، كم عدد المضيفين الصالحين (Usable Hosts) في كل شبكة فرعية؟',
+      options: ['30', '62', '126', '254'],
+      correct: 1
+    },
+    {
+      id: 'q73',
+      topic: 'Subnetting',
+      subSkill: 'Host_Calculation',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'شبكة عنوانها 10.0.0.0/8، كم عدد المضيفين الصالحين فيها؟',
+      options: ['254', '65,534', '16,777,214', '4,294,967,294'],
+      correct: 3
+    },
+    {
+      id: 'q74',
+      topic: 'Subnetting',
+      subSkill: 'Network_ID_Determination',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'عنوان الشبكة (Network ID) لعنوان IP 192.168.5.35 مع قناع 255.255.255.224 هو:',
+      options: ['192.168.5.0', '192.168.5.32', '192.168.5.35', '192.168.5.255'],
+      correct: 2
+    },
+    {
+      id: 'q75',
+      topic: 'Subnetting',
+      subSkill: 'Broadcast_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'في الشبكة 192.168.10.0/28، ما هو عنوان البث (Broadcast Address) للشبكة الفرعية الثالثة؟',
+      options: ['192.168.10.47', '192.168.10.31', '192.168.10.63', '192.168.10.255'],
+      correct: 1
+    },
+    {
+      id: 'q76',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'في الشبكة 172.16.0.0/20، ما هو الـ Subnet Mask بالكتابة العشرية؟',
+      options: ['255.255.0.0', '255.255.240.0', '255.255.248.0', '255.255.255.0'],
+      correct: 2
+    },
+    {
+      id: 'q77',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'شبكة عنوانها 192.168.1.0، مطلوب تقسيمها إلى 6 شبكات فرعية، مع أكبر عدد ممكن من المضيفين. ما هو الـ Subnet Mask المناسب؟',
+      options: ['/27', '/28', '/29', '/26'],
+      correct: 3
+    },
+    {
+      id: 'q78',
+      topic: 'Subnetting',
+      subSkill: 'Host_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'في السؤال السابق (192.168.1.0/29)، كم عدد المضيفين الصالحين في كل شبكة فرعية؟',
+      options: ['6', '14', '30', '62'],
+      correct: 1
+    },
+    {
+      id: 'q79',
+      topic: 'Subnetting',
+      subSkill: 'Network_ID_Determination',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'ما هو عنوان الشبكة (Network ID) لعنوان IP 172.25.100.50 مع قناع 255.255.255.240؟',
+      options: ['172.25.100.0', '172.25.100.32', '172.25.100.48', '172.25.100.64'],
+      correct: 3
+    },
+    {
+      id: 'q80',
+      topic: 'Subnetting',
+      subSkill: 'Broadcast_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'لديك الشبكة: 192.168.1.0/25. ما هو عنوان البث (Broadcast Address) للشبكة الفرعية التي تحتوي على المضيف 192.168.1.100؟',
+      options: ['192.168.1.127', '192.168.1.255', '192.168.1.0', '192.168.1.128'],
+      correct: 1
+    },
+    {
+      id: 'q81',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Host_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 1,
+      question: 'لديك الشبكة: 10.0.0.0/22. ما هو الـ Subnet Mask العشري، وكم عدد المضيفين الصالحين؟',
+      options: ['255.255.252.0، 1022 مضيف', '255.255.254.0، 510 مضيف', '255.255.255.0، 254 مضيف', '255.255.248.0، 2046 مضيف'],
+      correct: 1
+    },
+
+    // =============================================================
+    // 🛜 IPv6 (سهل)
+    // =============================================================
+    {
+      id: 'q82',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Bits',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'كم عدد بتات عنوان IPv6؟',
+      options: ['32 بت', '64 بت', '128 بت', '256 بت'],
+      correct: 3
+    },
+    {
+      id: 'q83',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Format',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي هو مثال على عنوان IPv6؟',
+      options: ['192.168.1.1', '2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:0db8', '192.168.1.1.1'],
+      correct: 2
+    },
+    {
+      id: 'q84',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Broadcast_Removed',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'في IPv6، تم إلغاء نوع الإرسال:',
+      options: ['Unicast', 'Multicast', 'Broadcast', 'Anycast'],
+      correct: 3
+    },
+    {
+      id: 'q85',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Address_Types',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أنواع العناوين الأساسية في IPv6 هي:',
+      options: ['Unicast, Broadcast, Anycast', 'Unicast, Multicast, Anycast', 'Unicast, Multicast, Broadcast', 'Unicast فقط'],
+      correct: 2
+    },
+    {
+      id: 'q86',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Link_Local',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ Link-Local Address في IPv6 يبدأ بـ:',
+      options: ['2001::', 'FE80::', 'FF00::', '::1'],
+      correct: 2
+    },
+    {
+      id: 'q87',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Loopback',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ Loopback Address في IPv6 هو:',
+      options: ['127.0.0.1', '::1', 'FE80::1', '2001::1'],
+      correct: 2
+    },
+
+    // =============================================================
+    // 📖 DNS (سهل)
+    // =============================================================
+    {
+      id: 'q88',
+      topic: 'DNS',
+      subSkill: 'DNS_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هي وظيفة DNS (Domain Name System) الأساسية؟',
+      options: ['توزيع عناوين IP تلقائياً للأجهزة', 'تحويل أسماء النطاقات (مثل google.com) إلى عناوين IP', 'حماية الشبكة من الهجمات', 'تقسيم الشبكة إلى شبكات فرعية'],
+      correct: 2
+    },
+    {
+      id: 'q89',
+      topic: 'DNS',
+      subSkill: 'Domain_Name_Example',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يعتبر مثالاً على اسم نطاق (Domain Name)؟',
+      options: ['192.168.1.1', 'google.com', '255.255.255.0', '00:1A:2B:3C:4D:5E'],
+      correct: 2
+    },
+    {
+      id: 'q90',
+      topic: 'DNS',
+      subSkill: 'DNS_Server_Example',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي يعتبر مثالاً على خادم DNS معروف؟',
+      options: ['192.168.1.1', '8.8.8.8', '255.255.255.0', 'FE80::1'],
+      correct: 2
+    },
+
+    // =============================================================
+    // ⚙️ DHCP (سهل)
+    // =============================================================
+    {
+      id: 'q91',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هي وظيفة DHCP (Dynamic Host Configuration Protocol) الأساسية؟',
+      options: ['تحويل الأسماء إلى عناوين IP', 'توزيع عناوين IP تلقائياً للأجهزة في الشبكة', 'تشفير البيانات المرسلة', 'توجيه الحزم بين الشبكات'],
+      correct: 2
+    },
+    {
+      id: 'q92',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Ports',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هو المنفذ (Port) الافتراضي لبروتوكول DHCP؟',
+      options: ['53', '67 و 68', '80', '443'],
+      correct: 2
+    },
+
+    // =============================================================
+    // 🏛️ OSI Model (سهل)
+    // =============================================================
+    {
+      id: 'q93',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Layers_Count',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'كم عدد طبقات نموذج OSI؟',
+      options: ['4 طبقات', '5 طبقات', '7 طبقات', '9 طبقات'],
+      correct: 3
+    },
+    {
+      id: 'q94',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Layers_Order',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هي الطبقة الأولى (الأدنى) في نموذج OSI؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الشبكة (Network)', 'الطبقة الفيزيائية (Physical)', 'طبقة النقل (Transport)'],
+      correct: 3
+    },
+    {
+      id: 'q95',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Layers_Order',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هي الطبقة السابعة (الأعلى) في نموذج OSI؟',
+      options: ['الطبقة الفيزيائية (Physical)', 'طبقة التطبيق (Application)', 'طبقة ربط البيانات (Data Link)', 'طبقة الجلسة (Session)'],
+      correct: 2
+    },
+    {
+      id: 'q96',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Layers_Order',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من التالي هو الترتيب الصحيح لطبقات OSI من الأعلى إلى الأسفل؟',
+      options: ['Physical, Data Link, Network, Transport, Session, Presentation, Application', 'Application, Presentation, Session, Transport, Network, Data Link, Physical', 'Application, Transport, Network, Data Link, Physical, Session, Presentation', 'Network, Data Link, Physical, Application, Presentation, Session, Transport'],
+      correct: 2
+    },
+    {
+      id: 'q97',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي طبقة في OSI مسؤولة عن تشفير وضغط البيانات؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة العرض (Presentation)', 'طبقة الجلسة (Session)', 'طبقة النقل (Transport)'],
+      correct: 2
+    },
+    {
+      id: 'q98',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي طبقة في OSI مسؤولة عن إنشاء وإدارة وإنهاء جلسات الاتصال بين التطبيقات؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة العرض (Presentation)', 'طبقة الجلسة (Session)', 'طبقة النقل (Transport)'],
+      correct: 3
+    },
+    {
+      id: 'q99',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي طبقة في OSI مسؤولة عن تقسيم البيانات إلى قطع (Segments) وإعادة تجميعها؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الشبكة (Network)', 'طبقة النقل (Transport)', 'طبقة ربط البيانات (Data Link)'],
+      correct: 3
+    },
+    {
+      id: 'q100',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي طبقة في OSI مسؤولة عن إضافة عنوان IP المصدر والوجهة؟',
+      options: ['طبقة النقل (Transport)', 'طبقة الشبكة (Network)', 'طبقة ربط البيانات (Data Link)', 'الطبقة الفيزيائية (Physical)'],
+      correct: 2
+    },
+    {
+      id: 'q101',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي طبقة في OSI مسؤولة عن إضافة عنوان MAC المصدر والوجهة؟',
+      options: ['طبقة النقل (Transport)', 'طبقة الشبكة (Network)', 'طبقة ربط البيانات (Data Link)', 'الطبقة الفيزيائية (Physical)'],
+      correct: 3
+    },
+    {
+      id: 'q102',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي طبقة في OSI مسؤولة عن تحويل البيانات إلى إشارات كهربائية أو ضوئية لنقلها عبر الكابل؟',
+      options: ['طبقة النقل (Transport)', 'طبقة الشبكة (Network)', 'طبقة ربط البيانات (Data Link)', 'الطبقة الفيزيائية (Physical)'],
+      correct: 4
+    },
+    {
+      id: 'q103',
+      topic: 'OSI Model',
+      subSkill: 'PDU_Transport',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'وحدة البيانات (PDU) في طبقة النقل (Transport) تسمى:',
+      options: ['Bits', 'Frames', 'Packets', 'Segments'],
+      correct: 4
+    },
+    {
+      id: 'q104',
+      topic: 'OSI Model',
+      subSkill: 'PDU_Network',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'وحدة البيانات (PDU) في طبقة الشبكة (Network) تسمى:',
+      options: ['Bits', 'Frames', 'Packets', 'Segments'],
+      correct: 3
+    },
+    {
+      id: 'q105',
+      topic: 'OSI Model',
+      subSkill: 'PDU_DataLink',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'وحدة البيانات (PDU) في طبقة ربط البيانات (Data Link) تسمى:',
+      options: ['Bits', 'Frames', 'Packets', 'Segments'],
+      correct: 2
+    },
+    {
+      id: 'q106',
+      topic: 'OSI Model',
+      subSkill: 'PDU_Physical',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'وحدة البيانات (PDU) في الطبقة الفيزيائية (Physical) تسمى:',
+      options: ['Bits', 'Frames', 'Packets', 'Segments'],
+      correct: 1
+    },
+
+    // =============================================================
+    // 💻 أجهزة الشبكات (سهل)
+    // =============================================================
+    {
+      id: 'q107',
+      topic: 'Network Devices',
+      subSkill: 'Switch_Layer',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لتوصيل أجهزة الكمبيوتر في شبكة محلية (LAN) ويعمل في طبقة ربط البيانات (Data Link Layer)؟',
+      options: ['الـ Hub', 'السويتش (Switch)', 'الراوتر (Router)', 'المودم (Modem)'],
+      correct: 2
+    },
+    {
+      id: 'q108',
+      topic: 'Network Devices',
+      subSkill: 'Router_Layer',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لتوصيل شبكتين مختلفتين (مثل شبكة المنزل بالإنترنت) ويعمل في طبقة الشبكة (Network Layer)؟',
+      options: ['الـ Hub', 'السويتش (Switch)', 'الراوتر (Router)', 'الـ Repeater'],
+      correct: 3
+    },
+    {
+      id: 'q109',
+      topic: 'Network Devices',
+      subSkill: 'Repeater_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يعتبر جهازاً بسيطاً يعيد إرسال الإشارة لتوسيع المسافة، ويعمل في الطبقة الفيزيائية (Physical Layer)؟',
+      options: ['الـ Hub', 'الراوتر (Router)', 'الـ Repeater', 'السويتش (Switch)'],
+      correct: 3
+    },
+    {
+      id: 'q110',
+      topic: 'Network Devices',
+      subSkill: 'Hub_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يشبه الـ Hub ولكنه يعمل في الطبقة الفيزيائية، ويقوم بتضخيم الإشارة وإعادة بثها إلى جميع المنافذ؟',
+      options: ['الـ Hub', 'السويتش (Switch)', 'الراوتر (Router)', 'الـ Bridge'],
+      correct: 1
+    },
+    {
+      id: 'q111',
+      topic: 'Network Devices',
+      subSkill: 'Collision_Domain',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لفصل مجال التصادم (Collision Domain) على كل منفذ؟',
+      options: ['الـ Hub', 'السويتش (Switch)', 'الـ Repeater', 'المودم (Modem)'],
+      correct: 2
+    },
+    {
+      id: 'q112',
+      topic: 'Network Devices',
+      subSkill: 'Broadcast_Domain',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لفصل مجال البث (Broadcast Domain)؟',
+      options: ['الـ Hub', 'السويتش (Switch)', 'الراوتر (Router)', 'الـ Bridge'],
+      correct: 3
+    },
+    {
+      id: 'q113',
+      topic: 'Network Devices',
+      subSkill: 'Modem_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هو الجهاز المسؤول عن تحويل الإشارات الرقمية من الكمبيوتر إلى إشارات تناظرية لنقلها عبر خطوط الهاتف، والعكس؟',
+      options: ['الراوتر (Router)', 'المودم (Modem)', 'السويتش (Switch)', 'الـ Hub'],
+      correct: 2
+    },
+    {
+      id: 'q114',
+      topic: 'Network Devices',
+      subSkill: 'Access_Point',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لتوسيع شبكة لاسلكية (Wi-Fi) وتوفير اتصال لاسلكي للأجهزة؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'نقطة الوصول اللاسلكية (Access Point - AP)', 'الـ Hub'],
+      correct: 3
+    },
+    {
+      id: 'q115',
+      topic: 'Network Devices',
+      subSkill: 'Firewall_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يعتبر جهاز أمان يستخدم لمراقبة ومنع حركة البيانات غير المصرح بها بين الشبكات؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'جدار الحماية (Firewall)', 'الـ Bridge'],
+      correct: 3
+    },
+    {
+      id: 'q116',
+      topic: 'Network Devices',
+      subSkill: 'NIC_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'ما هي بطاقة الشبكة (NIC - Network Interface Card)؟',
+      options: ['جهاز يستخدم لتوصيل شبكتين مختلفتين', 'بطاقة داخلية أو خارجية تسمح للجهاز بالاتصال بالشبكة', 'جهاز يستخدم لتوزيع عناوين IP', 'جهاز يستخدم لتشفير البيانات'],
+      correct: 2
+    },
+    {
+      id: 'q117',
+      topic: 'Network Devices',
+      subSkill: 'Bridge_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يعمل كـ "جسر" (Bridge) بين شبكتين ويقرر إما تمرير الإطار أو تجاهله بناءً على عنوان MAC؟',
+      options: ['الـ Hub', 'الراوتر (Router)', 'الـ Bridge', 'المودم (Modem)'],
+      correct: 3
+    },
+    {
+      id: 'q118',
+      topic: 'Network Devices',
+      subSkill: 'Router_Intelligent',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية هو جهاز ذكي يمكن برمجته لتوجيه الحزم بناءً على عناوين IP وأكثر من مسار ممكن؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'الـ Repeater'],
+      correct: 2
+    },
+    {
+      id: 'q119',
+      topic: 'Network Devices',
+      subSkill: 'Hub_Unintelligent',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يعتبر "جهازاً غير ذكي" (Unintelligent) ولا يقرأ عناوين MAC أو IP، بل يعيد بث الإشارة إلى جميع المنافذ؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'الـ Bridge'],
+      correct: 3
+    },
+    {
+      id: 'q120',
+      topic: 'Network Devices',
+      subSkill: 'Switch_vs_Hub',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الفرق بين السويتش (Switch) والـ Hub هو أن السويتش:',
+      options: ['أبطأ من الـ Hub', 'يرسل البيانات إلى جهاز واحد محدد بناءً على عنوان MAC، بينما الـ Hub يرسل إلى جميع الأجهزة', 'يعمل في طبقة الشبكة (Network Layer)', 'لا يحتاج إلى عناوين'],
+      correct: 2
+    },
+    {
+      id: 'q121',
+      topic: 'Network Devices',
+      subSkill: 'Home_Router',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يجمع بين وظائف الراوتر، السويتش، ونقطة الوصول اللاسلكية في جهاز واحد، ويستخدم عادة في المنازل؟',
+      options: ['المودم (Modem)', 'الراوتر المنزلي (Home Router / Wireless Router)', 'الـ Hub', 'الـ Bridge'],
+      correct: 2
+    },
+    {
+      id: 'q122',
+      topic: 'Network Devices',
+      subSkill: 'Bridge_Connection',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لربط شبكتين محليتين (LAN) متشابهتين مع بعضهما البعض، ويعمل في طبقة ربط البيانات (Data Link Layer)؟',
+      options: ['الراوتر (Router)', 'الـ Bridge', 'الـ Gateway', 'الـ Repeater'],
+      correct: 2
+    },
+    {
+      id: 'q123',
+      topic: 'Network Devices',
+      subSkill: 'Gateway_Definition',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'الـ Gateway (البوابة) هو جهاز:',
+      options: ['يربط شبكتين مختلفتين تماماً في البروتوكولات (مثل شبكة محلية بالإنترنت)', 'يعيد إرسال الإشارة فقط', 'يعمل فقط في الطبقة الفيزيائية', 'يستخدم فقط في الشبكات اللاسلكية'],
+      correct: 1
+    },
+    {
+      id: 'q124',
+      topic: 'Network Devices',
+      subSkill: 'Multilayer_Switch',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم في مراكز البيانات (Data Centers) لتوفير اتصال عالي السرعة بين الخوادم، وغالباً ما يكون متعدد الطبقات (Layer 3 Switch)؟',
+      options: ['السويتش العادي (Layer 2 Switch)', 'السويتش متعدد الطبقات (Multilayer Switch)', 'الـ Hub', 'الـ Repeater'],
+      correct: 2
+    },
+    {
+      id: 'q125',
+      topic: 'Network Devices',
+      subSkill: 'Passive_Device',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يعتبر "جهازاً سلبياً" (Passive) ولا يحتاج إلى طاقة كهربائية للعمل؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'لوحة التوصيل (Patch Panel)', 'الـ Hub'],
+      correct: 3
+    },
+    {
+      id: 'q126',
+      topic: 'Network Devices',
+      subSkill: 'Protocol_Converter',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من الأجهزة التالية يستخدم لتحويل بروتوكول من نوع إلى آخر (مثل تحويل TCP/IP إلى بروتوكول قديم)؟',
+      options: ['الراوتر (Router)', 'الـ Gateway', 'الـ Bridge', 'السويتش (Switch)'],
+      correct: 2
+    },
+
+    // =============================================================
+    // 📧 بروتوكولات البريد الإلكتروني (سهل)
+    // =============================================================
+    {
+      id: 'q127',
+      topic: 'Email Protocols',
+      subSkill: 'SMTP_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من البروتوكولات التالية يستخدم لإرسال البريد الإلكتروني من جهاز العميل إلى خادم البريد، أو بين خوادم البريد؟',
+      options: ['POP3', 'IMAP', 'SMTP', 'HTTP'],
+      correct: 3
+    },
+    {
+      id: 'q128',
+      topic: 'Email Protocols',
+      subSkill: 'POP3_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من البروتوكولات التالية يستخدم لاستلام البريد الإلكتروني من خادم البريد وتنزيله إلى جهاز العميل، وعادة ما يحذف البريد من الخادم بعد التنزيل؟',
+      options: ['SMTP', 'POP3', 'IMAP', 'DNS'],
+      correct: 2
+    },
+    {
+      id: 'q129',
+      topic: 'Email Protocols',
+      subSkill: 'IMAP_Function',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من البروتوكولات التالية يستخدم لاستلام البريد الإلكتروني من خادم البريد، ولكنه يبقي البريد على الخادم ويتيح مزامنة البريد عبر عدة أجهزة؟',
+      options: ['SMTP', 'POP3', 'IMAP', 'FTP'],
+      correct: 3
+    },
+    {
+      id: 'q130',
+      topic: 'Email Protocols',
+      subSkill: 'IMAP_Advantage',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'أي من البروتوكولات التالية يعتبر الأكثر تقدماً ومرونة لإدارة البريد الإلكتروني، حيث يسمح بالوصول إلى البريد من عدة أجهزة مع بقاء البريد على الخادم؟',
+      options: ['SMTP', 'POP3', 'IMAP', 'Telnet'],
+      correct: 3
+    },
+    {
+      id: 'q131',
+      topic: 'Email Protocols',
+      subSkill: 'SMTP_Port',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 1,
+      question: 'المنفذ الافتراضي لبروتوكول SMTP هو:',
+      options: ['25', '110', '143', '993'],
+      correct: 1
+    },
+  ],
+  medium: [
+    // =============================================================
+    // 📌 أساسيات الشبكات (متوسط)
+    // =============================================================
+    {
+      id: 'q132',
+      topic: 'Network Basics',
+      subSkill: 'VLAN_VPN_Scenario',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 2,
+      question: 'شركة لديها شبكة LAN مقسمة إلى VLANs (المحاسبة، الموارد البشرية، الهندسة). تريد أن تسمح للموارد البشرية فقط بالوصول إلى خادم خاص خارجي عبر VPN آمن، دون أن تصل المحاسبة أو الهندسة إلى هذا الخادم. أي من المصطلحات التالية تجمع كل هذه الميزات (تقسيم منطقي + أمان اتصال خارجي + تحكم بالوصول)؟',
+      options: ['شبكة WAN فقط', 'VLAN + VPN + Access Control', 'P2P فقط', 'LAN فقط'],
+      correct: 2
+    },
+    // =============================================================
+    // 🌐 IPv4 (متوسط)
+    // =============================================================
+    {
+      id: 'q133',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Bits',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'كم عدد بتات عنوان IPv6؟',
+      options: ['32 بت', '64 بت', '128 بت', '256 بت'],
+      correct: 3
+    },
+    {
+      id: 'q134',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Format',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من التالي هو مثال على عنوان IPv6؟',
+      options: ['192.168.1.1', '2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:0db8', '192.168.1.1.1'],
+      correct: 2
+    },
+    {
+      id: 'q135',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Broadcast_Removed',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في IPv6، تم إلغاء نوع الإرسال:',
+      options: ['Unicast', 'Multicast', 'Broadcast', 'Anycast'],
+      correct: 3
+    },
+    {
+      id: 'q136',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Address_Types',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أنواع العناوين الأساسية في IPv6 هي:',
+      options: ['Unicast, Broadcast, Anycast', 'Unicast, Multicast, Anycast', 'Unicast, Multicast, Broadcast', 'Unicast فقط'],
+      correct: 2
+    },
+    {
+      id: 'q137',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Link_Local',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'الـ Link-Local Address في IPv6 يبدأ بـ:',
+      options: ['2001::', 'FE80::', 'FF00::', '::1'],
+      correct: 2
+    },
+    {
+      id: 'q138',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Loopback',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'الـ Loopback Address في IPv6 هو:',
+      options: ['127.0.0.1', '::1', 'FE80::1', '2001::1'],
+      correct: 2
+    },
+    {
+      id: 'q139',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Unique_Local',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في IPv6، الـ Unique Local Address (مشابه للـ Private في IPv4) يبدأ بـ:',
+      options: ['FE80::', 'FC00::', '2001::', 'FF00::'],
+      correct: 2
+    },
+    {
+      id: 'q140',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Global_Unicast',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في IPv6، الـ Global Unicast Address (العنوان العام) يبدأ بـ:',
+      options: ['FE80::', '2001:: أو 2xxx::', 'FC00::', 'FF00::'],
+      correct: 2
+    },
+    // =============================================================
+    // 📊 Subnetting (متوسط)
+    // =============================================================
+    {
+      id: 'q141',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 2,
+      question: 'شركة لديها الشبكة 172.16.0.0/16، وتريد تقسيمها إلى 50 شبكة فرعية (Subnets)، بحيث يكون كل شبكة فرعية أكبر عدد ممكن من المضيفين. كم بت (Bits) يجب استعارتها من الـ Host لتلبية طلب 50 شبكة؟',
+      options: ['5 بتات', '6 بتات', '7 بتات', '8 بتات'],
+      correct: 2
+    },
+    {
+      id: 'q142',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 2,
+      question: 'شركة لديها الشبكة 172.16.0.0/16، وتريد تقسيمها إلى 50 شبكة فرعية. ما هو الـ Subnet Mask الجديد بالكتابة العشرية؟',
+      options: ['255.255.252.0', '255.255.254.0', '255.255.248.0', '255.255.255.0'],
+      correct: 1
+    },
+    {
+      id: 'q143',
+      topic: 'Subnetting',
+      subSkill: 'Host_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 2,
+      question: 'شركة لديها الشبكة 172.16.0.0/16، وتريد تقسيمها إلى 50 شبكة فرعية. كم عدد المضيفين الصالحين (Usable Hosts) في كل شبكة فرعية؟',
+      options: ['510 مضيف', '1022 مضيف', '2046 مضيف', '4094 مضيف'],
+      correct: 2
+    },
+    {
+      id: 'q144',
+      topic: 'Subnetting',
+      subSkill: 'Network_ID_Determination',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 2,
+      question: 'ما هو عنوان الشبكة (Network ID) لعنوان IP 192.168.100.200 مع قناع 255.255.255.192؟',
+      options: ['192.168.100.128', '192.168.100.192', '192.168.100.64', '192.168.100.0'],
+      correct: 2
+    },
+    {
+      id: 'q145',
+      topic: 'Subnetting',
+      subSkill: 'Gateway_Calculation',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 2,
+      question: 'ما هو الـ Default Gateway الصحيح لجهاز في الشبكة 192.168.10.32/28 (علماً أن أول عنوان صالح في الشبكة هو الـ Gateway)؟',
+      options: ['192.168.10.32', '192.168.10.33', '192.168.10.46', '192.168.10.47'],
+      correct: 2
+    },
+    {
+      id: 'q146',
+      topic: 'Subnetting',
+      subSkill: 'Gateway_Usage',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 2,
+      question: 'جهاز في الشبكة 10.10.10.0/24 يريد إرسال بيانات إلى جهاز في الشبكة 192.168.1.0/24. ماذا يجب أن يكون عنوان الـ Gateway في إعدادات الجهاز الأول؟',
+      options: ['عنوان IP للراوتر المتصل بكلا الشبكتين', 'عنوان IP لجهاز الوجهة', '0.0.0.0', '255.255.255.255'],
+      correct: 1
+    },
+    {
+      id: 'q147',
+      topic: 'Subnetting',
+      subSkill: 'Valid_IP_Address',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 2,
+      question: 'أي من العناوين التالية هو عنوان صالح (Valid) لجهاز في شبكة 192.168.1.0/29؟',
+      options: ['192.168.1.0', '192.168.1.7', '192.168.1.6', '192.168.1.8'],
+      correct: 3
+    },
+    {
+      id: 'q148',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Design',
+      cognitiveLevel: 'evaluating',
+      errorPattern: 'reasoning',
+      difficulty: 2,
+      question: 'شبكة مكونة من 3 أقسام: المحاسبة (50 جهاز)، الموارد البشرية (30 جهاز)، والتسويق (20 جهاز). لديك الشبكة 192.168.1.0/24. ما هو أفضل توزيع (Subnetting) يلبي احتياجات الأقسام مع أقل هدر للعناوين؟',
+      options: [
+        '/26 (62 مضيف) للمحاسبة، /26 (62 مضيف) للموارد البشرية، و /27 (30 مضيف) للتسويق',
+        '/25 (126 مضيف) للجميع',
+        '/26 (62 مضيف) للمحاسبة، /27 (30 مضيف) للموارد البشرية (لا تكفي)، /28 (14 مضيف) للتسويق (لا تكفي)',
+        '/26 للمحاسبة، /27 للموارد (لا تكفي)، /27 للتسويق'
+      ],
+      correct: 1
+    },
+    // =============================================================
+    // 🛜 IPv6 (متوسط)
+    // =============================================================
+    {
+      id: 'q149',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Shortening',
+      cognitiveLevel: 'applying',
+      errorPattern: 'application',
+      difficulty: 2,
+      question: 'اختصار عنوان IPv6 التالي: `2001:0db8:0000:0000:0000:0000:1428:57ab` هو:',
+      options: ['`2001:db8::1428:57ab`', '`2001:db8:::1428:57ab`', '`2001:db8:0:0:0:0:1428:57ab`', '`2001:db8::1428:57ab::`'],
+      correct: 1
+    },
+    {
+      id: 'q150',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Shortening_Rules',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'عند كتابة عنوان IPv6 مختصر، أي من القواعد التالية صحيحة؟',
+      options: ['يمكن حذف الأصفار البادئة من كل مقطع', 'يمكن حذف الأصفار المتتالية مرة واحدة فقط باستخدام `::`', 'يمكن حذف كل الأصفار بدون قيود', 'لا يمكن حذف أي أصفار'],
+      correct: 1
+    },
+    {
+      id: 'q151',
+      topic: 'IPv6',
+      subSkill: 'IPv6_Shortening',
+      cognitiveLevel: 'applying',
+      errorPattern: 'application',
+      difficulty: 2,
+      question: 'ما هو عنوان IPv6 المضغوط الصحيح للعنوان: `2001:0db8:0000:0000:0001:0000:0000:0000`؟',
+      options: ['`2001:db8::1:0:0:0`', '`2001:db8:0:0:1::`', '`2001:db8:::1::`', '`2001:db8::1:::`'],
+      correct: 2
+    },
+    {
+      id: 'q152',
+      topic: 'IPv6',
+      subSkill: 'IPv6_vs_IPv4',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من العبارات التالية تصف الفرق بين IPv4 و IPv6 بشكل شامل؟',
+      options: [
+        'IPv4 32 بت، IPv6 128 بت، IPv6 لا يدعم Broadcast ويدعم Auto-configuration',
+        'IPv4 128 بت، IPv6 32 بت',
+        'IPv4 يدعم Anycast، IPv6 لا يدعمه',
+        'لا فرق بينهما'
+      ],
+      correct: 1
+    },
+    {
+      id: 'q153',
+      topic: 'IPv6',
+      subSkill: 'Solicited_Node_Multicast',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في IPv6، الـ Solicited-Node Multicast Address يستخدم لـ:',
+      options: ['إرسال البيانات إلى جميع الأجهزة', 'استبدال الـ ARP في IPv4 (للعثور على عنوان MAC)', 'توجيه الحزم خارج الشبكة', 'تعيين عنوان خاص'],
+      correct: 2
+    },
+    // =============================================================
+    // 📖 DNS (متوسط)
+    // =============================================================
+    {
+      id: 'q154',
+      topic: 'DNS',
+      subSkill: 'DNS_Port',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'ما هو المنفذ (Port) الافتراضي لبروتوكول DNS؟',
+      options: ['21', '53', '80', '443'],
+      correct: 2
+    },
+    {
+      id: 'q155',
+      topic: 'DNS',
+      subSkill: 'DNS_Server_Types',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'خادم DNS الذي يقوم بحل أسماء النطاقات المحلية داخل المؤسسة يسمى:',
+      options: ['Root DNS Server', 'Authoritative DNS Server', 'Recursive DNS Server', 'TLD DNS Server'],
+      correct: 3
+    },
+    {
+      id: 'q156',
+      topic: 'DNS',
+      subSkill: 'DNS_Record_A',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من التالي هو سجل DNS يستخدم لربط اسم النطاق بعنوان IPv4؟',
+      options: ['AAAA Record', 'A Record', 'MX Record', 'CNAME Record'],
+      correct: 2
+    },
+    {
+      id: 'q157',
+      topic: 'DNS',
+      subSkill: 'DNS_Record_AAAA',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من التالي هو سجل DNS يستخدم لربط اسم النطاق بعنوان IPv6؟',
+      options: ['AAAA Record', 'A Record', 'MX Record', 'CNAME Record'],
+      correct: 1
+    },
+    {
+      id: 'q158',
+      topic: 'DNS',
+      subSkill: 'DNS_Record_MX',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من التالي هو سجل DNS يستخدم لتحديد خادم البريد الإلكتروني للنطاق؟',
+      options: ['A Record', 'AAAA Record', 'MX Record', 'CNAME Record'],
+      correct: 3
+    },
+    {
+      id: 'q159',
+      topic: 'DNS',
+      subSkill: 'DNS_Record_CNAME',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من التالي هو سجل DNS يستخدم لإنشاء اسم مستعار (Alias) لنطاق آخر؟',
+      options: ['A Record', 'AAAA Record', 'MX Record', 'CNAME Record'],
+      correct: 4
+    },
+    // =============================================================
+    // ⚙️ DHCP (متوسط)
+    // =============================================================
+    {
+      id: 'q160',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Process_DORA',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في عملية DHCP، ما هي الخطوة الأولى في عملية DORA؟',
+      options: ['DHCP Offer', 'DHCP Request', 'DHCP Acknowledgment', 'DHCP Discover'],
+      correct: 4
+    },
+    {
+      id: 'q161',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Process_DORA',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في عملية DHCP، ما هي الخطوة الثانية في عملية DORA؟',
+      options: ['DHCP Discover', 'DHCP Offer', 'DHCP Request', 'DHCP Acknowledgment'],
+      correct: 2
+    },
+    {
+      id: 'q162',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Process_DORA',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في عملية DHCP، ما هي الخطوة الثالثة في عملية DORA؟',
+      options: ['DHCP Discover', 'DHCP Offer', 'DHCP Request', 'DHCP Acknowledgment'],
+      correct: 3
+    },
+    {
+      id: 'q163',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Process_DORA',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'في عملية DHCP، ما هي الخطوة الرابعة والأخيرة في عملية DORA؟',
+      options: ['DHCP Discover', 'DHCP Offer', 'DHCP Request', 'DHCP Acknowledgment'],
+      correct: 4
+    },
+    {
+      id: 'q164',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Discover_Type',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'عندما يطلب جهاز عنوان IP من خادم DHCP، ما هو نوع الإرسال المستخدم في طلب DHCP Discover الأولي؟',
+      options: ['Unicast', 'Multicast', 'Broadcast', 'Anycast'],
+      correct: 3
+    },
+    // =============================================================
+    // 🏛️ OSI Model (متوسط)
+    // =============================================================
+    {
+      id: 'q165',
+      topic: 'OSI Model',
+      subSkill: 'Protocol_Layer_Application',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'بروتوكول DHCP يعمل في أي طبقة من طبقات OSI؟',
+      options: ['الطبقة الفيزيائية (Physical)', 'طبقة ربط البيانات (Data Link)', 'طبقة التطبيق (Application)', 'طبقة الشبكة (Network)'],
+      correct: 3
+    },
+    {
+      id: 'q166',
+      topic: 'OSI Model',
+      subSkill: 'Protocol_Layer_Application',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'بروتوكول DNS يعمل في أي طبقة من طبقات OSI؟',
+      options: ['الطبقة الفيزيائية (Physical)', 'طبقة ربط البيانات (Data Link)', 'طبقة التطبيق (Application)', 'طبقة النقل (Transport)'],
+      correct: 3
+    },
+    {
+      id: 'q167',
+      topic: 'OSI Model',
+      subSkill: 'Protocol_Layer_Application',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من البروتوكولات التالية يعمل في طبقة التطبيق (Application Layer) في OSI؟',
+      options: ['TCP', 'IP', 'HTTP', 'Ethernet'],
+      correct: 3
+    },
+    {
+      id: 'q168',
+      topic: 'OSI Model',
+      subSkill: 'Protocol_Layer_Transport',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من البروتوكولات التالية يعمل في طبقة النقل (Transport Layer) في OSI؟',
+      options: ['HTTP', 'TCP و UDP', 'IP', 'ARP'],
+      correct: 2
+    },
+    {
+      id: 'q169',
+      topic: 'OSI Model',
+      subSkill: 'Protocol_Layer_Network',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من البروتوكولات التالية يعمل في طبقة الشبكة (Network Layer) في OSI؟',
+      options: ['TCP', 'UDP', 'IP', 'HTTP'],
+      correct: 3
+    },
+    {
+      id: 'q170',
+      topic: 'OSI Model',
+      subSkill: 'Port_HTTP',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'ما هو المنفذ (Port) الافتراضي لبروتوكول HTTP؟',
+      options: ['21', '25', '80', '443'],
+      correct: 3
+    },
+    {
+      id: 'q171',
+      topic: 'OSI Model',
+      subSkill: 'Port_HTTPS',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'ما هو المنفذ (Port) الافتراضي لبروتوكول HTTPS؟',
+      options: ['21', '25', '80', '443'],
+      correct: 4
+    },
+    // =============================================================
+    // 💻 أجهزة الشبكات (متوسط)
+    // =============================================================
+    {
+      id: 'q172',
+      topic: 'Network Devices',
+      subSkill: 'Device_Layer',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من الأجهزة التالية يعمل في طبقة الشبكة (Network Layer)؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'بطاقة الشبكة (NIC)'],
+      correct: 2
+    },
+    {
+      id: 'q173',
+      topic: 'Network Devices',
+      subSkill: 'Device_Layer',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من الأجهزة التالية يعمل في طبقة ربط البيانات (Data Link Layer)؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'المودم'],
+      correct: 1
+    },
+    {
+      id: 'q174',
+      topic: 'Network Devices',
+      subSkill: 'Device_Layer',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من الأجهزة التالية يعمل في الطبقة الفيزيائية (Physical Layer)؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'بطاقة الشبكة (NIC)'],
+      correct: 3
+    },
+    // =============================================================
+    // 🏛️ OSI Model (متوسط) - تكملة
+    // =============================================================
+    {
+      id: 'q175',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 2,
+      question: 'أي من الطبقات التالية في OSI مسؤولة عن توفير واجهة للمستخدم والتطبيقات للوصول إلى خدمات الشبكة؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة العرض (Presentation)', 'طبقة الجلسة (Session)', 'طبقة النقل (Transport)'],
+      correct: 1
+    },
+  ],
+  hard: [
+    // =============================================================
+    // 🏛️ OSI Model (صعب)
+    // =============================================================
+    {
+      id: 'q176',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية في OSI مسؤولة عن اكتشاف الأخطاء (Error Detection) وإعادة الإرسال (Retransmission) في حالة فقدان البيانات؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الشبكة (Network)', 'طبقة النقل (Transport)', 'طبقة ربط البيانات (Data Link)'],
+      correct: 3
+    },
+    {
+      id: 'q177',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية في OSI مسؤولة عن التحكم في التدفق (Flow Control) لمنع إغراق جهاز الاستقبال بالبيانات؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الشبكة (Network)', 'طبقة النقل (Transport)', 'طبقة ربط البيانات (Data Link)'],
+      correct: 3
+    },
+    {
+      id: 'q178',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'جهاز كمبيوتر يريد الاتصال بخادم ويب على الإنترنت. أي من الطبقات التالية مسؤولة عن إنشاء جلسة اتصال موثوقة بين الجهاز والخادم باستخدام TCP؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة العرض (Presentation)', 'طبقة الجلسة (Session)', 'طبقة النقل (Transport)'],
+      correct: 4
+    },
+    // =============================================================
+    // 🔗 TCP/IP (صعب)
+    // =============================================================
+    {
+      id: 'q179',
+      topic: 'TCP/IP',
+      subSkill: 'TCPIP_Layers_Count',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'نموذج TCP/IP يتكون من كم طبقة مقارنة بـ OSI؟',
+      options: ['4 طبقات', '5 طبقات', '7 طبقات', '9 طبقات'],
+      correct: 1
+    },
+    {
+      id: 'q180',
+      topic: 'TCP/IP',
+      subSkill: 'TCPIP_vs_OSI',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية موجودة في نموذج TCP/IP ولكن غير موجودة في نموذج OSI؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الإنترنت (Internet)', 'طبقة ربط البيانات (Data Link)', 'جميع الطبقات موجودة في كلا النموذجين'],
+      correct: 2
+    },
+    {
+      id: 'q181',
+      topic: 'TCP/IP',
+      subSkill: 'TCPIP_vs_OSI',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية في نموذج OSI تم دمجها في طبقة التطبيق (Application) في نموذج TCP/IP؟',
+      options: ['Presentation و Session', 'Network و Transport', 'Data Link و Physical', 'Session و Transport'],
+      correct: 1
+    },
+    {
+      id: 'q182',
+      topic: 'TCP/IP',
+      subSkill: 'TCPIP_vs_OSI',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية في نموذج OSI تم دمجها في طبقة ربط البيانات (Data Link) في نموذج TCP/IP؟',
+      options: ['Presentation و Session', 'Network و Transport', 'Data Link و Physical', 'Session و Transport'],
+      correct: 3
+    },
+    {
+      id: 'q183',
+      topic: 'TCP/IP',
+      subSkill: 'TCPIP_Layers_Mapping',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'في نموذج TCP/IP، أي طبقة تعادل طبقة الشبكة (Network) في نموذج OSI؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة النقل (Transport)', 'طبقة الإنترنت (Internet)', 'طبقة الوصول إلى الشبكة (Network Access)'],
+      correct: 3
+    },
+    {
+      id: 'q184',
+      topic: 'TCP/IP',
+      subSkill: 'TCPIP_Layers_Mapping',
+      cognitiveLevel: 'understanding',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'في نموذج TCP/IP، أي طبقة تعادل طبقة النقل (Transport) في نموذج OSI؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة النقل (Transport)', 'طبقة الإنترنت (Internet)', 'طبقة الوصول إلى الشبكة (Network Access)'],
+      correct: 2
+    },
+    // =============================================================
+    // 📌 أساسيات الشبكات (صعب)
+    // =============================================================
+    {
+      id: 'q185',
+      topic: 'Network Basics',
+      subSkill: 'VLAN_VPN_Scenario_Advanced',
+      cognitiveLevel: 'evaluating',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'شركة لديها شبكة LAN مقسمة إلى VLANs (المحاسبة، الموارد البشرية، الهندسة). تريد أن تسمح للموارد البشرية فقط بالوصول إلى خادم خاص خارجي عبر VPN آمن، دون أن تصل المحاسبة أو الهندسة إلى هذا الخادم. أي من المصطلحات التالية تجمع كل هذه الميزات (تقسيم منطقي + أمان اتصال خارجي + تحكم بالوصول)؟',
+      options: ['شبكة WAN فقط', 'VLAN + VPN + Access Control', 'P2P فقط', 'LAN فقط'],
+      correct: 2
+    },
+    // =============================================================
+    // 🌐 IPv4 (صعب)
+    // =============================================================
+    {
+      id: 'q186',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Shortening_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'application',
+      difficulty: 3,
+      question: 'اختصار عنوان IPv6 التالي: `2001:0db8:0000:0000:0000:0000:1428:57ab` هو:',
+      options: ['`2001:db8::1428:57ab`', '`2001:db8:::1428:57ab`', '`2001:db8:0:0:0:0:1428:57ab`', '`2001:db8::1428:57ab::`'],
+      correct: 1
+    },
+    {
+      id: 'q187',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Shortening_Rules_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'application',
+      difficulty: 3,
+      question: 'عند كتابة عنوان IPv6 مختصر، أي من القواعد التالية صحيحة؟',
+      options: ['يمكن حذف الأصفار البادئة من كل مقطع', 'يمكن حذف الأصفار المتتالية مرة واحدة فقط باستخدام `::`', 'يمكن حذف كل الأصفار بدون قيود', 'لا يمكن حذف أي أصفار'],
+      correct: 1
+    },
+    {
+      id: 'q188',
+      topic: 'IPv4',
+      subSkill: 'IPv6_Shortening_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'application',
+      difficulty: 3,
+      question: 'ما هو عنوان IPv6 المضغوط الصحيح للعنوان: `2001:0db8:0000:0000:0001:0000:0000:0000`؟',
+      options: ['`2001:db8::1:0:0:0`', '`2001:db8:0:0:1::`', '`2001:db8:::1::`', '`2001:db8::1:::`'],
+      correct: 2
+    },
+    {
+      id: 'q189',
+      topic: 'IPv4',
+      subSkill: 'IPv6_vs_IPv4_Advanced',
+      cognitiveLevel: 'evaluating',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من العبارات التالية تصف الفرق بين IPv4 و IPv6 بشكل شامل؟',
+      options: [
+        'IPv4 32 بت، IPv6 128 بت، IPv6 لا يدعم Broadcast ويدعم Auto-configuration',
+        'IPv4 128 بت، IPv6 32 بت',
+        'IPv4 يدعم Anycast، IPv6 لا يدعمه',
+        'لا فرق بينهما'
+      ],
+      correct: 1
+    },
+    {
+      id: 'q190',
+      topic: 'IPv4',
+      subSkill: 'Solicited_Node_Multicast_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'في IPv6، الـ Solicited-Node Multicast Address يستخدم لـ:',
+      options: ['إرسال البيانات إلى جميع الأجهزة', 'استبدال الـ ARP في IPv4 (للعثور على عنوان MAC)', 'توجيه الحزم خارج الشبكة', 'تعيين عنوان خاص'],
+      correct: 2
+    },
+    // =============================================================
+    // 📊 Subnetting (صعب)
+    // =============================================================
+    {
+      id: 'q191',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Calculation_Advanced',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 3,
+      question: 'شركة لديها الشبكة 172.16.0.0/16، وتريد تقسيمها إلى 50 شبكة فرعية (Subnets)، بحيث يكون كل شبكة فرعية أكبر عدد ممكن من المضيفين. كم بت (Bits) يجب استعارتها من الـ Host لتلبية طلب 50 شبكة؟',
+      options: ['5 بتات', '6 بتات', '7 بتات', '8 بتات'],
+      correct: 2
+    },
+    {
+      id: 'q192',
+      topic: 'Subnetting',
+      subSkill: 'Subnet_Mask_Calculation_Advanced',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 3,
+      question: 'شركة لديها الشبكة 172.16.0.0/16، وتريد تقسيمها إلى 50 شبكة فرعية. ما هو الـ Subnet Mask الجديد بالكتابة العشرية؟',
+      options: ['255.255.252.0', '255.255.254.0', '255.255.248.0', '255.255.255.0'],
+      correct: 1
+    },
+    {
+      id: 'q193',
+      topic: 'Subnetting',
+      subSkill: 'Host_Calculation_Advanced',
+      cognitiveLevel: 'applying',
+      errorPattern: 'calculation',
+      difficulty: 3,
+      question: 'شركة لديها الشبكة 172.16.0.0/16، وتريد تقسيمها إلى 50 شبكة فرعية. كم عدد المضيفين الصالحين (Usable Hosts) في كل شبكة فرعية؟',
+      options: ['510 مضيف', '1022 مضيف', '2046 مضيف', '4094 مضيف'],
+      correct: 2
+    },
+    // =============================================================
+    // 📖 DNS (صعب)
+    // =============================================================
+    {
+      id: 'q194',
+      topic: 'DNS',
+      subSkill: 'DNS_Server_Types_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'خادم DNS الذي يقوم بحل أسماء النطاقات المحلية داخل المؤسسة يسمى:',
+      options: ['Root DNS Server', 'Authoritative DNS Server', 'Recursive DNS Server', 'TLD DNS Server'],
+      correct: 3
+    },
+    // =============================================================
+    // ⚙️ DHCP (صعب)
+    // =============================================================
+    {
+      id: 'q195',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Process_DORA_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'في عملية DHCP، ما هي الخطوة الأولى في عملية DORA؟',
+      options: ['DHCP Offer', 'DHCP Request', 'DHCP Acknowledgment', 'DHCP Discover'],
+      correct: 4
+    },
+    {
+      id: 'q196',
+      topic: 'DHCP',
+      subSkill: 'DHCP_Discover_Type_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'عندما يطلب جهاز عنوان IP من خادم DHCP، ما هو نوع الإرسال المستخدم في طلب DHCP Discover الأولي؟',
+      options: ['Unicast', 'Multicast', 'Broadcast', 'Anycast'],
+      correct: 3
+    },
+    // =============================================================
+    // 🏛️ OSI Model (صعب) - تكملة
+    // =============================================================
+    {
+      id: 'q197',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية في OSI مسؤولة عن اكتشاف الأخطاء (Error Detection) وإعادة الإرسال (Retransmission) في حالة فقدان البيانات؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الشبكة (Network)', 'طبقة النقل (Transport)', 'طبقة ربط البيانات (Data Link)'],
+      correct: 3
+    },
+    {
+      id: 'q198',
+      topic: 'OSI Model',
+      subSkill: 'OSI_Functions_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الطبقات التالية في OSI مسؤولة عن التحكم في التدفق (Flow Control) لمنع إغراق جهاز الاستقبال بالبيانات؟',
+      options: ['طبقة التطبيق (Application)', 'طبقة الشبكة (Network)', 'طبقة النقل (Transport)', 'طبقة ربط البيانات (Data Link)'],
+      correct: 3
+    },
+    // =============================================================
+    // 💻 أجهزة الشبكات (صعب)
+    // =============================================================
+    {
+      id: 'q199',
+      topic: 'Network Devices',
+      subSkill: 'Device_Layer_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الأجهزة التالية يعمل في طبقة الشبكة (Network Layer)؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'بطاقة الشبكة (NIC)'],
+      correct: 2
+    },
+    {
+      id: 'q200',
+      topic: 'Network Devices',
+      subSkill: 'Device_Layer_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الأجهزة التالية يعمل في طبقة ربط البيانات (Data Link Layer)؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'المودم'],
+      correct: 1
+    },
+    {
+      id: 'q201',
+      topic: 'Network Devices',
+      subSkill: 'Device_Layer_Advanced',
+      cognitiveLevel: 'analyzing',
+      errorPattern: 'reasoning',
+      difficulty: 3,
+      question: 'أي من الأجهزة التالية يعمل في الطبقة الفيزيائية (Physical Layer)؟',
+      options: ['السويتش (Switch)', 'الراوتر (Router)', 'الـ Hub', 'بطاقة الشبكة (NIC)'],
+      correct: 3
+    },
+    // =============================================================
+    // 📧 بروتوكولات البريد الإلكتروني (صعب)
+    // =============================================================
+    {
+      id: 'q202',
+      topic: 'Email Protocols',
+      subSkill: 'SMTP_Port_Advanced',
+      cognitiveLevel: 'remembering',
+      errorPattern: 'conceptual',
+      difficulty: 3,
+      question: 'المنفذ الافتراضي لبروتوكول SMTP هو:',
+      options: ['25', '110', '143', '993'],
+      correct: 1
+    },
+  ]
+};
+
+export const getAllBasicsQuestions = () => {
+  return [...basicsQuestions.easy, ...basicsQuestions.medium, ...basicsQuestions.hard];
+};
+
+export const getQuestionsByLevel = (level) => {
+  if (level === 1) return basicsQuestions.easy;
+  if (level === 2) return basicsQuestions.medium;
+  if (level === 3) return basicsQuestions.hard;
+  return [];
+};
