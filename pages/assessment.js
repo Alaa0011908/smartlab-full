@@ -531,7 +531,7 @@ export default function Assessment() {
           </div>
         </main>
 
-        {/* ============ الفوتر المحدث بنفس الهيكل البنائي والمسافات ============ */}
+        {/* ============ footer============ */}
         <footer style={styles.footer}>
           <div style={styles.footerContainer} className="footerContainer">
             <div style={styles.footerLeft}>

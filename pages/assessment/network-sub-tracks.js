@@ -47,7 +47,7 @@ export default function NetworkSubTracks() {
 
   return (
     <div style={styles.page} dir="rtl">
-      {/* ============ NavBar الموحد والمطابق للسيناريو ============ */}
+      {/* ============ NavBar ============ */}
       <header style={styles.header}>
         {/* القسم اليسار: الأزرار */}
         <div style={styles.headerLeft}>
@@ -82,7 +82,7 @@ export default function NetworkSubTracks() {
           ))}
         </nav>
 
-        {/* قسم اليمين: اللوغو المعتمد على الصورة الموحدة */}
+        {/* logo*/}
         <div style={styles.headerRight}>
           <Link href="/" style={styles.logo}>
             <img 
@@ -124,7 +124,7 @@ export default function NetworkSubTracks() {
         </main>
       </div>
 
-      {/* ============ Footer الموحد والمطابق للسيناريو ============ */}
+      {/* ============ Footer ============ */}
       <footer style={styles.footer}>
         <div style={styles.footerContainer} className="footerContainer">
           <div style={styles.footerLeft}>
