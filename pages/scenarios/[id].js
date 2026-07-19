@@ -1,4 +1,4 @@
-// pages/scenarios/[id]/index.js
+// pages/scenarios/[id].js
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -51,10 +51,10 @@ export default function ScenarioDetail() {
       title: 'ملف العميل',
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&fit=crop&q=80',
       clientName: 'د. خالد',
-      role: 'مدير المستشفى',
+      role: 'مدير المركز الطبي',  // ✅ تم التعديل
       difficulty: 'متوسط',
-      projectLabel: 'تصميم شبكة مشفى طبي 🏥',
-      description: 'مستشفى يحتاج شبكة آمنة للأقسام الطبية، الاستقبال والعيادات الخارجية.',
+      projectLabel: 'تصميم شبكة مركز طبي صغير 🏥',  // ✅ تم التعديل
+      description: 'مركز طبي يحتاج شبكة آمنة للأقسام الطبية، الاستقبال والعيادات الخارجية.',  // ✅ تم التعديل
       personalityTags: [
         { text: '⚡ دقيق للغاية', bg: '#FEE2E2', color: '#991B1B' },
         { text: '⏱️ سريع الرد', bg: '#CCFBF1', color: '#0F766E' },
@@ -206,16 +206,13 @@ export default function ScenarioDetail() {
         }
       `}</style>
 
-      {/* ===== Navbar ===== */}
       <Navbar />
 
       <main style={styles.mainContent}>
         <div style={styles.workspace} className="workspace-layout">
           
-          {/* Chat Section */}
           <section style={styles.chatSection}>
             
-            {/* Stepper */}
             <div style={styles.stepperContainer}>
               <div style={styles.mainStepsRow}>
                 {mainSteps.map((step, idx) => (
@@ -253,7 +250,6 @@ export default function ScenarioDetail() {
               )}
             </div>
 
-            {/* Chat Card */}
             <div style={styles.chatCard} className="chat-card-layout">
               <div style={styles.chatCardHeader}>
                 <div style={styles.clientStatus}>
@@ -338,7 +334,6 @@ export default function ScenarioDetail() {
             </div>
           </section>
 
-          {/* Sidebar */}
           <aside style={styles.sidebarSection} className="sidebar-layout">
             <div style={styles.scenarioBriefCard}>
               <div style={styles.scrollContainer}>
@@ -407,7 +402,6 @@ export default function ScenarioDetail() {
         </div>
       </main>
 
-      {/* Tips Popup */}
       {showTips && (
         <div style={styles.modalOverlay}>
           <div style={styles.interactiveTipsBox}>
@@ -428,7 +422,6 @@ export default function ScenarioDetail() {
         </div>
       )}
 
-      {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerContainer} className="footer-container-layout">
           <div style={styles.footerLeft}>
