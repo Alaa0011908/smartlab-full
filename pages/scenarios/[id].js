@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Navbar from "../../../components/Navbar";
+import Navbar from "../../components/Navbar";
 
 export default function ScenarioDetail() {
   const router = useRouter();
