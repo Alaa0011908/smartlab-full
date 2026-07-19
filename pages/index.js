@@ -1,4 +1,4 @@
-// pages/index.js - النسخة النهائية مع روابط معدلة (تم إصلاح الخطأ النحوي)
+// pages/index.js - النسخة النهائية مع روابط معدلة
 import Head from "next/head";
 import Link from "next/link";
 
@@ -23,7 +23,6 @@ const styles = {
     minHeight: "100vh",
     margin: 0,
   },
-  /* Header */
   header: {
     backgroundColor: COLORS.white,
     borderBottom: "1px solid #e6ecf1",
@@ -61,7 +60,7 @@ const styles = {
   },
   navLinkActive: {
     color: COLORS.teal,
-    borderBottom: "2px solid " + COLORS.teal, // تم إصلاح الخطأ هنا
+    borderBottom: "2px solid " + COLORS.teal,
   },
   headerRight: { display: "flex", alignItems: "center", gap: 16 },
   themeBtn: {
@@ -86,7 +85,6 @@ const styles = {
     textDecoration: "none",
     display: "inline-block",
   },
-  /* Hero */
   hero: { backgroundColor: COLORS.bg, padding: "60px 24px 40px" },
   heroInner: {
     maxWidth: 1200,
@@ -131,7 +129,7 @@ const styles = {
   btnOutline: {
     backgroundColor: "transparent",
     color: COLORS.orange,
-    border: "2px solid " + COLORS.orange, // تم إصلاح الخطأ هنا
+    border: "2px solid " + COLORS.orange,
     borderRadius: 8,
     padding: "14px 34px",
     fontSize: 17,
@@ -148,7 +146,6 @@ const styles = {
     alignItems: "center",
     minHeight: 380,
   },
-  /* Section shared */
   section: { maxWidth: 1200, margin: "0 auto", padding: "70px 24px" },
   eyebrow: {
     textAlign: "center",
@@ -170,7 +167,6 @@ const styles = {
     maxWidth: 1000,
     margin: "0 auto 40px",
   },
-  /* Steps */
   stepsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
@@ -192,7 +188,6 @@ const styles = {
     justifyContent: "center",
   },
   stepLabel: { fontSize: 18, fontWeight: 700, color: COLORS.text },
-  /* Features */
   featuresIntro: {
     textAlign: "center",
     color: COLORS.muted,
@@ -249,7 +244,6 @@ const styles = {
   featureTitle: { fontSize: 24, fontWeight: 800, margin: "0 0 16px" },
   featureDescLight: { fontSize: 16, lineHeight: 1.9, color: "rgba(255,255,255,0.9)", margin: 0 },
   featureDescDark: { fontSize: 16, lineHeight: 1.9, color: COLORS.muted, margin: 0 },
-  /* Footer */
   footer: { backgroundColor: COLORS.navy, color: COLORS.white, padding: "50px 24px 40px" },
   footerInner: {
     maxWidth: 1200,
