@@ -3,6 +3,7 @@ import React from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const COLORS = {
   teal: "#17919e",
@@ -151,57 +152,6 @@ const styles = {
     textDecoration: "none",
     display: "inline-block",
   },
-  footer: {
-    backgroundColor: "#006482",
-    color: 'white',
-    padding: '30px 0', 
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-    marginTop: 'auto',
-  },
-  footerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between', 
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '1200px', 
-    padding: '0 40px', 
-  },
-  footerLeft: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  footerRight: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start', 
-    gap: '8px',
-  },
-  footerContactTitle: {
-    margin: 0,
-    fontSize: '15px',
-    fontWeight: 'bold'
-  },
-  footerEmailWrap: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '18px',
-  },
-  footerBrand: {
-    margin: '0 0 6px 0',
-    fontWeight: 'bold',
-    fontSize: '18px',
-    color: 'white',
-    textAlign: 'right'
-  },
-  footerText: {
-    margin: 0,
-    fontSize: '13px',
-    opacity: 0.7,
-    lineHeight: '1.5'
-  },
 };
 
 function GlobeIcon() {
@@ -239,15 +189,6 @@ function WebIcon() {
   );
 }
 
-function MailIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3 7l9 6 9-6" />
-    </svg>
-  );
-}
-
 export default function Assessment() {
   return (
     <>
@@ -266,7 +207,6 @@ export default function Assessment() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ===== Navbar ===== */}
         <Navbar />
 
         <main style={styles.main}>
@@ -278,7 +218,6 @@ export default function Assessment() {
           </p>
 
           <div style={styles.grid} className="paths-grid">
-            {/* كارد اللغة الإنجليزية */}
             <div
               style={styles.cardTeal}
               onMouseEnter={(e) => {
@@ -315,7 +254,6 @@ export default function Assessment() {
               </Link>
             </div>
 
-            {/* كارد هندسة الشبكات */}
             <div
               style={styles.cardWhite}
               onMouseEnter={(e) => {
@@ -352,7 +290,6 @@ export default function Assessment() {
               </Link>
             </div>
 
-            {/* كارد أساسيات الويب */}
             <div
               style={styles.cardOrange}
               onMouseEnter={(e) => {
@@ -391,42 +328,7 @@ export default function Assessment() {
           </div>
         </main>
 
-        {/* ===== Footer ===== */}
-        <footer style={styles.footer}>
-          <div style={styles.footerContainer} className="footerContainer">
-            <div style={styles.footerLeft}>
-              <p style={styles.footerBrand}>SmartLab</p>
-              <p style={styles.footerText}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
-            </div>
-            <div style={styles.footerRight} className="footerRight">
-              <p style={styles.footerContactTitle}>تواصل معنا</p>
-              <div style={styles.footerEmailWrap}>
-                <svg width="64" height="50" viewBox="0 0 64 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g filter="url(#filter0_d_334_96)">
-                    <mask id="path-1-inside-1_334_96" fill="white">
-                      <path d="M12 28C12 16.9543 20.9543 8 32 8C43.0457 8 52 16.9543 52 28C52 39.0457 43.0457 48 32 48C20.9543 48 12 39.0457 12 28Z"/>
-                    </mask>
-                    <path d="M12 28C12 16.9543 20.9543 8 32 8C43.0457 8 52 16.9543 52 28C52 39.0457 43.0457 48 32 48C20.9543 48 12 39.0457 12 28Z" fill="white" fillOpacity="0.1" shapeRendering="crispEdges"/>
-                    <path d="M12 28M52 28M52 28M12 28M32 8M52 28M32 48M12 28M32 48V47C21.5066 47 13 38.4934 13 28H12H11C11 39.598 20.402 49 32 49V48ZM52 28H51C51 38.4934 42.4934 47 32 47V48V49C43.598 49 53 39.598 53 28H52ZM32 8V9C42.4934 9 51 17.5066 51 28H52H53C53 16.402 43.598 7 32 7V8ZM32 8V7C20.402 7 11 16.402 11 28H12H13C13 17.5066 21.5066 9 32 9V8Z" fill="#311E10" fillOpacity="0.05" mask="url(#path-1-inside-1_334_96)"/>
-                    <path d="M24.2222 35.7773C23.6875 35.7773 23.2297 35.587 22.849 35.2062C22.4682 34.8254 22.2778 34.3676 22.2778 33.8329V22.1662C22.2778 21.6315 22.4682 21.1738 22.849 20.793C23.2297 20.4122 23.6875 20.2218 24.2222 20.2218H39.7778C40.3125 20.2218 40.7702 20.4122 41.151 20.793C41.5318 21.1738 41.7222 21.6315 41.7222 22.1662V33.8329C41.7222 34.3676 41.5318 34.8254 41.151 35.2062C40.7702 35.587 40.3125 35.7773 39.7778 35.7773H24.2222ZM32 28.9718L24.2222 24.1107V33.8329H39.7778V24.1107L32 28.9718ZM32 27.0273L39.7778 22.1662H24.2222L32 27.0273Z" fill="white"/>
-                  </g>
-                  <defs>
-                    <filter id="filter0_d_334_96" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                      <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                      <feOffset dy="4"/>
-                      <feGaussianBlur stdDeviation="6"/>
-                      <feComposite in2="hardAlpha" operator="out"/>
-                      <feColorMatrix type="matrix" values="0 0 0 0 0.192157 0 0 0 0 0.117647 0 0 0 0 0.0627451 0 0 0 0.04 0"/>
-                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_334_96"/>
-                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_334_96" result="shape"/>
-                    </filter>
-                  </defs>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );
