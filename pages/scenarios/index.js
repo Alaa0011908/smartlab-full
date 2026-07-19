@@ -1,5 +1,5 @@
 // pages/scenarios/index.js
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Navbar from "../../components/Navbar";
@@ -269,8 +269,8 @@ export default function Scenarios() {
     },
     {
       id: 'hospital',
-      title: '🏥 شبكة مستشفى صغير',
-      description: 'مستشفى محتاج شبكة آمنة تفصل بين الأقسام المختلفة: الاستقبال، العيادات، المخبر، والإدارة، مع الحفاظ على خصوصية بيانات المرضى.',
+      title: '🏥 شبكة مركز طبي صغير',  // ✅ تم التعديل
+      description: 'مركز طبي محتاج شبكة آمنة تفصل بين الأقسام المختلفة: الاستقبال، العيادات، المخبر، والإدارة، مع الحفاظ على خصوصية بيانات المرضى.',  // ✅ تم التعديل
       difficulty: 'متوسط',
       levelClass: 'intermediate',
       dots: [true, true, false],
@@ -333,10 +333,8 @@ export default function Scenarios() {
         }
       `}</style>
 
-      {/* ===== Navbar ===== */}
       <Navbar />
 
-      {/* Hero */}
       <section style={styles.hero}>
         <span style={styles.eyebrow}>🚀 تدرّب على الواقع</span>
         <h1 style={styles.heroTitle} className="hero-title">
@@ -359,7 +357,6 @@ export default function Scenarios() {
         </div>
       </section>
 
-      {/* Cards Grid */}
       <div style={styles.grid}>
         {scenarios.map((scenario) => {
           const accentColors = {
@@ -422,7 +419,6 @@ export default function Scenarios() {
         })}
       </div>
 
-      {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerContainer} className="footerContainer">
           <div style={styles.footerLeft}>
