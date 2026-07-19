@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
-import Navbar from "../../../components/Navbar";
-import { getAssessmentQuestions, getAssessmentName } from '../../../data/questions/basics';
-
+// أعلى الملف
+import Navbar from "../../components/Navbar";
+import { getAssessmentQuestions, getAssessmentName } from '../../data/questions/basics';
 const COLORS = {
   teal: "#17919e",
   tealDark: "#127a86",
