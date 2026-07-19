@@ -93,4 +93,72 @@ export default function BasicsAssessments() {
         <h3 style={styles.sectionTitle}>🎯 تقييمات المستوى العام</h3>
         <div style={styles.specialGrid}>
           {assessments.filter(a => a.type === 'full' || a.type === 'quick').map((assessment) => (
-            <div key={assessment.icon} style={{ ...styles.specialCard, borderColor: assessment.isQuick ? '#FF9800' : '#2C3E
+            <div key={assessment.icon} style={{ ...styles.specialCard, borderColor: assessment.isQuick ? '#FF9800' : '#2C3E50' }}>
+              <div style={styles.specialCardContent}>
+                <div style={{ ...styles.specialIcon, backgroundColor: assessment.color }}>{assessment.icon}</div>
+                <div style={styles.specialInfo}>
+                  <h3 style={styles.specialTitle}>{assessment.title}</h3>
+                  <p style={styles.specialDesc}>{assessment.description}</p>
+                  <div style={styles.specialMeta}>
+                    <span>📝 {assessment.questions} سؤال</span>
+                    <span>⏱️ {assessment.time}</span>
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => startAssessment(assessment)} style={{ ...styles.specialButton, backgroundColor: assessment.color }}>▶️ ابدأ الآن</button>
+            </div>
+          ))}
+        </div>
+
+        <div style={styles.tipBox}>
+          <span style={styles.tipIcon}>💡</span>
+          <div>
+            <strong>نصيحة:</strong> ابدأ بالتقييمات الأصغر (بروتوكولات البريد، أجهزة الشبكات) ثم انتقل للتقييمات الأكبر. التقييم السريع مثالي لفحص مستواك الحالي!
+          </div>
+        </div>
+      </main>
+
+      <footer style={styles.footer}>
+        <p>© 2026 Smart Lab - منصة تعليمية سورية مدعومة بالذكاء الاصطناعي</p>
+      </footer>
+    </div>
+  );
+}
+
+const styles = {
+  container: { minHeight: '100vh', backgroundColor: '#f5f5f5', direction: 'rtl', fontFamily: 'system-ui, sans-serif', padding: '1rem' },
+  main: { maxWidth: '1000px', margin: '0 auto' },
+  pageHeader: { textAlign: 'center', marginBottom: '2rem' },
+  title: { fontSize: '2rem', color: '#0D1E3B', marginBottom: '0.5rem' },
+  subtitle: { color: '#666', fontSize: '1rem' },
+  sectionTitle: { fontSize: '1.3rem', color: '#0D1E3B', marginBottom: '1rem', marginTop: '0.5rem' },
+  progressCard: { backgroundColor: 'white', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginBottom: '2rem' },
+  progressHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' },
+  progressLabel: { fontWeight: 'bold', color: '#0D1E3B' },
+  progressPercentage: { fontWeight: 'bold', color: '#0D1E3B' },
+  progressBar: { height: '8px', backgroundColor: '#ecf0f1', borderRadius: '4px', overflow: 'hidden', marginBottom: '0.75rem' },
+  progressFill: { height: '100%', backgroundColor: '#2ECC71', borderRadius: '4px', transition: 'width 0.5s ease' },
+  progressStats: { display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#666' },
+  assessmentsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.25rem', marginBottom: '2rem' },
+  assessmentCard: { backgroundColor: 'white', padding: '1.25rem', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '2px solid #e0e0e0', transition: 'all 0.2s' },
+  cardHeader: { display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.75rem' },
+  cardIcon: { width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', flexShrink: 0 },
+  cardInfo: { flex: 1 },
+  cardTitle: { fontSize: '1rem', margin: 0, color: '#0D1E3B' },
+  cardMeta: { display: 'flex', gap: '0.75rem', fontSize: '0.75rem', color: '#666', marginTop: '0.2rem' },
+  completedBadge: { fontSize: '0.7rem', color: '#2ECC71', fontWeight: 'bold', backgroundColor: '#E8F5E9', padding: '2px 10px', borderRadius: '20px', flexShrink: 0 },
+  cardDescription: { fontSize: '0.85rem', color: '#555', lineHeight: '1.5', marginBottom: '1rem', minHeight: '40px' },
+  startButton: { width: '100%', padding: '0.6rem', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer', transition: 'opacity 0.2s' },
+  specialGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.25rem', marginBottom: '2rem' },
+  specialCard: { backgroundColor: 'white', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '3px solid #2C3E50', display: 'flex', flexDirection: 'column', gap: '1rem' },
+  specialCardContent: { display: 'flex', gap: '1rem', alignItems: 'flex-start' },
+  specialIcon: { width: '56px', height: '56px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 },
+  specialInfo: { flex: 1 },
+  specialTitle: { fontSize: '1.15rem', margin: 0, color: '#0D1E3B', marginBottom: '0.35rem' },
+  specialDesc: { fontSize: '0.85rem', color: '#555', margin: 0, marginBottom: '0.5rem', lineHeight: '1.4' },
+  specialMeta: { display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#666' },
+  specialButton: { width: '100%', padding: '0.75rem', border: 'none', borderRadius: '10px', color: 'white', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', transition: 'opacity 0.2s' },
+  tipBox: { backgroundColor: '#FFF8E1', padding: '1rem 1.25rem', borderRadius: '12px', display: 'flex', gap: '0.75rem', alignItems: 'flex-start', border: '1px solid #FFE082', marginBottom: '2rem' },
+  tipIcon: { fontSize: '1.25rem' },
+  footer: { textAlign: 'center', padding: '1.5rem', backgroundColor: '#333', color: 'white', borderRadius: '12px', fontSize: '0.85rem' },
+};
