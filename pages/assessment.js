@@ -278,6 +278,7 @@ export default function Assessment() {
           </p>
 
           <div style={styles.grid} className="paths-grid">
+            {/* كارد اللغة الإنجليزية */}
             <div
               style={styles.cardTeal}
               onMouseEnter={(e) => {
@@ -314,6 +315,7 @@ export default function Assessment() {
               </Link>
             </div>
 
+            {/* كارد هندسة الشبكات */}
             <div
               style={styles.cardWhite}
               onMouseEnter={(e) => {
@@ -350,6 +352,7 @@ export default function Assessment() {
               </Link>
             </div>
 
+            {/* كارد أساسيات الويب */}
             <div
               style={styles.cardOrange}
               onMouseEnter={(e) => {
@@ -388,6 +391,7 @@ export default function Assessment() {
           </div>
         </main>
 
+        {/* ===== Footer ===== */}
         <footer style={styles.footer}>
           <div style={styles.footerContainer} className="footerContainer">
             <div style={styles.footerLeft}>
