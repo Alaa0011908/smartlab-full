@@ -1,8 +1,9 @@
-// pages/result.js - صفحة نتيجة التقييم مع دائرة التقدم
+// pages/result.js
+import React, { useState, useEffect } from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
 import { getAssessmentName } from "../data/questions/basics";
 
 const COLORS = {
@@ -32,63 +33,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  // ===== Header =====
-  header: {
-    backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.border}`,
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-  },
-  headerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "14px 24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-  logoText: { display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" },
-  logoSmart: { fontSize: 15, fontWeight: 800, color: COLORS.teal },
-  logoLab: { fontSize: 13, fontWeight: 700, color: COLORS.orange },
-  nav: { display: "flex", alignItems: "center", gap: 26 },
-  navLink: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: COLORS.text,
-    textDecoration: "none",
-    cursor: "pointer",
-    transition: "color 0.25s ease",
-    paddingBottom: 4,
-  },
-  navLinkActive: { color: COLORS.teal, borderBottom: `2px solid ${COLORS.teal}` },
-  headerRight: { display: "flex", alignItems: "center", gap: 16 },
-  themeBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    color: COLORS.text,
-    display: "flex",
-    alignItems: "center",
-    transition: "transform 0.25s ease",
-  },
-  loginBtn: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 22px",
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-    textDecoration: "none",
-    display: "inline-block",
-  },
-
-  // ===== Main =====
   main: {
     flex: 1,
     maxWidth: 900,
@@ -96,8 +40,6 @@ const styles = {
     margin: "0 auto",
     padding: "50px 24px 80px",
   },
-
-  // ===== Hero =====
   hero: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -124,8 +66,6 @@ const styles = {
     maxWidth: 560,
     margin: "0 auto 32px",
   },
-
-  // ===== Stats Grid =====
   statsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
@@ -159,8 +99,6 @@ const styles = {
   statValueTime: {
     color: COLORS.teal,
   },
-
-  // ===== Score Circle =====
   scoreContainer: {
     display: "flex",
     flexDirection: "column",
@@ -206,8 +144,6 @@ const styles = {
     color: COLORS.muted,
     display: "block",
   },
-
-  // ===== Toggle Button =====
   toggleButton: {
     display: "block",
     width: "100%",
@@ -227,8 +163,6 @@ const styles = {
     backgroundColor: COLORS.teal,
     color: COLORS.white,
   },
-
-  // ===== Analysis Section =====
   analysisSection: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -252,8 +186,6 @@ const styles = {
     margin: "0 0 24px",
     lineHeight: 1.7,
   },
-
-  // ===== Analysis Cards =====
   analysisGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
@@ -302,8 +234,6 @@ const styles = {
     lineHeight: 1.8,
     margin: 0,
   },
-
-  // ===== Topic Breakdown =====
   topicBreakdown: {
     marginTop: 24,
   },
@@ -338,8 +268,6 @@ const styles = {
     minWidth: 40,
     textAlign: "left",
   },
-
-  // ===== Back Link =====
   backLink: {
     display: "inline-block",
     color: COLORS.muted,
@@ -349,8 +277,6 @@ const styles = {
     textAlign: "center",
     marginTop: 8,
   },
-
-  // ===== Footer =====
   footer: {
     backgroundColor: COLORS.navy,
     color: COLORS.white,
@@ -383,37 +309,6 @@ const styles = {
   },
 };
 
-// ===== أيقونات SVG =====
-function LogoMark() {
-  return (
-    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M30 8c-4 0-7 2-9 5-2-2-5-3-8-2-4 1-6 5-5 9-3 1-5 4-4 8 1 3 4 5 7 5 1 3 4 5 7 5 4 0 7-2 8-5 4 1 8-1 9-5 1-3 0-6-2-8 2-3 2-7-1-10-2-4-5-5-9-2z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange} />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3" />
-      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1" />
-      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7" />
-      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9" />
-    </svg>
-  );
-}
-
 function MailIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -423,7 +318,6 @@ function MailIcon() {
   );
 }
 
-// ===== المكون الرئيسي =====
 export default function Result() {
   const router = useRouter();
   const [analysis, setAnalysis] = useState(null);
@@ -432,14 +326,6 @@ export default function Result() {
   const [showDetails, setShowDetails] = useState(false);
   const [circleProgress, setCircleProgress] = useState(0);
 
-  const navItems = [
-    { label: "الرئيسية", active: false, href: "/" },
-    { label: "التقييم التكيفي", active: false, href: "/assessment" },
-    { label: "محاكي العميل", active: false, href: "/scenarios" },
-    { label: "لوحة التشخيص", active: false, href: "/dashboard" },
-  ];
-
-  // جلب بيانات التحليل من API
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
@@ -475,7 +361,6 @@ export default function Result() {
         const data = await response.json();
         setAnalysis(data);
 
-        // حفظ النتائج في localStorage للوحة التشخيص
         const savedResults = JSON.parse(localStorage.getItem("assessmentResults") || "[]");
         savedResults.push({
           assessmentName: getAssessmentName(assessmentId),
@@ -487,7 +372,6 @@ export default function Result() {
         });
         localStorage.setItem("assessmentResults", JSON.stringify(savedResults));
 
-        // تشغيل أنيميشن الدائرة
         setTimeout(() => {
           setCircleProgress(data.score);
         }, 300);
@@ -505,11 +389,11 @@ export default function Result() {
     }
   }, [router.isReady, router.query]);
 
-  // حالة التحميل
   if (loading) {
     return (
-      <div style={{ ...styles.page, alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
+      <div style={styles.page}>
+        <Navbar />
+        <div style={{ textAlign: "center", padding: "100px 0" }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
           <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك...</h2>
           <p style={{ color: COLORS.muted }}>يرجى الانتظار، هذا قد يستغرق بضع ثوانٍ</p>
@@ -518,10 +402,10 @@ export default function Result() {
     );
   }
 
-  // حالة الخطأ
   if (error) {
     return (
       <div style={styles.page}>
+        <Navbar />
         <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
           <div style={{ fontSize: 56, marginBottom: 16 }}>❌</div>
           <h2 style={{ color: COLORS.error }}>حدث خطأ</h2>
@@ -537,6 +421,7 @@ export default function Result() {
   if (!analysis) {
     return (
       <div style={styles.page}>
+        <Navbar />
         <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
           <div style={{ fontSize: 56, marginBottom: 16 }}>📋</div>
           <h2 style={{ color: COLORS.navy }}>لا توجد نتائج</h2>
@@ -549,30 +434,24 @@ export default function Result() {
     );
   }
 
-  // حساب الإحصائيات
   const totalQuestions = analysis.totalQuestions || 0;
   const correctAnswers = analysis.correctAnswers || 0;
   const wrongAnswers = analysis.wrongAnswers || 0;
   const score = analysis.score || 0;
-  const assessmentName = getAssessmentName(router.query.assessmentId) || "التقييم";
 
-  // وقت التقييم (تقديري)
   const avgTimePerQuestion = analysis.questionResults?.reduce((sum, q) => sum + (q.time || 0), 0) / (analysis.questionResults?.length || 1) || 0;
   const totalTime = Math.round(avgTimePerQuestion * totalQuestions);
   const minutes = Math.floor(totalTime / 60);
   const seconds = totalTime % 60;
 
-  // دالة تبديل إظهار/إخفاء التفاصيل
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
-  // حساب محيط الدائرة
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (circleProgress / 100) * circumference;
 
-  // لون الدائرة حسب النسبة
   const getCircleColor = (pct) => {
     if (pct >= 70) return COLORS.success;
     if (pct >= 50) return COLORS.warning;
@@ -586,20 +465,15 @@ export default function Result() {
         <meta name="description" content="نتيجة تقييمك في منصة سمارت لاب مع تحليل مفصل." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>{`
-          html, body { margin: 0; padding: 0; background-color: ${COLORS.bg}; }
-          * { box-sizing: border-box; }
-          @media (max-width: 900px) {
-            .main-nav { display: none !important; }
-          }
           @media (max-width: 768px) {
             .stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
-            .stat-value { font-size: 24px !important; }
+            .stat-value { fontSize: 24px !important; }
             .analysis-grid { grid-template-columns: 1fr !important; }
             .result-hero { padding: 32px 20px 36px !important; }
-            .result-hero-title { font-size: 24px !important; }
+            .result-hero-title { fontSize: 24px !important; }
             .result-section { padding: 24px 16px !important; }
             .score-circle { width: 140px !important; height: 140px !important; }
-            .score-number { font-size: 32px !important; }
+            .score-number { fontSize: 32px !important; }
           }
           @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr !important; }
@@ -608,53 +482,10 @@ export default function Result() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ===== Header ===== */}
-        <header style={styles.header}>
-          <div style={styles.headerInner}>
-            <div style={styles.logoWrap}>
-              <LogoMark />
-              <span style={styles.logoText}>
-                <span style={styles.logoSmart}>Smart</span>
-                <span style={styles.logoLab}>Lab</span>
-              </span>
-            </div>
+        {/* ===== Navbar ===== */}
+        <Navbar />
 
-            <nav style={styles.nav} className="main-nav">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  style={{ ...styles.navLink, ...(item.active ? styles.navLinkActive : {}) }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div style={styles.headerRight}>
-              <button
-                style={styles.themeBtn}
-                aria-label="تبديل المظهر"
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(40deg)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "rotate(0deg)")}
-              >
-                <SunIcon />
-              </button>
-              <Link
-                href="/auth/login"
-                style={styles.loginBtn}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = COLORS.tealDark)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = COLORS.teal)}
-              >
-                تسجيل الدخول
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* ===== Main ===== */}
         <main style={styles.main}>
-          {/* Hero */}
           <div style={styles.hero} className="result-hero">
             <span style={styles.heroIcon}>🎯</span>
             <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>
@@ -664,16 +495,10 @@ export default function Result() {
               لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.
             </p>
 
-            {/* ===== دائرة التقدم ===== */}
             <div style={styles.scoreContainer}>
               <div style={{ ...styles.scoreCircle, className: "score-circle" }}>
                 <svg style={styles.scoreCircleSvg} viewBox="0 0 180 180">
-                  <circle
-                    cx="90"
-                    cy="90"
-                    r={radius}
-                    style={styles.scoreCircleBg}
-                  />
+                  <circle cx="90" cy="90" r={radius} style={styles.scoreCircleBg} />
                   <circle
                     cx="90"
                     cy="90"
@@ -695,7 +520,6 @@ export default function Result() {
               </div>
             </div>
 
-            {/* ===== الإحصائيات ===== */}
             <div style={styles.statsGrid} className="stats-grid">
               <div style={styles.statCard}>
                 <p style={{ ...styles.statValue, ...styles.statValueTime }}>
@@ -714,7 +538,6 @@ export default function Result() {
             </div>
           </div>
 
-          {/* ===== زر عرض/إخفاء التفاصيل ===== */}
           <button
             onClick={toggleDetails}
             style={{
@@ -737,7 +560,6 @@ export default function Result() {
             {showDetails ? "🔽 إخفاء تحليل نتيجتك بالكامل" : "🔍 تحليل نتيجتك بالكامل"}
           </button>
 
-          {/* ===== قسم التحليل (يظهر/يختفي) ===== */}
           <div
             style={{
               ...styles.analysisSection,
@@ -751,7 +573,6 @@ export default function Result() {
             </p>
 
             <div style={styles.analysisGrid} className="analysis-grid">
-              {/* نقاط القوة */}
               <div style={styles.analysisCard}>
                 <span style={styles.analysisCardIcon}>💪</span>
                 <h3 style={styles.analysisCardTitle}>نقاط القوة</h3>
@@ -768,7 +589,6 @@ export default function Result() {
                 </span>
               </div>
 
-              {/* مجالات التحسين */}
               <div style={styles.analysisCard}>
                 <span style={styles.analysisCardIcon}>📈</span>
                 <h3 style={styles.analysisCardTitle}>مجالات التحسين</h3>
@@ -786,7 +606,6 @@ export default function Result() {
               </div>
             </div>
 
-            {/* تحليل حسب الموضوع */}
             {analysis.topicAnalysis && (
               <div style={styles.topicBreakdown}>
                 <h4 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>
@@ -808,14 +627,12 @@ export default function Result() {
               </div>
             )}
 
-            {/* رؤية الذكاء الاصطناعي */}
             {analysis.insight && (
               <div style={styles.insightBox}>
                 <p style={styles.insightText}>💡 {analysis.insight}</p>
               </div>
             )}
 
-            {/* التوصيات */}
             {analysis.recommendedLessons && analysis.recommendedLessons.length > 0 && (
               <div style={{ marginTop: 24 }}>
                 <h4 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>
@@ -830,7 +647,6 @@ export default function Result() {
             )}
           </div>
 
-          {/* ===== رابط العودة ===== */}
           <div style={{ textAlign: "center" }}>
             <Link href="/assessment" style={styles.backLink}>
               ← العودة إلى التقييمات
@@ -838,7 +654,6 @@ export default function Result() {
           </div>
         </main>
 
-        {/* ===== Footer ===== */}
         <footer style={styles.footer}>
           <div style={styles.footerInner}>
             <div style={styles.footerCol}>
