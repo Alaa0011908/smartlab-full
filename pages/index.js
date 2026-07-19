@@ -1,6 +1,7 @@
-// pages/index.js - النسخة النهائية مع روابط معدلة
+// pages/index.js - النسخة النهائية مع Navbar الجديد
 import Head from "next/head";
 import Link from "next/link";
+import Navbar from "../components/Navbar";
 
 const COLORS = {
   teal: "#17919e",
@@ -22,68 +23,6 @@ const styles = {
     color: COLORS.text,
     minHeight: "100vh",
     margin: 0,
-  },
-  header: {
-    backgroundColor: COLORS.white,
-    borderBottom: "1px solid #e6ecf1",
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-  },
-  headerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "14px 24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-  logoText: {
-    display: "flex",
-    flexDirection: "column",
-    lineHeight: 1,
-    alignItems: "center",
-  },
-  logoSmart: { fontSize: 15, fontWeight: 800, color: COLORS.teal },
-  logoLab: { fontSize: 13, fontWeight: 700, color: COLORS.orange },
-  nav: { display: "flex", alignItems: "center", gap: 26 },
-  navLink: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: COLORS.text,
-    textDecoration: "none",
-    cursor: "pointer",
-    transition: "color 0.25s ease",
-    paddingBottom: 4,
-  },
-  navLinkActive: {
-    color: COLORS.teal,
-    borderBottom: "2px solid " + COLORS.teal,
-  },
-  headerRight: { display: "flex", alignItems: "center", gap: 16 },
-  themeBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    color: COLORS.text,
-    display: "flex",
-    alignItems: "center",
-    transition: "transform 0.25s ease",
-  },
-  loginBtn: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 22px",
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease, transform 0.25s ease",
-    textDecoration: "none",
-    display: "inline-block",
   },
   hero: { backgroundColor: COLORS.bg, padding: "60px 24px 40px" },
   heroInner: {
@@ -387,13 +326,6 @@ function HeroIllustration() {
 }
 
 export default function Home() {
-  const navItems = [
-    { label: "الرئيسية", active: true, href: "/" },
-    { label: "التقييم التكيفي", active: false, href: "/assessment" },
-    { label: "محاكي العميل", active: false, href: "/scenarios" },
-    { label: "لوحة التشخيص", active: false, href: "/dashboard" },
-  ];
-
   const steps = [
     { label: "سيناريوهات تفاعلية", icon: <ChatIcon /> },
     { label: "مسار مخصص", icon: <RouteIcon /> },
@@ -409,55 +341,8 @@ export default function Home() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* Header */}
-        <header style={styles.header}>
-          <div style={styles.headerInner} className="header-inner">
-            <div style={styles.logoWrap}>
-              <LogoMark />
-              <span style={styles.logoText}>
-                <span style={styles.logoSmart}>Smart</span>
-                <span style={styles.logoLab}>Lab</span>
-              </span>
-            </div>
-
-            <nav style={styles.nav} className="main-nav">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  style={{ ...styles.navLink, ...(item.active ? styles.navLinkActive : {}) }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div style={styles.headerRight}>
-              <button
-                style={styles.themeBtn}
-                aria-label="تبديل المظهر"
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(40deg)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "rotate(0deg)")}
-              >
-                <SunIcon />
-              </button>
-              <Link
-                href="/auth/login"
-                style={styles.loginBtn}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = COLORS.tealDark;
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = COLORS.teal;
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                تسجيل الدخول
-              </Link>
-            </div>
-          </div>
-        </header>
+        {/* ===== Navbar الجديد ===== */}
+        <Navbar />
 
         {/* Hero */}
         <section style={styles.hero}>
@@ -599,7 +484,6 @@ export default function Home() {
         }
         * { box-sizing: border-box; }
         @media (max-width: 900px) {
-          :global(.main-nav) { display: none !important; }
           :global(.hero-title) { font-size: 38px !important; }
           :global(.steps-grid) { grid-template-columns: 1fr !important; }
           :global(.features-grid) { grid-template-columns: 1fr !important; }
@@ -608,7 +492,6 @@ export default function Home() {
         }
         @media (max-width: 600px) {
           :global(.hero-title) { font-size: 30px !important; }
-          :global(.header-inner) { padding: 12px 16px !important; }
         }
       `}</style>
     </>
