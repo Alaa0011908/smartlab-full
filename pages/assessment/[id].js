@@ -1,9 +1,10 @@
-// pages/assessment/[id].js - صفحة الأسئلة مع شريط النتائج على شكل بطاقات
-import { useState, useEffect } from 'react';
+// pages/assessment/[id]/index.js
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
-import { getAssessmentQuestions, getAssessmentName } from '../../data/questions/basics';
+import Navbar from "../../../components/Navbar";
+import { getAssessmentQuestions, getAssessmentName } from '../../../data/questions/basics';
 
 const COLORS = {
   teal: "#17919e",
@@ -23,6 +24,7 @@ const COLORS = {
   warning: "#F39C12",
 };
 
+// ===== الأنماط =====
 const styles = {
   container: {
     minHeight: "100vh",
@@ -32,63 +34,13 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  // ===== HEADER =====
-  header: {
-    backgroundColor: COLORS.white,
-    borderBottom: "1px solid #e6ecf1",
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-  },
-  headerInner: {
-    maxWidth: 1200,
+  main: {
+    flex: 1,
+    maxWidth: 820,
+    width: "100%",
     margin: "0 auto",
-    padding: "12px 24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
+    padding: "32px 24px 60px",
   },
-  logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-  logoText: { display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" },
-  logoSmart: { fontSize: 15, fontWeight: 800, color: COLORS.teal },
-  logoLab: { fontSize: 13, fontWeight: 700, color: COLORS.orange },
-  nav: { display: "flex", alignItems: "center", gap: 26 },
-  navLink: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: COLORS.text,
-    textDecoration: "none",
-    cursor: "pointer",
-    transition: "color 0.25s ease",
-    paddingBottom: 4,
-  },
-  navLinkActive: { color: COLORS.teal, borderBottom: "2px solid " + COLORS.teal },
-  headerRight: { display: "flex", alignItems: "center", gap: 16 },
-  themeBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    color: COLORS.text,
-    display: "flex",
-    alignItems: "center",
-    transition: "transform 0.25s ease",
-  },
-  loginBtn: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 8,
-    padding: "8px 20px",
-    fontSize: 14,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-    textDecoration: "none",
-    display: "inline-block",
-  },
-
-  // ===== TOP STATS BAR (بطاقات) =====
   statsBar: {
     display: "flex",
     justifyContent: "center",
@@ -110,62 +62,16 @@ const styles = {
     minWidth: 140,
     justifyContent: "center",
   },
-  statIcon: {
-    fontSize: 24,
-  },
-  statInfo: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 800,
-  },
-  statValueScore: {
-    color: COLORS.teal,
-  },
-  statValueCorrect: {
-    color: COLORS.success,
-  },
-  statValueWrong: {
-    color: COLORS.error,
-  },
-  statLabel: {
-    fontSize: 13,
-    color: COLORS.muted,
-    fontWeight: 500,
-  },
-
-  // ===== PROGRESS BAR =====
-  progressContainer: {
-    padding: "0 24px",
-    backgroundColor: COLORS.white,
-    paddingBottom: 12,
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: "#e6ecf1",
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: COLORS.teal,
-    borderRadius: 4,
-    transition: "width 0.5s ease",
-  },
-
-  // ===== MAIN =====
-  main: {
-    flex: 1,
-    maxWidth: 820,
-    width: "100%",
-    margin: "0 auto",
-    padding: "32px 24px 60px",
-  },
-
-  // ===== QUESTION CARD =====
+  statIcon: { fontSize: 24 },
+  statInfo: { display: "flex", flexDirection: "column", alignItems: "center" },
+  statValue: { fontSize: 24, fontWeight: 800 },
+  statValueScore: { color: COLORS.teal },
+  statValueCorrect: { color: COLORS.success },
+  statValueWrong: { color: COLORS.error },
+  statLabel: { fontSize: 13, color: COLORS.muted, fontWeight: 500 },
+  progressContainer: { padding: "0 24px", backgroundColor: COLORS.white, paddingBottom: 12 },
+  progressBar: { height: 6, backgroundColor: "#e6ecf1", borderRadius: 4, overflow: "hidden" },
+  progressFill: { height: "100%", backgroundColor: COLORS.teal, borderRadius: 4, transition: "width 0.5s ease" },
   questionCard: {
     backgroundColor: COLORS.white,
     borderRadius: 20,
@@ -173,59 +79,13 @@ const styles = {
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
     marginBottom: 24,
   },
-  questionMeta: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 20,
-  },
-  topicBadge: {
-    display: "inline-block",
-    backgroundColor: COLORS.navy,
-    color: COLORS.white,
-    padding: "4px 14px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 600,
-  },
-  difficultyBadge: {
-    display: "inline-block",
-    padding: "4px 12px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 600,
-  },
-  cognitiveBadge: {
-    display: "inline-block",
-    backgroundColor: "#E3F2FD",
-    color: "#0D47A1",
-    padding: "4px 12px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 600,
-  },
-  writingBadge: {
-    display: "inline-block",
-    backgroundColor: "#FFF3E0",
-    color: "#E65100",
-    padding: "4px 12px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 600,
-  },
-  questionText: {
-    fontSize: 20,
-    fontWeight: 700,
-    color: COLORS.text,
-    lineHeight: 1.8,
-    marginBottom: 28,
-    textAlign: "right",
-  },
-  optionsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
+  questionMeta: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 },
+  topicBadge: { display: "inline-block", backgroundColor: COLORS.navy, color: COLORS.white, padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+  difficultyBadge: { display: "inline-block", padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+  cognitiveBadge: { display: "inline-block", backgroundColor: "#E3F2FD", color: "#0D47A1", padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+  writingBadge: { display: "inline-block", backgroundColor: "#FFF3E0", color: "#E65100", padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600 },
+  questionText: { fontSize: 20, fontWeight: 700, color: COLORS.text, lineHeight: 1.8, marginBottom: 28, textAlign: "right" },
+  optionsContainer: { display: "flex", flexDirection: "column", gap: 12 },
   optionButton: {
     display: "flex",
     alignItems: "center",
@@ -242,225 +102,38 @@ const styles = {
     width: "100%",
     gap: 12,
   },
-  optionLetter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 32,
-    height: 32,
-    borderRadius: "50%",
-    backgroundColor: "#f0f0f0",
-    fontWeight: 700,
-    fontSize: 14,
-    color: COLORS.navy,
-    flexShrink: 0,
-  },
+  optionLetter: { display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", backgroundColor: "#f0f0f0", fontWeight: 700, fontSize: 14, color: COLORS.navy, flexShrink: 0 },
   optionText: { flex: 1 },
-
-  // ===== FEEDBACK =====
-  feedbackContainer: {
-    marginTop: 20,
-    padding: "16px 20px",
-    borderRadius: 14,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  feedbackCorrect: {
-    backgroundColor: "#E8F5E9",
-    border: "1px solid " + COLORS.success,
-  },
-  feedbackWrong: {
-    backgroundColor: "#FFEBEE",
-    border: "1px solid " + COLORS.error,
-  },
+  feedbackContainer: { marginTop: 20, padding: "16px 20px", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 },
+  feedbackCorrect: { backgroundColor: "#E8F5E9", border: "1px solid " + COLORS.success },
+  feedbackWrong: { backgroundColor: "#FFEBEE", border: "1px solid " + COLORS.error },
   feedbackIcon: { fontSize: 24 },
   feedbackText: { fontSize: 16, fontWeight: 600 },
   feedbackCorrectText: { color: COLORS.successDark },
   feedbackWrongText: { color: COLORS.errorDark },
-  feedbackCorrectAnswer: {
-    fontSize: 14,
-    color: COLORS.text,
-    fontWeight: 500,
-  },
-  nextButton: {
-    padding: "10px 28px",
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 10,
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease, transform 0.25s ease",
-    fontFamily: "inherit",
-  },
-
-  // ===== CONFIDENCE =====
-  confidenceContainer: {
-    marginTop: 20,
-    padding: "20px 24px",
-    backgroundColor: "#F8F9FA",
-    borderRadius: 14,
-    border: "2px dashed " + COLORS.teal,
-    textAlign: "center",
-  },
-  confidenceQuestion: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: COLORS.text,
-    marginBottom: 16,
-  },
-  confidenceButtons: {
-    display: "flex",
-    gap: 12,
-    justifyContent: "center",
-    flexWrap: "wrap",
-  },
-  confidenceButton: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "12px 20px",
-    borderRadius: 12,
-    border: "2px solid #e6ecf1",
-    backgroundColor: COLORS.white,
-    cursor: "pointer",
-    transition: "all 0.25s ease",
-    fontFamily: "inherit",
-    fontSize: 14,
-    fontWeight: 600,
-    minWidth: 100,
-    color: COLORS.text,
-  },
+  feedbackCorrectAnswer: { fontSize: 14, color: COLORS.text, fontWeight: 500 },
+  nextButton: { padding: "10px 28px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease, transform 0.25s ease", fontFamily: "inherit" },
+  confidenceContainer: { marginTop: 20, padding: "20px 24px", backgroundColor: "#F8F9FA", borderRadius: 14, border: "2px dashed " + COLORS.teal, textAlign: "center" },
+  confidenceQuestion: { fontSize: 16, fontWeight: 700, color: COLORS.text, marginBottom: 16 },
+  confidenceButtons: { display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" },
+  confidenceButton: { display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 20px", borderRadius: 12, border: "2px solid #e6ecf1", backgroundColor: COLORS.white, cursor: "pointer", transition: "all 0.25s ease", fontFamily: "inherit", fontSize: 14, fontWeight: 600, minWidth: 100, color: COLORS.text },
   confidenceIcon: { fontSize: 20, marginBottom: 4 },
   confidenceHint: { fontSize: 12, color: COLORS.muted, marginTop: 12 },
-
-  // ===== WRITING =====
   writingContainer: { marginTop: 8 },
-  writingInput: {
-    width: "100%",
-    padding: "14px 18px",
-    borderRadius: 14,
-    border: "2px solid #e6ecf1",
-    fontSize: 16,
-    fontFamily: "inherit",
-    resize: "vertical",
-    minHeight: 120,
-    backgroundColor: COLORS.white,
-    transition: "border-color 0.25s ease",
-    textAlign: "right",
-    outline: "none",
-  },
-  submitWritingButton: {
-    marginTop: 12,
-    padding: "12px 32px",
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 10,
-    fontSize: 16,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-    fontFamily: "inherit",
-  },
+  writingInput: { width: "100%", padding: "14px 18px", borderRadius: 14, border: "2px solid #e6ecf1", fontSize: 16, fontFamily: "inherit", resize: "vertical", minHeight: 120, backgroundColor: COLORS.white, transition: "border-color 0.25s ease", textAlign: "right", outline: "none" },
+  submitWritingButton: { marginTop: 12, padding: "12px 32px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 16, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease", fontFamily: "inherit" },
   submitWritingDisabled: { opacity: 0.5, cursor: "not-allowed" },
-
-  // ===== LOADING / ERROR =====
-  loadingContainer: {
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    backgroundColor: COLORS.bg,
-  },
-  spinner: {
-    width: 48,
-    height: 48,
-    border: "4px solid #e6ecf1",
-    borderTop: "4px solid " + COLORS.teal,
-    borderRadius: "50%",
-    animation: "spin 1s linear infinite",
-  },
-  errorBox: {
-    backgroundColor: "#FFEBEE",
-    padding: "2rem",
-    borderRadius: 16,
-    textAlign: "center",
-    border: "1px solid #FFCDD2",
-    maxWidth: 500,
-    margin: "auto",
-  },
-
-  // ===== FOOTER =====
-  footer: {
-    backgroundColor: COLORS.navy,
-    color: COLORS.white,
-    padding: "40px 24px 32px",
-    marginTop: "auto",
-  },
-  footerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 40,
-    flexWrap: "wrap",
-  },
+  loadingContainer: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, backgroundColor: COLORS.bg },
+  spinner: { width: 48, height: 48, border: "4px solid #e6ecf1", borderTop: "4px solid " + COLORS.teal, borderRadius: "50%", animation: "spin 1s linear infinite" },
+  errorBox: { backgroundColor: "#FFEBEE", padding: "2rem", borderRadius: 16, textAlign: "center", border: "1px solid #FFCDD2", maxWidth: 500, margin: "auto" },
+  footer: { backgroundColor: COLORS.navy, color: COLORS.white, padding: "40px 24px 32px", marginTop: "auto" },
+  footerInner: { maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", gap: 40, flexWrap: "wrap" },
   footerCol: { flex: "1 1 260px" },
   footerBrand: { fontSize: 20, fontWeight: 800, margin: "0 0 12px" },
   footerText: { fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.75)", margin: 0, maxWidth: 320 },
   footerHeading: { fontSize: 16, fontWeight: 700, margin: "0 0 14px" },
-  footerIconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.3)",
-    backgroundColor: "transparent",
-    color: COLORS.white,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-  },
+  footerIconBtn: { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", backgroundColor: "transparent", color: COLORS.white, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background-color 0.25s ease" },
 };
-
-// ===== ICONS =====
-function LogoMark() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M30 8c-4 0-11 3-14 8-3-3-8-4-12-3-6 2-9 8-7 14-5 2-7 7-5 12 2 5 6 7 11 7 2 5 6 8 11 8 6 0 11-3 13-8 6 2 12-1 14-7 2-5 0-10-3-13 3-5 3-11-2-15-3-6-8-8-14-3z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange} />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3" />
-      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1" />
-      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7" />
-      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9" />
-    </svg>
-  );
-}
 
 function MailIcon() {
   return (
@@ -471,7 +144,6 @@ function MailIcon() {
   );
 }
 
-// ===== MAIN COMPONENT =====
 export default function Assessment() {
   const router = useRouter();
   const [questions, setQuestions] = useState([]);
@@ -491,7 +163,6 @@ export default function Assessment() {
   const [hoveredConfidence, setHoveredConfidence] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
-  // ===== إحصائيات الأسئلة =====
   const correctCount = answers.filter(a => a === true || a === 1).length;
   const wrongCount = answers.filter(a => a === false || a === 0).length;
   const answeredCount = answers.length;
@@ -590,15 +261,17 @@ export default function Assessment() {
     setCurrentIndex((prev) => prev + 1);
   };
 
-  // ===== RENDER =====
   if (!isReady || loading) {
     return (
-      <div style={styles.loadingContainer}>
-        <div style={styles.spinner} />
-        <p style={{ color: COLORS.muted, fontSize: 16 }}>
-          {!isReady ? "جاري تجهيز التقييم..." : "جاري تحميل التقييم..."}
-        </p>
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+      <div style={styles.container}>
+        <Navbar />
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner} />
+          <p style={{ color: COLORS.muted, fontSize: 16 }}>
+            {!isReady ? "جاري تجهيز التقييم..." : "جاري تحميل التقييم..."}
+          </p>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        </div>
       </div>
     );
   }
@@ -606,6 +279,7 @@ export default function Assessment() {
   if (error || !questions.length) {
     return (
       <div style={styles.container}>
+        <Navbar />
         <div style={{ ...styles.main, display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
           <div style={styles.errorBox}>
             <h3 style={{ color: COLORS.error, marginBottom: 8 }}>⚠️ {error || "لا توجد أسئلة"}</h3>
@@ -622,6 +296,7 @@ export default function Assessment() {
   if (currentIndex >= questions.length) {
     return (
       <div style={styles.container}>
+        <Navbar />
         <div style={{ ...styles.main, display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
           <div style={styles.errorBox}>
             <h3 style={{ color: COLORS.success, marginBottom: 8 }}>🎉 انتهى التقييم!</h3>
@@ -669,24 +344,12 @@ export default function Assessment() {
 
   const optionLetters = ["أ", "ب", "ج", "د"];
 
-  const navItems = [
-    { label: "الرئيسية", active: false, href: "/" },
-    { label: "محاكي العميل", active: false, href: "/scenarios" },
-    { label: "التقييم التكيفي", active: true, href: "/assessment/categories" },
-    { label: "لوحة التشخيص", active: false, href: "/dashboard" },
-  ];
-
   return (
     <>
       <Head>
         <title>{assessmentName || "تقييم"} - Smart Lab</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>{`
-          html, body { margin: 0; padding: 0; background-color: ${COLORS.bg}; }
-          * { box-sizing: border-box; }
-          @media (max-width: 900px) {
-            .main-nav { display: none !important; }
-          }
           @media (max-width: 768px) {
             .question-card { padding: 20px 16px 24px !important; }
             .question-text { font-size: 17px !important; }
@@ -708,30 +371,10 @@ export default function Assessment() {
       </Head>
 
       <div style={styles.container} dir="rtl">
-        {/* ===== HEADER ===== */}
-        <header style={styles.header}>
-          <div style={styles.headerInner}>
-            <div style={styles.logoWrap}>
-              <LogoMark />
-              <span style={styles.logoText}>
-                <span style={styles.logoSmart}>Smart</span>
-                <span style={styles.logoLab}>Lab</span>
-              </span>
-            </div>
-            <nav style={styles.nav} className="main-nav">
-              {navItems.map((item) => (
-                <Link key={item.label} href={item.href} style={{ ...styles.navLink, ...(item.active ? styles.navLinkActive : {}) }}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div style={styles.headerRight}>
-              <Link href="/auth/login" style={styles.loginBtn}>تسجيل الدخول</Link>
-            </div>
-          </div>
-        </header>
+        {/* ===== Navbar ===== */}
+        <Navbar />
 
-        {/* ===== TOP STATS BAR (بطاقات) ===== */}
+        {/* ===== TOP STATS BAR ===== */}
         <div style={styles.statsBar} className="stats-bar">
           <div style={styles.statCard}>
             <span style={styles.statIcon}>📊</span>
