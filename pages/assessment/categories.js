@@ -1,7 +1,8 @@
-// pages/assessment/categories.js - صفحة تقييمات الشبكات (8 مواضيع)
+// pages/assessment/categories.js
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import Navbar from "../../components/Navbar";
 
 const COLORS = {
   teal: "#17919e",
@@ -26,53 +27,6 @@ const styles = {
     alignItems: 'center',
     width: '100%',
   },
-  header: {
-    position: 'sticky',
-    top: 0,
-    zIndex: 1000,
-    width: '100%',
-    backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.border}`,
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  navContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '1200px',
-    padding: '14px 40px',
-  },
-  leftNavActions: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '20px',
-  },
-  loginBtn: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    padding: '8px 22px',
-    borderRadius: '20px',
-    textDecoration: 'none',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  nav: { display: 'flex', alignItems: 'center', gap: '28px' },
-  navLink: {
-    color: COLORS.navy,
-    textDecoration: 'none',
-    fontSize: '16px',
-    fontWeight: 500,
-  },
-  activeLink: {
-    color: COLORS.teal,
-    borderBottom: `2px solid ${COLORS.teal}`,
-    paddingBottom: '4px',
-    fontWeight: 'bold',
-  },
-  logo: { display: 'flex', alignItems: 'center', gap: '8px' },
-  logoImage: { height: '40px', width: 'auto' },
   main: {
     flex: 1,
     maxWidth: '1200px',
@@ -198,16 +152,6 @@ const styles = {
   footerEmailWrap: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
 };
 
-function LogoMark() {
-  return (
-    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M30 8c-4 0-7 2-9 5-2-2-5-3-8-2-4 1-6 5-5 9-3 1-5 4-4 8 1 3 4 5 7 5 1 3 4 5 7 5 4 0 7-2 8-5 4 1 8-1 9-5 1-3 0-6-2-8 2-3 2-7-1-10-2-4-5-5-9-2z" fill={COLORS.teal} opacity="0.9"/>
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round"/>
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange}/>
-    </svg>
-  );
-}
-
 function MailIcon() {
   return (
     <svg width="40" height="32" viewBox="0 0 64 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -245,13 +189,6 @@ export default function Categories() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const navItems = [
-    { label: "الرئيسية", href: "/" },
-    { label: "محاكي العميل", href: "/scenarios" },
-    { label: "التقييم التكيفي", href: "/assessment", active: true },
-    { label: "لوحة التشخيص", href: "/dashboard" },
-  ];
-
   const categories = [
     { id: 'concepts', number: '01', title: '📘 المفاهيم العامة', description: 'تعريف الشبكة، أنواعها، نماذج Client-Server و P2P، الكابلات، VLAN، VPN.', path: '/assessment/basics' },
     { id: 'ipv4', number: '02', title: '🌍 IPv4', description: 'بنية العنوان، الفئات (Classes)، العناوين العامة والخاصة، Gateway، Loopback.', path: '/assessment/ipv4' },
@@ -265,27 +202,8 @@ export default function Categories() {
 
   return (
     <div style={styles.page}>
-      <header style={styles.header}>
-        <div style={styles.navContainer}>
-          <div style={styles.leftNavActions}>
-            <Link href="/auth/login" style={styles.loginBtn}>تسجيل الدخول</Link>
-          </div>
-          <nav style={styles.nav}>
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                style={{ ...styles.navLink, ...(item.active ? styles.activeLink : {}) }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div style={styles.logo}>
-            <img src="/logo.png" alt="Smart Lab Logo" style={styles.logoImage} />
-          </div>
-        </div>
-      </header>
+      {/* ===== Navbar ===== */}
+      <Navbar />
 
       <main style={styles.main}>
         <Link href="/assessment" style={styles.backButton}>
