@@ -4,30 +4,58 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Navbar from "../../components/Navbar";
 
+// ===== البيانات الجديدة =====
 const SUB_TRACKS_DATA = [
   {
     id: 'basics',
-    title: 'أساسيات الشبكات',
-    description: 'ابتدئ رحلتك في فهم البنية التحتية للشبكات، وتتعرف على المفاهيم الأساسية، بروتوكولات الاتصال، ونموذج OSI بشكل مبسط ومكثف.',
-    buttonText: 'ابدأ المسار',
+    title: '🌐 أساسيات الشبكات',
+    description: 'رحلة متكاملة لفهم أساسيات الشبكات من الصفر، تشمل المفاهيم التأسيسية مع تطبيقات عملية.',
+    topics: [
+      'المفاهيم العامة للشبكات (أنواعها، أشكالها، نماذجها)',
+      'عنونة IPv4 (الخاصة والعامة، التصنيف)',
+      'Subnetting و VLSM (التقسيم المتغير)',
+      'IPv6 (البنية، الأنواع، الاختصار)',
+      'نموذج OSI والبروتوكولات المرتبطة به',
+      'أجهزة الشبكات (سويتش، راوتر، فايروول)',
+      'بروتوكولات TCP/IP و UDP',
+      'البريد الإلكتروني وبروتوكولاته',
+    ],
+    buttonText: '🚀 ابدأ المسار',
     actionType: 'primary'
   },
   {
-    id: 'routing',
-    title: 'هندسة الـ Routing',
-    description: 'تعمق في بروتوكولات التوجيه وتوجيه حزم البيانات عبر الشبكات المختلفة وكيفية بناء جداول التوجيه بكفاءة عالية.',
-    buttonText: 'قريباً',
+    id: 'switching',
+    title: '🔀 احتراف الـ Switching - إدارة الشبكات الداخلية',
+    description: 'تعمق في آليات عمل المبدلات (Switches) وأفضل ممارسات إدارة الشبكات المحلية.',
+    topics: [
+      'أساسيات عمل الـ Switch وطبقاته',
+      'إعدادات الـ VLANs وعزلها',
+      'Spanning Tree Protocol (STP)',
+      'EtherChannel وتوزيع الأحمال',
+      'الأمان على مستوى الطبقة الثانية (Port Security)',
+      'استكشاف أخطاء الشبكات الداخلية',
+    ],
+    buttonText: '📅 قريباً',
     actionType: 'secondary'
   },
   {
-    id: 'switching',
-    title: 'مبادئ الـ Switching',
-    description: 'تعمق في آليات عمل المبدلات (Switches)، إعدادات الـ VLANs، وبروتوكولات التوجيه الداخلي لإدارة البيانات بكفاءة داخل الشبكة المحلية.',
-    buttonText: 'قريباً',
+    id: 'routing',
+    title: '🗺️ خبير التوجيه - Routing Professional',
+    description: 'مسار متخصص في توجيه الشبكات وبناء جداول التوجيه بكفاءة عالية لشبكات المؤسسات.',
+    topics: [
+      'مبادئ التوجيه وأنواعه (Static - Dynamic)',
+      'بروتوكولات التوجيه الداخلية (OSPF, EIGRP)',
+      'بروتوكولات التوجيه الخارجية (BGP)',
+      'تصميم الشبكات المتقدمة (VLSM, Route Summarization)',
+      'سياسات التوجيه والتحكم في المسارات',
+      'استكشاف أخطاء التوجيه وتحليل الأداء',
+    ],
+    buttonText: '📅 قريباً',
     actionType: 'secondary'
   }
 ];
 
+// ===== المكون الرئيسي =====
 export default function NetworkSubTracks() {
   const router = useRouter();
 
@@ -53,17 +81,75 @@ export default function NetworkSubTracks() {
         </section>
 
         <main style={styles.cardsGrid}>
-          {SUB_TRACKS_DATA.map((track) => (
-            <div key={track.id} style={styles.card}>
+          {SUB_TRACKS_DATA.map((track, index) => (
+            <div
+              key={track.id}
+              style={styles.card}
+              className="track-card"
+              onMouseEnter={(e) => {
+                const card = e.currentTarget;
+                card.style.transform = 'translateY(-8px)';
+                card.style.boxShadow = '0 20px 40px rgba(15, 118, 110, 0.25)';
+                card.style.borderColor = '#0f766e';
+                // تغيير لون الخلفية
+                card.style.backgroundColor = '#0f766e';
+                // تغيير لون النصوص إلى الأبيض
+                const title = card.querySelector('.card-title');
+                const desc = card.querySelector('.card-desc');
+                const topics = card.querySelectorAll('.topic-item');
+                if (title) title.style.color = '#ffffff';
+                if (desc) desc.style.color = '#ffffff';
+                topics.forEach(t => t.style.color = '#ffffff');
+                // تغيير لون الزر
+                const btn = card.querySelector('.track-btn');
+                if (btn) {
+                  btn.style.backgroundColor = '#f8f9fa';
+                  btn.style.color = '#0f766e';
+                }
+              }}
+              onMouseLeave={(e) => {
+                const card = e.currentTarget;
+                card.style.transform = 'translateY(0px)';
+                card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.05)';
+                card.style.borderColor = '#e5e7eb';
+                card.style.backgroundColor = '#ffffff';
+                const title = card.querySelector('.card-title');
+                const desc = card.querySelector('.card-desc');
+                const topics = card.querySelectorAll('.topic-item');
+                if (title) title.style.color = '#0D1E3B';
+                if (desc) desc.style.color = '#6B7280';
+                topics.forEach(t => t.style.color = '#475569');
+                const btn = card.querySelector('.track-btn');
+                if (btn) {
+                  btn.style.backgroundColor = track.actionType === 'primary' ? '#0f766e' : '#e0e0e0';
+                  btn.style.color = track.actionType === 'primary' ? '#ffffff' : '#777777';
+                }
+              }}
+            >
               <div style={styles.iconPlaceholder}>🌐</div>
-              <h2 style={styles.cardTitle}>{track.title}</h2>
-              <p style={styles.cardDescription}>{track.description}</p>
+              <h2 style={styles.cardTitle} className="card-title">{track.title}</h2>
+              <p style={styles.cardDescription} className="card-desc">{track.description}</p>
+
+              {/* المحاور */}
+              <div style={styles.topicsContainer}>
+                <div style={styles.topicsTitle}>📌 تشمل المحاور:</div>
+                <ul style={styles.topicsList}>
+                  {track.topics.map((topic, idx) => (
+                    <li key={idx} style={styles.topicItem} className="topic-item">
+                      <span style={styles.topicBullet}>•</span>
+                      {topic}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <button
                 onClick={() => handleNavigation(track.id)}
                 style={{
                   ...styles.button,
                   ...(track.actionType === 'secondary' ? styles.btnSecondary : styles.btnPrimary)
                 }}
+                className="track-btn"
                 disabled={track.actionType === 'secondary'}
               >
                 {track.buttonText}
@@ -73,13 +159,14 @@ export default function NetworkSubTracks() {
         </main>
       </div>
 
+      {/* ===== Footer ===== */}
       <footer style={styles.footer}>
-        <div style={styles.footerContainer} className="footerContainer">
+        <div style={styles.footerContainer}>
           <div style={styles.footerLeft}>
             <p style={styles.footerBrand}>SmartLab</p>
             <p style={styles.footerText}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
           </div>
-          <div style={styles.footerRight} className="footerRight">
+          <div style={styles.footerRight}>
             <p style={styles.footerContactTitle}>تواصل معنا</p>
             <div style={styles.footerEmailWrap}>
               <svg width="64" height="50" viewBox="0 0 64 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +175,6 @@ export default function NetworkSubTracks() {
                     <path d="M12 28C12 16.9543 20.9543 8 32 8C43.0457 8 52 16.9543 52 28C52 39.0457 43.0457 48 32 48C20.9543 48 12 39.0457 12 28Z"/>
                   </mask>
                   <path d="M12 28C12 16.9543 20.9543 8 32 8C43.0457 8 52 16.9543 52 28C52 39.0457 43.0457 48 32 48C20.9543 48 12 39.0457 12 28Z" fill="white" fillOpacity="0.1" shapeRendering="crispEdges"/>
-                  <path d="M12 28M52 28M52 28M12 28M32 8M52 28M32 48M12 28M32 48V47C21.5066 47 13 38.4934 13 28H12H11C11 39.598 20.402 49 32 49V48ZM52 28H51C51 38.4934 42.4934 47 32 47V48V49C43.598 49 53 39.598 53 28H52ZM32 8V9C42.4934 9 51 17.5066 51 28H52H53C53 16.402 43.598 7 32 7V8ZM32 8V7C20.402 7 11 16.402 11 28H12H13C13 17.5066 21.5066 9 32 9V8Z" fill="#311E10" fillOpacity="0.05" mask="url(#path-1-inside-1_334_96)"/>
                   <path d="M24.2222 35.7773C23.6875 35.7773 23.2297 35.587 22.849 35.2062C22.4682 34.8254 22.2778 34.3676 22.2778 33.8329V22.1662C22.2778 21.6315 22.4682 21.1738 22.849 20.793C23.2297 20.4122 23.6875 20.2218 24.2222 20.2218H39.7778C40.3125 20.2218 40.7702 20.4122 41.151 20.793C41.5318 21.1738 41.7222 21.6315 41.7222 22.1662V33.8329C41.7222 34.3676 41.5318 34.8254 41.151 35.2062C40.7702 35.587 40.3125 35.7773 39.7778 35.7773H24.2222ZM32 28.9718L24.2222 24.1107V33.8329H39.7778V24.1107L32 28.9718ZM32 27.0273L39.7778 22.1662H24.2222L32 27.0273Z" fill="white"/>
                 </g>
                 <defs>
@@ -112,6 +198,7 @@ export default function NetworkSubTracks() {
   );
 }
 
+// ===== الأنماط =====
 const styles = {
   page: {
     direction: "rtl",
@@ -159,11 +246,13 @@ const styles = {
     padding: '40px 30px',
     width: '350px',
     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #e5e7eb',
+    border: '2px solid #e5e7eb',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    cursor: 'default',
   },
   iconPlaceholder: {
     fontSize: '40px',
@@ -174,13 +263,49 @@ const styles = {
     fontWeight: '700',
     color: '#0D1E3B',
     marginBottom: '15px',
+    transition: 'color 0.3s ease',
   },
   cardDescription: {
     fontSize: '14px',
     color: '#6B7280',
     lineHeight: '1.8',
-    marginBottom: '30px',
+    marginBottom: '20px',
     flexGrow: 1,
+    transition: 'color 0.3s ease',
+  },
+  topicsContainer: {
+    width: '100%',
+    marginTop: '12px',
+    marginBottom: '24px',
+    textAlign: 'right',
+  },
+  topicsTitle: {
+    fontSize: '13px',
+    fontWeight: '700',
+    color: '#64748B',
+    marginBottom: '8px',
+  },
+  topicsList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  topicItem: {
+    fontSize: '13px',
+    color: '#475569',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    lineHeight: 1.6,
+    transition: 'color 0.3s ease',
+  },
+  topicBullet: {
+    color: '#0f766e',
+    fontWeight: 'bold',
+    fontSize: '14px',
   },
   button: {
     padding: '12px 34px',
@@ -190,9 +315,10 @@ const styles = {
     border: 'none',
     cursor: 'pointer',
     width: '100%',
+    transition: 'all 0.3s ease',
   },
   btnPrimary: {
-    backgroundColor: 'rgb(0,100,130)',
+    backgroundColor: '#0f766e',
     color: '#ffffff',
   },
   btnSecondary: {
