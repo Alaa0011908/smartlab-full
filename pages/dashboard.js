@@ -1,14 +1,15 @@
-// pages/dashboard.js - لوحة التشخيص (Dashboard)
+// pages/dashboard.js
+import React, { useState, useEffect } from 'react';
 import Head from "next/head";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 const COLORS = {
-  teal: "#0D1E3B",       // تم توحيد اللون مع الكحلي
-  tealDark: "#0a172d",
+  teal: "#17919e",
+  tealDark: "#127a86",
   orange: "#F39C12",
   navy: "#0D1E3B",
-  bg: "#f8f9fa",         // تم توحيد الخلفية
+  bg: "#f8f9fa",
   white: "#ffffff",
   text: "#0D1E3B",
   muted: "#5b6b7b",
@@ -27,63 +28,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  // ===== Header =====
-  header: {
-    backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.border}`,
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-  },
-  headerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "14px 24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-  logoText: { display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" },
-  logoSmart: { fontSize: 15, fontWeight: 800, color: COLORS.teal },
-  logoLab: { fontSize: 13, fontWeight: 700, color: COLORS.orange },
-  nav: { display: "flex", alignItems: "center", gap: 26 },
-  navLink: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: COLORS.text,
-    textDecoration: "none",
-    cursor: "pointer",
-    transition: "color 0.25s ease",
-    paddingBottom: 4,
-  },
-  navLinkActive: { color: COLORS.teal, borderBottom: `2px solid ${COLORS.teal}` },
-  headerRight: { display: "flex", alignItems: "center", gap: 16 },
-  themeBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    color: COLORS.text,
-    display: "flex",
-    alignItems: "center",
-    transition: "transform 0.25s ease",
-  },
-  loginBtn: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 22px",
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-    textDecoration: "none",
-    display: "inline-block",
-  },
-
-  // ===== Main Content =====
   main: {
     flex: 1,
     maxWidth: 1000,
@@ -91,8 +35,6 @@ const styles = {
     margin: "0 auto",
     padding: "60px 24px 80px",
   },
-
-  // ===== Page Header =====
   pageHeader: {
     marginBottom: 40,
   },
@@ -108,8 +50,6 @@ const styles = {
     margin: 0,
     lineHeight: 1.7,
   },
-
-  // ===== Empty State =====
   emptyContainer: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -148,8 +88,6 @@ const styles = {
     textDecoration: "none",
     display: "inline-block",
   },
-
-  // ===== Results (عند وجود نتائج) =====
   resultsContainer: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -193,8 +131,6 @@ const styles = {
     fontWeight: 600,
     marginTop: 8,
   },
-
-  // ===== Footer =====
   footer: {
     backgroundColor: COLORS.navy,
     color: COLORS.white,
@@ -227,37 +163,6 @@ const styles = {
   },
 };
 
-// ===== أيقونات SVG =====
-function LogoMark() {
-  return (
-    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M30 8c-4 0-7 2-9 5-2-2-5-3-8-2-4 1-6 5-5 9-3 1-5 4-4 8 1 3 4 5 7 5 1 3 4 5 7 5 4 0 7-2 8-5 4 1 8-1 9-5 1-3 0-6-2-8 2-3 2-7-1-10-2-4-5-5-9-2z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange} />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3" />
-      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1" />
-      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7" />
-      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9" />
-    </svg>
-  );
-}
-
 function MailIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -267,7 +172,6 @@ function MailIcon() {
   );
 }
 
-// ===== المكون الرئيسي =====
 export default function Dashboard() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -294,12 +198,6 @@ export default function Dashboard() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const navItems = [
-    { label: "الرئيسية", active: false, href: "/" },
-    { label: "التقييمات", active: false, href: "/assessment/categories" },
-    { label: "لوحة التشخيص", active: true, href: "/dashboard" },
-  ];
-
   const getStatusBadge = (score) => {
     if (score >= 70) return { label: "✅ ممتاز", color: "#2ECC71" };
     if (score >= 50) return { label: "⚠️ متوسط", color: "#F39C12" };
@@ -321,38 +219,9 @@ export default function Dashboard() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* Header */}
-        <header style={styles.header}>
-          <div style={styles.headerInner}>
-            <div style={styles.logoWrap}>
-              <LogoMark />
-              <span style={styles.logoText}>
-                <span style={styles.logoSmart}>Smart</span>
-                <span style={styles.logoLab}>Lab</span>
-              </span>
-            </div>
+        {/* ===== Navbar ===== */}
+        <Navbar />
 
-            <nav style={styles.nav}>
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  style={{ ...styles.navLink, ...(item.active ? styles.navLinkActive : {}) }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div style={styles.headerRight}>
-              <Link href="/auth/login" style={styles.loginBtn}>
-                تسجيل الدخول
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
         <main style={styles.main}>
           <div style={styles.pageHeader}>
             <h1 style={{ ...styles.pageTitle, fontSize: isMobile ? 28 : 38 }}>
@@ -421,7 +290,6 @@ export default function Dashboard() {
           )}
         </main>
 
-        {/* Footer */}
         <footer style={styles.footer}>
           <div style={styles.footerInner}>
             <div style={styles.footerCol}>
@@ -435,12 +303,8 @@ export default function Dashboard() {
               <button
                 style={styles.footerIconBtn}
                 aria-label="راسلنا عبر البريد الإلكتروني"
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "transparent")
-                }
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
               >
                 <MailIcon />
               </button>
