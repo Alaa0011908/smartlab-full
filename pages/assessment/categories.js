@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const COLORS = {
   teal: "#17919e",
@@ -111,72 +112,7 @@ const styles = {
     cursor: 'pointer',
     transition: 'background-color 0.25s ease, transform 0.25s ease',
   },
-  footer: {
-    backgroundColor: COLORS.navy,
-    color: COLORS.white,
-    padding: '40px 24px 32px',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  footerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '1200px',
-    padding: '0 24px',
-    flexWrap: 'wrap',
-    gap: '20px',
-  },
-  footerBrand: {
-    margin: '0 0 6px 0',
-    fontWeight: 'bold',
-    fontSize: '18px',
-    color: COLORS.white,
-    textAlign: 'right',
-  },
-  footerText: {
-    margin: 0,
-    fontSize: '13px',
-    opacity: 0.7,
-    lineHeight: '1.5',
-  },
-  footerRight: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: '8px',
-  },
-  footerContactTitle: { margin: 0, fontSize: '15px', fontWeight: 'bold' },
-  footerEmailWrap: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
 };
-
-function MailIcon() {
-  return (
-    <svg width="40" height="32" viewBox="0 0 64 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g filter="url(#filter0_d_334_96)">
-        <mask id="path-1-inside-1_334_96" fill="white">
-          <path d="M12 28C12 16.9543 20.9543 8 32 8C43.0457 8 52 16.9543 52 28C52 39.0457 43.0457 48 32 48C20.9543 48 12 39.0457 12 28Z"/>
-        </mask>
-        <path d="M12 28C12 16.9543 20.9543 8 32 8C43.0457 8 52 16.9543 52 28C52 39.0457 43.0457 48 32 48C20.9543 48 12 39.0457 12 28Z" fill="white" fillOpacity="0.1"/>
-        <path d="M24.2222 35.7773C23.6875 35.7773 23.2297 35.587 22.849 35.2062C22.4682 34.8254 22.2778 34.3676 22.2778 33.8329V22.1662C22.2778 21.6315 22.4682 21.1738 22.849 20.793C23.2297 20.4122 23.6875 20.2218 24.2222 20.2218H39.7778C40.3125 20.2218 40.7702 20.4122 41.151 20.793C41.5318 21.1738 41.7222 21.6315 41.7222 22.1662V33.8329C41.7222 34.3676 41.5318 34.8254 41.151 35.2062C40.7702 35.587 40.3125 35.7773 39.7778 35.7773H24.2222ZM32 28.9718L24.2222 24.1107V33.8329H39.7778V24.1107L32 28.9718ZM32 27.0273L39.7778 22.1662H24.2222L32 27.0273Z" fill="white"/>
-      </g>
-      <defs>
-        <filter id="filter0_d_334_96" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse">
-          <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-          <feOffset dy="4"/>
-          <feGaussianBlur stdDeviation="6"/>
-          <feComposite in2="hardAlpha" operator="out"/>
-          <feColorMatrix type="matrix" values="0 0 0 0 0.192157 0 0 0 0 0.117647 0 0 0 0 0.0627451 0 0 0 0.04 0"/>
-          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_334_96"/>
-          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_334_96" result="shape"/>
-        </filter>
-      </defs>
-    </svg>
-  );
-}
 
 export default function Categories() {
   const router = useRouter();
@@ -202,7 +138,6 @@ export default function Categories() {
 
   return (
     <div style={styles.page}>
-      {/* ===== Navbar ===== */}
       <Navbar />
 
       <main style={styles.main}>
@@ -274,20 +209,7 @@ export default function Categories() {
         </div>
       </main>
 
-      <footer style={styles.footer}>
-        <div style={styles.footerContainer}>
-          <div>
-            <p style={styles.footerBrand}>SmartLab</p>
-            <p style={styles.footerText}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
-          </div>
-          <div style={styles.footerRight}>
-            <p style={styles.footerContactTitle}>تواصل معنا</p>
-            <div style={styles.footerEmailWrap}>
-              <MailIcon />
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
