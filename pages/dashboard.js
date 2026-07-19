@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const COLORS = {
   teal: "#17919e",
@@ -131,46 +132,7 @@ const styles = {
     fontWeight: 600,
     marginTop: 8,
   },
-  footer: {
-    backgroundColor: COLORS.navy,
-    color: COLORS.white,
-    padding: "50px 24px 40px",
-  },
-  footerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 40,
-    flexWrap: "wrap",
-  },
-  footerCol: { flex: "1 1 260px" },
-  footerBrand: { fontSize: 22, fontWeight: 800, margin: "0 0 14px" },
-  footerText: { fontSize: 15, lineHeight: 1.9, color: "rgba(255,255,255,0.75)", margin: 0, maxWidth: 320 },
-  footerHeading: { fontSize: 18, fontWeight: 700, margin: "0 0 18px" },
-  footerIconBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.3)",
-    backgroundColor: "transparent",
-    color: COLORS.white,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-  },
 };
-
-function MailIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3 7l9 6 9-6" />
-    </svg>
-  );
-}
 
 export default function Dashboard() {
   const [results, setResults] = useState([]);
@@ -219,7 +181,6 @@ export default function Dashboard() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ===== Navbar ===== */}
         <Navbar />
 
         <main style={styles.main}>
@@ -290,27 +251,7 @@ export default function Dashboard() {
           )}
         </main>
 
-        <footer style={styles.footer}>
-          <div style={styles.footerInner}>
-            <div style={styles.footerCol}>
-              <h3 style={styles.footerBrand}>SmartLab</h3>
-              <p style={styles.footerText}>
-                منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.
-              </p>
-            </div>
-            <div style={styles.footerCol}>
-              <h4 style={styles.footerHeading}>تواصل معنا</h4>
-              <button
-                style={styles.footerIconBtn}
-                aria-label="راسلنا عبر البريد الإلكتروني"
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-              >
-                <MailIcon />
-              </button>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );
