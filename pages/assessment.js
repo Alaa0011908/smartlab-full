@@ -1,6 +1,8 @@
 // pages/assessment.js
+import React from 'react';
 import Head from "next/head";
 import Link from "next/link";
+import Navbar from "../components/Navbar";
 
 const COLORS = {
   teal: "#17919e",
@@ -24,80 +26,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  // ============ تحديث تصميم وأبعاد الـ NavBar المقتبسة من السيناريو ============
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.8rem 2.5rem',
-    backgroundColor: 'white',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-  },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '3rem',
-  },
-  logo: {
-    display: "flex",
-    alignItems: "center",
-    textDecoration: "none",
-  },
-  logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-  logoText: { display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" },
-  logoSmart: { fontSize: 15, fontWeight: 800, color: COLORS.teal },
-  logoLab: { fontSize: 13, fontWeight: 700, color: COLORS.orange },
-  nav: {
-    display: 'flex',
-    gap: '1.8rem',
-  },
-  navLink: {
-    textDecoration: 'none',
-    color: '#64748B',
-    fontSize: '0.95rem',
-    fontWeight: '500',
-    padding: '0.5rem 0',
-  },
-  activeNavLink: {
-    color: 'rgb(0,100,130)',
-    fontWeight: '700',
-    borderBottom: '3px solid rgb(0,100,130)',
-  },
-  headerLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-  },
-  themeToggleBtn: {
-    width: '38px',
-    height: '38px',
-    borderRadius: '50%',
-    backgroundColor: 'transparent',
-    border: 'none',
-    fontSize: '1.1rem',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: COLORS.text,
-    transition: "transform 0.25s ease",
-  },
-  loginBtn: {
-    backgroundColor: 'rgb(0,100,130)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '30px',
-    padding: '0.6rem 1.5rem',
-    fontWeight: '600',
-    fontSize: '0.9rem',
-    cursor: 'pointer',
-    textDecoration: "none",
-    display: "inline-block",
-  },
-  // ============ الحفاظ على بقية كود المحتوى الرئيسي المطور سابقاً ============
   main: { flex: 1, maxWidth: 1160, width: "100%", margin: "0 auto", padding: "70px 24px 90px" },
   title: { textAlign: "center", fontSize: 46, fontWeight: 800, margin: "0 0 22px" },
   titleAccent: { color: COLORS.teal },
@@ -223,7 +151,6 @@ const styles = {
     textDecoration: "none",
     display: "inline-block",
   },
-  // ============ تحديث تصميم وأبعاد الـ Footer لتطابق السيناريو بالكامل ============
   footer: {
     backgroundColor: "#006482",
     color: 'white',
@@ -277,36 +204,6 @@ const styles = {
   },
 };
 
-function LogoMark() {
-  return (
-    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M30 8c-4 0-7 2-9 5-2-2-5-3-8-2-4 1-6 5-5 9-3 1-5 4-4 8 1 3 4 5 7 5 1 3 4 5 7 5 4 0 7-2 8-5 4 1 8-1 9-5 1-3 0-6-2-8 2-3 2-7-1-10-2-4-5-5-9-2z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange} />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3" />
-      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1" />
-      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7" />
-      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9" />
-    </svg>
-  );
-}
-
 function GlobeIcon() {
   return (
     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -342,73 +239,36 @@ function WebIcon() {
   );
 }
 
-export default function Assessment() {
-  const navItems = [
-    { label: "الرئيسية", active: false, href: "/" },
-    { label: "محاكي العميل", active: false, href: "/scenarios" },
-    { label: "التقييم التكيفي", active: true, href: "/assessment" },
-    { label: "لوحة التشخيص", active: false, href: "/result" },
-  ];
+function MailIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+    </svg>
+  );
+}
 
+export default function Assessment() {
   return (
     <>
       <Head>
         <title>التقييم التكيفي - Smart Lab</title>
         <meta name="description" content="اختر مسار التقييم التكيفي المناسب لك في منصة سمارت لاب." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>{`
+          @media (max-width: 1024px) {
+            .paths-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          @media (max-width: 768px) {
+            .paths-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ============header ============ */}
-        <header style={styles.header}>
-          
-          <div style={styles.headerLeft}>
-            <Link
-              href="/auth/login"
-              style={styles.loginBtn}
-            >
-              تسجيل الدخول
-            </Link>
-            <button
-              style={styles.themeToggleBtn}
-              aria-label="تبديل المظهر"
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(40deg)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "rotate(0deg)")}
-            >
-              <SunIcon />
-            </button>
-          </div>
+        {/* ===== Navbar ===== */}
+        <Navbar />
 
-          {/* 2. قسم المنتصف: روابط التنقل  */}
-          <nav style={styles.nav} className="main-nav">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                style={{ ...styles.navLink, ...(item.active ? styles.activeNavLink : {}) }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* 3. قسم اللوغو */}
-          <div style={styles.headerRight}>
-            <Link href="/" style={styles.logo}>
-              <div style={styles.logoWrap}>
-                    <img 
-                      src="/logo.png" 
-                      alt="Smart Lab Logo" 
-                      style={{ height: '45px', width: 'auto', objectFit: 'contain' }} 
-                    />
-               
-              </div>
-            </Link>
-          </div>
-
-        </header>
-
-        {/* Main */}
         <main style={styles.main}>
           <h1 style={styles.title}>
             اختر مسار <span style={styles.titleAccent}>التقييم</span>
@@ -418,7 +278,6 @@ export default function Assessment() {
           </p>
 
           <div style={styles.grid} className="paths-grid">
-            {/* الكارد الأول: اللغة الإنجليزية */}
             <div
               style={styles.cardTeal}
               onMouseEnter={(e) => {
@@ -455,7 +314,6 @@ export default function Assessment() {
               </Link>
             </div>
 
-            {/* الكارد الثاني: هندسة الشبكات */}
             <div
               style={styles.cardWhite}
               onMouseEnter={(e) => {
@@ -492,7 +350,6 @@ export default function Assessment() {
               </Link>
             </div>
 
-            {/* الكارد الثالث: أساسيات الويب */}
             <div
               style={styles.cardOrange}
               onMouseEnter={(e) => {
@@ -531,15 +388,12 @@ export default function Assessment() {
           </div>
         </main>
 
-        {/* ============ footer============ */}
         <footer style={styles.footer}>
           <div style={styles.footerContainer} className="footerContainer">
             <div style={styles.footerLeft}>
               <p style={styles.footerBrand}>SmartLab</p>
               <p style={styles.footerText}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
             </div>
-
-            {/* قسم تواصل معنا المحدث بنفس الأيقونة الكبيرة للسيناريو */}
             <div style={styles.footerRight} className="footerRight">
               <p style={styles.footerContactTitle}>تواصل معنا</p>
               <div style={styles.footerEmailWrap}>
@@ -570,36 +424,6 @@ export default function Assessment() {
           </div>
         </footer>
       </div>
-
-      <style jsx global>{`
-        html,
-        body {
-          margin: 0;
-          padding: 0;
-          background-color: ${COLORS.bg};
-        }
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
-
-      <style jsx>{`
-        @media (max-width: 1024px) {
-          :global(.paths-grid) {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-        }
-        @media (max-width: 768px) {
-          :global(.paths-grid) {
-            grid-template-columns: 1fr !important;
-          }
-        }
-        @media (max-width: 900px) {
-          :global(.main-nav) {
-            display: none !important;
-          }
-        }
-      `}</style>
     </>
   );
 }
