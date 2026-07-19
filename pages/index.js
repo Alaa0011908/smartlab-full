@@ -1,7 +1,6 @@
-// pages/index.js - النسخة النهائية مع Navbar الجديد
+// pages/index.js - مع Navbar مدمج
 import Head from "next/head";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 
 const COLORS = {
   teal: "#17919e",
@@ -24,6 +23,114 @@ const styles = {
     minHeight: "100vh",
     margin: 0,
   },
+  // ===== Navbar Styles =====
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0.8rem 2.5rem',
+    backgroundColor: COLORS.white,
+    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+  },
+  headerLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+  headerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1.5rem',
+  },
+  logo: {
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+  },
+  logoImage: {
+    height: '45px',
+    width: 'auto',
+    objectFit: 'contain',
+  },
+  nav: {
+    display: 'flex',
+    gap: '2rem',
+    alignItems: 'center',
+  },
+  navLink: {
+    textDecoration: 'none',
+    color: '#64748B',
+    fontSize: '0.95rem',
+    fontWeight: '500',
+    padding: '0.5rem 0',
+    transition: 'color 0.25s ease, border-bottom 0.25s ease',
+    borderBottom: '3px solid transparent',
+  },
+  navLinkActive: {
+    color: COLORS.teal,
+    fontWeight: '700',
+    borderBottom: `3px solid ${COLORS.teal}`,
+  },
+  loginBtn: {
+    backgroundColor: COLORS.teal,
+    color: COLORS.white,
+    border: 'none',
+    borderRadius: '30px',
+    padding: '0.6rem 1.5rem',
+    fontWeight: '600',
+    fontSize: '0.9rem',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    display: 'inline-block',
+    transition: 'background-color 0.25s ease, transform 0.25s ease',
+  },
+  burgerBtn: {
+    display: 'none',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '28px',
+    height: '20px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+  },
+  burgerLine: {
+    width: '100%',
+    height: '3px',
+    backgroundColor: '#334155',
+    borderRadius: '2px',
+    transition: 'all 0.3s ease',
+  },
+  mobileMenu: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.white,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '1rem 2rem',
+    gap: '0.8rem',
+    zIndex: 99,
+  },
+  mobileNavLink: {
+    textDecoration: 'none',
+    color: '#64748B',
+    fontSize: '1rem',
+    fontWeight: '500',
+    padding: '0.5rem 0',
+    borderBottom: '1px solid #f0f0f0',
+  },
+  mobileNavLinkActive: {
+    color: COLORS.teal,
+    fontWeight: '700',
+  },
+  // ===== Hero Styles =====
   hero: { backgroundColor: COLORS.bg, padding: "60px 24px 40px" },
   heroInner: {
     maxWidth: 1200,
@@ -211,37 +318,7 @@ const styles = {
   },
 };
 
-// ===== أيقونات SVG =====
-function LogoMark() {
-  return (
-    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M30 8c-4 0-7 2-9 5-2-2-5-3-8-2-4 1-6 5-5 9-3 1-5 4-4 8 1 3 4 5 7 5 1 3 4 5 7 5 4 0 7-2 8-5 4 1 8-1 9-5 1-3 0-6-2-8 2-3 2-7-1-10-2-4-5-5-9-2z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange} />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3" />
-      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1" />
-      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7" />
-      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9" />
-    </svg>
-  );
-}
-
+// ===== أيقونات =====
 function ChatIcon() {
   return (
     <svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -326,6 +403,15 @@ function HeroIllustration() {
 }
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const navItems = [
+    { label: 'الرئيسية', href: '/' },
+    { label: 'محاكي العميل', href: '/scenarios' },
+    { label: 'التقييم التكيفي', href: '/assessment' },
+    { label: 'لوحة التشخيص', href: '/dashboard' },
+  ];
+
   const steps = [
     { label: "سيناريوهات تفاعلية", icon: <ChatIcon /> },
     { label: "مسار مخصص", icon: <RouteIcon /> },
@@ -338,13 +424,99 @@ export default function Home() {
         <title>Smart Lab - اكتشف قدراتك الحقيقية مع الذكاء الاصطناعي</title>
         <meta name="description" content="منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>{`
+          @media (max-width: 900px) {
+            .desktop-nav { display: none !important; }
+            .burger-btn { display: flex !important; }
+          }
+          @media (min-width: 901px) {
+            .burger-btn { display: none !important; }
+            .mobile-menu { display: none !important; }
+          }
+          @media (max-width: 900px) {
+            .hero-title { font-size: 38px !important; }
+            .steps-grid { grid-template-columns: 1fr !important; }
+            .features-grid { grid-template-columns: 1fr !important; }
+            .hero-text { text-align: center !important; }
+            .hero-btns { justify-content: center !important; }
+          }
+          @media (max-width: 600px) {
+            .hero-title { font-size: 30px !important; }
+          }
+        `}</style>
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ===== Navbar الجديد ===== */}
-        <Navbar />
+        {/* ===== Navbar ===== */}
+        <header style={styles.header}>
+          <div style={styles.headerLeft}>
+            <Link
+              href="/auth/login"
+              style={styles.loginBtn}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = COLORS.tealDark;
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = COLORS.teal;
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              تسجيل الدخول
+            </Link>
+            <button
+              style={styles.burgerBtn}
+              className="burger-btn"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="القائمة"
+            >
+              <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
+              <span style={{ ...styles.burgerLine, opacity: isMenuOpen ? 0 : 1 }} />
+              <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(-45deg) translate(6px, -7px)' : 'none' }} />
+            </button>
+          </div>
 
-        {/* Hero */}
+          <nav style={styles.nav} className="desktop-nav">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                style={{
+                  ...styles.navLink,
+                  ...(item.href === '/' ? styles.navLinkActive : {}),
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          {isMenuOpen && (
+            <div style={styles.mobileMenu} className="mobile-menu">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  style={{
+                    ...styles.mobileNavLink,
+                    ...(item.href === '/' ? styles.mobileNavLinkActive : {}),
+                  }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div style={styles.headerRight}>
+            <Link href="/" style={styles.logo}>
+              <img src="/logo.png" alt="Smart Lab Logo" style={styles.logoImage} />
+            </Link>
+          </div>
+        </header>
+
+        {/* ===== Hero ===== */}
         <section style={styles.hero}>
           <div style={styles.heroInner}>
             <div style={styles.heroText} className="hero-text">
@@ -392,7 +564,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Steps */}
+        {/* ===== Steps ===== */}
         <section style={styles.section}>
           <p style={styles.eyebrow}>آلية عمل Smart Lab</p>
           <h2 style={styles.sectionTitle}>ثلاث خطوات للإتقان</h2>
@@ -418,7 +590,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Features */}
+        {/* ===== Features ===== */}
         <section style={styles.section}>
           <h2 style={styles.sectionTitle}>مميزات المنصة</h2>
           <p style={styles.featuresIntro}>أدوات متطورة مصممة خصيصاً لتسريع عملية التعلم وضمان الفهم العميق.</p>
@@ -454,7 +626,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Footer */}
+        {/* ===== Footer ===== */}
         <footer style={styles.footer}>
           <div style={styles.footerInner}>
             <div style={styles.footerCol}>
@@ -475,25 +647,6 @@ export default function Home() {
           </div>
         </footer>
       </div>
-
-      <style jsx global>{`
-        html, body {
-          margin: 0;
-          padding: 0;
-          background-color: ${COLORS.bg};
-        }
-        * { box-sizing: border-box; }
-        @media (max-width: 900px) {
-          :global(.hero-title) { font-size: 38px !important; }
-          :global(.steps-grid) { grid-template-columns: 1fr !important; }
-          :global(.features-grid) { grid-template-columns: 1fr !important; }
-          :global(.hero-text) { text-align: center !important; }
-          :global(.hero-btns) { justify-content: center !important; }
-        }
-        @media (max-width: 600px) {
-          :global(.hero-title) { font-size: 30px !important; }
-        }
-      `}</style>
     </>
   );
 }
