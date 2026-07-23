@@ -25,7 +25,7 @@ const styles = {
     fontFamily: "'Segoe UI', Tahoma, 'Cairo', system-ui, sans-serif",
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'stretch', // ✅ تغيير من 'center' إلى 'stretch'
     width: '100%',
   },
   main: {
