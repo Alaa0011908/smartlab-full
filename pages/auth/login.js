@@ -1,4 +1,4 @@
-// pages/auth/login.js - النسخة النهائية مع روابط نشطة
+// pages/auth/login.js
 import Head from "next/head";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -146,18 +146,14 @@ const styles = {
   },
 };
 
+// ✅ اللوغو من مجلد public
 function LogoMark() {
   return (
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M46 14c-6 0-11 3-14 8-3-3-8-4-12-3-6 2-9 8-7 14-5 2-7 7-5 12 2 5 6 7 11 7 2 5 6 8 11 8 6 0 11-3 13-8 6 2 12-1 14-7 2-5 0-10-3-13 3-5 3-11-2-15-3-6-8-8-14-3z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M28 34c2-5 6-8 11-8" stroke={COLORS.orange} strokeWidth="3.4" strokeLinecap="round" />
-      <circle cx="47" cy="24" r="3.4" fill={COLORS.orange} />
-      <path d="M40 18l10-4-6 8z" fill={COLORS.navy} opacity="0.7" />
-    </svg>
+    <img 
+      src="/logo.png" 
+      alt="SmartLab Logo" 
+      style={{ width: '72px', height: '72px', objectFit: 'contain' }}
+    />
   );
 }
 
@@ -308,7 +304,6 @@ export default function Login() {
               </button>
             </div>
 
-            {/* ✅ الرابط المعدل لـ "نسيت كلمة المرور" */}
             <div style={styles.forgotRow}>
               <Link
                 href="/auth/forgot-password"
@@ -337,7 +332,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* ✅ الرابط المعدل لـ "إنشاء حساب جديد" */}
           <p style={styles.bottom}>
             ليس لديك حساب؟{" "}
             <Link
