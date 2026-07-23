@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Navbar from "../../components/Navbar";  // ✅ استيراد الـ Navbar الجديد
+import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const COLORS = {
@@ -138,7 +138,7 @@ export default function Categories() {
 
   return (
     <div style={styles.page}>
-      {/* ✅ الـ Navbar الجديد */}
+      {/* ✅ الـ Navbar من المكون الموحد */}
       <Navbar />
 
       <main style={styles.main}>
