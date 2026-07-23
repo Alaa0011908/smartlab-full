@@ -43,9 +43,16 @@ const styles = {
   footerContactItem: { display: "flex", alignItems: "center", gap: 12, fontSize: 14 },
   footerContactIcon: { fontSize: 18, color: COLORS.orange, minWidth: 20 },
   footerContactLink: { color: "rgba(255,255,255,0.7)", textDecoration: "none", transition: "color 0.25s ease" },
-  footerBottom: { backgroundColor: "rgba(0,0,0,0.2)", padding: "16px 24px", marginTop: 0 },
+  
+  // ✅ القسم السفلي المعدل
+  footerBottom: {
+    backgroundColor: "rgba(0,0,0,0.25)",
+    padding: "16px 40px",
+    marginTop: 0,
+    width: "100%",
+  },
   footerBottomInner: {
-    maxWidth: 1200,
+    maxWidth: "100%",
     margin: "0 auto",
     display: "flex",
     justifyContent: "center",
@@ -144,6 +151,7 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* ✅ القسم السفلي المعدل */}
       <div style={styles.footerBottom}>
         <div style={styles.footerBottomInner}>
           <span>© 2026 SmartLab. جميع الحقوق محفوظة</span>
