@@ -38,8 +38,8 @@ const styles = {
     borderRadius: 24,
     boxShadow: "0 20px 60px rgba(13,30,59,0.08)",
     width: "100%",
-    maxWidth: 620,
-    padding: "48px 60px 56px",
+    maxWidth: 700,
+    padding: "40px 50px 48px",
     textAlign: "center",
     boxSizing: "border-box",
   },
@@ -48,7 +48,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     gap: 0,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   title: {
     fontSize: 34,
@@ -145,15 +145,15 @@ const styles = {
   },
 };
 
-// ✅ اللوغو 260px
+// ✅ اللوغو 365x210
 function LogoMark() {
   return (
     <img 
       src="/logo.png" 
       alt="SmartLab Logo" 
       style={{ 
-        width: '260px', 
-        height: '260px', 
+        width: '365px', 
+        height: '210px', 
         objectFit: 'contain',
         display: 'block',
         margin: '0 auto'
