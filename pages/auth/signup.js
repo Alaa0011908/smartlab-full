@@ -38,21 +38,18 @@ const styles = {
     borderRadius: 24,
     boxShadow: "0 20px 60px rgba(13,30,59,0.08)",
     width: "100%",
-    maxWidth: 620,
-    padding: "48px 60px 56px",
+    maxWidth: 700,
+    padding: "40px 50px 48px",
     textAlign: "center",
     boxSizing: "border-box",
   },
   logoWrap: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 28,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 0,
+    marginBottom: 12,
   },
-  logoText: { display: "flex", gap: 5, alignItems: "baseline" },
-  logoSmart: { fontSize: 17, fontWeight: 800, color: COLORS.navy },
-  logoLab: { fontSize: 17, fontWeight: 800, color: COLORS.orange },
   title: {
     fontSize: 34,
     fontWeight: 800,
@@ -170,13 +167,19 @@ const styles = {
   },
 };
 
-// ✅ اللوغو من مجلد public
+// ✅ اللوغو 365x210
 function LogoMark() {
   return (
     <img 
       src="/logo.png" 
       alt="SmartLab Logo" 
-      style={{ width: '72px', height: '72px', objectFit: 'contain' }}
+      style={{ 
+        width: '365px', 
+        height: '210px', 
+        objectFit: 'contain',
+        display: 'block',
+        margin: '0 auto'
+      }}
     />
   );
 }
@@ -327,10 +330,6 @@ export default function Signup() {
         <div style={{ ...styles.card, padding: isMobile ? "36px 24px 40px" : styles.card.padding }} className="signup-card">
           <div style={styles.logoWrap}>
             <LogoMark />
-            <span style={styles.logoText}>
-              <span style={styles.logoSmart}>Smart</span>
-              <span style={styles.logoLab}>Lab</span>
-            </span>
           </div>
 
           <h1 style={styles.title}>إنشاء حساب</h1>
