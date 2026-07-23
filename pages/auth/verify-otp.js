@@ -1,4 +1,4 @@
-// pages/auth/verify-otp.js - صفحة التحقق من رمز OTP
+// pages/auth/verify-otp.js
 import Head from "next/head";
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -146,6 +146,17 @@ const styles = {
   },
 };
 
+// ✅ اللوغو من مجلد public
+function LogoMark() {
+  return (
+    <img 
+      src="/logo.png" 
+      alt="SmartLab Logo" 
+      style={{ width: '72px', height: '72px', objectFit: 'contain' }}
+    />
+  );
+}
+
 function LockIcon() {
   return (
     <svg
@@ -177,7 +188,6 @@ export default function VerifyOtp() {
   const [success, setSuccess] = useState("");
   const inputsRef = useRef([]);
 
-  // التحقق من وجود البريد الإلكتروني
   useEffect(() => {
     if (!email && router.isReady) {
       setError("❌ البريد الإلكتروني مطلوب. يرجى العودة إلى صفحة التسجيل.");
@@ -224,7 +234,6 @@ export default function VerifyOtp() {
     inputsRef.current[focusIndex]?.focus();
   };
 
-  // دالة إعادة إرسال الرمز
   const handleResend = async () => {
     if (!email) {
       setError("❌ البريد الإلكتروني غير موجود. يرجى العودة إلى صفحة التسجيل.");
@@ -249,7 +258,6 @@ export default function VerifyOtp() {
     setLoading(false);
   };
 
-  // دالة التحقق من OTP
   const handleSubmit = async (e) => {
     e.preventDefault();
     const otpCode = otp.join("");
@@ -274,11 +282,9 @@ export default function VerifyOtp() {
 
     if (verifyError) {
       setError(`❌ ${verifyError.message}`);
-      // تحديد الحقل الأول لعرض الخطأ
       inputsRef.current[0]?.focus();
     } else {
       setSuccess("✅ تم التحقق بنجاح! جاري التوجيه...");
-      // تأخير بسيط قبل التوجيه
       setTimeout(() => {
         router.push("/assessment/categories");
       }, 1500);
@@ -286,12 +292,10 @@ export default function VerifyOtp() {
     setLoading(false);
   };
 
-  // العودة إلى صفحة التسجيل لتعديل البريد
   const goBackToSignup = () => {
     router.push("/auth/signup");
   };
 
-  // إذا كان البريد الإلكتروني غير موجود
   if (!email && router.isReady) {
     return (
       <div style={styles.page}>
@@ -373,7 +377,6 @@ export default function VerifyOtp() {
               ))}
             </div>
 
-            {/* رسائل الخطأ / النجاح */}
             {error && (
               <div style={{ ...styles.message, ...styles.messageError }}>{error}</div>
             )}
