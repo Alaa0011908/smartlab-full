@@ -1,6 +1,7 @@
 // components/Footer.js
 import React from 'react';
 import Link from 'next/link';
+import { FaFacebookF, FaInstagram, FaEnvelope } from 'react-icons/fa';
 
 const COLORS = {
   teal: "#17919e",
@@ -40,7 +41,7 @@ const styles = {
   footerLink: { color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 14, transition: "color 0.25s ease" },
   footerContactList: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 },
   footerContactItem: { display: "flex", alignItems: "center", gap: 12, fontSize: 14 },
-  footerContactIcon: { fontSize: 16, color: COLORS.orange },
+  footerContactIcon: { fontSize: 18, color: COLORS.orange, minWidth: 20 },
   footerContactLink: { color: "rgba(255,255,255,0.7)", textDecoration: "none", transition: "color 0.25s ease" },
   footerBottom: { backgroundColor: "rgba(0,0,0,0.2)", padding: "16px 24px", marginTop: 0 },
   footerBottomInner: {
@@ -61,7 +62,6 @@ export default function Footer() {
   return (
     <footer style={styles.footer}>
       <div style={styles.footerInner}>
-        {/* القسم 1: اللوغو + الوصف */}
         <div style={styles.footerCol}>
           <div style={styles.footerLogo}>
             <img 
@@ -79,7 +79,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* القسم 2: روابط سريعة */}
         <div style={styles.footerCol}>
           <h4 style={styles.footerHeading}>روابط سريعة</h4>
           <ul style={styles.footerLinks}>
@@ -106,26 +105,39 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* ✅ القسم 3: تواصل معنا (تم التعديل) */}
         <div style={styles.footerCol}>
           <h4 style={styles.footerHeading}>تواصل معنا</h4>
           <ul style={styles.footerContactList}>
             <li style={styles.footerContactItem}>
-              <span style={styles.footerContactIcon}>✉️</span>
+              <FaEnvelope style={styles.footerContactIcon} />
               <a href="mailto:info@smartlab.com" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
                 info@smartlab.com
               </a>
             </li>
             <li style={styles.footerContactItem}>
-              <span style={styles.footerContactIcon}>📘</span>
-              <a href="https://facebook.com/smartlab" target="_blank" rel="noopener noreferrer" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                فيسبوك
+              <FaFacebookF style={styles.footerContactIcon} />
+              <a 
+                href="https://facebook.com/smartlab" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={styles.footerContactLink} 
+                onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} 
+                onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}
+              >
+                Facebook
               </a>
             </li>
             <li style={styles.footerContactItem}>
-              <span style={styles.footerContactIcon}>📸</span>
-              <a href="https://instagram.com/smartlab" target="_blank" rel="noopener noreferrer" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                إنستغرام
+              <FaInstagram style={styles.footerContactIcon} />
+              <a 
+                href="https://instagram.com/smartlab" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={styles.footerContactLink} 
+                onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} 
+                onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}
+              >
+                Instagram
               </a>
             </li>
           </ul>
