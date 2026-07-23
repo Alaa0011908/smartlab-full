@@ -14,8 +14,9 @@ const styles = {
   footer: {
     backgroundColor: COLORS.navy,
     color: COLORS.white,
-    padding: "60px 24px 0",
+    padding: "60px 0 0 0",  // ✅ إزالة padding الجانبي
     marginTop: "auto",
+    width: "100%",
   },
   footerInner: {
     maxWidth: 1200,
@@ -23,7 +24,7 @@ const styles = {
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
     gap: 40,
-    paddingBottom: 40,
+    padding: "0 40px 40px 40px",  // ✅ padding جانبي للمحتوى فقط
     borderBottom: "1px solid rgba(255,255,255,0.1)",
   },
   footerCol: { display: "flex", flexDirection: "column", gap: 12 },
@@ -44,24 +45,25 @@ const styles = {
   footerContactIcon: { fontSize: 18, color: COLORS.orange, minWidth: 20 },
   footerContactLink: { color: "rgba(255,255,255,0.7)", textDecoration: "none", transition: "color 0.25s ease" },
   
-  // ✅ القسم السفلي المعدل
+  // ✅ القسم السفلي - ممتد بالكامل
   footerBottom: {
-    backgroundColor: "rgba(0,0,0,0.25)",
-    padding: "16px 40px",
+    backgroundColor: "rgba(0,0,0,0.3)",
+    padding: "16px 0",
     marginTop: 0,
     width: "100%",
   },
   footerBottomInner: {
-    maxWidth: "100%",
+    maxWidth: 1200,
     margin: "0 auto",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     fontSize: 13,
-    color: "rgba(255,255,255,0.6)",
+    color: "rgba(255,255,255,0.7)",
     flexWrap: "wrap",
     gap: 8,
     textAlign: "center",
+    padding: "0 40px",  // ✅ padding جانبي للنص فقط
   },
 };
 
@@ -151,7 +153,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ✅ القسم السفلي المعدل */}
+      {/* ✅ القسم السفلي - ممتد بالكامل */}
       <div style={styles.footerBottom}>
         <div style={styles.footerBottomInner}>
           <span>© 2026 SmartLab. جميع الحقوق محفوظة</span>
@@ -164,6 +166,7 @@ export default function Footer() {
             grid-template-columns: 1fr !important;
             gap: 30px;
             text-align: center;
+            padding: 0 20px 30px 20px !important;
           }
           .footer-desc {
             max-width: 100% !important;
@@ -175,6 +178,7 @@ export default function Footer() {
           .footer-bottom-inner {
             flex-direction: column;
             text-align: center;
+            padding: 0 20px !important;
           }
         }
       `}</style>
