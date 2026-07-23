@@ -1,6 +1,6 @@
-// pages/auth/reset-password.js - صفحة تعيين كلمة مرور جديدة (بعد الضغط على الرابط)
+// pages/auth/forgot-password.js
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../../lib/supabase";
 import Link from "next/link";
@@ -77,7 +77,7 @@ const styles = {
     color: COLORS.text,
     fontSize: 17,
     textAlign: "right",
-    padding: "0 56px 0 56px",
+    padding: "0 56px 0 20px",
     outline: "none",
     transition: "border-color 0.25s ease, box-shadow 0.25s ease",
     fontFamily: "inherit",
@@ -92,20 +92,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
     pointerEvents: "none",
-  },
-  eyeBtn: {
-    position: "absolute",
-    left: 20,
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: "none",
-    border: "none",
-    padding: 0,
-    cursor: "pointer",
-    color: COLORS.teal,
-    display: "flex",
-    alignItems: "center",
-    transition: "color 0.25s ease",
   },
   submit: {
     width: "100%",
@@ -123,6 +109,7 @@ const styles = {
     gap: 10,
     transition: "background-color 0.25s ease, transform 0.25s ease",
     fontFamily: "inherit",
+    marginTop: "0.5rem",
   },
   submitDisabled: {
     opacity: 0.6,
@@ -161,89 +148,41 @@ const styles = {
   },
 };
 
+// ✅ اللوغو من مجلد public
 function LogoMark() {
   return (
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M46 14c-6 0-11 3-14 8-3-3-8-4-12-3-6 2-9 8-7 14-5 2-7 7-5 12 2 5 6 7 11 7 2 5 6 8 11 8 6 0 11-3 13-8 6 2 12-1 14-7 2-5 0-10-3-13 3-5 3-11-2-15-3-6-8-8-14-3z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M28 34c2-5 6-8 11-8" stroke={COLORS.orange} strokeWidth="3.4" strokeLinecap="round" />
-      <circle cx="47" cy="24" r="3.4" fill={COLORS.orange} />
-      <path d="M40 18l10-4-6 8z" fill={COLORS.navy} opacity="0.7" />
-    </svg>
+    <img 
+      src="/logo.png" 
+      alt="SmartLab Logo" 
+      style={{ width: '72px', height: '72px', objectFit: 'contain' }}
+    />
   );
 }
 
-function LockIcon() {
+function MailIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="4.5" y="10.5" width="15" height="10" rx="2.5" fill="currentColor" stroke="none" />
-      <path d="M7.5 10.5V8a4.5 4.5 0 0 1 9 0v2.5" />
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="M3 7l9 6 9-6" />
     </svg>
   );
 }
 
-function EyeIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M9.9 4.2A9.8 9.8 0 0 1 12 4c6.5 0 10 7 10 7a17 17 0 0 1-2.4 3.4M6.6 6.6A17 17 0 0 0 2 11s3.5 7 10 7a9.6 9.6 0 0 0 4.7-1.2" />
-      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
-      <line x1="3" y1="3" x2="21" y2="21" />
-    </svg>
-  );
-}
-
-function SaveIcon() {
+function ArrowLeftIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-      <polyline points="17 21 17 13 7 13 7 21" />
-      <polyline points="7 3 7 8 15 8" />
+      <path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5" />
+      <path d="M9 16l-4-4 4-4" />
+      <line x1="5" y1="12" x2="15" y2="12" />
     </svg>
   );
 }
 
-export default function ResetPassword() {
+export default function ForgotPassword() {
   const router = useRouter();
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
-  const [isValidToken, setIsValidToken] = useState(true);
-
-  // التحقق من وجود token في الرابط (Supabase يضيفه)
-  useEffect(() => {
-    const { access_token, error } = router.query;
-    if (error) {
-      setMessage({ text: "❌ الرابط غير صالح أو منتهي الصلاحية.", type: "error" });
-      setIsValidToken(false);
-    }
-    // إذا لم يكن هناك access_token ولكننا في الصفحة، قد يكون المستخدم مسجل الدخول بالفعل
-    // لكننا نفضل التحقق منه عبر supabase
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session && !access_token) {
-        setMessage({ text: "⚠️ الرابط غير صالح. يرجى طلب رابط جديد.", type: "error" });
-        setIsValidToken(false);
-      }
-    };
-    if (router.isReady) {
-      checkSession();
-    }
-  }, [router.isReady, router.query]);
 
   const focusStyle = (e) => {
     e.currentTarget.style.borderColor = COLORS.teal;
@@ -256,55 +195,34 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password.length < 6) {
-      setMessage({ text: "❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل.", type: "error" });
+    if (!email) {
+      setMessage({ text: "❌ يرجى إدخال البريد الإلكتروني", type: "error" });
       return;
     }
-    if (password !== confirm) {
-      setMessage({ text: "❌ كلمة المرور غير متطابقة مع تأكيدها.", type: "error" });
-      return;
-    }
-
     setLoading(true);
     setMessage({ text: "", type: "" });
 
-    // تحديث كلمة المرور للمستخدم المسجل حالياً (بفضل الـ token)
-    const { error } = await supabase.auth.updateUser({
-      password: password,
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
     });
 
     if (error) {
       setMessage({ text: `❌ ${error.message}`, type: "error" });
     } else {
-      setMessage({ text: "✅ تم تحديث كلمة المرور بنجاح! جاري التوجيه...", type: "success" });
-      // تسجيل الخروج من الجلسة الحالية وتوجيهه لتسجيل الدخول
-      setTimeout(() => {
-        supabase.auth.signOut();
-        router.push("/auth/login");
-      }, 2000);
+      setMessage({
+        text: "✅ تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.",
+        type: "success",
+      });
+      setEmail("");
     }
     setLoading(false);
   };
 
-  if (!isValidToken && message.text) {
-    return (
-      <div style={styles.page}>
-        <div style={styles.card}>
-          <h1 style={styles.title}>⚠️ رابط غير صالح</h1>
-          <p style={styles.subtitle}>{message.text}</p>
-          <Link href="/auth/forgot-password" style={{ ...styles.bottomLink, fontSize: 16 }}>
-            طلب رابط جديد ←
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <Head>
-        <title>إعادة تعيين كلمة المرور - Smart Lab</title>
-        <meta name="description" content="أدخل كلمة مرور جديدة لحسابك في منصة سمارت لاب." />
+        <title>نسيت كلمة المرور - Smart Lab</title>
+        <meta name="description" content="أدخل بريدك الإلكتروني لاستعادة كلمة المرور في منصة سمارت لاب." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>{`
           html, body { margin: 0; padding: 0; background-color: ${COLORS.bg}; }
@@ -326,56 +244,23 @@ export default function ResetPassword() {
             </span>
           </div>
 
-          <h1 style={styles.title}>كلمة مرور جديدة</h1>
-          <p style={styles.subtitle}>أدخل كلمة مرور قوية لحسابك</p>
+          <h1 style={styles.title}>نسيت كلمة المرور</h1>
+          <p style={styles.subtitle}>أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة التعيين</p>
 
           <form onSubmit={handleSubmit}>
             <div style={styles.field}>
-              <span style={styles.iconRight}><LockIcon /></span>
+              <span style={styles.iconRight}><MailIcon /></span>
               <input
-                type={showPassword ? "text" : "password"}
-                placeholder="كلمة المرور الجديدة"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                placeholder="البريد الإلكتروني"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 style={styles.input}
                 onFocus={focusStyle}
                 onBlur={blurStyle}
-                aria-label="كلمة المرور الجديدة"
+                aria-label="البريد الإلكتروني"
                 dir="ltr"
               />
-              <button
-                type="button"
-                style={styles.eyeBtn}
-                onClick={() => setShowPassword((v) => !v)}
-                onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.tealDark)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.teal)}
-              >
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </button>
-            </div>
-
-            <div style={styles.field}>
-              <span style={styles.iconRight}><LockIcon /></span>
-              <input
-                type={showConfirm ? "text" : "password"}
-                placeholder="تأكيد كلمة المرور"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                style={styles.input}
-                onFocus={focusStyle}
-                onBlur={blurStyle}
-                aria-label="تأكيد كلمة المرور"
-                dir="ltr"
-              />
-              <button
-                type="button"
-                style={styles.eyeBtn}
-                onClick={() => setShowConfirm((v) => !v)}
-                onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.tealDark)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.teal)}
-              >
-                {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
-              </button>
             </div>
 
             {message.text && (
@@ -409,7 +294,7 @@ export default function ResetPassword() {
                 }
               }}
             >
-              {loading ? "جاري الحفظ..." : <><SaveIcon /> تحديث كلمة المرور</>}
+              {loading ? "جاري الإرسال..." : <><ArrowLeftIcon /> إرسال رابط إعادة التعيين</>}
             </button>
           </form>
 
