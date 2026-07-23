@@ -1,7 +1,6 @@
 // components/Footer.js
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 const COLORS = {
   teal: "#17919e",
@@ -107,7 +106,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* القسم 3: تواصل معنا */}
+        {/* ✅ القسم 3: تواصل معنا (تم التعديل) */}
         <div style={styles.footerCol}>
           <h4 style={styles.footerHeading}>تواصل معنا</h4>
           <ul style={styles.footerContactList}>
@@ -118,14 +117,16 @@ export default function Footer() {
               </a>
             </li>
             <li style={styles.footerContactItem}>
-              <span style={styles.footerContactIcon}>📱</span>
-              <a href="tel:+966512345678" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                +966 51 234 5678
+              <span style={styles.footerContactIcon}>📘</span>
+              <a href="https://facebook.com/smartlab" target="_blank" rel="noopener noreferrer" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
+                فيسبوك
               </a>
             </li>
             <li style={styles.footerContactItem}>
-              <span style={styles.footerContactIcon}>🌐</span>
-              <span style={styles.footerContactLink}>@SmartLab</span>
+              <span style={styles.footerContactIcon}>📸</span>
+              <a href="https://instagram.com/smartlab" target="_blank" rel="noopener noreferrer" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
+                إنستغرام
+              </a>
             </li>
           </ul>
         </div>
