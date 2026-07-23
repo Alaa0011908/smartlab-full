@@ -44,11 +44,11 @@ const styles = {
     boxSizing: "border-box",
   },
   logoWrap: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 28,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 0,
+    marginBottom: 16,
   },
   title: {
     fontSize: 34,
@@ -145,13 +145,19 @@ const styles = {
   },
 };
 
-// ✅ اللوغو من مجلد public (مكبر)
+// ✅ اللوغو 260px
 function LogoMark() {
   return (
     <img 
       src="/logo.png" 
       alt="SmartLab Logo" 
-      style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+      style={{ 
+        width: '260px', 
+        height: '260px', 
+        objectFit: 'contain',
+        display: 'block',
+        margin: '0 auto'
+      }}
     />
   );
 }
@@ -235,7 +241,6 @@ export default function ForgotPassword() {
         <div style={styles.card} className="reset-card">
           <div style={styles.logoWrap}>
             <LogoMark />
-            {/* ❌ تم حذف كلمة "Smart Lab" */}
           </div>
 
           <h1 style={styles.title}>نسيت كلمة المرور</h1>
