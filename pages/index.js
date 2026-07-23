@@ -3,6 +3,7 @@ import React from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer"; // ✅ إضافة الفوتر
 
 const COLORS = {
   teal: "#17919e",
@@ -24,6 +25,8 @@ const styles = {
     color: COLORS.text,
     minHeight: "100vh",
     margin: 0,
+    display: "flex",
+    flexDirection: "column",
   },
   hero: { backgroundColor: COLORS.bg, padding: "60px 24px 40px" },
   heroInner: {
@@ -184,32 +187,6 @@ const styles = {
   featureTitle: { fontSize: 24, fontWeight: 800, margin: "0 0 16px" },
   featureDescLight: { fontSize: 16, lineHeight: 1.9, color: "rgba(255,255,255,0.9)", margin: 0 },
   featureDescDark: { fontSize: 16, lineHeight: 1.9, color: COLORS.muted, margin: 0 },
-  footer: { backgroundColor: COLORS.navy, color: COLORS.white, padding: "50px 24px 40px" },
-  footerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 40,
-    flexWrap: "wrap",
-  },
-  footerCol: { flex: "1 1 260px" },
-  footerBrand: { fontSize: 22, fontWeight: 800, margin: "0 0 14px" },
-  footerText: { fontSize: 15, lineHeight: 1.9, color: "rgba(255,255,255,0.75)", margin: 0, maxWidth: 320 },
-  footerHeading: { fontSize: 18, fontWeight: 700, margin: "0 0 18px" },
-  footerIconBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.3)",
-    backgroundColor: "transparent",
-    color: COLORS.white,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-  },
 };
 
 function ChatIcon() {
@@ -323,10 +300,8 @@ export default function Home() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ===== Navbar ===== */}
         <Navbar />
 
-        {/* Hero */}
         <section style={styles.hero}>
           <div style={styles.heroInner}>
             <div style={styles.heroText} className="hero-text">
@@ -374,7 +349,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Steps */}
         <section style={styles.section}>
           <p style={styles.eyebrow}>آلية عمل Smart Lab</p>
           <h2 style={styles.sectionTitle}>ثلاث خطوات للإتقان</h2>
@@ -400,7 +374,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Features */}
         <section style={styles.section}>
           <h2 style={styles.sectionTitle}>مميزات المنصة</h2>
           <p style={styles.featuresIntro}>أدوات متطورة مصممة خصيصاً لتسريع عملية التعلم وضمان الفهم العميق.</p>
@@ -436,26 +409,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer style={styles.footer}>
-          <div style={styles.footerInner}>
-            <div style={styles.footerCol}>
-              <h3 style={styles.footerBrand}>SmartLab</h3>
-              <p style={styles.footerText}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
-            </div>
-            <div style={styles.footerCol}>
-              <h4 style={styles.footerHeading}>تواصل معنا</h4>
-              <button
-                style={styles.footerIconBtn}
-                aria-label="راسلنا عبر البريد الإلكتروني"
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-              >
-                <MailIcon />
-              </button>
-            </div>
-          </div>
-        </footer>
+        {/* ✅ إضافة الفوتر */}
+        <Footer />
       </div>
     </>
   );
