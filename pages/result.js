@@ -170,6 +170,7 @@ const styles = {
     color: COLORS.navy,
     textAlign: "right",
     transition: "background-color 0.2s ease",
+    minHeight: 56,
   },
   accordionHeaderHover: {
     backgroundColor: COLORS.lightGray,
@@ -266,6 +267,8 @@ const styles = {
     textDecoration: "none",
     transition: "background-color 0.25s ease, transform 0.25s ease",
     margin: "8px 8px",
+    minHeight: 56,
+    textAlign: "center",
   },
   scenarioButton: {
     display: "inline-block",
@@ -280,6 +283,8 @@ const styles = {
     textDecoration: "none",
     transition: "background-color 0.25s ease, transform 0.25s ease",
     margin: "8px 8px",
+    minHeight: 56,
+    textAlign: "center",
   },
   backLink: {
     display: "inline-block",
@@ -385,14 +390,11 @@ const AccordionSection = ({
 };
 
 function getScenarioLink(score, cognitiveProfile) {
-  // تحديد المستوى بناءً على النتيجة وملف التعلم
   let level = 'beginner';
   if (score >= 75) level = 'advanced';
   else if (score >= 50) level = 'intermediate';
   
-  // يمكن استخدام cognitiveProfile لتعديل التوجيه حسب نمط التعلم
   if (cognitiveProfile && cognitiveProfile.learningStyle === 'تحليلي متعمق') {
-    // للمتعمقين نفضل السيناريو المتوسط أو المتقدم
     if (score >= 60) level = 'advanced';
   }
   
@@ -410,6 +412,14 @@ export default function Result() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [circleProgress, setCircleProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const [expandedSections, setExpandedSections] = useState({
     bassema: false,
@@ -515,7 +525,7 @@ export default function Result() {
           <div style={{ fontSize: 56, marginBottom: 16 }}>❌</div>
           <h2 style={{ color: COLORS.error }}>حدث خطأ</h2>
           <p style={{ color: COLORS.muted }}>{error}</p>
-          <Link href="/assessment" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
+          <Link href="/assessment/categories" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
             العودة للتقييمات
           </Link>
         </div>
@@ -531,7 +541,7 @@ export default function Result() {
           <div style={{ fontSize: 56, marginBottom: 16 }}>📋</div>
           <h2 style={{ color: COLORS.navy }}>لا توجد نتائج</h2>
           <p style={{ color: COLORS.muted }}>لم يتم العثور على بيانات لهذا التقييم.</p>
-          <Link href="/assessment" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
+          <Link href="/assessment/categories" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
             ابدأ تقييماً جديداً
           </Link>
         </div>
@@ -576,7 +586,6 @@ export default function Result() {
     return COLORS.error;
   };
 
-  // دالة عرض شريط التقدم للموضوعات
   const renderTopicBars = () => {
     if (!topicAnalysis || Object.keys(topicAnalysis).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للموضوعات.</p>;
@@ -600,7 +609,6 @@ export default function Result() {
     );
   };
 
-  // عرض المهارات الفرعية
   const renderSubSkills = () => {
     if (!subSkillAnalysis || Object.keys(subSkillAnalysis).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمهارات الفرعية.</p>;
@@ -616,7 +624,6 @@ export default function Result() {
     });
   };
 
-  // عرض الأخطاء
   const renderErrors = () => {
     if (!errors || errors.length === 0) {
       return <p style={{ color: COLORS.muted }}>🎉 لا توجد أخطاء! أداء ممتاز.</p>;
@@ -633,7 +640,6 @@ export default function Result() {
     ));
   };
 
-  // عرض نقاط القوة
   const renderStrengths = () => {
     const strongTopics = topicAnalysis
       ? Object.entries(topicAnalysis).filter(([_, data]) => (data.weightedPercentage || data.percentage || 0) >= 70)
@@ -660,7 +666,6 @@ export default function Result() {
     );
   };
 
-  // عرض المسار الأيقوني (مراحل التعلم)
   const renderLearningStages = () => {
     if (!learningStages || learningStages.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد مراحل تعلم متاحة لهذا التقييم.</p>;
@@ -680,7 +685,6 @@ export default function Result() {
     });
   };
 
-  // عرض التشخيص العميق (DINA)
   const renderDiagnostic = () => {
     if (!diagnosticMastery || !diagnosticMastery.skills) {
       return <p style={{ color: COLORS.muted }}>بيانات التشخيص العميق غير متوفرة.</p>;
@@ -695,7 +699,6 @@ export default function Result() {
     ));
   };
 
-  // عرض الأسباب الجذرية
   const renderRootCauses = () => {
     if (!rootCauseAnalysis || rootCauseAnalysis.length === 0) {
       return <p style={{ color: COLORS.muted }}>لم يتم تحديد أسباب جذرية واضحة.</p>;
@@ -709,7 +712,6 @@ export default function Result() {
     ));
   };
 
-  // عرض الدروس المقترحة
   const renderLessons = () => {
     if (!recommendedLessons || recommendedLessons.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد دروس مقترحة حالياً.</p>;
@@ -723,7 +725,6 @@ export default function Result() {
     ));
   };
 
-  // عرض المراحل الكتابية
   const renderWritingAnswers = () => {
     if (!writingAnswers || writingAnswers.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد إجابات كتابية في هذا التقييم.</p>;
@@ -745,19 +746,57 @@ export default function Result() {
       <Head>
         <title>نتيجة التقييم - Smart Lab</title>
         <meta name="description" content="نتيجة تقييمك في منصة سمارت لاب مع تحليل مفصل." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
           @media (max-width: 768px) {
             .stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
-            .stat-value { fontSize: 24px !important; }
+            .stat-value { font-size: 24px !important; }
             .result-hero { padding: 32px 20px 36px !important; }
-            .result-hero-title { fontSize: 24px !important; }
+            .result-hero-title { font-size: 28px !important; }
+            .score-circle { width: 150px !important; height: 150px !important; }
+            .score-number { font-size: 36px !important; }
+            .topic-name { flex: 0 0 90px !important; font-size: 13px !important; }
+          }
+          @media (max-width: 640px) {
+            .main { padding: 20px 12px 60px !important; }
+            .result-hero { padding: 24px 16px 32px !important; }
+            .result-hero-title { font-size: 24px !important; }
+            .hero-desc { font-size: 15px !important; }
+            .stats-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+            .stat-value { font-size: 24px !important; }
+            .stat-card { padding: 14px 12px !important; }
             .score-circle { width: 140px !important; height: 140px !important; }
-            .score-number { fontSize: 32px !important; }
-            .topic-name { flex: 0 0 80px !important; font-size: 12px !important; }
+            .score-number { font-size: 32px !important; }
+            .score-label { font-size: 12px !important; }
+            .accordion-header { padding: 14px 16px !important; font-size: 14px !important; min-height: 48px !important; }
+            .accordion-body { padding: 0 16px 16px 16px !important; }
+            .accordion-body-inner { padding-top: 16px !important; font-size: 14px !important; }
+            .topic-name { flex: 0 0 70px !important; font-size: 12px !important; }
+            .topic-score { font-size: 12px !important; min-width: 30px !important; }
+            .topic-bar { margin: 0 8px !important; }
+            .course-btn, .scenario-btn { width: 100% !important; padding: 14px !important; font-size: 15px !important; margin: 4px 0 !important; }
+            .button-group { flex-direction: column !important; gap: 8px !important; }
+            .insight-text { font-size: 14px !important; }
+            .hero-icon { font-size: 40px !important; }
+            .stage-item { font-size: 13px !important; gap: 8px !important; }
+            .stage-icon { font-size: 20px !important; width: 28px !important; }
+            .skill-item { font-size: 13px !important; }
+            .error-item { font-size: 13px !important; }
+            .lesson-item { font-size: 13px !important; }
           }
           @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr !important; }
+            .result-hero { padding: 20px 12px 24px !important; }
+            .result-hero-title { font-size: 20px !important; }
+            .score-circle { width: 120px !important; height: 120px !important; }
+            .score-number { font-size: 28px !important; }
+            .stat-value { font-size: 20px !important; }
+            .stat-label { font-size: 11px !important; }
+            .accordion-header { font-size: 13px !important; padding: 12px 14px !important; }
+            .accordion-header-icon { font-size: 16px !important; margin-left: 8px !important; }
+            .accordion-chevron { font-size: 14px !important; margin-right: 8px !important; }
+            .topic-name { flex: 0 0 60px !important; font-size: 11px !important; }
+            .topic-score { font-size: 11px !important; min-width: 28px !important; }
+            .insight-text { font-size: 13px !important; }
           }
         `}</style>
       </Head>
@@ -765,14 +804,13 @@ export default function Result() {
       <div style={styles.page} dir="rtl">
         <Navbar />
 
-        <main style={styles.main}>
-          {/* ===== القسم المفتوح دائماً: النتيجة + الرؤية ===== */}
+        <main style={styles.main} className="main">
           <div style={styles.hero} className="result-hero">
-            <span style={styles.heroIcon}>🎯</span>
+            <span style={styles.heroIcon} className="hero-icon">🎯</span>
             <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>
               انتهى التقييم
             </h1>
-            <p style={styles.heroDesc}>
+            <p style={{ ...styles.heroDesc, className: "hero-desc" }}>
               لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.
             </p>
 
@@ -796,7 +834,7 @@ export default function Result() {
                   <span style={{ ...styles.scoreNumber, className: "score-number" }}>
                     {Math.round(circleProgress)}%
                   </span>
-                  <span style={styles.scoreLabel}>النتيجة النهائية</span>
+                  <span style={styles.scoreLabel} className="score-label">النتيجة النهائية</span>
                 </div>
               </div>
             </div>
@@ -818,17 +856,14 @@ export default function Result() {
               </div>
             </div>
 
-            {/* رؤية الذكاء الاصطناعي (دائماً مفتوحة) */}
             {insight && (
               <div style={styles.insightBox}>
-                <p style={styles.insightText}>💡 {insight}</p>
+                <p style={styles.insightText} className="insight-text">💡 {insight}</p>
               </div>
             )}
           </div>
 
-          {/* ===== قائمة الأقسام المطوية (Accordion) ===== */}
           <div style={styles.accordionContainer}>
-            {/* 1. البصمة المعرفية */}
             <AccordionSection
               id="bassema"
               title="🧠 البصمة المعرفية"
@@ -847,7 +882,6 @@ export default function Result() {
               )}
             </AccordionSection>
 
-            {/* 2. الثقة مقابل المعرفة */}
             <AccordionSection
               id="thiqa"
               title="📊 الثقة مقابل المعرفة"
@@ -870,7 +904,6 @@ export default function Result() {
               )}
             </AccordionSection>
 
-            {/* 3. الموضوعات (تفصيل الأداء حسب الموضوع) */}
             <AccordionSection
               id="mawdooAt"
               title="📚 الموضوعات"
@@ -881,7 +914,6 @@ export default function Result() {
               {renderTopicBars()}
             </AccordionSection>
 
-            {/* 4. المراحل الكتابية */}
             <AccordionSection
               id="marahil"
               title="✍️ المراحل الكتابية"
@@ -892,7 +924,6 @@ export default function Result() {
               {renderWritingAnswers()}
             </AccordionSection>
 
-            {/* 5. المسار الأيقوني (مراحل التعلم) */}
             <AccordionSection
               id="masar"
               title="🗺️ المسار الأيقوني"
@@ -903,7 +934,6 @@ export default function Result() {
               {renderLearningStages()}
             </AccordionSection>
 
-            {/* 6. المهارات الفرعية */}
             <AccordionSection
               id="maharat"
               title="🔧 المهارات الفرعية"
@@ -914,7 +944,6 @@ export default function Result() {
               {renderSubSkills()}
             </AccordionSection>
 
-            {/* 7. تحليل الأخطاء */}
             <AccordionSection
               id="akhta"
               title="❌ تحليل الأخطاء"
@@ -925,7 +954,6 @@ export default function Result() {
               {renderErrors()}
             </AccordionSection>
 
-            {/* 8. نقاط القوة */}
             <AccordionSection
               id="noqat"
               title="💪 نقاط القوة"
@@ -936,7 +964,6 @@ export default function Result() {
               {renderStrengths()}
             </AccordionSection>
 
-            {/* 9. التشخيص العميق (DINA) */}
             <AccordionSection
               id="tashkhis"
               title="🔬 التشخيص العميق"
@@ -947,7 +974,6 @@ export default function Result() {
               {renderDiagnostic()}
             </AccordionSection>
 
-            {/* 10. السبب الجذري */}
             <AccordionSection
               id="sabab"
               title="🕵️ السبب الجذري"
@@ -958,7 +984,6 @@ export default function Result() {
               {renderRootCauses()}
             </AccordionSection>
 
-            {/* 11. الدروس المقترحة */}
             <AccordionSection
               id="doroos"
               title="📖 الدروس المقترحة"
@@ -970,25 +995,22 @@ export default function Result() {
             </AccordionSection>
           </div>
 
-          {/* ===== أزرار الإجراءات ===== */}
-          <div style={styles.buttonGroup}>
-            <Link href="/course" style={styles.courseButton}>
+          <div style={styles.buttonGroup} className="button-group">
+            <Link href="/course" style={styles.courseButton} className="course-btn">
               🚀 ابدأ كورسك المخصص
             </Link>
-            <Link href={scenarioLink} style={styles.scenarioButton}>
+            <Link href={scenarioLink} style={styles.scenarioButton} className="scenario-btn">
               🎭 جرّب محاكي العميل
             </Link>
           </div>
 
-          {/* ===== رابط العودة ===== */}
           <div style={{ textAlign: "center" }}>
-            <Link href="/assessment" style={styles.backLink}>
+            <Link href="/assessment/categories" style={styles.backLink}>
               ← العودة إلى التقييمات
             </Link>
           </div>
         </main>
 
-        {/* ===== Footer ===== */}
         <footer style={{ backgroundColor: COLORS.navy, color: COLORS.white, padding: "40px 24px 30px" }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 30 }}>
             <div>
