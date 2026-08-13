@@ -3,7 +3,7 @@ import React from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer"; // ✅ إضافة الفوتر
+import Footer from "../components/Footer";
 
 const COLORS = {
   teal: "#17919e",
@@ -28,7 +28,10 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  hero: { backgroundColor: COLORS.bg, padding: "60px 24px 40px" },
+  hero: {
+    backgroundColor: COLORS.bg,
+    padding: "60px 24px 40px",
+  },
   heroInner: {
     maxWidth: 1200,
     margin: "0 auto",
@@ -38,7 +41,10 @@ const styles = {
     gap: 40,
     flexWrap: "wrap",
   },
-  heroText: { flex: "1 1 440px", textAlign: "right" },
+  heroText: {
+    flex: "1 1 440px",
+    textAlign: "right",
+  },
   heroTitle: {
     fontSize: 52,
     fontWeight: 800,
@@ -46,7 +52,9 @@ const styles = {
     margin: "0 0 24px",
     color: COLORS.text,
   },
-  heroTitleAccent: { color: COLORS.orange },
+  heroTitleAccent: {
+    color: COLORS.orange,
+  },
   heroDesc: {
     fontSize: 18,
     lineHeight: 1.8,
@@ -55,7 +63,12 @@ const styles = {
     marginRight: "auto",
     marginBottom: 34,
   },
-  heroBtns: { display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "flex-start" },
+  heroBtns: {
+    display: "flex",
+    gap: 16,
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+  },
   btnPrimary: {
     backgroundColor: COLORS.teal,
     color: COLORS.white,
@@ -68,6 +81,8 @@ const styles = {
     transition: "background-color 0.25s ease, transform 0.25s ease",
     textDecoration: "none",
     display: "inline-block",
+    minHeight: 56,
+    textAlign: "center",
   },
   btnOutline: {
     backgroundColor: "transparent",
@@ -78,18 +93,24 @@ const styles = {
     fontSize: 17,
     fontWeight: 700,
     cursor: "pointer",
-    transition: "background-color 0.25s ease, color 0.25s ease",
+    transition: "background-color 0.25s ease, color 0.25s ease, transform 0.25s ease",
     textDecoration: "none",
     display: "inline-block",
+    minHeight: 56,
+    textAlign: "center",
   },
   heroArt: {
     flex: "1 1 380px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minHeight: 380,
+    minHeight: 280,
   },
-  section: { maxWidth: 1200, margin: "0 auto", padding: "70px 24px" },
+  section: {
+    maxWidth: 1200,
+    margin: "0 auto",
+    padding: "70px 24px",
+  },
   eyebrow: {
     textAlign: "center",
     color: COLORS.muted,
@@ -130,7 +151,11 @@ const styles = {
     display: "flex",
     justifyContent: "center",
   },
-  stepLabel: { fontSize: 18, fontWeight: 700, color: COLORS.text },
+  stepLabel: {
+    fontSize: 18,
+    fontWeight: 700,
+    color: COLORS.text,
+  },
   featuresIntro: {
     textAlign: "center",
     color: COLORS.muted,
@@ -184,11 +209,26 @@ const styles = {
     marginBottom: 22,
     color: COLORS.teal,
   },
-  featureTitle: { fontSize: 24, fontWeight: 800, margin: "0 0 16px" },
-  featureDescLight: { fontSize: 16, lineHeight: 1.9, color: "rgba(255,255,255,0.9)", margin: 0 },
-  featureDescDark: { fontSize: 16, lineHeight: 1.9, color: COLORS.muted, margin: 0 },
+  featureTitle: {
+    fontSize: 24,
+    fontWeight: 800,
+    margin: "0 0 16px",
+  },
+  featureDescLight: {
+    fontSize: 16,
+    lineHeight: 1.9,
+    color: "rgba(255,255,255,0.9)",
+    margin: 0,
+  },
+  featureDescDark: {
+    fontSize: 16,
+    lineHeight: 1.9,
+    color: COLORS.muted,
+    margin: 0,
+  },
 };
 
+// أيقونات SVG (نفسها)
 function ChatIcon() {
   return (
     <svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -239,15 +279,6 @@ function AiGearIcon() {
   );
 }
 
-function MailIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3 7l9 6 9-6" />
-    </svg>
-  );
-}
-
 function HeroIllustration() {
   return (
     <svg width="380" height="360" viewBox="0 0 380 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="رسم توضيحي لشخص يتعلم باستخدام الحاسوب">
@@ -284,7 +315,7 @@ export default function Home() {
       <Head>
         <title>Smart Lab - اكتشف قدراتك الحقيقية مع الذكاء الاصطناعي</title>
         <meta name="description" content="منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
           @media (max-width: 900px) {
             .hero-title { font-size: 38px !important; }
@@ -293,8 +324,22 @@ export default function Home() {
             .hero-text { text-align: center !important; }
             .hero-btns { justify-content: center !important; }
           }
-          @media (max-width: 600px) {
-            .hero-title { font-size: 30px !important; }
+          @media (max-width: 640px) {
+            .hero-title { font-size: 28px !important; }
+            .hero-desc { font-size: 16px !important; }
+            .hero-btns { flex-direction: column !important; gap: 12px !important; width: 100% !important; }
+            .hero-btn { width: 100% !important; text-align: center !important; padding: 14px !important; }
+            .section-title { font-size: 26px !important; }
+            .steps-grid { gap: 16px !important; }
+            .features-grid { gap: 16px !important; }
+            .feature-card-teal, .feature-card-white { padding: 24px 20px !important; }
+            .feature-title { font-size: 20px !important; }
+            .hero-art svg { width: 100% !important; height: auto !important; max-width: 300px !important; }
+          }
+          @media (max-width: 480px) {
+            .hero-title { font-size: 24px !important; }
+            .hero { padding: 30px 16px 20px !important; }
+            .section { padding: 40px 16px !important; }
           }
         `}</style>
       </Head>
@@ -302,13 +347,13 @@ export default function Home() {
       <div style={styles.page} dir="rtl">
         <Navbar />
 
-        <section style={styles.hero}>
+        <section style={styles.hero} className="hero">
           <div style={styles.heroInner}>
             <div style={styles.heroText} className="hero-text">
               <h1 style={styles.heroTitle} className="hero-title">
                 اكتشف قدراتك الحقيقية مع <span style={styles.heroTitleAccent}>الذكاء الاصطناعي</span>
               </h1>
-              <p style={styles.heroDesc}>
+              <p style={styles.heroDesc} className="hero-desc">
                 منصة تعليمية متطورة تستخدم أحدث تقنيات الذكاء الاصطناعي لتقديم مسارات تعلم مخصصة، وتقييمات دقيقة، وتجربة
                 محاكاة واقعية لتعزيز مهاراتك بشكل فعال.
               </p>
@@ -316,6 +361,7 @@ export default function Home() {
                 <Link
                   href="/scenarios"
                   style={styles.btnPrimary}
+                  className="hero-btn"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.tealDark;
                     e.currentTarget.style.transform = "translateY(-2px)";
@@ -328,8 +374,9 @@ export default function Home() {
                   ابدأ تجربتك العملية الآن
                 </Link>
                 <Link
-                  href="/assessment"
+                  href="/assessment/categories"
                   style={styles.btnOutline}
+                  className="hero-btn"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.orange;
                     e.currentTarget.style.color = COLORS.white;
@@ -343,7 +390,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div style={styles.heroArt}>
+            <div style={styles.heroArt} className="hero-art">
               <HeroIllustration />
             </div>
           </div>
@@ -351,7 +398,7 @@ export default function Home() {
 
         <section style={styles.section}>
           <p style={styles.eyebrow}>آلية عمل Smart Lab</p>
-          <h2 style={styles.sectionTitle}>ثلاث خطوات للإتقان</h2>
+          <h2 style={styles.sectionTitle} className="section-title">ثلاث خطوات للإتقان</h2>
           <hr style={styles.divider} />
           <div style={styles.stepsGrid} className="steps-grid">
             {steps.map((step) => (
@@ -375,11 +422,12 @@ export default function Home() {
         </section>
 
         <section style={styles.section}>
-          <h2 style={styles.sectionTitle}>مميزات المنصة</h2>
+          <h2 style={styles.sectionTitle} className="section-title">مميزات المنصة</h2>
           <p style={styles.featuresIntro}>أدوات متطورة مصممة خصيصاً لتسريع عملية التعلم وضمان الفهم العميق.</p>
           <div style={styles.featuresGrid} className="features-grid">
             <div
               style={styles.featureCardTeal}
+              className="feature-card-teal"
               onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
@@ -394,6 +442,7 @@ export default function Home() {
             </div>
             <div
               style={styles.featureCardWhite}
+              className="feature-card-white"
               onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
@@ -409,7 +458,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ✅ إضافة الفوتر */}
         <Footer />
       </div>
     </>
