@@ -1,11 +1,11 @@
-// pages/assessment/[id]/index.js
+// pages/assessment/[id].js
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
-// أعلى الملف
 import Navbar from "../../components/Navbar";
 import { getAssessmentQuestions, getAssessmentName } from '../../data/questions/basics';
+
 const COLORS = {
   teal: "#17919e",
   tealDark: "#127a86",
@@ -24,7 +24,6 @@ const COLORS = {
   warning: "#F39C12",
 };
 
-// ===== الأنماط =====
 const styles = {
   container: {
     minHeight: "100vh",
@@ -101,6 +100,7 @@ const styles = {
     color: COLORS.text,
     width: "100%",
     gap: 12,
+    minHeight: 56,
   },
   optionLetter: { display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", backgroundColor: "#f0f0f0", fontWeight: 700, fontSize: 14, color: COLORS.navy, flexShrink: 0 },
   optionText: { flex: 1 },
@@ -112,16 +112,16 @@ const styles = {
   feedbackCorrectText: { color: COLORS.successDark },
   feedbackWrongText: { color: COLORS.errorDark },
   feedbackCorrectAnswer: { fontSize: 14, color: COLORS.text, fontWeight: 500 },
-  nextButton: { padding: "10px 28px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease, transform 0.25s ease", fontFamily: "inherit" },
+  nextButton: { padding: "10px 28px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease, transform 0.25s ease", fontFamily: "inherit", minHeight: 48 },
   confidenceContainer: { marginTop: 20, padding: "20px 24px", backgroundColor: "#F8F9FA", borderRadius: 14, border: "2px dashed " + COLORS.teal, textAlign: "center" },
   confidenceQuestion: { fontSize: 16, fontWeight: 700, color: COLORS.text, marginBottom: 16 },
   confidenceButtons: { display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" },
-  confidenceButton: { display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 20px", borderRadius: 12, border: "2px solid #e6ecf1", backgroundColor: COLORS.white, cursor: "pointer", transition: "all 0.25s ease", fontFamily: "inherit", fontSize: 14, fontWeight: 600, minWidth: 100, color: COLORS.text },
+  confidenceButton: { display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 20px", borderRadius: 12, border: "2px solid #e6ecf1", backgroundColor: COLORS.white, cursor: "pointer", transition: "all 0.25s ease", fontFamily: "inherit", fontSize: 14, fontWeight: 600, minWidth: 100, color: COLORS.text, minHeight: 56 },
   confidenceIcon: { fontSize: 20, marginBottom: 4 },
   confidenceHint: { fontSize: 12, color: COLORS.muted, marginTop: 12 },
   writingContainer: { marginTop: 8 },
   writingInput: { width: "100%", padding: "14px 18px", borderRadius: 14, border: "2px solid #e6ecf1", fontSize: 16, fontFamily: "inherit", resize: "vertical", minHeight: 120, backgroundColor: COLORS.white, transition: "border-color 0.25s ease", textAlign: "right", outline: "none" },
-  submitWritingButton: { marginTop: 12, padding: "12px 32px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 16, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease", fontFamily: "inherit" },
+  submitWritingButton: { marginTop: 12, padding: "12px 32px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 16, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease", fontFamily: "inherit", minHeight: 48 },
   submitWritingDisabled: { opacity: 0.5, cursor: "not-allowed" },
   loadingContainer: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, backgroundColor: COLORS.bg },
   spinner: { width: 48, height: 48, border: "4px solid #e6ecf1", borderTop: "4px solid " + COLORS.teal, borderRadius: "50%", animation: "spin 1s linear infinite" },
@@ -162,6 +162,14 @@ export default function Assessment() {
   const [hoveredOption, setHoveredOption] = useState(null);
   const [hoveredConfidence, setHoveredConfidence] = useState(null);
   const [isReady, setIsReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const correctCount = answers.filter(a => a === true || a === 1).length;
   const wrongCount = answers.filter(a => a === false || a === 0).length;
@@ -348,33 +356,39 @@ export default function Assessment() {
     <>
       <Head>
         <title>{assessmentName || "تقييم"} - Smart Lab</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
-          @media (max-width: 768px) {
-            .question-card { padding: 20px 16px 24px !important; }
+          @media (max-width: 640px) {
+            .question-card { padding: 16px 14px 20px !important; }
             .question-text { font-size: 17px !important; }
-            .option-button { padding: 14px 16px !important; font-size: 14px !important; }
-            .stats-bar { gap: 12px !important; padding: 12px 16px !important; }
-            .stat-card { padding: 10px 16px !important; min-width: 100px !important; gap: 8px !important; }
-            .stat-value { font-size: 20px !important; }
-            .stat-icon { font-size: 20px !important; }
-            .stat-label { font-size: 11px !important; }
-          }
-          @media (max-width: 480px) {
-            .stats-bar { gap: 8px !important; }
-            .stat-card { padding: 8px 12px !important; min-width: 80px !important; gap: 6px !important; flex-direction: column !important; }
+            .option-button { padding: 14px 12px !important; font-size: 14px !important; min-height: 48px !important; }
+            .stats-bar { gap: 8px !important; padding: 10px 12px !important; flex-wrap: wrap !important; }
+            .stat-card { padding: 8px 12px !important; min-width: 70px !important; flex: 1 1 auto !important; flex-direction: column !important; gap: 4px !important; }
             .stat-value { font-size: 18px !important; }
             .stat-icon { font-size: 18px !important; }
+            .stat-label { font-size: 11px !important; }
+            .confidence-buttons { flex-direction: column !important; gap: 8px !important; }
+            .confidence-button { width: 100% !important; padding: 12px !important; min-height: 48px !important; }
+            .confidence-container { padding: 16px !important; }
+            .writing-input { font-size: 14px !important; min-height: 100px !important; }
+            .submit-writing-button { width: 100% !important; padding: 12px !important; }
+            .next-button { width: 100% !important; justify-content: center !important; }
+            .feedback-container { flex-direction: column !important; align-items: stretch !important; }
+            .question-meta { gap: 6px !important; }
+            .topic-badge { font-size: 11px !important; padding: 3px 10px !important; }
+          }
+          @media (max-width: 480px) {
+            .stat-card { min-width: 60px !important; }
+            .stat-value { font-size: 16px !important; }
             .stat-label { font-size: 10px !important; }
+            .question-text { font-size: 15px !important; }
           }
         `}</style>
       </Head>
 
       <div style={styles.container} dir="rtl">
-        {/* ===== Navbar ===== */}
         <Navbar />
 
-        {/* ===== TOP STATS BAR ===== */}
         <div style={styles.statsBar} className="stats-bar">
           <div style={styles.statCard}>
             <span style={styles.statIcon}>📊</span>
@@ -399,37 +413,36 @@ export default function Assessment() {
           </div>
         </div>
 
-        {/* ===== PROGRESS BAR ===== */}
         <div style={styles.progressContainer}>
           <div style={styles.progressBar}>
             <div style={{ ...styles.progressFill, width: `${progress}%` }} />
           </div>
         </div>
 
-        {/* ===== MAIN ===== */}
         <main style={styles.main}>
           <div style={styles.questionCard} className="question-card">
-            {/* Badges */}
-            <div style={styles.questionMeta}>
-              <span style={styles.topicBadge}>{currentQuestion.topic || "عام"}</span>
+            <div style={styles.questionMeta} className="question-meta">
+              <span style={styles.topicBadge} className="topic-badge">{currentQuestion.topic || "عام"}</span>
               {(() => {
                 const diff = getDifficultyLabel(currentQuestion.difficulty);
                 return <span style={{ ...styles.difficultyBadge, backgroundColor: diff.color + "20", color: diff.color }}>{diff.label}</span>;
               })()}
               <span style={styles.cognitiveBadge}>{getCognitiveLabel(currentQuestion.cognitiveLevel)}</span>
               {currentQuestion.isWriting && <span style={styles.writingBadge}>✏️ كتابي</span>}
+              <span style={{ ...styles.topicBadge, backgroundColor: COLORS.teal, fontSize: 11 }}>
+                {currentIndex + 1} / {totalQuestions}
+              </span>
             </div>
 
-            {/* Question */}
             <h2 style={{ ...styles.questionText, className: "question-text" }}>{currentQuestion.question}</h2>
 
-            {/* Options or Writing */}
             {!showFeedback && !showConfidence && (
               <>
                 {currentQuestion.isWriting ? (
                   <div style={styles.writingContainer}>
                     <textarea
                       style={styles.writingInput}
+                      className="writing-input"
                       value={writtenAnswer}
                       onChange={(e) => setWrittenAnswer(e.target.value)}
                       placeholder="اكتب إجابتك هنا..."
@@ -438,7 +451,7 @@ export default function Assessment() {
                     <button
                       onClick={handleWritingSubmit}
                       disabled={!writtenAnswer.trim()}
-                      style={{ ...styles.submitWritingButton, ...(!writtenAnswer.trim() ? styles.submitWritingDisabled : {}) }}
+                      style={{ ...styles.submitWritingButton, ...(!writtenAnswer.trim() ? styles.submitWritingDisabled : {}), className: "submit-writing-button" }}
                     >
                       إرسال الإجابة
                     </button>
@@ -475,9 +488,8 @@ export default function Assessment() {
               </>
             )}
 
-            {/* Confidence */}
             {showConfidence && (
-              <div style={styles.confidenceContainer}>
+              <div style={styles.confidenceContainer} className="confidence-container">
                 <p style={styles.confidenceQuestion}>ما مدى ثقتك في إجابتك؟</p>
                 <div style={{ ...styles.confidenceButtons, className: "confidence-buttons" }}>
                   {confidenceOptions.map((opt) => (
@@ -502,9 +514,8 @@ export default function Assessment() {
               </div>
             )}
 
-            {/* Feedback */}
             {showFeedback && (
-              <div style={{ ...styles.feedbackContainer, ...(lastAnswerCorrect ? styles.feedbackCorrect : styles.feedbackWrong) }}>
+              <div style={{ ...styles.feedbackContainer, ...(lastAnswerCorrect ? styles.feedbackCorrect : styles.feedbackWrong), className: "feedback-container" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <span style={styles.feedbackIcon}>{lastAnswerCorrect ? "✅" : "❌"}</span>
                   <div>
@@ -516,7 +527,7 @@ export default function Assessment() {
                     )}
                   </div>
                 </div>
-                <button onClick={goToNextOrFinish} style={styles.nextButton}>
+                <button onClick={goToNextOrFinish} style={{ ...styles.nextButton, className: "next-button" }}>
                   {currentIndex + 1 >= totalQuestions ? "📊 عرض النتيجة" : "السؤال التالي ←"}
                 </button>
               </div>
@@ -530,7 +541,6 @@ export default function Assessment() {
           )}
         </main>
 
-        {/* ===== FOOTER ===== */}
         <footer style={styles.footer}>
           <div style={styles.footerInner}>
             <div style={styles.footerCol}>
