@@ -16,7 +16,7 @@ const COLORS = {
   text: "#0d1e3b",
   muted: "#5b6b7b",
   border: "#bcd7db",
-};
+};ز
 
 const styles = {
   page: {
