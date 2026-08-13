@@ -1,5 +1,5 @@
 // components/Navbar.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -16,23 +16,25 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '0.8rem 2.5rem',
+    padding: '0.8rem 1.5rem',
     backgroundColor: COLORS.white,
     boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
     position: 'sticky',
     top: 0,
     zIndex: 100,
     direction: 'rtl',
+    flexWrap: 'wrap',
   },
   headerLeft: {
     display: 'flex',
     alignItems: 'center',
     gap: '1rem',
+    order: 2,
   },
   headerRight: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1.5rem',
+    order: 1,
   },
   logo: {
     display: 'flex',
@@ -40,14 +42,19 @@ const styles = {
     textDecoration: 'none',
   },
   logoImage: {
-    height: '45px',
+    height: '40px',
     width: 'auto',
     objectFit: 'contain',
   },
   nav: {
     display: 'flex',
-    gap: '2rem',
+    gap: '1.5rem',
     alignItems: 'center',
+    order: 3,
+    width: '100%',
+    justifyContent: 'center',
+    marginTop: '0.5rem',
+    flexWrap: 'wrap',
   },
   navLink: {
     textDecoration: 'none',
@@ -68,13 +75,16 @@ const styles = {
     color: COLORS.white,
     border: 'none',
     borderRadius: '30px',
-    padding: '0.6rem 1.5rem',
+    padding: '0.6rem 1.2rem',
     fontWeight: '600',
     fontSize: '0.9rem',
     cursor: 'pointer',
     textDecoration: 'none',
     display: 'inline-block',
     transition: 'background-color 0.25s ease, transform 0.25s ease',
+    minHeight: '44px',
+    minWidth: '44px',
+    textAlign: 'center',
   },
   burgerBtn: {
     display: 'none',
@@ -86,6 +96,7 @@ const styles = {
     border: 'none',
     cursor: 'pointer',
     padding: 0,
+    order: 3,
   },
   burgerLine: {
     width: '100%',
@@ -95,25 +106,24 @@ const styles = {
     transition: 'all 0.3s ease',
   },
   mobileMenu: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    backgroundColor: COLORS.white,
-    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-    display: 'flex',
+    display: 'none',
     flexDirection: 'column',
-    padding: '1rem 2rem',
+    width: '100%',
+    padding: '1rem 0',
     gap: '0.8rem',
-    zIndex: 99,
+    order: 4,
+  },
+  mobileMenuOpen: {
+    display: 'flex',
   },
   mobileNavLink: {
     textDecoration: 'none',
     color: '#64748B',
-    fontSize: '1rem',
+    fontSize: '1.1rem',
     fontWeight: '500',
-    padding: '0.5rem 0',
+    padding: '0.75rem 0',
     borderBottom: '1px solid #f0f0f0',
+    textAlign: 'center',
   },
   mobileNavLinkActive: {
     color: COLORS.teal,
@@ -124,22 +134,34 @@ const styles = {
 export default function Navbar() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const navItems = [
     { label: 'الرئيسية', href: '/' },
     { label: 'محاكي العميل', href: '/scenarios' },
-    { label: 'التقييم التكيفي', href: '/assessment' },
+    { label: 'التقييم التكيفي', href: '/assessment/categories' },
     { label: 'لوحة التشخيص', href: '/dashboard' },
   ];
 
   const isActive = (href) => {
     if (href === '/') return router.pathname === '/';
+    if (href === '/assessment/categories') return router.pathname.startsWith('/assessment');
     return router.pathname.startsWith(href);
   };
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <header style={styles.header}>
-      {/* زر تسجيل الدخول */}
       <div style={styles.headerLeft}>
         <Link
           href="/auth/login"
@@ -155,38 +177,44 @@ export default function Navbar() {
         >
           تسجيل الدخول
         </Link>
-        {/* زر القائمة للموبايل */}
-        <button
-          style={styles.burgerBtn}
-          className="burger-btn"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="القائمة"
-        >
-          <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
-          <span style={{ ...styles.burgerLine, opacity: isMenuOpen ? 0 : 1 }} />
-          <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(-45deg) translate(6px, -7px)' : 'none' }} />
-        </button>
+        {isMobile && (
+          <button
+            style={styles.burgerBtn}
+            onClick={toggleMenu}
+            aria-label="القائمة"
+          >
+            <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
+            <span style={{ ...styles.burgerLine, opacity: isMenuOpen ? 0 : 1 }} />
+            <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(-45deg) translate(6px, -7px)' : 'none' }} />
+          </button>
+        )}
       </div>
 
-      {/* الروابط الرئيسية */}
-      <nav style={styles.nav} className="desktop-nav">
-        {navItems.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            style={{
-              ...styles.navLink,
-              ...(isActive(item.href) ? styles.navLinkActive : {}),
-            }}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+      {!isMobile && (
+        <nav style={styles.nav}>
+          {navItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              style={{
+                ...styles.navLink,
+                ...(isActive(item.href) ? styles.navLinkActive : {}),
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      )}
 
-      {/* القائمة المتنقلة للموبايل */}
-      {isMenuOpen && (
-        <div style={styles.mobileMenu} className="mobile-menu">
+      <div style={styles.headerRight}>
+        <Link href="/" style={styles.logo}>
+          <img src="/logo.png" alt="Smart Lab Logo" style={styles.logoImage} />
+        </Link>
+      </div>
+
+      {isMobile && (
+        <div style={{ ...styles.mobileMenu, ...(isMenuOpen ? styles.mobileMenuOpen : {}) }}>
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -202,33 +230,6 @@ export default function Navbar() {
           ))}
         </div>
       )}
-
-      {/* الشعار */}
-      <div style={styles.headerRight}>
-        <Link href="/" style={styles.logo}>
-          <img src="/logo.png" alt="Smart Lab Logo" style={styles.logoImage} />
-        </Link>
-      </div>
-
-      {/* أنماط الاستجابة */}
-      <style jsx>{`
-        @media (max-width: 900px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .burger-btn {
-            display: flex !important;
-          }
-        }
-        @media (min-width: 901px) {
-          .burger-btn {
-            display: none !important;
-          }
-          .mobile-menu {
-            display: none !important;
-          }
-        }
-      `}</style>
     </header>
   );
 }
