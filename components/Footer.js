@@ -14,56 +14,107 @@ const styles = {
   footer: {
     backgroundColor: COLORS.navy,
     color: COLORS.white,
-    padding: "60px 0 0 0",  // ✅ إزالة padding الجانبي
-    marginTop: "auto",
-    width: "100%",
+    padding: '40px 20px 0',
+    marginTop: 'auto',
+    width: '100%',
   },
   footerInner: {
     maxWidth: 1200,
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: 40,
-    padding: "0 40px 40px 40px",  // ✅ padding جانبي للمحتوى فقط
-    borderBottom: "1px solid rgba(255,255,255,0.1)",
+    margin: '0 auto',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '30px',
+    padding: '0 20px 30px',
+    borderBottom: '1px solid rgba(255,255,255,0.1)',
   },
-  footerCol: { display: "flex", flexDirection: "column", gap: 12 },
-  footerLogo: { display: "flex", alignItems: "center", gap: 10 },
+  footerCol: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    alignItems: 'flex-start',
+  },
+  footerLogo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
   footerLogoImage: {
-    height: '45px',
+    height: '40px',
     width: 'auto',
     objectFit: 'contain',
   },
-  footerBrand: { fontSize: 24, fontWeight: 800 },
-  footerBrandOrange: { color: COLORS.orange },
-  footerDesc: { fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.75)", maxWidth: 320, margin: 0 },
-  footerHeading: { fontSize: 16, fontWeight: 700, margin: 0, color: COLORS.white },
-  footerLinks: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 8 },
-  footerLink: { color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 14, transition: "color 0.25s ease" },
-  footerContactList: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 },
-  footerContactItem: { display: "flex", alignItems: "center", gap: 12, fontSize: 14 },
-  footerContactIcon: { fontSize: 18, color: COLORS.orange, minWidth: 20 },
-  footerContactLink: { color: "rgba(255,255,255,0.7)", textDecoration: "none", transition: "color 0.25s ease" },
-  
-  // ✅ القسم السفلي - ممتد بالكامل
+  footerBrand: {
+    fontSize: '22px',
+    fontWeight: 800,
+  },
+  footerBrandOrange: {
+    color: COLORS.orange,
+  },
+  footerDesc: {
+    fontSize: '14px',
+    lineHeight: 1.8,
+    color: 'rgba(255,255,255,0.75)',
+    maxWidth: '280px',
+    margin: 0,
+  },
+  footerHeading: {
+    fontSize: '16px',
+    fontWeight: 700,
+    margin: 0,
+    color: COLORS.white,
+  },
+  footerLinks: {
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  footerLink: {
+    color: 'rgba(255,255,255,0.7)',
+    textDecoration: 'none',
+    fontSize: '14px',
+    transition: 'color 0.25s ease',
+    padding: '4px 0',
+  },
+  footerContactList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  },
+  footerContactItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    fontSize: '14px',
+  },
+  footerContactIcon: {
+    fontSize: '18px',
+    color: COLORS.orange,
+    minWidth: '20px',
+  },
+  footerContactLink: {
+    color: 'rgba(255,255,255,0.7)',
+    textDecoration: 'none',
+    transition: 'color 0.25s ease',
+  },
   footerBottom: {
-    backgroundColor: "rgba(0,0,0,0.3)",
-    padding: "16px 0",
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    padding: '16px 20px',
     marginTop: 0,
-    width: "100%",
+    width: '100%',
+    textAlign: 'center',
   },
   footerBottomInner: {
     maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 13,
-    color: "rgba(255,255,255,0.7)",
-    flexWrap: "wrap",
-    gap: 8,
-    textAlign: "center",
-    padding: "0 40px",  // ✅ padding جانبي للنص فقط
+    margin: '0 auto',
+    fontSize: '13px',
+    color: 'rgba(255,255,255,0.7)',
+    padding: '0 20px',
   },
 };
 
@@ -73,44 +124,23 @@ export default function Footer() {
       <div style={styles.footerInner}>
         <div style={styles.footerCol}>
           <div style={styles.footerLogo}>
-            <img 
-              src="/logo.png" 
-              alt="Smart Lab Logo" 
-              style={styles.footerLogoImage} 
-            />
+            <img src="/logo.png" alt="Smart Lab Logo" style={styles.footerLogoImage} />
             <span style={styles.footerBrand}>
               Smart<span style={styles.footerBrandOrange}>Lab</span>
             </span>
           </div>
           <p style={styles.footerDesc}>
-            منصة تعليمية متطورة تعتمد على الذكاء الاصطناعي لتقديم تجارب تعلم مخصصة، 
-            تقييمات دقيقة، ومحاكاة واقعية.
+            منصة تعليمية متطورة تعتمد على الذكاء الاصطناعي لتقديم تجارب تعلم مخصصة، تقييمات دقيقة، ومحاكاة واقعية.
           </p>
         </div>
 
         <div style={styles.footerCol}>
           <h4 style={styles.footerHeading}>روابط سريعة</h4>
           <ul style={styles.footerLinks}>
-            <li>
-              <Link href="/" style={styles.footerLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                الرئيسية
-              </Link>
-            </li>
-            <li>
-              <Link href="/assessment" style={styles.footerLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                التقييمات
-              </Link>
-            </li>
-            <li>
-              <Link href="/scenarios" style={styles.footerLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                السيناريوهات
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard" style={styles.footerLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                لوحة التشخيص
-              </Link>
-            </li>
+            <li><Link href="/" style={styles.footerLink}>الرئيسية</Link></li>
+            <li><Link href="/assessment/categories" style={styles.footerLink}>التقييمات</Link></li>
+            <li><Link href="/scenarios" style={styles.footerLink}>السيناريوهات</Link></li>
+            <li><Link href="/dashboard" style={styles.footerLink}>لوحة التشخيص</Link></li>
           </ul>
         </div>
 
@@ -119,69 +149,25 @@ export default function Footer() {
           <ul style={styles.footerContactList}>
             <li style={styles.footerContactItem}>
               <FaEnvelope style={styles.footerContactIcon} />
-              <a href="mailto:info@smartlab.com" style={styles.footerContactLink} onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}>
-                info@smartlab.com
-              </a>
+              <a href="mailto:info@smartlab.com" style={styles.footerContactLink}>info@smartlab.com</a>
             </li>
             <li style={styles.footerContactItem}>
               <FaFacebookF style={styles.footerContactIcon} />
-              <a 
-                href="https://facebook.com/smartlab" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                style={styles.footerContactLink} 
-                onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} 
-                onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}
-              >
-                Facebook
-              </a>
+              <a href="https://facebook.com/smartlab" target="_blank" rel="noopener noreferrer" style={styles.footerContactLink}>Facebook</a>
             </li>
             <li style={styles.footerContactItem}>
               <FaInstagram style={styles.footerContactIcon} />
-              <a 
-                href="https://instagram.com/smartlab" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                style={styles.footerContactLink} 
-                onMouseEnter={(e) => e.currentTarget.style.color = COLORS.white} 
-                onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}
-              >
-                Instagram
-              </a>
+              <a href="https://instagram.com/smartlab" target="_blank" rel="noopener noreferrer" style={styles.footerContactLink}>Instagram</a>
             </li>
           </ul>
         </div>
       </div>
 
-      {/* ✅ القسم السفلي - ممتد بالكامل */}
       <div style={styles.footerBottom}>
         <div style={styles.footerBottomInner}>
           <span>© 2026 SmartLab. جميع الحقوق محفوظة</span>
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .footer-inner {
-            grid-template-columns: 1fr !important;
-            gap: 30px;
-            text-align: center;
-            padding: 0 20px 30px 20px !important;
-          }
-          .footer-desc {
-            max-width: 100% !important;
-            text-align: center;
-          }
-          .footer-contact-item {
-            justify-content: center;
-          }
-          .footer-bottom-inner {
-            flex-direction: column;
-            text-align: center;
-            padding: 0 20px !important;
-          }
-        }
-      `}</style>
     </footer>
   );
 }
