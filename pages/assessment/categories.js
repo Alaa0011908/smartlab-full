@@ -25,7 +25,7 @@ const styles = {
     fontFamily: "'Segoe UI', Tahoma, 'Cairo', system-ui, sans-serif",
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'stretch', // ✅ تغيير من 'center' إلى 'stretch'
+    alignItems: 'stretch',
     width: '100%',
   },
   main: {
@@ -126,19 +126,18 @@ export default function Categories() {
   }, []);
 
   const categories = [
-    { id: 'concepts', number: '01', title: '📘 المفاهيم العامة', description: 'تعريف الشبكة، أنواعها، نماذج Client-Server و P2P، الكابلات، VLAN، VPN.', path: '/assessment/basics' },
-    { id: 'ipv4', number: '02', title: '🌍 IPv4', description: 'بنية العنوان، الفئات (Classes)، العناوين العامة والخاصة، Gateway، Loopback.', path: '/assessment/ipv4' },
-    { id: 'subnetting', number: '03', title: '🔢 Subnetting', description: 'حسابات الشبكات الفرعية، CIDR، المضيفين، عنوان البث، الـ Increment.', path: '/assessment/subnetting' },
-    { id: 'ipv6', number: '04', title: '🛜 IPv6', description: 'بنية IPv6، أنواع العناوين، الاختصار، المقارنة مع IPv4.', path: '/assessment/ipv6' },
-    { id: 'osi', number: '05', title: '📡 OSI Model', description: 'الطبقات السبع، وظائف كل طبقة، البروتوكولات، وحدات البيانات (PDU).', path: '/assessment/osi' },
-    { id: 'devices', number: '06', title: '💻 أجهزة الشبكات', description: 'سويتش، راوتر، هاب، مودم، Bridge، Gateway، Access Point، Firewall.', path: '/assessment/devices' },
-    { id: 'email', number: '07', title: '📧 بروتوكولات البريد', description: 'SMTP، POP3، IMAP، المنافذ الافتراضية، الفرق بين البروتوكولات.', path: '/assessment/email' },
-    { id: 'tcpip', number: '08', title: '🔗 TCP/IP', description: 'طبقات TCP/IP، TCP vs UDP، HTTP، Three-Way Handshake.', path: '/assessment/tcpip' },
+    { id: 'concepts', number: '01', title: '📘 المفاهيم العامة', description: 'تعريف الشبكة، أنواعها، نماذج Client-Server و P2P، الكابلات، VLAN، VPN.' },
+    { id: 'ipv4', number: '02', title: '🌍 IPv4', description: 'بنية العنوان، الفئات (Classes)، العناوين العامة والخاصة، Gateway، Loopback.' },
+    { id: 'subnetting', number: '03', title: '🔢 Subnetting', description: 'حسابات الشبكات الفرعية، CIDR، المضيفين، عنوان البث، الـ Increment.' },
+    { id: 'ipv6', number: '04', title: '🛜 IPv6', description: 'بنية IPv6، أنواع العناوين، الاختصار، المقارنة مع IPv4.' },
+    { id: 'osi', number: '05', title: '📡 OSI Model', description: 'الطبقات السبع، وظائف كل طبقة، البروتوكولات، وحدات البيانات (PDU).' },
+    { id: 'devices', number: '06', title: '💻 أجهزة الشبكات', description: 'سويتش، راوتر، هاب، مودم، Bridge، Gateway، Access Point، Firewall.' },
+    { id: 'email', number: '07', title: '📧 بروتوكولات البريد', description: 'SMTP، POP3، IMAP، المنافذ الافتراضية، الفرق بين البروتوكولات.' },
+    { id: 'tcpip', number: '08', title: '🔗 TCP/IP', description: 'طبقات TCP/IP، TCP vs UDP، HTTP، Three-Way Handshake.' },
   ];
 
   return (
     <div style={styles.page}>
-      {/* ✅ الـ Navbar من المكون الموحد */}
       <Navbar />
 
       <main style={styles.main}>
@@ -178,7 +177,7 @@ export default function Categories() {
               <div style={styles.categoryButtons}>
                 <button
                   style={styles.btnFilled}
-                  onClick={() => router.push(`${cat.path}?mode=quick`)}
+                  onClick={() => router.push(`/assessment/${cat.id}?mode=quick`)}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.tealDark;
                     e.currentTarget.style.transform = 'scale(1.02)';
@@ -192,7 +191,7 @@ export default function Categories() {
                 </button>
                 <button
                   style={styles.btnOutline}
-                  onClick={() => router.push(`${cat.path}?mode=full`)}
+                  onClick={() => router.push(`/assessment/${cat.id}?mode=full`)}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.orange;
                     e.currentTarget.style.color = COLORS.white;
