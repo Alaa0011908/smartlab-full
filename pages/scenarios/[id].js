@@ -12,7 +12,6 @@ export default function ScenarioDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const fileInputRef = useRef(null);
 
   const [currentMainStep, setCurrentMainStep] = useState(0);
@@ -51,10 +50,10 @@ export default function ScenarioDetail() {
       title: 'ملف العميل',
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&fit=crop&q=80',
       clientName: 'د. خالد',
-      role: 'مدير المركز الطبي',  // ✅ تم التعديل
+      role: 'مدير المركز الطبي',
       difficulty: 'متوسط',
-      projectLabel: 'تصميم شبكة مركز طبي صغير 🏥',  // ✅ تم التعديل
-      description: 'مركز طبي يحتاج شبكة آمنة للأقسام الطبية، الاستقبال والعيادات الخارجية.',  // ✅ تم التعديل
+      projectLabel: 'تصميم شبكة مركز طبي صغير 🏥',
+      description: 'مركز طبي يحتاج شبكة آمنة للأقسام الطبية، الاستقبال والعيادات الخارجية.',
       personalityTags: [
         { text: '⚡ دقيق للغاية', bg: '#FEE2E2', color: '#991B1B' },
         { text: '⏱️ سريع الرد', bg: '#CCFBF1', color: '#0F766E' },
@@ -125,6 +124,108 @@ export default function ScenarioDetail() {
     }
   };
 
+  // ===== الدالة الذكية لتحليل الردود واكتشاف الأخطاء =====
+  const analyzeResponse = (scenarioId, query) => {
+    // قاعدة عامة: إذا كان السؤال مختصراً جداً (أقل من 4 كلمات) يُعتبر غير كافٍ
+    const wordCount = query.split(' ').length;
+    if (wordCount < 3) {
+      return {
+        type: 'incomplete',
+        reply: "❌ ردك مختصر جداً. نحتاج تفاصيل أكثر لتقييم فهمك للسيناريو. حاول أن تشرح خطواتك بوضوح، مثلاً: 'سأستخدم 3 نقاط وصول موزعة كذا...' ثم اشرح الأسباب."
+      };
+    }
+
+    // تحليل الأخطاء حسب السيناريو
+    if (scenarioId === 'cafe') {
+      // أخطاء شائعة في سيناريو المقهى
+      if (query.includes('1') && query.includes('access point') && !query.includes('2') && !query.includes('3')) {
+        return {
+          type: 'error',
+          reply: "❗ للأسف، إجابتك غير دقيقة. مقهى بـ 50 زبون يومياً يحتاج على الأقل 3-4 نقاط وصول (Access Points) لتغطية الصالة والمكاتب والكاشير. نقطة وصول واحدة غير كافية وستسبب ازدحاماً وضعف إشارة. الحل الأمثل:\n- نقطة في منتصف صالة الجلوس.\n- نقطة قرب الكاشير.\n- نقطة في المكاتب الإدارية.\n- نقطة احتياطية أو خارجية إذا لزم الأمر.\nجرب مرة أخرى مع ذكر التوزيع المقترح."
+        };
+      }
+      if (query.includes('vlan') && (query.includes('واحد') || query.includes('شبكة واحدة') || query.includes('بدون تقسيم'))) {
+        return {
+          type: 'error',
+          reply: "⚠️ هذا خطأ! في شبكة المقهى، لا يمكن الاكتفاء بشبكة واحدة. يجب تقسيم الشبكة إلى VLANs معزولة:\n- VLAN للزبائن (معزول عن بقية الشبكة).\n- VLAN للكاشير ونقاط البيع.\n- VLAN للإدارة والموظفين.\n- VLAN لإدارة الأجهزة.\nهذا التقسيم يحمي بيانات العملاء ويمنع أي اختراق. أعد صياغة اقتراحك مع ذكر التقسيم المطلوب."
+        };
+      }
+      if (query.includes('راوتر') && !query.includes('جدار') && !query.includes('firewall') && !query.includes('أمان')) {
+        return {
+          type: 'error',
+          reply: "🔒 أنت نسيت جانب الأمان! الراوتر وحده لا يكفي؛ يجب أن يكون مزوداً بجدار ناري (Firewall) لحماية الشبكة من الهجمات. أيضاً، عليك التفكير في تحديثات البرامج الثابتة وكلمات مرور قوية. أضف هذا البعد إلى خطتك."
+        };
+      }
+      // إذا كانت الإجابة صحيحة نسبياً
+      if (query.includes('3') && (query.includes('access point') || query.includes('نقاط وصول')) && query.includes('vlan')) {
+        return {
+          type: 'good',
+          reply: "✅ ممتاز! اقتراحك جيد ويغطي الجوانب الأساسية. لكن دعنا نعمق: ما هي أنواع نقاط الوصول التي ستختارها؟ هل ستدعم Wi-Fi 6؟ وكيف ستؤمن الشبكة اللاسلكية؟ فكر في WPA3 والبوابة التفاعلية. أجب على هذه النقاط لتكمل إجابتك."
+        };
+      }
+    }
+
+    if (scenarioId === 'hospital') {
+      if (query.includes('شبكة واحدة') || query.includes('بدون عزل')) {
+        return {
+          type: 'error',
+          reply: "🚨 هذا غير مقبول أمنياً! في المركز الطبي، يجب عزل كل قسم بشبكة VLAN منفصلة:\n- VLAN للاستقبال.\n- VLAN للعيادات.\n- VLAN للمخبر (معزول تماماً).\n- VLAN للإدارة.\n- VLAN للضيوف.\nعدم العزل يعرض بيانات المرضى للخطر. أعد تصميم الـ VLANs مع ذكر آلية العزل."
+        };
+      }
+      if (query.includes('firewall') && !query.includes('ips') && !query.includes('ids') && !query.includes('تسجيل')) {
+        return {
+          type: 'error',
+          reply: "⚠️ جدار ناري فقط لا يكفي للمركز الطبي. تحتاج إلى نظام كشف ومنع التسلل (IPS/IDS) وتسجيل جميع العمليات (Logging) للامتثال للمعايير الصحية. أضف هذه الميزات إلى خطة الأمان."
+        };
+      }
+      if (query.includes('سرعة') && !query.includes('ألياف') && !query.includes('fiber')) {
+        return {
+          type: 'error',
+          reply: "❌ السرعة وحدها ليست كافية. لضمان استقرار الشبكة في المركز الطبي، يجب استخدام كابلات ألياف بصرية للوصلات الأساسية وتوزيع الأحمال باستخدام LACP. فكر أيضاً في مسارات احتياطية (Redundancy)."
+        };
+      }
+      if (query.includes('vlan') && query.includes('مخبر') && query.includes('عزل')) {
+        return {
+          type: 'good',
+          reply: "✅ جيد، أنت تدرك أهمية عزل المخبر. لكن ماذا عن حماية البيانات المنقولة بين الأقسام؟ استخدم تشفيراً قوياً وطبّق سياسات ACLs لمنع الوصول غير المصرح به. هات التفاصيل."
+        };
+      }
+    }
+
+    if (scenarioId === 'office') {
+      if (query.includes('vpn') && !query.includes('مصادقة') && !query.includes('2fa') && !query.includes('ثنائية')) {
+        return {
+          type: 'error',
+          reply: "🔓 المصادقة الثنائية (2FA) ليست خياراً، بل ضرورة لتأمين VPN. بدونها، تظل الشبكة عرضة للاختراق. أضف 2FA إلى اقتراحك واذكر بروتوكولاً مناسباً مثل OpenVPN أو WireGuard."
+        };
+      }
+      if (query.includes('ip') && (query.includes('نطاق واحد') || query.includes('شبكة فرعية واحدة'))) {
+        return {
+          type: 'error',
+          reply: "📌 استخدام نطاق IP واحد لجميع الأقسام خطأ إداري وأمني. يجب توزيع العناوين كالتالي:\n- الموظفين: 192.168.1.0/24\n- الإدارة: 192.168.100.0/24\n- VPN: 10.8.0.0/24\n- الضيوف: 192.168.200.0/24\nهذا يسهل الإدارة ويحسن الأداء. أعد صياغة توزيع الـ IPs."
+        };
+      }
+      if (query.includes('توسع') && !query.includes('ألياف') && !query.includes('قابلية')) {
+        return {
+          type: 'error',
+          reply: "⚠️ للتوسع المستقبلي، يجب التخطيط لربط الطابقين بألياف بصرية واستخدام سويتشات قابلة للتكديس. كما يجب اختيار عنونة مرنة (CIDR) لتسهيل إضافة شبكات جديدة. لم تذكر أي من هذه النقاط، راجع إجابتك."
+        };
+      }
+      if (query.includes('vpn') && query.includes('openvpn') && query.includes('2fa')) {
+        return {
+          type: 'good',
+          reply: "✅ ممتاز! أنت على الطريق الصحيح مع OpenVPN و2FA. لكن ماذا عن سياسات الوصول (RBAC) وكيف ستحدد صلاحيات كل موظف؟ أيضاً، ما هو الحل لضمان سرعة الاتصال عند ازدحام VPN؟ فكر في توزيع الأحمال أو استخدام أكثر من خادم VPN."
+        };
+      }
+    }
+
+    // إذا لم يتم اكتشاف خطأ معين، نُعيد رداً عاماً يحفز المستخدم على التفكير بشكل أعمق
+    return {
+      type: 'neutral',
+      reply: "🧐 فكرة جيدة، لكني أريدك أن تتعمق أكثر. هل فكرت في الجوانب التالية:\n- التكلفة التقريبية.\n- سهولة الصيانة والإدارة.\n- قابلية التوسع.\n- الأمان.\nأعد صياغة إجابتك مع أخذ هذه النقاط بعين الاعتبار، وسأقيمها بدقة."
+    };
+  };
+
   const handleSend = async (directText = null) => {
     const textToSend = typeof directText === 'string' ? directText.trim() : inputValue.trim();
     if (!textToSend && !selectedFile || isLoading) return;
@@ -169,23 +270,12 @@ export default function ScenarioDetail() {
         { id: Date.now() + 1, sender: 'client', text: data.reply || data.message }
       ]);
     } catch (error) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      let aiReply = "ممتاز جداً! اقتراحك يغطي جوانب ممتازة. كيف ترى حماية هذه الأجهزة من التداخل؟";
+      await new Promise(resolve => setTimeout(resolve, 800));
       const query = textToSend.toLowerCase();
-
-      if (id === 'cafe' || !id) {
-        if (query.includes('access point') || query.includes('كم') || query.includes('ap')) {
-          aiReply = "ممتاز سؤال! لمقهى بـ 50 زبون يومياً، تحتاج تقريباً 3-4 Access Points لضمان التغطية المثالية للزبائن والإدارة.";
-        } else if (query.includes('vlan') || query.includes('كيف تصمم')) {
-          aiReply = "فكرة ممتازة! لتصميم الـ VLANs بشكل آمن، يفضل تقسيم الشبكة لـ 3 أجزاء معزولة: واحدة للزبائن، وواحدة لنقاط البيع (الكاشير)، وواحدة للموظفين والإدارة.";
-        } else if (query.includes('تجهيزات') || query.includes('التجهيزات')) {
-          aiReply = "بالنسبة للتجهيزات، ستحتاج إلى: راوتر رئيسي بميزة جدار الحماية، سويتش يدعم الـ PoE لتغذية نقاط الوصول مباشرة بالطاقة، ونقاط الوصول (APs) المتوافقة.";
-        }
-      }
-
+      const analysis = analyzeResponse(id, query);
       setMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, sender: 'client', text: aiReply }
+        { id: Date.now() + 1, sender: 'client', text: analysis.reply }
       ]);
     } finally {
       setIsLoading(false);
@@ -199,8 +289,6 @@ export default function ScenarioDetail() {
           .workspace-layout { flex-direction: column !important; }
           .sidebar-layout { width: 100% !important; order: -1; }
           .chat-card-layout { height: 60vh !important; }
-          .desktop-nav { display: none !important; }
-          .burger-btn { display: flex !important; }
           .footer-container-layout { flex-direction: column !important; gap: 1.5rem; text-align: center; }
           .footer-brand-txt { text-align: center !important; }
         }
@@ -293,7 +381,7 @@ export default function ScenarioDetail() {
                   <div style={styles.clientMessageRow}>
                     <img src={scenario.avatar} alt={scenario.clientName} style={styles.avatar} />
                     <div style={styles.messageBubbleClient}>
-                      <span style={styles.typingText}>جاري قراءة ردك وتحليله هندسياً...</span>
+                      <span style={styles.typingText}>جاري تحليل ردك وتقييم دقته...</span>
                     </div>
                   </div>
                 )}
@@ -304,7 +392,7 @@ export default function ScenarioDetail() {
                 <textarea
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="اكتب ردك هنا... (سيتم تقييم احترافيتك وتعاطفك)"
+                  placeholder="اكتب ردك هنا... (سيتم تقييم احترافيتك ودقتك)"
                   style={styles.textArea}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -327,7 +415,7 @@ export default function ScenarioDetail() {
                 </div>
 
                 <div style={styles.evaluationFooterRow}>
-                  <span style={styles.evaluationText}>يتم تقييم: <strong style={{color: '#032639'}}>الوضوح، التعاطف، التوجيه نحو الحل</strong></span>
+                  <span style={styles.evaluationText}>يتم تقييم: <strong style={{color: '#032639'}}>الوضوح، الدقة، الشمولية، الأمان</strong></span>
                   <p style={styles.projectMiniLabel}>{scenario.projectLabel}</p>
                 </div>
               </div>
@@ -410,10 +498,10 @@ export default function ScenarioDetail() {
               <button onClick={() => setShowTips(false)} style={styles.closeTipsBtn}>✕</button>
             </div>
             <div style={styles.tipsContent}>
-              <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>ابدأ بطرح أسئلة للزبون لتفهم متطلباته.</p></div>
-              <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>فكر في عدد الأجهزة والتغطية المطلوبة.</p></div>
-              <div style={styles.tipTextRow}><span style={styles.tipNumber}>3.</span><p style={styles.tipText}>حدد نوع التجهيزات التي تحتاجها.</p></div>
-              <div style={styles.tipTextRow}><span style={styles.tipNumber}>4.</span><p style={styles.tipText}>لا تنسى متطلبات الأمان والتوسع المستقبلي.</p></div>
+              <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>ابدأ بطرح أسئلة للزبون لتفهم متطلباته بدقة.</p></div>
+              <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>فكر في عدد الأجهزة والتغطية المطلوبة، واختر نقاط وصول مناسبة.</p></div>
+              <div style={styles.tipTextRow}><span style={styles.tipNumber}>3.</span><p style={styles.tipText}>حدد نوع التجهيزات (راوتر، سويتش، كابلات) بناءً على حجم الشبكة واحتياجات الأمان.</p></div>
+              <div style={styles.tipTextRow}><span style={styles.tipNumber}>4.</span><p style={styles.tipText}>لا تنسى متطلبات الأمان والتوسع المستقبلي، خاصة في المشاريع المتوسطة والكبيرة.</p></div>
             </div>
             <div style={styles.tipsFooter}>
               <button onClick={() => setShowTips(false)} style={styles.understandBtn}>حسناً، فهمت</button>
