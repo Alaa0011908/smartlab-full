@@ -1,9 +1,10 @@
-// pages/assessment/network-sub-tracks.js
+// pages/assessment/network-sub-tracks/index.js
 import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import Head from 'next/head';
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
 
 const SUB_TRACKS_DATA = [
   {
@@ -196,93 +197,120 @@ export default function NetworkSubTracks() {
   };
 
   return (
-    <div style={styles.page} dir="rtl">
-      <Navbar />
+    <>
+      <Head>
+        <title>المسارات الفرعية - Smart Lab</title>
+        <meta name="description" content="اختر المسار الفرعي المناسب لك في هندسة الشبكات." />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
+        <style>{`
+          @media (max-width: 768px) {
+            .cards-grid { flex-direction: column !important; align-items: center !important; }
+            .track-card { width: 100% !important; max-width: 400px !important; padding: 30px 20px !important; }
+            .main-title { font-size: 28px !important; }
+            .subtitle { font-size: 15px !important; }
+            .card-title { font-size: 20px !important; }
+          }
+          @media (max-width: 480px) {
+            .main-wrapper { padding: 40px 12px 60px !important; }
+            .main-title { font-size: 24px !important; }
+            .subtitle { font-size: 14px !important; }
+            .track-card { padding: 24px 16px !important; }
+            .card-title { font-size: 18px !important; }
+            .card-description { font-size: 13px !important; }
+            .topic-item { font-size: 12px !important; }
+            .button { font-size: 14px !important; padding: 10px 24px !important; }
+          }
+        `}</style>
+      </Head>
 
-      <div style={styles.mainWrapper}>
-        <section style={styles.sectionHeader}>
-          <h1 style={styles.mainTitle}>اختر المسار الفرعي لهندسة الشبكات</h1>
-          <p style={styles.subtitle}>
-            اختر أحد المسارات المتخصصة أدناه لبدء الاختبار التكيفي وتقييم مهاراتك بدقة.
-          </p>
-        </section>
+      <div style={styles.page} dir="rtl">
+        <Navbar />
 
-        <main style={styles.cardsGrid}>
-          {SUB_TRACKS_DATA.map((track, index) => (
-            <div
-              key={track.id}
-              style={styles.card}
-              className="track-card"
-              onMouseEnter={(e) => {
-                const card = e.currentTarget;
-                card.style.transform = 'translateY(-8px)';
-                card.style.boxShadow = '0 20px 40px rgba(15, 118, 110, 0.25)';
-                card.style.borderColor = '#0f766e';
-                card.style.backgroundColor = '#0f766e';
-                const title = card.querySelector('.card-title');
-                const desc = card.querySelector('.card-desc');
-                const topics = card.querySelectorAll('.topic-item');
-                if (title) title.style.color = '#ffffff';
-                if (desc) desc.style.color = '#ffffff';
-                topics.forEach(t => t.style.color = '#ffffff');
-                const btn = card.querySelector('.track-btn');
-                if (btn) {
-                  btn.style.backgroundColor = '#f8f9fa';
-                  btn.style.color = '#0f766e';
-                }
-              }}
-              onMouseLeave={(e) => {
-                const card = e.currentTarget;
-                card.style.transform = 'translateY(0px)';
-                card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.05)';
-                card.style.borderColor = '#e5e7eb';
-                card.style.backgroundColor = '#ffffff';
-                const title = card.querySelector('.card-title');
-                const desc = card.querySelector('.card-desc');
-                const topics = card.querySelectorAll('.topic-item');
-                if (title) title.style.color = '#0D1E3B';
-                if (desc) desc.style.color = '#6B7280';
-                topics.forEach(t => t.style.color = '#475569');
-                const btn = card.querySelector('.track-btn');
-                if (btn) {
-                  btn.style.backgroundColor = track.actionType === 'primary' ? '#0f766e' : '#e0e0e0';
-                  btn.style.color = track.actionType === 'primary' ? '#ffffff' : '#777777';
-                }
-              }}
-            >
-              <div style={styles.iconPlaceholder}>🌐</div>
-              <h2 style={styles.cardTitle} className="card-title">{track.title}</h2>
-              <p style={styles.cardDescription} className="card-desc">{track.description}</p>
+        <div style={styles.mainWrapper} className="main-wrapper">
+          <section style={styles.sectionHeader}>
+            <h1 style={styles.mainTitle} className="main-title">اختر المسار الفرعي لهندسة الشبكات</h1>
+            <p style={styles.subtitle} className="subtitle">
+              اختر أحد المسارات المتخصصة أدناه لبدء الاختبار التكيفي وتقييم مهاراتك بدقة.
+            </p>
+          </section>
 
-              <div style={styles.topicsContainer}>
-                <div style={styles.topicsTitle}>📌 تشمل المحاور:</div>
-                <ul style={styles.topicsList}>
-                  {track.topics.map((topic, idx) => (
-                    <li key={idx} style={styles.topicItem} className="topic-item">
-                      <span style={styles.topicBullet}>•</span>
-                      {topic}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <button
-                onClick={() => handleNavigation(track.id)}
-                style={{
-                  ...styles.button,
-                  ...(track.actionType === 'secondary' ? styles.btnSecondary : styles.btnPrimary)
+          <main style={styles.cardsGrid} className="cards-grid">
+            {SUB_TRACKS_DATA.map((track, index) => (
+              <div
+                key={track.id}
+                style={styles.card}
+                className="track-card"
+                onMouseEnter={(e) => {
+                  const card = e.currentTarget;
+                  card.style.transform = 'translateY(-8px)';
+                  card.style.boxShadow = '0 20px 40px rgba(15, 118, 110, 0.25)';
+                  card.style.borderColor = '#0f766e';
+                  card.style.backgroundColor = '#0f766e';
+                  const title = card.querySelector('.card-title');
+                  const desc = card.querySelector('.card-desc');
+                  const topics = card.querySelectorAll('.topic-item');
+                  if (title) title.style.color = '#ffffff';
+                  if (desc) desc.style.color = '#ffffff';
+                  topics.forEach(t => t.style.color = '#ffffff');
+                  const btn = card.querySelector('.track-btn');
+                  if (btn) {
+                    btn.style.backgroundColor = '#f8f9fa';
+                    btn.style.color = '#0f766e';
+                  }
                 }}
-                className="track-btn"
-                disabled={track.actionType === 'secondary'}
+                onMouseLeave={(e) => {
+                  const card = e.currentTarget;
+                  card.style.transform = 'translateY(0px)';
+                  card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.05)';
+                  card.style.borderColor = '#e5e7eb';
+                  card.style.backgroundColor = '#ffffff';
+                  const title = card.querySelector('.card-title');
+                  const desc = card.querySelector('.card-desc');
+                  const topics = card.querySelectorAll('.topic-item');
+                  if (title) title.style.color = '#0D1E3B';
+                  if (desc) desc.style.color = '#6B7280';
+                  topics.forEach(t => t.style.color = '#475569');
+                  const btn = card.querySelector('.track-btn');
+                  if (btn) {
+                    btn.style.backgroundColor = track.actionType === 'primary' ? '#0f766e' : '#e0e0e0';
+                    btn.style.color = track.actionType === 'primary' ? '#ffffff' : '#777777';
+                  }
+                }}
               >
-                {track.buttonText}
-              </button>
-            </div>
-          ))}
-        </main>
-      </div>
+                <div style={styles.iconPlaceholder}>🌐</div>
+                <h2 style={styles.cardTitle} className="card-title">{track.title}</h2>
+                <p style={styles.cardDescription} className="card-desc">{track.description}</p>
 
-      <Footer />
-    </div>
+                <div style={styles.topicsContainer}>
+                  <div style={styles.topicsTitle}>📌 تشمل المحاور:</div>
+                  <ul style={styles.topicsList}>
+                    {track.topics.map((topic, idx) => (
+                      <li key={idx} style={styles.topicItem} className="topic-item">
+                        <span style={styles.topicBullet}>•</span>
+                        {topic}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  onClick={() => handleNavigation(track.id)}
+                  style={{
+                    ...styles.button,
+                    ...(track.actionType === 'secondary' ? styles.btnSecondary : styles.btnPrimary)
+                  }}
+                  className="track-btn"
+                  disabled={track.actionType === 'secondary'}
+                >
+                  {track.buttonText}
+                </button>
+              </div>
+            ))}
+          </main>
+        </div>
+
+        <Footer />
+      </div>
+    </>
   );
 }
