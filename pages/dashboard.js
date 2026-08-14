@@ -34,7 +34,7 @@ const styles = {
     maxWidth: 1000,
     width: "100%",
     margin: "0 auto",
-    padding: "60px 24px 80px",
+    padding: "40px 16px 60px",
   },
   pageHeader: {
     marginBottom: 40,
@@ -54,7 +54,7 @@ const styles = {
   emptyContainer: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
-    padding: "60px 40px 70px",
+    padding: "40px 20px 50px",
     textAlign: "center",
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
   },
@@ -88,6 +88,8 @@ const styles = {
     transition: "background-color 0.25s ease, transform 0.25s ease",
     textDecoration: "none",
     display: "inline-block",
+    minHeight: 52,
+    textAlign: "center",
   },
   resultsContainer: {
     backgroundColor: COLORS.white,
@@ -98,14 +100,14 @@ const styles = {
   resultsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: 24,
+    gap: 20,
     marginTop: 24,
   },
   resultCard: {
     backgroundColor: COLORS.lightGray,
     borderRadius: 16,
     padding: "24px",
-    border: `1px solid ${COLORS.border}`,
+    border: "1px solid " + COLORS.border,
   },
   resultCardTitle: {
     fontSize: 16,
@@ -170,25 +172,40 @@ export default function Dashboard() {
     <>
       <Head>
         <title>لوحة التشخيص - Smart Lab</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
-          html, body {
-            margin: 0; padding: 0;
-            background-color: ${COLORS.bg};
+          @media (max-width: 768px) {
+            .main { padding: 24px 16px 40px !important; }
+            .page-title { font-size: 30px !important; }
+            .page-subtitle { font-size: 15px !important; }
+            .results-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+            .result-card { padding: 16px !important; }
+            .result-card-score { font-size: 28px !important; }
+            .results-container { padding: 24px 16px !important; }
           }
-          * { box-sizing: border-box; }
+          @media (max-width: 480px) {
+            .main { padding: 16px 12px 30px !important; }
+            .page-title { font-size: 24px !important; }
+            .page-subtitle { font-size: 14px !important; }
+            .empty-container { padding: 30px 16px 40px !important; }
+            .empty-title { font-size: 22px !important; }
+            .empty-desc { font-size: 15px !important; }
+            .empty-btn { width: 100% !important; padding: 12px !important; font-size: 15px !important; }
+            .result-card-score { font-size: 24px !important; }
+            .result-card-title { font-size: 14px !important; }
+          }
         `}</style>
       </Head>
 
       <div style={styles.page} dir="rtl">
         <Navbar />
 
-        <main style={styles.main}>
+        <main style={styles.main} className="main">
           <div style={styles.pageHeader}>
-            <h1 style={{ ...styles.pageTitle, fontSize: isMobile ? 28 : 38 }}>
+            <h1 style={{ ...styles.pageTitle, fontSize: isMobile ? 28 : 38, className: "page-title" }}>
               📊 لوحة التشخيص
             </h1>
-            <p style={{ ...styles.pageSubtitle, fontSize: isMobile ? 15 : 17 }}>
+            <p style={{ ...styles.pageSubtitle, fontSize: isMobile ? 15 : 17, className: "page-subtitle" }}>
               يعرض هذا القسم تقريراً تفصيلياً لأدائك بعد إتمام أي تقييم.
             </p>
           </div>
@@ -196,18 +213,18 @@ export default function Dashboard() {
           {loading ? (
             <p style={{ textAlign: "center", color: COLORS.muted }}>⏳ جاري تحميل النتائج...</p>
           ) : results.length === 0 ? (
-            <div style={styles.emptyContainer}>
+            <div style={styles.emptyContainer} className="empty-container">
               <span style={styles.emptyIcon}>📋</span>
-              <h2 style={styles.emptyTitle}>لا يوجد نتائج تقييم حتى الآن</h2>
-              <p style={styles.emptyDesc}>
+              <h2 style={styles.emptyTitle} className="empty-title">لا يوجد نتائج تقييم حتى الآن</h2>
+              <p style={styles.emptyDesc} className="empty-desc">
                 لم تكمل أي تقييم بعد. ابدأ تقييمك الأول الآن لتحصل على تقرير مفصل يوضح نقاط قوتك ومجالات التحسين.
               </p>
-              <Link href="/assessment/categories" style={styles.emptyButton}>
+              <Link href="/assessment/categories" style={styles.emptyButton} className="empty-btn">
                 🚀 ابدأ تقييمك الجديد
               </Link>
             </div>
           ) : (
-            <div style={styles.resultsContainer}>
+            <div style={styles.resultsContainer} className="results-container">
               <h3 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: "0 0 6px" }}>
                 📈 نتائج تقييماتك السابقة
               </h3>
@@ -215,7 +232,7 @@ export default function Dashboard() {
                 {results.length} تقييم مكتمل
               </p>
 
-              <div style={styles.resultsGrid}>
+              <div style={styles.resultsGrid} className="results-grid">
                 {results.map((result, index) => {
                   const status = getStatusBadge(result.score);
                   const date = new Date(result.date);
@@ -224,14 +241,14 @@ export default function Dashboard() {
                   });
 
                   return (
-                    <div key={index} style={styles.resultCard}>
-                      <h4 style={styles.resultCardTitle}>
+                    <div key={index} style={styles.resultCard} className="result-card">
+                      <h4 style={styles.resultCardTitle} className="result-card-title">
                         {result.assessmentName || "تقييم"}
                         {result.mode === "quick" && " ⚡ (سريع)"}
                       </h4>
-                      <p style={styles.resultCardScore}>{result.score}%</p>
+                      <p style={styles.resultCardScore} className="result-card-score">{result.score}%</p>
                       <p style={styles.resultCardDate}>📅 {formattedDate}</p>
-                      <span style={{ ...styles.resultCardStatus, backgroundColor: status.color + "20", color: status.color, border: `1px solid ${status.color}40` }}>
+                      <span style={{ ...styles.resultCardStatus, backgroundColor: status.color + "20", color: status.color, border: "1px solid " + status.color + "40" }}>
                         {status.label}
                       </span>
                       <p style={{ fontSize: 13, color: COLORS.muted, marginTop: 12 }}>
