@@ -38,7 +38,7 @@ const styles = {
     maxWidth: 1000,
     width: "100%",
     margin: "0 auto",
-    padding: "40px 24px 80px",
+    padding: "30px 16px 60px",
   },
   pageHeader: {
     marginBottom: 40,
@@ -55,7 +55,6 @@ const styles = {
     margin: 0,
     lineHeight: 1.7,
   },
-  // ===== شريط التقدم =====
   progressCard: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
@@ -99,7 +98,6 @@ const styles = {
     fontSize: 13,
     color: COLORS.muted,
   },
-  // ===== حالة عدم وجود دروس =====
   emptyContainer: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -138,11 +136,10 @@ const styles = {
     display: "inline-block",
     transition: "background-color 0.25s ease, transform 0.25s ease",
   },
-  // ===== قائمة الدروس =====
   lessonsContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 16,
+    gap: 12,
   },
   lessonCard: {
     backgroundColor: COLORS.white,
@@ -221,12 +218,13 @@ const styles = {
     color: COLORS.white,
     border: "none",
     borderRadius: 8,
-    padding: "8px 18px",
+    padding: "10px 18px",
     fontSize: 14,
     fontWeight: 700,
     cursor: "pointer",
     textDecoration: "none",
     transition: "background-color 0.25s ease, transform 0.25s ease",
+    minHeight: 48,
   },
   completeButton: {
     display: "inline-flex",
@@ -236,22 +234,22 @@ const styles = {
     color: COLORS.text,
     border: "none",
     borderRadius: 8,
-    padding: "8px 18px",
+    padding: "10px 18px",
     fontSize: 14,
     fontWeight: 700,
     cursor: "pointer",
     transition: "all 0.25s ease",
+    minHeight: 48,
   },
   completeButtonDone: {
     backgroundColor: COLORS.success,
     color: COLORS.white,
   },
-  // ===== أزرار الإجراءات =====
   actionsContainer: {
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
-    gap: 16,
+    gap: 12,
     marginTop: 32,
   },
   actionButton: {
@@ -264,6 +262,8 @@ const styles = {
     textDecoration: "none",
     transition: "all 0.25s ease",
     border: "none",
+    minHeight: 56,
+    textAlign: "center",
   },
   actionButtonPrimary: {
     backgroundColor: COLORS.teal,
@@ -274,7 +274,6 @@ const styles = {
     color: COLORS.orange,
     border: "2px solid " + COLORS.orange,
   },
-  // ===== تحميل =====
   loadingContainer: {
     textAlign: "center",
     padding: "100px 0",
@@ -290,7 +289,6 @@ const styles = {
   },
 };
 
-// ===== دالة توليد جملة بحث يوتيوب ذكية =====
 function generateYouTubeSearchQuery(topic, reason) {
   const keywords = {
     'subnetting': 'شرح Subnetting بالعربي',
@@ -314,7 +312,6 @@ function generateYouTubeSearchQuery(topic, reason) {
     }
   }
 
-  // إضافة سبب الضعف لجعل البحث أكثر دقة
   if (reason && reason.includes('صعوبة في')) {
     searchTerm += ' ' + reason.replace('صعوبة في', 'شرح');
   }
@@ -331,7 +328,6 @@ export default function Course() {
   const [hasData, setHasData] = useState(false);
 
   useEffect(() => {
-    // قراءة أحدث نتيجة من localStorage
     try {
       const savedResults = JSON.parse(localStorage.getItem('assessmentResults') || '[]');
       if (savedResults.length === 0) {
@@ -339,17 +335,13 @@ export default function Course() {
         return;
       }
 
-      // الحصول على أحدث نتيجة
       const latest = savedResults[savedResults.length - 1];
       setScore(latest.score || 0);
 
-      // محاولة قراءة البيانات الكاملة من التحليل (في حالة تخزينها)
-      // ملاحظة: سيتم استخدام البيانات من localStorage أو سنقوم بتوليد دروس افتراضية للعرض
       const storedAnalysis = JSON.parse(localStorage.getItem('latestAnalysis') || 'null');
 
       let lessonData = [];
       if (storedAnalysis && storedAnalysis.recommendedLessons && storedAnalysis.recommendedLessons.length > 0) {
-        // استخدام الدروس المقترحة من التحليل
         lessonData = storedAnalysis.recommendedLessons.map((lesson, index) => ({
           id: index,
           topic: lesson.topic,
@@ -361,7 +353,6 @@ export default function Course() {
           completed: false,
         }));
       } else {
-        // توليد دروس افتراضية بناءً على آخر نتيجة
         const weakTopics = [
           { topic: 'Subnetting', reason: 'صعوبة في حسابات الشبكات الفرعية' },
           { topic: 'IPv4', reason: 'صعوبة في فهم بنية العناوين' },
@@ -369,7 +360,6 @@ export default function Course() {
           { topic: 'Routing', reason: 'صعوبة في فهم بروتوكولات التوجيه' },
         ];
 
-        // اختيار موضوعين أو ثلاثة بناءً على النتيجة
         const selected = weakTopics.slice(0, Math.max(2, Math.min(4, Math.floor((100 - latest.score) / 20))));
         lessonData = selected.map((item, index) => ({
           id: index,
@@ -383,7 +373,6 @@ export default function Course() {
         }));
       }
 
-      // قراءة الدروس المكتملة من localStorage
       const savedCompleted = JSON.parse(localStorage.getItem('courseCompletedLessons') || '[]');
       lessonData = lessonData.map(lesson => ({
         ...lesson,
@@ -400,7 +389,6 @@ export default function Course() {
     }
   }, []);
 
-  // دالة تبديل حالة إكمال الدرس
   const toggleComplete = (lessonId) => {
     const updatedLessons = lessons.map(lesson => {
       if (lesson.id === lessonId) {
@@ -413,11 +401,9 @@ export default function Course() {
     setCompletedLessons(newCompleted);
     setLessons(updatedLessons);
 
-    // حفظ في localStorage
     localStorage.setItem('courseCompletedLessons', JSON.stringify(newCompleted));
   };
 
-  // حساب التقدم
   const completedCount = lessons.filter(l => l.completed).length;
   const totalCount = lessons.length;
   const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -442,12 +428,36 @@ export default function Course() {
       <Head>
         <title>كورسك المخصص - Smart Lab</title>
         <meta name="description" content="كورس تعليمي مخصص بناءً على نتائج تقييمك في منصة سمارت لاب." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
           @media (max-width: 768px) {
-            .course-title { font-size: 28px !important; }
-            .lesson-card { padding: 16px 18px !important; }
-            .lesson-header { flex-direction: column !important; }
+            .main { padding: 24px 16px 40px !important; }
+            .course-title { font-size: 30px !important; }
+            .course-subtitle { font-size: 15px !important; }
+            .progress-card { padding: 18px 20px !important; }
+            .lesson-card { padding: 18px 18px !important; }
+            .lesson-header { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+            .lesson-title { font-size: 18px !important; }
+            .lesson-actions { flex-direction: column !important; }
+            .youtube-btn, .complete-btn { width: 100% !important; justify-content: center !important; }
+            .action-btn { width: 100% !important; text-align: center !important; }
+            .actions-container { flex-direction: column !important; }
+          }
+          @media (max-width: 480px) {
+            .main { padding: 16px 12px 30px !important; }
+            .course-title { font-size: 24px !important; }
+            .course-subtitle { font-size: 14px !important; }
+            .progress-card { padding: 14px 16px !important; }
+            .progress-label { font-size: 14px !important; }
+            .progress-percentage { font-size: 16px !important; }
+            .lesson-card { padding: 14px 14px !important; }
+            .lesson-title { font-size: 16px !important; }
+            .lesson-description { font-size: 14px !important; }
+            .lesson-meta { font-size: 13px !important; }
+            .empty-container { padding: 30px 16px 40px !important; }
+            .empty-title { font-size: 22px !important; }
+            .empty-desc { font-size: 15px !important; }
+            .empty-btn { width: 100% !important; }
           }
         `}</style>
       </Head>
@@ -455,35 +465,34 @@ export default function Course() {
       <div style={styles.page} dir="rtl">
         <Navbar />
 
-        <main style={styles.main}>
+        <main style={styles.main} className="main">
           <div style={styles.pageHeader}>
             <h1 style={{ ...styles.pageTitle, className: "course-title" }}>
               📚 كورسك المخصص
             </h1>
-            <p style={styles.pageSubtitle}>
+            <p style={{ ...styles.pageSubtitle, className: "course-subtitle" }}>
               بناءً على نتائج تقييمك، قمنا بتصميم هذا الكورس ليركز على المجالات التي تحتاج تحسيناً.
               {score > 0 && ` نتيجتك: ${score}%`}
             </p>
           </div>
 
           {!hasData || lessons.length === 0 ? (
-            <div style={styles.emptyContainer}>
+            <div style={styles.emptyContainer} className="empty-container">
               <span style={styles.emptyIcon}>📋</span>
-              <h2 style={styles.emptyTitle}>لا توجد دروس مخصصة حتى الآن</h2>
-              <p style={styles.emptyDesc}>
+              <h2 style={styles.emptyTitle} className="empty-title">لا توجد دروس مخصصة حتى الآن</h2>
+              <p style={styles.emptyDesc} className="empty-desc">
                 قم بإجراء تقييم أولاً للحصول على كورس مخصص يناسب مستواك ويغطي الفجوات في معرفتك.
               </p>
-              <Link href="/assessment/categories" style={styles.emptyButton}>
+              <Link href="/assessment/categories" style={styles.emptyButton} className="empty-btn">
                 🚀 ابدأ تقييمك الجديد
               </Link>
             </div>
           ) : (
             <>
-              {/* شريط التقدم */}
-              <div style={styles.progressCard}>
+              <div style={styles.progressCard} className="progress-card">
                 <div style={styles.progressHeader}>
-                  <span style={styles.progressLabel}>📊 تقدمك في الكورس</span>
-                  <span style={styles.progressPercentage}>{progress}%</span>
+                  <span style={styles.progressLabel} className="progress-label">📊 تقدمك في الكورس</span>
+                  <span style={styles.progressPercentage} className="progress-percentage">{progress}%</span>
                 </div>
                 <div style={styles.progressBar}>
                   <div style={{ ...styles.progressFill, width: `${progress}%` }} />
@@ -494,7 +503,6 @@ export default function Course() {
                 </div>
               </div>
 
-              {/* قائمة الدروس */}
               <div style={styles.lessonsContainer}>
                 {lessons.map((lesson) => (
                   <div
@@ -503,14 +511,15 @@ export default function Course() {
                       ...styles.lessonCard,
                       ...(lesson.completed ? styles.lessonCardCompleted : {}),
                     }}
+                    className="lesson-card"
                   >
-                    <div style={styles.lessonHeader}>
+                    <div style={styles.lessonHeader} className="lesson-header">
                       <div>
-                        <h3 style={styles.lessonTitle}>
+                        <h3 style={styles.lessonTitle} className="lesson-title">
                           {lesson.completed && '✅ '}
                           {lesson.topic}
                         </h3>
-                        <div style={styles.lessonMeta}>
+                        <div style={styles.lessonMeta} className="lesson-meta">
                           <span style={styles.lessonMetaItem}>
                             📊 المستوى: {lesson.percentage}%
                           </span>
@@ -538,18 +547,19 @@ export default function Course() {
                     </div>
 
                     <div style={styles.lessonBody}>
-                      <p style={styles.lessonDescription}>
+                      <p style={styles.lessonDescription} className="lesson-description">
                         <strong>السبب:</strong> {lesson.reason}
                         <br />
                         <strong>الحل:</strong> {lesson.solution}
                       </p>
 
-                      <div style={styles.lessonActions}>
+                      <div style={styles.lessonActions} className="lesson-actions">
                         <a
                           href={`https://www.youtube.com/results?search_query=${encodeURIComponent(lesson.searchQuery)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={styles.youtubeButton}
+                          className="youtube-btn"
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = '#CC0000';
                             e.currentTarget.style.transform = 'scale(1.02)';
@@ -567,6 +577,7 @@ export default function Course() {
                             ...styles.completeButton,
                             ...(lesson.completed ? styles.completeButtonDone : {}),
                           }}
+                          className="complete-btn"
                           onMouseEnter={(e) => {
                             if (!lesson.completed) {
                               e.currentTarget.style.backgroundColor = COLORS.teal;
@@ -588,14 +599,14 @@ export default function Course() {
                 ))}
               </div>
 
-              {/* أزرار الإجراءات */}
-              <div style={styles.actionsContainer}>
+              <div style={styles.actionsContainer} className="actions-container">
                 <Link
                   href="/dashboard"
                   style={{
                     ...styles.actionButton,
                     ...styles.actionButtonPrimary,
                   }}
+                  className="action-btn"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.tealDark;
                     e.currentTarget.style.transform = 'translateY(-2px)';
@@ -613,6 +624,7 @@ export default function Course() {
                     ...styles.actionButton,
                     ...styles.actionButtonSecondary,
                   }}
+                  className="action-btn"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.orange;
                     e.currentTarget.style.color = COLORS.white;
