@@ -99,7 +99,7 @@ const styles = {
   },
   insightText: { fontSize: 15, color: COLORS.text, lineHeight: 1.8, margin: 0 },
 
-  // ===== خريطة التعلم التفاعلية =====
+  // خريطة التعلم التفاعلية
   mapSection: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -172,7 +172,7 @@ const styles = {
     backgroundColor: COLORS.error,
   },
 
-  // ===== زر التنبؤ المهني =====
+  // زر التنبؤ المهني
   careerButton: {
     display: "inline-block",
     backgroundColor: COLORS.gold,
@@ -190,7 +190,7 @@ const styles = {
     minHeight: 56,
   },
 
-  // ===== المودال =====
+  // المودال
   modalOverlay: {
     position: "fixed",
     top: 0,
@@ -265,7 +265,7 @@ const styles = {
     lineHeight: 1.8,
   },
 
-  // ===== أكورديون =====
+  // أكورديون
   accordionContainer: { marginTop: 24 },
   accordionItem: {
     backgroundColor: COLORS.white,
@@ -299,7 +299,7 @@ const styles = {
   accordionBody: { padding: "0 24px 24px 24px", borderTop: "1px solid " + COLORS.border, backgroundColor: COLORS.white },
   accordionBodyInner: { paddingTop: 20, fontSize: 15, color: COLORS.text, lineHeight: 1.8 },
 
-  // ===== أقسام تحليلية =====
+  // أقسام تحليلية داخل الأكورديون
   topicBreakdown: { marginTop: 12 },
   topicItem: {
     display: "flex",
@@ -332,8 +332,37 @@ const styles = {
   stageStatus: { fontSize: 12, fontWeight: 600, padding: "2px 10px", borderRadius: 12 },
   errorItem: { padding: "6px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 14 },
   badge: { display: "inline-block", padding: "2px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, marginRight: 8 },
+  brilliantSkillCard: {
+    backgroundColor: COLORS.lightGray,
+    padding: '16px',
+    borderRadius: '12px',
+    marginBottom: '12px',
+    border: '1px solid ' + COLORS.border,
+  },
+  surgicalCritical: {
+    backgroundColor: '#FFEBEE',
+    padding: '12px',
+    borderRadius: '8px',
+    marginBottom: '8px',
+    borderRight: '4px solid ' + COLORS.error,
+  },
+  surgicalModerate: {
+    backgroundColor: '#FFF8E1',
+    padding: '10px',
+    borderRadius: '8px',
+    marginBottom: '6px',
+    borderRight: '4px solid ' + COLORS.warning,
+  },
+  masteredBadge: {
+    backgroundColor: '#E8F5E9',
+    padding: '4px 12px',
+    borderRadius: '20px',
+    fontSize: '13px',
+    display: 'inline-block',
+    margin: '4px',
+  },
 
-  // ===== أزرار الإجراءات =====
+  // أزرار الإجراءات
   buttonGroup: { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 12, marginTop: 24 },
   courseButton: {
     display: "inline-block",
@@ -409,6 +438,7 @@ const AccordionSection = ({ id, title, icon, isOpen, onToggle, children, alwaysO
   );
 };
 
+// ===== دالة تحديد مسار السيناريو حسب المستوى =====
 function getScenarioLink(score, cognitiveProfile) {
   let level = 'beginner';
   if (score >= 75) level = 'advanced';
@@ -418,6 +448,7 @@ function getScenarioLink(score, cognitiveProfile) {
   return map[level] || '/scenarios/cafe';
 }
 
+// ===== المكون الرئيسي =====
 export default function Result() {
   const router = useRouter();
   const [analysis, setAnalysis] = useState(null);
@@ -438,6 +469,8 @@ export default function Result() {
     tashkhis: false,
     sabab: false,
     doroos: false,
+    brilliantSubSkills: false,
+    surgicalMap: false,
   });
 
   const toggleSection = (id) => {
@@ -477,6 +510,9 @@ export default function Result() {
         const data = await response.json();
         setAnalysis(data);
 
+        // حفظ في localStorage لاستخدامه في الصفحات الأخرى
+        localStorage.setItem('latestAnalysis', JSON.stringify(data));
+
         const savedResults = JSON.parse(localStorage.getItem("assessmentResults") || "[]");
         savedResults.push({
           assessmentName: getAssessmentName(assessmentId),
@@ -500,85 +536,14 @@ export default function Result() {
     if (router.isReady) fetchAnalysis();
   }, [router.isReady, router.query]);
 
-  if (loading) {
-    return (
-      <div style={styles.page}>
-        <Navbar />
-        <div style={{ textAlign: "center", padding: "100px 0" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك...</h2>
-          <p style={{ color: COLORS.muted }}>يرجى الانتظار، هذا قد يستغرق بضع ثوانٍ</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={styles.page}>
-        <Navbar />
-        <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>❌</div>
-          <h2 style={{ color: COLORS.error }}>حدث خطأ</h2>
-          <p style={{ color: COLORS.muted }}>{error}</p>
-          <Link href="/assessment/categories" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
-            العودة للتقييمات
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (!analysis) {
-    return (
-      <div style={styles.page}>
-        <Navbar />
-        <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>📋</div>
-          <h2 style={{ color: COLORS.navy }}>لا توجد نتائج</h2>
-          <p style={{ color: COLORS.muted }}>لم يتم العثور على بيانات لهذا التقييم.</p>
-          <Link href="/assessment/categories" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
-            ابدأ تقييماً جديداً
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const {
-    score, totalQuestions, correctAnswers, wrongAnswers,
-    topicAnalysis, subSkillDeepAnalysis, careerPrediction,
-    cognitiveProfile, confidenceAnalysis, effortAnalysis,
-    errors, weaknesses, hiddenStrengths, learningStages,
-    diagnosticMastery, rootCauseAnalysis, recommendedLessons,
-    insight, writingAnswers,
-  } = analysis;
-
-  const avgTimePerQuestion = effortAnalysis?.avgTime || 0;
-  const totalTime = Math.round(avgTimePerQuestion * totalQuestions);
-  const minutes = Math.floor(totalTime / 60);
-  const seconds = totalTime % 60;
-
-  const radius = 80;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (circleProgress / 100) * circumference;
-
-  const getCircleColor = (pct) => {
-    if (pct >= 70) return COLORS.success;
-    if (pct >= 50) return COLORS.warning;
-    return COLORS.error;
-  };
-
-  const scenarioLink = getScenarioLink(score, cognitiveProfile);
-
-  // ===== دوال العرض =====
+  // دوال العرض
   const renderTopicBars = () => {
-    if (!topicAnalysis || Object.keys(topicAnalysis).length === 0) {
+    if (!analysis.topicAnalysis || Object.keys(analysis.topicAnalysis).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للموضوعات.</p>;
     }
     return (
       <div style={styles.topicBreakdown}>
-        {Object.entries(topicAnalysis).map(([topic, data]) => {
+        {Object.entries(analysis.topicAnalysis).map(([topic, data]) => {
           const pct = data.weightedPercentage || data.percentage || 0;
           const color = pct >= 70 ? COLORS.success : pct >= 50 ? COLORS.warning : COLORS.error;
           return (
@@ -596,23 +561,21 @@ export default function Result() {
   };
 
   const renderInteractiveMap = () => {
-    if (!subSkillDeepAnalysis || Object.keys(subSkillDeepAnalysis).length === 0) {
+    const subSkills = analysis.subSkillAnalysisBrilliant;
+    if (!subSkills || Object.keys(subSkills).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية لبناء الخريطة التفاعلية.</p>;
     }
 
-    const sortedSkills = Object.entries(subSkillDeepAnalysis).sort((a, b) => a[1].percentage - b[1].percentage);
+    const sorted = Object.entries(subSkills).sort((a, b) => a[1].percentage - b[1].percentage);
 
     return (
       <div style={styles.mapGrid}>
-        {sortedSkills.map(([id, skill]) => {
+        {sorted.map(([id, skill]) => {
           const isCompleted = skill.percentage >= 80;
           const isLearning = skill.percentage >= 50 && skill.percentage < 80;
           const isWeak = skill.percentage < 50;
 
-          let statusText = '';
-          let statusStyle = {};
-          let stationStyle = { ...styles.mapStation };
-
+          let statusText = '', statusStyle = {}, stationStyle = { ...styles.mapStation };
           if (isCompleted) {
             statusText = '✅ مكتملة';
             statusStyle = styles.stationStatusCompleted;
@@ -659,8 +622,112 @@ export default function Result() {
     );
   };
 
+  // عرض المهارات الفرعية العبقري
+  const renderBrilliantSubSkills = () => {
+    const subSkills = analysis.subSkillAnalysisBrilliant;
+    if (!subSkills || Object.keys(subSkills).length === 0) {
+      return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمهارات الفرعية.</p>;
+    }
+
+    const sorted = Object.entries(subSkills).sort((a, b) => a[1].percentage - b[1].percentage);
+
+    return sorted.map(([id, skill]) => (
+      <div key={id} style={{ ...styles.brilliantSkillCard, borderColor: skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <span style={{ fontWeight: 700, fontSize: '16px' }}>{skill.name}</span>
+          <span style={{ fontWeight: 700, fontSize: '18px', color: skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error }}>
+            {skill.percentage}%
+          </span>
+        </div>
+        <div style={{ height: '6px', backgroundColor: COLORS.border, borderRadius: '4px', overflow: 'hidden', marginBottom: '8px' }}>
+          <div style={{ height: '100%', width: `${skill.percentage}%`, backgroundColor: skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error, borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+        <div style={{ fontSize: '14px', color: COLORS.muted, marginBottom: '4px' }}>
+          المستوى: {skill.level} | الأخطاء: {skill.errorCount}
+        </div>
+        {skill.percentage < 70 && (
+          <>
+            <div style={{ fontSize: '13px', color: COLORS.text, marginTop: '4px' }}>
+              <span style={{ fontWeight: 600 }}>🔍 السبب الجذري:</span> {skill.rootCause}
+            </div>
+            <div style={{ fontSize: '13px', color: COLORS.teal, marginTop: '4px' }}>
+              <span style={{ fontWeight: 600 }}>💡 الحل المقترح:</span> {skill.solution}
+            </div>
+            <div style={{ marginTop: '8px' }}>
+              <a
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(skill.youtubeSearch)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-block', backgroundColor: '#FF0000', color: 'white', padding: '4px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
+              >
+                ▶ بحث في يوتيوب
+              </a>
+            </div>
+          </>
+        )}
+      </div>
+    ));
+  };
+
+  // خريطة التعلم الجراحية
+  const renderSurgicalMap = () => {
+    const map = analysis.trueSurgicalMap;
+    if (!map) return <p style={{ color: COLORS.muted }}>لا توجد خريطة جراحية متاحة.</p>;
+
+    return (
+      <div>
+        <h4 style={{ color: COLORS.error }}>🔴 مهارات حرجة (تحتاج تركيز فوري)</h4>
+        {map.critical.length === 0 ? (
+          <p style={{ color: COLORS.success }}>🎉 لا توجد مهارات حرجة! أداء رائع.</p>
+        ) : (
+          map.critical.map((skill, idx) => (
+            <div key={idx} style={styles.surgicalCritical}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontWeight: 700 }}>{skill.name}</span>
+                <span style={{ color: COLORS.error }}>{skill.percentage}%</span>
+              </div>
+              <div style={{ fontSize: '13px' }}>🔍 {skill.rootCause}</div>
+              <div style={{ fontSize: '13px', color: COLORS.teal }}>💡 {skill.solution}</div>
+              <div style={{ marginTop: '4px' }}>
+                <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(skill.youtubeSearch)}`} target="_blank" style={{ color: '#FF0000', fontSize: '13px' }}>▶ بحث في يوتيوب</a>
+                <span style={{ marginRight: '12px', fontSize: '13px', color: COLORS.muted }}>📝 {skill.exercises} تمرين</span>
+              </div>
+            </div>
+          ))
+        )}
+
+        <h4 style={{ marginTop: '20px', color: COLORS.warning }}>🟡 مهارات متوسطة</h4>
+        {map.moderate.length === 0 ? (
+          <p style={{ color: COLORS.muted }}>لا توجد مهارات متوسطة.</p>
+        ) : (
+          map.moderate.map((skill, idx) => (
+            <div key={idx} style={styles.surgicalModerate}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>{skill.name}</span>
+                <span>{skill.percentage}%</span>
+              </div>
+            </div>
+          ))
+        )}
+
+        <h4 style={{ marginTop: '20px', color: COLORS.success }}>✅ مهارات متقنة</h4>
+        {map.mastered.length === 0 ? (
+          <p style={{ color: COLORS.muted }}>لا توجد مهارات متقنة بعد.</p>
+        ) : (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {map.mastered.map((skill, idx) => (
+              <span key={idx} style={styles.masteredBadge}>🏆 {skill.name}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // مودال التنبؤ المهني
   const renderCareerModal = () => {
-    if (!careerPrediction || !careerPrediction.topPaths) return null;
+    const career = analysis.careerPrediction;
+    if (!career || !career.topPaths) return null;
 
     return (
       <div style={styles.modalOverlay} onClick={() => setShowCareerModal(false)}>
@@ -669,7 +736,7 @@ export default function Result() {
           <h2 style={styles.modalTitle}>🚀 مستقبلك المهني</h2>
           <p style={styles.modalSubtitle}>بناءً على مهاراتك، إليك المسارات المهنية الأنسب لك</p>
 
-          {careerPrediction.topPaths.map((path, idx) => (
+          {career.topPaths.map((path, idx) => (
             <div key={idx} style={styles.careerCard}>
               <div style={styles.careerCardTop}>
                 <div>
@@ -684,6 +751,7 @@ export default function Result() {
                 <span style={styles.careerMetaItem}>📈 النمو: {path.growth}</span>
                 <span style={styles.careerMetaItem}>🏢 {path.companies.join('، ')}</span>
               </div>
+
               <div style={styles.careerSkills}>
                 <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>📊 مهاراتك في هذا المسار:</div>
                 {path.skillDetails.slice(0, 6).map((skill, i) => {
@@ -699,6 +767,7 @@ export default function Result() {
                   );
                 })}
               </div>
+
               <div style={styles.careerPlan}>
                 <strong>📚 خطة التعلم:</strong>
                 <div style={{ marginTop: 8 }}>{path.learningPlan}</div>
@@ -719,6 +788,7 @@ export default function Result() {
     );
   };
 
+  // باقي الدوال القديمة
   const renderSubSkills = () => {
     if (!analysis.subSkillAnalysis || Object.keys(analysis.subSkillAnalysis).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمهارات الفرعية.</p>;
@@ -735,10 +805,10 @@ export default function Result() {
   };
 
   const renderErrors = () => {
-    if (!errors || errors.length === 0) {
+    if (!analysis.errors || analysis.errors.length === 0) {
       return <p style={{ color: COLORS.muted }}>🎉 لا توجد أخطاء! أداء ممتاز.</p>;
     }
-    return errors.slice(0, 10).map((err, idx) => (
+    return analysis.errors.slice(0, 10).map((err, idx) => (
       <div key={idx} style={styles.errorItem}>
         <strong>{err.topic}</strong> – {err.question.substring(0, 60)}... <br />
         <span style={{ color: COLORS.error }}>❌ إجابتك: {err.yourAnswer}</span>
@@ -751,10 +821,10 @@ export default function Result() {
   };
 
   const renderStrengths = () => {
-    const strongTopics = topicAnalysis
-      ? Object.entries(topicAnalysis).filter(([_, data]) => (data.weightedPercentage || data.percentage || 0) >= 70)
+    const strongTopics = analysis.topicAnalysis
+      ? Object.entries(analysis.topicAnalysis).filter(([_, data]) => (data.weightedPercentage || data.percentage || 0) >= 70)
       : [];
-    const hidden = hiddenStrengths || [];
+    const hidden = analysis.hiddenStrengths || [];
 
     if (strongTopics.length === 0 && hidden.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد نقاط قوة بارزة حالياً، لكن مع التدريب ستتحسن.</p>;
@@ -777,10 +847,10 @@ export default function Result() {
   };
 
   const renderLearningStages = () => {
-    if (!learningStages || learningStages.length === 0) {
+    if (!analysis.learningStages || analysis.learningStages.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد مراحل تعلم متاحة لهذا التقييم.</p>;
     }
-    return learningStages.map((stage, idx) => {
+    return analysis.learningStages.map((stage, idx) => {
       const statusColor = stage.level === 'مكتمل' ? COLORS.success : stage.level === 'جزئياً' ? COLORS.warning : COLORS.border;
       const statusLabel = stage.level === 'مكتمل' ? '✅' : stage.level === 'جزئياً' ? '⚠️' : '⏳';
       return (
@@ -796,10 +866,10 @@ export default function Result() {
   };
 
   const renderDiagnostic = () => {
-    if (!diagnosticMastery || !diagnosticMastery.skills) {
+    if (!analysis.diagnosticMastery || !analysis.diagnosticMastery.skills) {
       return <p style={{ color: COLORS.muted }}>بيانات التشخيص العميق غير متوفرة.</p>;
     }
-    return diagnosticMastery.skills.slice(0, 10).map((skill, idx) => (
+    return analysis.diagnosticMastery.skills.slice(0, 10).map((skill, idx) => (
       <div key={idx} style={styles.skillItem}>
         <span>{skill.name}</span>
         <span style={{ fontWeight: 700, color: skill.masteryProbability >= 70 ? COLORS.success : COLORS.warning }}>
@@ -810,10 +880,10 @@ export default function Result() {
   };
 
   const renderRootCauses = () => {
-    if (!rootCauseAnalysis || rootCauseAnalysis.length === 0) {
+    if (!analysis.rootCauseAnalysis || analysis.rootCauseAnalysis.length === 0) {
       return <p style={{ color: COLORS.muted }}>لم يتم تحديد أسباب جذرية واضحة.</p>;
     }
-    return rootCauseAnalysis.map((rc, idx) => (
+    return analysis.rootCauseAnalysis.map((rc, idx) => (
       <div key={idx} style={{ padding: "8px 0", borderBottom: "1px solid " + COLORS.border }}>
         <strong>{rc.primaryTopic}</strong> – {rc.description}
         <br />
@@ -823,10 +893,11 @@ export default function Result() {
   };
 
   const renderLessons = () => {
-    if (!recommendedLessons || recommendedLessons.length === 0) {
+    const lessons = analysis.recommendedLessons || [];
+    if (lessons.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد دروس مقترحة حالياً.</p>;
     }
-    return recommendedLessons.map((lesson, idx) => (
+    return lessons.map((lesson, idx) => (
       <div key={idx} style={styles.lessonItem}>
         • <strong>{lesson.topic}</strong> ({lesson.percentage}%) – {lesson.reason}
         <br />
@@ -836,10 +907,10 @@ export default function Result() {
   };
 
   const renderWritingAnswers = () => {
-    if (!writingAnswers || writingAnswers.length === 0) {
+    if (!analysis.writingAnswers || analysis.writingAnswers.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد إجابات كتابية في هذا التقييم.</p>;
     }
-    return writingAnswers.slice(0, 5).map((wa, idx) => (
+    return analysis.writingAnswers.slice(0, 5).map((wa, idx) => (
       <div key={idx} style={{ padding: "6px 0", borderBottom: "1px solid " + COLORS.border }}>
         <div><strong>السؤال:</strong> {wa.question.substring(0, 80)}...</div>
         <div><span style={{ color: COLORS.error }}>إجابتك: {wa.userAnswer || '(فارغة)'}</span></div>
@@ -848,6 +919,76 @@ export default function Result() {
       </div>
     ));
   };
+
+  // معالجة حالة التحميل والخطأ
+  if (loading) {
+    return (
+      <div style={styles.page}>
+        <Navbar />
+        <div style={{ textAlign: "center", padding: "100px 0" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+          <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك...</h2>
+          <p style={{ color: COLORS.muted }}>يرجى الانتظار، هذا قد يستغرق بضع ثوانٍ</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={styles.page}>
+        <Navbar />
+        <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
+          <div style={{ fontSize: 56, marginBottom: 16 }}>❌</div>
+          <h2 style={{ color: COLORS.error }}>حدث خطأ</h2>
+          <p style={{ color: COLORS.muted }}>{error}</p>
+          <Link href="/assessment/categories" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
+            العودة للتقييمات
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!analysis) {
+    return (
+      <div style={styles.page}>
+        <Navbar />
+        <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
+          <div style={{ fontSize: 56, marginBottom: 16 }}>📋</div>
+          <h2 style={{ color: COLORS.navy }}>لا توجد نتائج</h2>
+          <p style={{ color: COLORS.muted }}>لم يتم العثور على بيانات لهذا التقييم.</p>
+          <Link href="/assessment/categories" style={{ ...styles.backLink, fontSize: 18, fontWeight: 700, color: COLORS.teal }}>
+            ابدأ تقييماً جديداً
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // استخراج البيانات
+  const {
+    score, totalQuestions, correctAnswers, wrongAnswers,
+    cognitiveProfile, confidenceAnalysis, effortAnalysis,
+    insight, assessmentType,
+  } = analysis;
+
+  const avgTimePerQuestion = effortAnalysis?.avgTime || 0;
+  const totalTime = Math.round(avgTimePerQuestion * totalQuestions);
+  const minutes = Math.floor(totalTime / 60);
+  const seconds = totalTime % 60;
+
+  const radius = 80;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (circleProgress / 100) * circumference;
+
+  const getCircleColor = (pct) => {
+    if (pct >= 70) return COLORS.success;
+    if (pct >= 50) return COLORS.warning;
+    return COLORS.error;
+  };
+
+  const scenarioLink = getScenarioLink(score, cognitiveProfile);
 
   return (
     <>
@@ -877,11 +1018,13 @@ export default function Result() {
         <Navbar />
 
         <main style={styles.main}>
-          {/* ===== Hero Section ===== */}
+          {/* ===== القسم العلوي (دائماً مفتوح) ===== */}
           <div style={styles.hero} className="result-hero">
             <span style={styles.heroIcon}>🎯</span>
             <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>انتهى التقييم</h1>
-            <p style={styles.heroDesc}>لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.</p>
+            <p style={styles.heroDesc}>
+              لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.
+            </p>
 
             <div style={styles.scoreContainer}>
               <div style={{ ...styles.scoreCircle, className: "score-circle" }}>
@@ -935,13 +1078,13 @@ export default function Result() {
             <div style={styles.mapTitle}>
               🗺️ خريطة التعلم التفاعلية
               <span style={{ fontSize: 14, fontWeight: 400, color: COLORS.muted }}>
-                ({Object.keys(subSkillDeepAnalysis || {}).length} مهارة)
+                ({analysis.subSkillAnalysisBrilliant ? Object.keys(analysis.subSkillAnalysisBrilliant).length : 0} مهارة)
               </span>
             </div>
             <p style={styles.mapSubtitle}>المحطات المكتملة ✅، والتي قيد التعلم ⏳، والتي تحتاج مراجعة ❌. اضغط على "تعلم الآن" لبدء رحلة التعلم.</p>
             {renderInteractiveMap()}
 
-            {careerPrediction && careerPrediction.topPaths && (
+            {analysis.careerPrediction && analysis.careerPrediction.topPaths && (
               <div style={{ textAlign: "center", marginTop: 20 }}>
                 <button
                   style={styles.careerButton}
@@ -965,8 +1108,9 @@ export default function Result() {
           {/* ===== مودال التنبؤ المهني ===== */}
           {showCareerModal && renderCareerModal()}
 
-          {/* ===== أكورديون الأقسام التحليلية ===== */}
+          {/* ===== الأكورديون ===== */}
           <div style={styles.accordionContainer}>
+            {/* البصمة المعرفية */}
             <AccordionSection id="bassema" title="🧠 البصمة المعرفية" icon="🧠" isOpen={expandedSections.bassema} onToggle={toggleSection}>
               {cognitiveProfile ? (
                 <>
@@ -977,6 +1121,7 @@ export default function Result() {
               ) : <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن البصمة المعرفية.</p>}
             </AccordionSection>
 
+            {/* الثقة مقابل المعرفة */}
             <AccordionSection id="thiqa" title="📊 الثقة مقابل المعرفة" icon="📊" isOpen={expandedSections.thiqa} onToggle={toggleSection}>
               {confidenceAnalysis ? (
                 <>
@@ -989,40 +1134,59 @@ export default function Result() {
               ) : <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن الثقة.</p>}
             </AccordionSection>
 
+            {/* الموضوعات */}
             <AccordionSection id="mawdooAt" title="📚 الموضوعات" icon="📚" isOpen={expandedSections.mawdooAt} onToggle={toggleSection}>
               {renderTopicBars()}
             </AccordionSection>
 
+            {/* المراحل الكتابية */}
             <AccordionSection id="marahil" title="✍️ المراحل الكتابية" icon="✍️" isOpen={expandedSections.marahil} onToggle={toggleSection}>
               {renderWritingAnswers()}
             </AccordionSection>
 
+            {/* المسار الأيقوني */}
             <AccordionSection id="masar" title="🗺️ المسار الأيقوني" icon="🗺️" isOpen={expandedSections.masar} onToggle={toggleSection}>
               {renderLearningStages()}
             </AccordionSection>
 
+            {/* المهارات الفرعية (القديم) */}
             <AccordionSection id="maharat" title="🔧 المهارات الفرعية" icon="🔧" isOpen={expandedSections.maharat} onToggle={toggleSection}>
               {renderSubSkills()}
             </AccordionSection>
 
+            {/* تحليل الأخطاء */}
             <AccordionSection id="akhta" title="❌ تحليل الأخطاء" icon="❌" isOpen={expandedSections.akhta} onToggle={toggleSection}>
               {renderErrors()}
             </AccordionSection>
 
+            {/* نقاط القوة */}
             <AccordionSection id="noqat" title="💪 نقاط القوة" icon="💪" isOpen={expandedSections.noqat} onToggle={toggleSection}>
               {renderStrengths()}
             </AccordionSection>
 
+            {/* التشخيص العميق */}
             <AccordionSection id="tashkhis" title="🔬 التشخيص العميق" icon="🔬" isOpen={expandedSections.tashkhis} onToggle={toggleSection}>
               {renderDiagnostic()}
             </AccordionSection>
 
+            {/* السبب الجذري */}
             <AccordionSection id="sabab" title="🕵️ السبب الجذري" icon="🕵️" isOpen={expandedSections.sabab} onToggle={toggleSection}>
               {renderRootCauses()}
             </AccordionSection>
 
+            {/* الدروس المقترحة */}
             <AccordionSection id="doroos" title="📖 الدروس المقترحة" icon="📖" isOpen={expandedSections.doroos} onToggle={toggleSection}>
               {renderLessons()}
+            </AccordionSection>
+
+            {/* تحليل المهارات الفرعية العبقري (جديد) */}
+            <AccordionSection id="brilliantSubSkills" title="🔬 تحليل المهارات الفرعية الفعلي" icon="🔬" isOpen={expandedSections.brilliantSubSkills} onToggle={toggleSection}>
+              {renderBrilliantSubSkills()}
+            </AccordionSection>
+
+            {/* خريطة التعلم الجراحية (جديد) */}
+            <AccordionSection id="surgicalMap" title="🗺️ خريطة التعلم الجراحية" icon="🗺️" isOpen={expandedSections.surgicalMap} onToggle={toggleSection}>
+              {renderSurgicalMap()}
             </AccordionSection>
           </div>
 
