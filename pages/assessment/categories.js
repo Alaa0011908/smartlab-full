@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { getAssessmentName } from '../../data/questions/basics';
 
 const COLORS = {
   teal: "#17919e",
@@ -16,6 +17,8 @@ const COLORS = {
   text: "#0d1e3b",
   muted: "#5b6b7b",
   border: "#bcd7db",
+  success: "#2ECC71",
+  warning: "#F39C12",
 };
 
 const styles = {
@@ -115,6 +118,11 @@ const styles = {
     color: COLORS.muted,
     margin: 0,
   },
+  categoryStatus: {
+    fontSize: '13px',
+    fontWeight: 600,
+    marginTop: 4,
+  },
   categoryButtons: {
     display: 'flex',
     gap: '10px',
@@ -157,15 +165,40 @@ const styles = {
 export default function Categories() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
-  const [isSmallMobile, setIsSmallMobile] = useState(false);
+  const [assessmentStatus, setAssessmentStatus] = useState({});
 
   useEffect(() => {
     const checkSize = () => {
       setIsMobile(window.innerWidth < 768);
-      setIsSmallMobile(window.innerWidth < 480);
     };
     checkSize();
     window.addEventListener("resize", checkSize);
+
+    // قراءة حالة التقييمات من localStorage
+    try {
+      const results = JSON.parse(localStorage.getItem('assessmentResults') || '[]');
+      const statusMap = {};
+      const categories = ['concepts', 'ipv4', 'subnetting', 'ipv6', 'osi', 'devices', 'email', 'tcpip'];
+      categories.forEach(id => {
+        const completed = results.filter(r => r.assessmentName === getAssessmentName(id));
+        if (completed.length > 0) {
+          const last = completed[completed.length - 1];
+          if (last.score >= 80) {
+            statusMap[id] = { status: '✅ مكتمل', color: COLORS.success };
+          } else if (last.score >= 50) {
+            statusMap[id] = { status: '🔄 قيد التقدم', color: COLORS.warning };
+          } else {
+            statusMap[id] = { status: '⚠️ يحتاج إعادة', color: COLORS.orange };
+          }
+        } else {
+          statusMap[id] = { status: '▶️ جديد', color: COLORS.muted };
+        }
+      });
+      setAssessmentStatus(statusMap);
+    } catch (error) {
+      console.error('Error loading assessment status:', error);
+    }
+
     return () => window.removeEventListener("resize", checkSize);
   }, []);
 
@@ -233,60 +266,66 @@ export default function Categories() {
           </div>
 
           <div style={styles.categoryList}>
-            {categories.map((cat) => (
-              <div
-                key={cat.id}
-                style={styles.categoryRow}
-                className="category-row"
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.06)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
-                }}
-              >
-                <span style={styles.categoryNumber} className="category-number">{cat.number}</span>
-                <span style={styles.categoryIcon} className="category-icon">{cat.title.split(' ')[0]}</span>
-                <div style={styles.categoryInfo} className="category-info">
-                  <h3 style={styles.categoryTitle} className="category-title">{cat.title}</h3>
-                  <p style={styles.categoryDesc} className="category-desc">{cat.description}</p>
+            {categories.map((cat) => {
+              const status = assessmentStatus[cat.id] || { status: '▶️ جديد', color: COLORS.muted };
+              return (
+                <div
+                  key={cat.id}
+                  style={styles.categoryRow}
+                  className="category-row"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.06)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                  }}
+                >
+                  <span style={styles.categoryNumber} className="category-number">{cat.number}</span>
+                  <span style={styles.categoryIcon} className="category-icon">{cat.title.split(' ')[0]}</span>
+                  <div style={styles.categoryInfo} className="category-info">
+                    <h3 style={styles.categoryTitle} className="category-title">{cat.title}</h3>
+                    <p style={styles.categoryDesc} className="category-desc">{cat.description}</p>
+                    <span style={{ ...styles.categoryStatus, color: status.color }}>
+                      {status.status}
+                    </span>
+                  </div>
+                  <div style={styles.categoryButtons} className="category-buttons">
+                    <button
+                      style={styles.btnFilled}
+                      className="btn-filled"
+                      onClick={() => router.push(`/assessment/${cat.id}?mode=quick`)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = COLORS.tealDark;
+                        e.currentTarget.style.transform = 'scale(1.02)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = COLORS.teal;
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    >
+                      التقييم السريع
+                    </button>
+                    <button
+                      style={styles.btnOutline}
+                      className="btn-outline"
+                      onClick={() => router.push(`/assessment/${cat.id}?mode=full`)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = COLORS.orange;
+                        e.currentTarget.style.color = COLORS.white;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = COLORS.white;
+                        e.currentTarget.style.color = COLORS.orange;
+                      }}
+                    >
+                      التقييم الشامل
+                    </button>
+                  </div>
                 </div>
-                <div style={styles.categoryButtons} className="category-buttons">
-                  <button
-                    style={styles.btnFilled}
-                    className="btn-filled"
-                    onClick={() => router.push(`/assessment/${cat.id}?mode=quick`)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = COLORS.tealDark;
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = COLORS.teal;
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
-                  >
-                    التقييم السريع
-                  </button>
-                  <button
-                    style={styles.btnOutline}
-                    className="btn-outline"
-                    onClick={() => router.push(`/assessment/${cat.id}?mode=full`)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = COLORS.orange;
-                      e.currentTarget.style.color = COLORS.white;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = COLORS.white;
-                      e.currentTarget.style.color = COLORS.orange;
-                    }}
-                  >
-                    التقييم الشامل
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </main>
 
