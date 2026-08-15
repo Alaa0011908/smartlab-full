@@ -1,4 +1,4 @@
-// pages/api/analyze.js - النسخة النهائية الكاملة مع جميع الإصلاحات والتقييمات الـ 11
+// pages/api/analyze.js - النسخة النهائية مع التحليل الذكي المتقدم
 import { getAllBasicsQuestions } from '../../data/questions/basics';
 
 const LEARNING_STAGES = {
@@ -112,6 +112,288 @@ const DIAGNOSTIC_SKILLS = {
   'Network_Broadcast_ID': 'تحديد الشبكة والبث', 'VLSM_Application': 'تطبيق VLSM', 'IPv6_Basics': 'أساسيات IPv6',
   'OSI_Layers': 'طبقات OSI', 'TCP_IP_Protocols': 'بروتوكولات TCP/IP', 'Network_Devices': 'أجهزة الشبكات', 'Email_Protocols': 'بروتوكولات البريد',
 };
+
+// ============================================================
+// 🧠 التحليل الذكي المتقدم (المهارات الفرعية + الأخطاء الذكية)
+// ============================================================
+
+// 1. تعريف المهارات الفرعية لكل موضوع (تقسيم ذري)
+const SUB_SKILLS = {
+  'IPv4': [
+    { id: 'ipv4_structure', name: 'بنية عنوان IPv4 (الأوكتتات)', keywords: ['octet', 'بنية', 'أجزاء', 'تقسيم'] },
+    { id: 'ipv4_binary', name: 'تحويل الأنظمة (ثنائي/عشري)', keywords: ['تحويل', 'ثنائي', 'عشري', 'binary'] },
+    { id: 'ipv4_classes', name: 'تصنيفات العناوين (Class A/B/C)', keywords: ['class', 'تصنيف', 'فئة'] },
+    { id: 'ipv4_public_private', name: 'العناوين العامة والخاصة', keywords: ['خاصة', 'عامة', 'private', 'public'] },
+    { id: 'ipv4_subnetting', name: 'حسابات Subnetting', keywords: ['subnet', 'شبكة فرعية', 'cidr'] },
+    { id: 'ipv4_vlsm', name: 'VLSM و CIDR', keywords: ['vlsm', 'cidr', 'تلخيص'] },
+  ],
+  'Subnetting': [
+    { id: 'subnet_concept', name: 'مفهوم Subnetting', keywords: ['مفهوم', 'فكرة'] },
+    { id: 'subnet_cidr', name: 'ترميز CIDR', keywords: ['cidr', '/', 'ترميز'] },
+    { id: 'subnet_network_id', name: 'تحديد Network ID', keywords: ['network id', 'معرف الشبكة'] },
+    { id: 'subnet_broadcast', name: 'حساب عنوان البث', keywords: ['broadcast', 'بث'] },
+    { id: 'subnet_hosts', name: 'حساب عدد المضيفين', keywords: ['hosts', 'مضيفين', 'عدد'] },
+    { id: 'subnet_flsm_vlsm', name: 'FLSM و VLSM', keywords: ['flsm', 'vlsm'] },
+  ],
+  'IPv6': [
+    { id: 'ipv6_structure', name: 'بنية عنوان IPv6', keywords: ['بنية', 'أجزاء'] },
+    { id: 'ipv6_types', name: 'أنواع عناوين IPv6', keywords: ['types', 'أنواع'] },
+    { id: 'ipv6_shorten', name: 'اختصار عناوين IPv6', keywords: ['اختصار', 'shorten'] },
+    { id: 'ipv6_comparison', name: 'مقارنة IPv4 و IPv6', keywords: ['مقارنة', 'comparison'] },
+  ],
+  'OSI Model': [
+    { id: 'osi_layers', name: 'طبقات OSI السبع', keywords: ['طبقات', 'layers'] },
+    { id: 'osi_functions', name: 'وظائف كل طبقة', keywords: ['وظائف', 'functions'] },
+    { id: 'osi_protocols', name: 'البروتوكولات في OSI', keywords: ['بروتوكولات', 'protocols'] },
+    { id: 'osi_pdu', name: 'وحدات البيانات PDU', keywords: ['pdu', 'وحدات'] },
+  ],
+  'Network Devices': [
+    { id: 'device_switch', name: 'المبدل Switch', keywords: ['switch', 'مبدل'] },
+    { id: 'device_router', name: 'الموجه Router', keywords: ['router', 'موجه'] },
+    { id: 'device_firewall', name: 'جدار الحماية', keywords: ['firewall', 'جدار'] },
+    { id: 'device_access_point', name: 'نقطة الوصول AP', keywords: ['access point', 'ap'] },
+  ],
+  'Email Protocols': [
+    { id: 'email_smtp', name: 'بروتوكول SMTP', keywords: ['smtp'] },
+    { id: 'email_pop3', name: 'بروتوكول POP3', keywords: ['pop3'] },
+    { id: 'email_imap', name: 'بروتوكول IMAP', keywords: ['imap'] },
+    { id: 'email_ports', name: 'المنافذ الافتراضية', keywords: ['ports', 'منافذ'] },
+  ],
+  'TCP/IP': [
+    { id: 'tcpip_layers', name: 'طبقات TCP/IP', keywords: ['طبقات', 'layers'] },
+    { id: 'tcpip_tcp_vs_udp', name: 'الفرق بين TCP و UDP', keywords: ['tcp', 'udp'] },
+    { id: 'tcpip_handshake', name: 'المصافحة الثلاثية', keywords: ['handshake', 'مصافحة'] },
+    { id: 'tcpip_http', name: 'بروتوكول HTTP', keywords: ['http'] },
+  ],
+};
+
+// 2. دالة لتحديد المهارة الفرعية لكل سؤال
+function identifySubSkill(question) {
+  const topic = question.topic || '';
+  const subSkill = question.subSkill || '';
+  const questionText = question.question || '';
+
+  const skills = SUB_SKILLS[topic] || [];
+  for (const skill of skills) {
+    for (const keyword of skill.keywords) {
+      if (subSkill.toLowerCase().includes(keyword) || 
+          questionText.toLowerCase().includes(keyword) ||
+          topic.toLowerCase().includes(keyword)) {
+        return skill.id;
+      }
+    }
+  }
+  return null;
+}
+
+// 3. دالة لتحليل المهارات الفرعية (تحليل ذري)
+function analyzeSubSkillsDeeply(questions, numericAnswers, rawAnswers) {
+  const subSkillResults = {};
+
+  questions.forEach((q, i) => {
+    const skillId = identifySubSkill(q);
+    if (!skillId) return;
+
+    if (!subSkillResults[skillId]) {
+      subSkillResults[skillId] = {
+        total: 0,
+        correct: 0,
+        errors: [],
+        times: [],
+        name: skillId,
+        topic: q.topic || 'عام'
+      };
+    }
+
+    const stats = subSkillResults[skillId];
+    stats.total++;
+    const isCorrect = q.isWriting ? 
+      (rawAnswers[i] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase() : 
+      numericAnswers[i] === q.correct;
+    
+    if (isCorrect) {
+      stats.correct++;
+    } else {
+      // تسجيل الخطأ مع نوعه
+      const errorType = classifyError(q, rawAnswers[i], numericAnswers[i]);
+      stats.errors.push({
+        question: q.question,
+        yourAnswer: rawAnswers[i] || numericAnswers[i],
+        correctAnswer: q.expectedAnswer || q.options?.[q.correct - 1] || '',
+        errorType: errorType,
+        subSkill: skillId
+      });
+    }
+  });
+
+  // حساب النسب لكل مهارة فرعية
+  const result = {};
+  for (const [skillId, stats] of Object.entries(subSkillResults)) {
+    const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const errorTypes = stats.errors.map(e => e.errorType);
+    const dominantError = getMostCommon(errorTypes);
+    
+    // تحديد "السبب الجذري" بناءً على نوع الخطأ السائد
+    let rootCause = '';
+    let solution = '';
+    let youtubeSearch = '';
+
+    if (dominantError === 'conceptual') {
+      rootCause = 'ضعف في فهم المفهوم الأساسي';
+      solution = 'راجع الشرح النظري للمفهوم من المصادر الموثوقة';
+      youtubeSearch = `شرح ${stats.name} بالعربي مفهوم`;
+    } else if (dominantError === 'calculation') {
+      rootCause = 'أخطاء في العمليات الحسابية';
+      solution = 'تدرب على الحسابات خطوة بخطوة واستخدم آلة حاسبة للتحقق';
+      youtubeSearch = `تمارين ${stats.name} بالعربي`;
+    } else if (dominantError === 'application') {
+      rootCause = 'صعوبة في تطبيق المعلومة على سيناريوهات جديدة';
+      solution = 'حل تمارين تطبيقية متنوعة تغطي سيناريوهات مختلفة';
+      youtubeSearch = `تطبيقات ${stats.name} بالعربي`;
+    } else if (dominantError === 'memorization') {
+      rootCause = 'اعتماد على الحفظ بدون فهم عميق';
+      solution = 'حاول إعادة صياغة المعلومة بكلماتك الخاصة وربطها بمفاهيم أخرى';
+      youtubeSearch = `فهم ${stats.name} بالعربي`;
+    } else {
+      rootCause = 'يحتاج مراجعة عامة للمهارة';
+      solution = 'راجع الأساسيات وقم بحل تمارين متنوعة';
+      youtubeSearch = `شرح ${stats.name} بالعربي`;
+    }
+
+    result[skillId] = {
+      name: stats.name,
+      topic: stats.topic,
+      percentage: pct,
+      correct: stats.correct,
+      total: stats.total,
+      level: pct >= 80 ? 'متقن' : pct >= 50 ? 'قيد التعلم' : 'ضعيف',
+      errors: stats.errors,
+      errorCount: stats.errors.length,
+      dominantError: dominantError || 'none',
+      rootCause: rootCause,
+      solution: solution,
+      youtubeSearch: youtubeSearch,
+      priority: pct < 50 ? 'حرجة' : pct < 70 ? 'متوسطة' : 'منخفضة'
+    };
+  }
+
+  return result;
+}
+
+// 4. دالة لتصنيف الخطأ (مفاهيمي/حسابي/تطبيقي/حفظ)
+function classifyError(question, rawAnswer, numericAnswer) {
+  const q = question;
+  const subSkill = q.subSkill || '';
+  const cognitiveLevel = q.cognitiveLevel || 'remembering';
+  
+  // إذا كان مستوى بلوم "تذكر" → غالباً خطأ حفظ
+  if (cognitiveLevel === 'remembering') return 'memorization';
+  
+  // إذا كان مستوى بلوم "تطبيق" → خطأ تطبيقي
+  if (cognitiveLevel === 'applying' || cognitiveLevel === 'analyzing') return 'application';
+  
+  // إذا كان السؤال يتضمن حسابات (Subnetting) → خطأ حسابي
+  if (subSkill.includes('Subnet') || subSkill.includes('Calculation') || subSkill.includes('Network_ID')) {
+    return 'calculation';
+  }
+  
+  // إذا كان مستوى بلوم "فهم" أو "تقييم" → خطأ مفاهيمي
+  if (cognitiveLevel === 'understanding' || cognitiveLevel === 'evaluating' || cognitiveLevel === 'creating') {
+    return 'conceptual';
+  }
+  
+  return 'conceptual'; // افتراضي
+}
+
+// 5. دالة لتوليد خريطة التعلم الجراحية
+function generateSurgicalLearningMap(subSkillAnalysis, topicAnalysis) {
+  const weakSkills = Object.entries(subSkillAnalysis)
+    .filter(([_, data]) => data.percentage < 70)
+    .sort((a, b) => a[1].percentage - b[1].percentage);
+
+  const criticalSkills = weakSkills.filter(([_, data]) => data.percentage < 40);
+  const moderateSkills = weakSkills.filter(([_, data]) => data.percentage >= 40 && data.percentage < 70);
+
+  return {
+    critical: criticalSkills.map(([id, data]) => ({
+      skillId: id,
+      name: data.name,
+      percentage: data.percentage,
+      rootCause: data.rootCause,
+      solution: data.solution,
+      youtubeSearch: data.youtubeSearch,
+      exercises: Math.max(5, Math.round((100 - data.percentage) / 10)),
+      priority: 'عالية جداً'
+    })),
+    moderate: moderateSkills.map(([id, data]) => ({
+      skillId: id,
+      name: data.name,
+      percentage: data.percentage,
+      rootCause: data.rootCause,
+      solution: data.solution,
+      youtubeSearch: data.youtubeSearch,
+      exercises: Math.max(3, Math.round((100 - data.percentage) / 15)),
+      priority: 'متوسطة'
+    })),
+    mastered: Object.entries(subSkillAnalysis)
+      .filter(([_, data]) => data.percentage >= 80)
+      .map(([id, data]) => ({
+        skillId: id,
+        name: data.name,
+        percentage: data.percentage,
+        priority: 'منخفضة (مكتمل)'
+      }))
+  };
+}
+
+// 6. دالة لتوليد الدروس الدقيقة
+function generatePreciseLessons(subSkillAnalysis, weaknesses) {
+  const lessons = [];
+  
+  // أضف الدروس من المهارات الفرعية الضعيفة
+  for (const [skillId, data] of Object.entries(subSkillAnalysis)) {
+    if (data.percentage < 70) {
+      lessons.push({
+        skillId: skillId,
+        topic: data.name,
+        percentage: data.percentage,
+        reason: data.rootCause || 'يحتاج مراجعة',
+        solution: data.solution || 'راجع الأساسيات',
+        youtubeSearch: data.youtubeSearch || `شرح ${data.name} بالعربي`,
+        exercises: Math.max(3, Math.round((100 - data.percentage) / 10)),
+        priority: data.percentage < 40 ? 'عالية' : 'متوسطة'
+      });
+    }
+  }
+
+  // أضف الدروس من نقاط الضعف العامة (الموضوعات)
+  for (const w of weaknesses) {
+    // تجنب التكرار
+    const exists = lessons.some(l => l.topic.includes(w.topic));
+    if (!exists) {
+      lessons.push({
+        skillId: w.topic,
+        topic: w.topic,
+        percentage: w.percentage,
+        reason: w.reason || 'ضعف عام في الموضوع',
+        solution: w.solution || 'راجع الموضوع من البداية',
+        youtubeSearch: `شرح ${w.topic} بالعربي`,
+        exercises: 5,
+        priority: w.percentage < 40 ? 'عالية' : 'متوسطة'
+      });
+    }
+  }
+
+  // ترتيب حسب الأولوية
+  return lessons.sort((a, b) => {
+    const priorityOrder = { 'عالية': 0, 'متوسطة': 1, 'منخفضة': 2 };
+    return (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1);
+  });
+}
+
+// ============================================================
+// الدوال الأصلية (غير معدلة)
+// ============================================================
 
 function buildQMatrix(questions) {
   const qMatrix = {};
@@ -446,7 +728,21 @@ export default async function handler(req, res) {
     const allAssessmentsSummary = assessmentType === 'full' ? generateAllAssessmentsSummary(topicAnalysis) : [];
 
     const writingAnswers = questions.filter(q => q.isWriting).map((q) => { const idx = questions.indexOf(q); return { question: q.question, userAnswer: answers[idx] !== undefined ? String(answers[idx]) : '', expectedAnswer: q.expectedAnswer || '', isCorrect: answers[idx]?.toString().trim().toLowerCase() === q.expectedAnswer?.toLowerCase() }; });
-    const recommendedLessons = weaknesses.slice(0,3).map(w => ({ topic: w.topic, percentage: w.percentage, reason: w.reason, solution: w.solution, priority: w.priority }));
+    
+    // ===== التحليل الذكي المتقدم (المهارات الفرعية) =====
+    const subSkillDeepAnalysis = analyzeSubSkillsDeeply(questions, numericAnswers, answers);
+    const surgicalLearningMap = generateSurgicalLearningMap(subSkillDeepAnalysis, topicAnalysis);
+    const preciseLessons = generatePreciseLessons(subSkillDeepAnalysis, weaknesses);
+    
+    // استبدال recommendedLessons بالدروس الدقيقة
+    const finalRecommendedLessons = preciseLessons.length > 0 ? preciseLessons : weaknesses.slice(0,3).map(w => ({ 
+      topic: w.topic, 
+      percentage: w.percentage, 
+      reason: w.reason, 
+      solution: w.solution, 
+      priority: w.priority 
+    }));
+    
     const insight = generateFinalInsight(weightedScore, simpleScore, weaknesses, hiddenStrengths, learningProfile, comparison, confidenceAnalysis, diagnosticMastery, topicAnalysis, effortAnalysis, questionResults, assessmentType, generatedCognitiveProfile);
 
     return res.status(200).json({
@@ -457,12 +753,18 @@ export default async function handler(req, res) {
       learningStages, allAssessmentsSummary,
       writingAnswers: isQuickMode ? [] : writingAnswers,
       cognitiveProfile: generatedCognitiveProfile,
-      recommendedLessons: isQuickMode ? [] : recommendedLessons,
+      recommendedLessons: isQuickMode ? [] : finalRecommendedLessons,
       confidenceAnalysis, effortAnalysis, comparison,
       personalizedPlan: isQuickMode ? null : personalizedPlan,
       diagnosticMastery: isQuickMode ? null : diagnosticMastery,
       rootCauseAnalysis: isQuickMode ? [] : rootCauseAnalysis,
-      insight, questionResults
+      insight, questionResults,
+      // ===== البيانات الجديدة للتحليل الذكي =====
+      subSkillDeepAnalysis: isQuickMode ? null : subSkillDeepAnalysis,
+      surgicalLearningMap: isQuickMode ? null : surgicalLearningMap,
     });
-  } catch (error) { console.error('خطأ:', error); return res.status(500).json({ success: false, error: error.message }); }
+  } catch (error) { 
+    console.error('خطأ:', error); 
+    return res.status(500).json({ success: false, error: error.message }); 
+  }
 }
