@@ -7,229 +7,333 @@ const COLORS = {
   teal: "#17919e",
   tealDark: "#127a86",
   orange: "#e1682e",
-  navy: "#0d3d4e",
+  navy: "#0D1E3B",
   white: "#ffffff",
+  bg: "#eef4f8",
+  text: "#0D1E3B",
+  muted: "#5b6b7b",
 };
 
 const styles = {
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.8rem 1.5rem',
+  navbar: {
     backgroundColor: COLORS.white,
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    position: 'sticky',
+    borderBottom: "1px solid #e6ecf1",
+    padding: "0 24px",
+    position: "sticky",
     top: 0,
-    zIndex: 100,
-    direction: 'rtl',
-    flexWrap: 'wrap',
+    zIndex: 1000,
+    boxShadow: "0 2px 12px rgba(13,30,59,0.04)",
+    direction: "rtl",
+    fontFamily: "'Segoe UI', Tahoma, 'Cairo', system-ui, sans-serif",
   },
-  headerLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    order: 2,
+  navbarInner: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: "70px",
+    width: "100%",
   },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    order: 1,
+  // ✅ الشعار على اليسار
+  logoContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    flexShrink: 0,
   },
-  logo: {
-    display: 'flex',
-    alignItems: 'center',
-    textDecoration: 'none',
+  logoText: {
+    fontSize: "24px",
+    fontWeight: 800,
+    color: COLORS.navy,
+    textDecoration: "none",
+    letterSpacing: "-0.5px",
   },
-  logoImage: {
-    height: '40px',
-    width: 'auto',
-    objectFit: 'contain',
+  logoAccent: {
+    color: COLORS.teal,
   },
-  nav: {
-    display: 'flex',
-    gap: '1.5rem',
-    alignItems: 'center',
-    order: 3,
-    width: '100%',
-    justifyContent: 'center',
-    marginTop: '0.5rem',
-    flexWrap: 'wrap',
+  // ✅ الروابط في المنتصف (Desktop)
+  navLinks: {
+    display: "flex",
+    alignItems: "center",
+    gap: "32px",
+    listStyle: "none",
+    margin: 0,
+    padding: 0,
   },
   navLink: {
-    textDecoration: 'none',
-    color: '#64748B',
-    fontSize: '0.95rem',
-    fontWeight: '500',
-    padding: '0.5rem 0',
-    transition: 'color 0.25s ease, border-bottom 0.25s ease',
-    borderBottom: '3px solid transparent',
+    fontSize: "15px",
+    fontWeight: 600,
+    color: COLORS.text,
+    textDecoration: "none",
+    padding: "8px 4px",
+    transition: "color 0.25s ease, border-bottom 0.25s ease",
+    borderBottom: "3px solid transparent",
+    position: "relative",
   },
   navLinkActive: {
     color: COLORS.teal,
-    fontWeight: '700',
     borderBottom: `3px solid ${COLORS.teal}`,
   },
-  loginBtn: {
+  // ✅ أزرار تسجيل الدخول على اليمين
+  authButtons: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    flexShrink: 0,
+  },
+  loginButton: {
+    padding: "8px 20px",
+    backgroundColor: "transparent",
+    color: COLORS.navy,
+    border: "1.5px solid #d6e0e8",
+    borderRadius: "8px",
+    fontSize: "14px",
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "all 0.25s ease",
+    fontFamily: "inherit",
+  },
+  signupButton: {
+    padding: "8px 20px",
     backgroundColor: COLORS.teal,
     color: COLORS.white,
-    border: 'none',
-    borderRadius: '30px',
-    padding: '0.6rem 1.2rem',
-    fontWeight: '600',
-    fontSize: '0.9rem',
-    cursor: 'pointer',
-    textDecoration: 'none',
-    display: 'inline-block',
-    transition: 'background-color 0.25s ease, transform 0.25s ease',
-    minHeight: '44px',
-    minWidth: '44px',
-    textAlign: 'center',
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "14px",
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "all 0.25s ease",
+    fontFamily: "inherit",
   },
-  burgerBtn: {
-    display: 'none',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    width: '28px',
-    height: '20px',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: 0,
-    order: 3,
+  // ✅ الـ Hamburger (للجوال)
+  hamburger: {
+    display: "none",
+    flexDirection: "column",
+    gap: "4px",
+    cursor: "pointer",
+    padding: "8px",
+    background: "none",
+    border: "none",
   },
-  burgerLine: {
-    width: '100%',
-    height: '3px',
-    backgroundColor: '#334155',
-    borderRadius: '2px',
-    transition: 'all 0.3s ease',
+  hamburgerLine: {
+    width: "28px",
+    height: "3px",
+    backgroundColor: COLORS.navy,
+    borderRadius: "2px",
+    transition: "all 0.3s ease",
   },
+  // ✅ القائمة المنطوية (للجوال)
   mobileMenu: {
-    display: 'none',
-    flexDirection: 'column',
-    width: '100%',
-    padding: '1rem 0',
-    gap: '0.8rem',
-    order: 4,
+    display: "none",
+    flexDirection: "column",
+    backgroundColor: COLORS.white,
+    borderTop: "1px solid #e6ecf1",
+    padding: "16px 24px 24px",
+    gap: "8px",
   },
   mobileMenuOpen: {
-    display: 'flex',
+    display: "flex",
   },
-  mobileNavLink: {
-    textDecoration: 'none',
-    color: '#64748B',
-    fontSize: '1.1rem',
-    fontWeight: '500',
-    padding: '0.75rem 0',
-    borderBottom: '1px solid #f0f0f0',
-    textAlign: 'center',
+  mobileLink: {
+    fontSize: "16px",
+    fontWeight: 600,
+    color: COLORS.text,
+    textDecoration: "none",
+    padding: "12px 8px",
+    borderBottom: "1px solid #f0f0f0",
+    transition: "color 0.25s ease",
   },
-  mobileNavLinkActive: {
+  mobileLinkActive: {
     color: COLORS.teal,
-    fontWeight: '700',
+  },
+  mobileAuth: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginTop: "8px",
+  },
+  mobileLoginButton: {
+    padding: "12px",
+    backgroundColor: "transparent",
+    color: COLORS.navy,
+    border: "1.5px solid #d6e0e8",
+    borderRadius: "8px",
+    fontSize: "15px",
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    textAlign: "center",
+    fontFamily: "inherit",
+  },
+  mobileSignupButton: {
+    padding: "12px",
+    backgroundColor: COLORS.teal,
+    color: COLORS.white,
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "15px",
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    textAlign: "center",
+    fontFamily: "inherit",
   },
 };
 
+// ============================================================
+// 🏠 مكون الـ Navbar الرئيسي
+// ============================================================
 export default function Navbar() {
   const router = useRouter();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // التحقق من حجم الشاشة
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const navItems = [
-    { label: 'الرئيسية', href: '/' },
-    { label: 'محاكي العميل', href: '/scenarios' },
-    { label: 'التقييم التكيفي', href: '/assessment/categories' },
-    { label: 'لوحة التشخيص', href: '/dashboard' },
-  ];
-
-  const isActive = (href) => {
-    if (href === '/') return router.pathname === '/';
-    if (href === '/assessment/categories') return router.pathname.startsWith('/assessment');
-    return router.pathname.startsWith(href);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const navItems = [
+    { href: "/", label: "الرئيسية" },
+    { href: "/scenarios", label: "محاكي العميل" },
+    { href: "/assessment/categories", label: "التقييم التكيفي" },
+    { href: "/dashboard", label: "لوحة التشخيص" },
+  ];
 
-  return (
-    <header style={styles.header}>
-      <div style={styles.headerLeft}>
-        <Link
-          href="/auth/login"
-          style={styles.loginBtn}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = COLORS.tealDark;
-            e.currentTarget.style.transform = 'translateY(-2px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = COLORS.teal;
-            e.currentTarget.style.transform = 'translateY(0)';
-          }}
-        >
-          تسجيل الدخول
-        </Link>
-        {isMobile && (
-          <button
-            style={styles.burgerBtn}
-            onClick={toggleMenu}
-            aria-label="القائمة"
-          >
-            <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
-            <span style={{ ...styles.burgerLine, opacity: isMenuOpen ? 0 : 1 }} />
-            <span style={{ ...styles.burgerLine, transform: isMenuOpen ? 'rotate(-45deg) translate(6px, -7px)' : 'none' }} />
+  const isActive = (path) => {
+    return router.pathname === path || router.pathname.startsWith(path + "/");
+  };
+
+  // ✅ عرض الجوال أو الديسكتوب
+  if (isMobile) {
+    return (
+      <nav style={styles.navbar}>
+        <div style={styles.navbarInner}>
+          {/* الشعار على اليسار */}
+          <Link href="/" style={styles.logoContainer}>
+            <span style={styles.logoText}>
+              Smart<span style={styles.logoAccent}>Lab</span>
+            </span>
+          </Link>
+
+          {/* Hamburger Menu */}
+          <button onClick={toggleMobileMenu} style={styles.hamburger} aria-label="القائمة">
+            <span style={styles.hamburgerLine} />
+            <span style={styles.hamburgerLine} />
+            <span style={styles.hamburgerLine} />
           </button>
-        )}
-      </div>
-
-      {!isMobile && (
-        <nav style={styles.nav}>
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              style={{
-                ...styles.navLink,
-                ...(isActive(item.href) ? styles.navLinkActive : {}),
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      )}
-
-      <div style={styles.headerRight}>
-        <Link href="/" style={styles.logo}>
-          <img src="/logo.png" alt="Smart Lab Logo" style={styles.logoImage} />
-        </Link>
-      </div>
-
-      {isMobile && (
-        <div style={{ ...styles.mobileMenu, ...(isMenuOpen ? styles.mobileMenuOpen : {}) }}>
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              style={{
-                ...styles.mobileNavLink,
-                ...(isActive(item.href) ? styles.mobileNavLinkActive : {}),
-              }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
         </div>
-      )}
-    </header>
+
+        {/* القائمة المنطوية */}
+        <div style={{ ...styles.mobileMenu, ...(isMobileMenuOpen ? styles.mobileMenuOpen : {}) }}>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              style={{
+                ...styles.mobileLink,
+                ...(isActive(item.href) ? styles.mobileLinkActive : {}),
+              }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <div style={styles.mobileAuth}>
+            <Link href="/auth/login" style={styles.mobileLoginButton}>
+              تسجيل الدخول
+            </Link>
+            <Link href="/auth/signup" style={styles.mobileSignupButton}>
+              إنشاء حساب
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // ✅ عرض الديسكتوب
+  return (
+    <nav style={styles.navbar}>
+      <div style={styles.navbarInner}>
+        {/* الشعار على اليسار */}
+        <Link href="/" style={styles.logoContainer}>
+          <span style={styles.logoText}>
+            Smart<span style={styles.logoAccent}>Lab</span>
+          </span>
+        </Link>
+
+        {/* الروابط في المنتصف */}
+        <ul style={styles.navLinks}>
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                style={{
+                  ...styles.navLink,
+                  ...(isActive(item.href) ? styles.navLinkActive : {}),
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive(item.href)) {
+                    e.currentTarget.style.color = COLORS.teal;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive(item.href)) {
+                    e.currentTarget.style.color = COLORS.text;
+                  }
+                }}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* أزرار تسجيل الدخول على اليمين */}
+        <div style={styles.authButtons}>
+          <Link
+            href="/auth/login"
+            style={styles.loginButton}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = COLORS.teal;
+              e.currentTarget.style.color = COLORS.teal;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#d6e0e8";
+              e.currentTarget.style.color = COLORS.navy;
+            }}
+          >
+            تسجيل الدخول
+          </Link>
+          <Link
+            href="/auth/signup"
+            style={styles.signupButton}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.tealDark;
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.teal;
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            إنشاء حساب
+          </Link>
+        </div>
+      </div>
+    </nav>
   );
 }
