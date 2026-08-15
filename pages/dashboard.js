@@ -16,6 +16,9 @@ const COLORS = {
   muted: "#5b6b7b",
   lightGray: "#f8f9fa",
   border: "#e6ecf1",
+  success: "#2ECC71",
+  warning: "#F39C12",
+  error: "#E74C3C",
 };
 
 const styles = {
@@ -134,10 +137,55 @@ const styles = {
     fontWeight: 600,
     marginTop: 8,
   },
+  skillsSummary: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: "20px 24px",
+    marginTop: 20,
+    border: "1px solid " + COLORS.border,
+  },
+  skillStats: {
+    display: "flex",
+    gap: 20,
+    flexWrap: "wrap",
+    marginTop: 8,
+  },
+  skillStat: {
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  careerSummary: {
+    backgroundColor: "#FFF8E1",
+    borderRadius: 12,
+    padding: "12px 18px",
+    marginTop: 12,
+    border: "1px solid #FFE082",
+    fontSize: 14,
+    fontWeight: 600,
+    color: COLORS.navy,
+  },
+  quickActions: {
+    display: "flex",
+    gap: 12,
+    flexWrap: "wrap",
+    marginTop: 16,
+  },
+  quickActionBtn: {
+    padding: "10px 20px",
+    borderRadius: 10,
+    border: "none",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    display: "inline-block",
+    transition: "all 0.25s ease",
+  },
 };
 
 export default function Dashboard() {
   const [results, setResults] = useState([]);
+  const [latestAnalysis, setLatestAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -147,14 +195,21 @@ export default function Dashboard() {
     window.addEventListener("resize", checkMobile);
 
     try {
+      // قراءة النتائج
       const saved = localStorage.getItem("assessmentResults");
       if (saved) {
         const parsed = JSON.parse(saved);
         const sorted = parsed.sort((a, b) => new Date(b.date) - new Date(a.date));
         setResults(sorted);
       }
+
+      // قراءة آخر تحليل
+      const analysis = localStorage.getItem("latestAnalysis");
+      if (analysis) {
+        setLatestAnalysis(JSON.parse(analysis));
+      }
     } catch (error) {
-      console.error("Error loading results:", error);
+      console.error("Error loading data:", error);
     } finally {
       setLoading(false);
     }
@@ -167,6 +222,20 @@ export default function Dashboard() {
     if (score >= 50) return { label: "⚠️ متوسط", color: "#F39C12" };
     return { label: "❌ يحتاج تحسين", color: "#E74C3C" };
   };
+
+  // حساب إحصائيات المهارات من آخر تحليل
+  const getSkillStats = () => {
+    if (!latestAnalysis || !latestAnalysis.subSkillDeepAnalysis) return null;
+    const skills = Object.values(latestAnalysis.subSkillDeepAnalysis);
+    return {
+      mastered: skills.filter(s => s.percentage >= 80).length,
+      learning: skills.filter(s => s.percentage >= 50 && s.percentage < 80).length,
+      weak: skills.filter(s => s.percentage < 50).length,
+      total: skills.length,
+    };
+  };
+
+  const skillStats = getSkillStats();
 
   return (
     <>
@@ -258,6 +327,44 @@ export default function Dashboard() {
                   );
                 })}
               </div>
+
+              {/* ملخص المهارات من آخر تحليل */}
+              {latestAnalysis && skillStats && (
+                <div style={styles.skillsSummary}>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, margin: "0 0 8px" }}>
+                    📊 ملخص مهاراتك ({skillStats.total} مهارة)
+                  </h4>
+                  <div style={styles.skillStats}>
+                    <span style={{ ...styles.skillStat, color: COLORS.success }}>
+                      ✅ متقنة: {skillStats.mastered}
+                    </span>
+                    <span style={{ ...styles.skillStat, color: COLORS.warning }}>
+                      ⚠️ قيد التعلم: {skillStats.learning}
+                    </span>
+                    <span style={{ ...styles.skillStat, color: COLORS.error }}>
+                      ❌ تحتاج تحسين: {skillStats.weak}
+                    </span>
+                  </div>
+
+                  {latestAnalysis.careerPrediction && latestAnalysis.careerPrediction.bestMatch && (
+                    <div style={styles.careerSummary}>
+                      🧭 أنسب مسار مهني لك: <strong>{latestAnalysis.careerPrediction.bestMatch.title}</strong> ({latestAnalysis.careerPrediction.bestMatch.matchPercentage}% توافق)
+                    </div>
+                  )}
+
+                  <div style={styles.quickActions}>
+                    <Link href="/course" style={{ ...styles.quickActionBtn, backgroundColor: COLORS.teal, color: COLORS.white }}>
+                      📚 اذهب إلى كورسك المخصص
+                    </Link>
+                    <Link href="/scenarios" style={{ ...styles.quickActionBtn, backgroundColor: COLORS.orange, color: COLORS.white }}>
+                      🎭 جرّب محاكي العميل
+                    </Link>
+                    <Link href="/assessment/categories" style={{ ...styles.quickActionBtn, backgroundColor: COLORS.lightGray, color: COLORS.navy }}>
+                      📝 تقييم جديد
+                    </Link>
+                  </div>
+                </div>
+              )}
 
               <div style={{ textAlign: "center", marginTop: 32 }}>
                 <Link href="/assessment/categories" style={styles.emptyButton}>
