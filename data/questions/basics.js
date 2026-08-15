@@ -17,7 +17,6 @@ export function getAllBasicsQuestions() {
  * دالة للحصول على أسئلة تقييم معين حسب المعرف (id)
  */
 export function getAssessmentQuestions(assessmentId) {
-  // تصفية الأسئلة حسب المعرف (topic أو subSkill)
   const filtered = QUESTIONS.filter(q => {
     if (assessmentId === 'concepts') return q.topic === 'Network Basics';
     if (assessmentId === 'ipv4') return q.topic === 'IPv4';
@@ -27,9 +26,8 @@ export function getAssessmentQuestions(assessmentId) {
     if (assessmentId === 'devices') return q.topic === 'Network Devices';
     if (assessmentId === 'email') return q.topic === 'Email Protocols';
     if (assessmentId === 'tcpip') return q.topic === 'TCP/IP';
-    // التقييم الشامل (full) يعيد جميع الأسئلة
     if (assessmentId === 'full') return true;
-    return q.topic === 'Network Basics'; // افتراضي
+    return q.topic === 'Network Basics';
   });
   return filtered;
 }
@@ -54,7 +52,7 @@ export function getAssessmentName(assessmentId) {
 
 // ============================================================
 // 🔷 المحور الأول: أساسيات الشبكات والمفاهيم العامة (30 سؤال)
-// المهارات الفرعية: net_concepts, net_models, net_topologies, 
+// المهارات الفرعية: net_concepts, net_models, net_topologies,
 // net_media_cables, net_tcp_vs_udp, net_vlan, net_vpn
 // ============================================================
 
@@ -581,12 +579,14 @@ const QUESTIONS = [
     difficulty: 2,
     errorPattern: 'conceptual',
     explanation: 'النفق (Tunneling) في VPN يعني تغليف حزم البيانات الأصلية داخل حزم أخرى (Encapsulation) بحيث يتم نقلها عبر شبكة عامة بشكل آمن ومشفر، وكأنها تمر عبر نفق خاص.'
+  },
 
   // ============================================================
   // 🔷 المحور الثاني: IPv4 (30 سؤال)
   // المهارات الفرعية: ipv4_structure, ipv4_classes, ipv4_public_private,
   // ipv4_subnet_mask, ipv4_subnetting_calc, ipv4_network_id, ipv4_broadcast
   // ============================================================
+
   // ===== ipv4_structure (بنية عنوان IPv4) =====
   {
     id: 'ipv4_001',
@@ -598,7 +598,7 @@ const QUESTIONS = [
     cognitiveLevel: 'remembering',
     difficulty: 1,
     errorPattern: 'memorization',
-    explanation: 'عنوان IPv4 يتكون من 4 أوكتتات، كل أوكتت يتكون من 8 بتات، مما يعطي عنوانًا بطول 32 بت.'
+    explanation: 'عنوان IPv4 يتكون من 4 أوكتتات، كل أوكتت يتكون من 8 بتات، مما يعطي عنواناً بطول 32 بت.'
   },
   {
     id: 'ipv4_002',
@@ -1030,12 +1030,7 @@ const QUESTIONS = [
   {
     id: 'ipv6_013',
     question: 'ما هو المدى الصحيح لعنوان IPv6 2001:db8:1:2::3؟',
-    options: [
-      'Global Unicast',
-      'Unique Local',
-      'Link-Local',
-      'Multicast'
-    ],
+    options: ['Global Unicast', 'Unique Local', 'Link-Local', 'Multicast'],
     correct: 1,
     topic: 'IPv6',
     subSkill: 'ipv6_types',
