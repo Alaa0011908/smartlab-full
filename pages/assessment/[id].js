@@ -70,13 +70,14 @@ const styles = {
   statLabel: { fontSize: 13, color: COLORS.muted, fontWeight: 500 },
   progressContainer: { padding: "0 24px", backgroundColor: COLORS.white, paddingBottom: 12 },
   progressBar: { height: 6, backgroundColor: "#e6ecf1", borderRadius: 4, overflow: "hidden" },
-  progressFill: { height: "100%", backgroundColor: COLORS.teal, borderRadius: 4, transition: "width 0.5s ease" },
+  progressFill: { height: "100%", borderRadius: 4, transition: "width 0.5s ease" },
   questionCard: {
     backgroundColor: COLORS.white,
     borderRadius: 20,
     padding: "32px 36px 36px",
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
     marginBottom: 24,
+    transition: "opacity 0.3s ease, transform 0.3s ease",
   },
   questionMeta: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 },
   topicBadge: { display: "inline-block", backgroundColor: COLORS.navy, color: COLORS.white, padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600 },
@@ -112,13 +113,8 @@ const styles = {
   feedbackCorrectText: { color: COLORS.successDark },
   feedbackWrongText: { color: COLORS.errorDark },
   feedbackCorrectAnswer: { fontSize: 14, color: COLORS.text, fontWeight: 500 },
+  feedbackExplanation: { fontSize: 14, color: COLORS.muted, marginTop: 4 },
   nextButton: { padding: "10px 28px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease, transform 0.25s ease", fontFamily: "inherit", minHeight: 48 },
-  confidenceContainer: { marginTop: 20, padding: "20px 24px", backgroundColor: "#F8F9FA", borderRadius: 14, border: "2px dashed " + COLORS.teal, textAlign: "center" },
-  confidenceQuestion: { fontSize: 16, fontWeight: 700, color: COLORS.text, marginBottom: 16 },
-  confidenceButtons: { display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" },
-  confidenceButton: { display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 20px", borderRadius: 12, border: "2px solid #e6ecf1", backgroundColor: COLORS.white, cursor: "pointer", transition: "all 0.25s ease", fontFamily: "inherit", fontSize: 14, fontWeight: 600, minWidth: 100, color: COLORS.text, minHeight: 56 },
-  confidenceIcon: { fontSize: 20, marginBottom: 4 },
-  confidenceHint: { fontSize: 12, color: COLORS.muted, marginTop: 12 },
   writingContainer: { marginTop: 8 },
   writingInput: { width: "100%", padding: "14px 18px", borderRadius: 14, border: "2px solid #e6ecf1", fontSize: 16, fontFamily: "inherit", resize: "vertical", minHeight: 120, backgroundColor: COLORS.white, transition: "border-color 0.25s ease", textAlign: "right", outline: "none" },
   submitWritingButton: { marginTop: 12, padding: "12px 32px", backgroundColor: COLORS.teal, color: COLORS.white, border: "none", borderRadius: 10, fontSize: 16, fontWeight: 700, cursor: "pointer", transition: "background-color 0.25s ease", fontFamily: "inherit", minHeight: 48 },
@@ -126,23 +122,23 @@ const styles = {
   loadingContainer: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, backgroundColor: COLORS.bg },
   spinner: { width: 48, height: 48, border: "4px solid #e6ecf1", borderTop: "4px solid " + COLORS.teal, borderRadius: "50%", animation: "spin 1s linear infinite" },
   errorBox: { backgroundColor: "#FFEBEE", padding: "2rem", borderRadius: 16, textAlign: "center", border: "1px solid #FFCDD2", maxWidth: 500, margin: "auto" },
-  footer: { backgroundColor: COLORS.navy, color: COLORS.white, padding: "40px 24px 32px", marginTop: "auto" },
-  footerInner: { maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", gap: 40, flexWrap: "wrap" },
-  footerCol: { flex: "1 1 260px" },
-  footerBrand: { fontSize: 20, fontWeight: 800, margin: "0 0 12px" },
-  footerText: { fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.75)", margin: 0, maxWidth: 320 },
-  footerHeading: { fontSize: 16, fontWeight: 700, margin: "0 0 14px" },
-  footerIconBtn: { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", backgroundColor: "transparent", color: COLORS.white, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background-color 0.25s ease" },
+  remainingQuestions: {
+    fontSize: "14px",
+    fontWeight: 600,
+    color: COLORS.muted,
+    marginRight: "12px",
+  },
+  quickBadge: {
+    backgroundColor: "#FFF8E1",
+    color: "#E65100",
+    padding: "4px 14px",
+    borderRadius: 20,
+    fontSize: 12,
+    fontWeight: 700,
+    display: "inline-block",
+    marginRight: 8,
+  },
 };
-
-function MailIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3 7l9 6 9-6" />
-    </svg>
-  );
-}
 
 export default function Assessment() {
   const router = useRouter();
@@ -155,15 +151,14 @@ export default function Assessment() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState(null);
-  const [showConfidence, setShowConfidence] = useState(false);
   const [writtenAnswer, setWrittenAnswer] = useState("");
   const [timePerQuestion, setTimePerQuestion] = useState([]);
-  const [confidenceLevels, setConfidenceLevels] = useState([]);
   const [questionStartTime, setQuestionStartTime] = useState(Date.now());
   const [hoveredOption, setHoveredOption] = useState(null);
-  const [hoveredConfidence, setHoveredConfidence] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [lastErrorType, setLastErrorType] = useState(null);
+  const [lastExplanation, setLastExplanation] = useState("");
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -214,8 +209,52 @@ export default function Assessment() {
     }
   }, [isReady, router.query]);
 
+  // ============================================================
+  // 🔥 دالة الحصول على رسالة خطأ مخصصة حسب نوع الخطأ
+  // ============================================================
+  const getErrorFeedbackMessage = (errorType, question) => {
+    const messages = {
+      conceptual: {
+        text: '🔍 هذا الخطأ يشير إلى عدم فهم المفهوم الأساسي. راجع التعريفات جيداً.',
+        explanation: 'المفاهيم النظرية تحتاج إلى فهم عميق، حاول إعادة قراءة الشرح من مصدر موثوق.'
+      },
+      calculation: {
+        text: '🧮 يبدو أن هناك خطأ في الحساب. تأكد من تنفيذ العمليات خطوة بخطوة.',
+        explanation: 'استخدم ورقة وقلم لحل المسائل، وتأكد من كل خطوة قبل الانتقال للخطوة التالية.'
+      },
+      application: {
+        text: '⚙️ تحتاج إلى تطبيق المعلومة على سياق جديد. حاول حل تمارين مشابهة.',
+        explanation: 'التطبيق العملي يختلف عن الحفظ النظري، جرب حل مسائل من مصادر مختلفة.'
+      },
+      memorization: {
+        text: '📚 قد يكون الاعتماد على الحفظ دون فهم. حاول إعادة صياغة المعلومة بكلماتك.',
+        explanation: 'حاول فهم العلاقات بين المفاهيم بدلاً من حفظها بشكل منفصل.'
+      }
+    };
+    return messages[errorType] || messages.conceptual;
+  };
+
+  // ============================================================
+  // 🔥 دالة تحديد نوع الخطأ من السؤال
+  // ============================================================
+  const getErrorTypeFromQuestion = (question) => {
+    if (question.errorPattern) return question.errorPattern;
+    const cognitive = question.cognitiveLevel || 'remembering';
+    const subSkill = question.subSkill || '';
+    
+    if (cognitive === 'remembering') return 'memorization';
+    if (cognitive === 'applying' || cognitive === 'analyzing') return 'application';
+    if (subSkill.includes('calc') || subSkill.includes('subnet') || subSkill.includes('host')) {
+      return 'calculation';
+    }
+    return 'conceptual';
+  };
+
+  // ============================================================
+  // 🔥 معالج اختيار الإجابة (بدون ثقة)
+  // ============================================================
   const handleOptionSelect = (optionIndex) => {
-    if (showFeedback || showConfidence || loading) return;
+    if (showFeedback || loading) return;
     setSelectedOption(optionIndex);
     const timeTaken = (Date.now() - questionStartTime) / 1000;
     setTimePerQuestion((prev) => [...prev, timeTaken]);
@@ -224,7 +263,12 @@ export default function Assessment() {
     setLastAnswerCorrect(isCorrect);
     setAnswers((prev) => [...prev, isCorrect]);
 
-    // تخزين تفاصيل الإجابة للتحليل
+    // تحديد نوع الخطأ
+    const errorType = getErrorTypeFromQuestion(currentQuestion);
+    setLastErrorType(errorType);
+    const feedback = getErrorFeedbackMessage(errorType, currentQuestion);
+    setLastExplanation(feedback.explanation);
+
     setAnswerDetails((prev) => [...prev, {
       questionId: currentQuestion.id || currentIndex,
       selectedOption: optionIndex,
@@ -234,14 +278,19 @@ export default function Assessment() {
       subSkill: currentQuestion.subSkill || 'عام',
       cognitiveLevel: currentQuestion.cognitiveLevel || 'remembering',
       difficulty: currentQuestion.difficulty || 1,
-      isWriting: currentQuestion.isWriting || false,
+      isWriting: false,
+      errorType: errorType,
     }]);
 
-    setShowConfidence(true);
+    // ✅ عرض التغذية الراجعة مباشرة (بدون ثقة)
+    setShowFeedback(true);
   };
 
+  // ============================================================
+  // 🔥 معالج الإجابة الكتابية (بدون ثقة)
+  // ============================================================
   const handleWritingSubmit = () => {
-    if (!writtenAnswer.trim() || showFeedback || showConfidence || loading) return;
+    if (!writtenAnswer.trim() || showFeedback || loading) return;
     const timeTaken = (Date.now() - questionStartTime) / 1000;
     setTimePerQuestion((prev) => [...prev, timeTaken]);
     const currentQuestion = questions[currentIndex];
@@ -250,6 +299,12 @@ export default function Assessment() {
     const isCorrect = userAnswer === expected;
     setLastAnswerCorrect(isCorrect);
     setAnswers((prev) => [...prev, isCorrect]);
+
+    // تحديد نوع الخطأ
+    const errorType = getErrorTypeFromQuestion(currentQuestion);
+    setLastErrorType(errorType);
+    const feedback = getErrorFeedbackMessage(errorType, currentQuestion);
+    setLastExplanation(feedback.explanation);
 
     setAnswerDetails((prev) => [...prev, {
       questionId: currentQuestion.id || currentIndex,
@@ -262,37 +317,51 @@ export default function Assessment() {
       difficulty: currentQuestion.difficulty || 1,
       isWriting: true,
       writtenAnswer: userAnswer,
+      errorType: errorType,
     }]);
 
-    setShowConfidence(true);
-  };
-
-  const handleConfidence = (level) => {
-    setConfidenceLevels((prev) => [...prev, level]);
-    setShowConfidence(false);
+    // ✅ عرض التغذية الراجعة مباشرة (بدون ثقة)
     setShowFeedback(true);
   };
 
+  // ============================================================
+  // 🔥 الانتقال للسؤال التالي أو النتيجة
+  // ============================================================
   const goToNextOrFinish = () => {
     setShowFeedback(false);
     setSelectedOption(null);
     setWrittenAnswer("");
     setQuestionStartTime(Date.now());
     setLastAnswerCorrect(null);
+    setLastErrorType(null);
+    setLastExplanation("");
 
     if (currentIndex + 1 >= questions.length) {
+      const queryParams = {
+        answers: JSON.stringify(answers),
+        questions: JSON.stringify(questions),
+        answerDetails: JSON.stringify(answerDetails),
+        assessmentId: router.query.id,
+        total: questions.length,
+        mode: router.query.mode || "full",
+        timePerQuestion: JSON.stringify(timePerQuestion),
+        confidenceLevels: JSON.stringify([]), // مصفوفة فارغة (بدون ثقة)
+      };
+
+      // ✅ إذا كان التقييم سريعاً، أضف quickResult
+      if (router.query.mode === 'quick') {
+        const quickResult = {
+          score: Math.round((correctCount / totalQuestions) * 100),
+          total: totalQuestions,
+          correct: correctCount,
+          wrong: totalQuestions - correctCount,
+        };
+        queryParams.quickResult = JSON.stringify(quickResult);
+      }
+
       router.push({
         pathname: "/result",
-        query: {
-          answers: JSON.stringify(answers),
-          questions: JSON.stringify(questions),
-          answerDetails: JSON.stringify(answerDetails),
-          assessmentId: router.query.id,
-          total: questions.length,
-          mode: router.query.mode || "full",
-          timePerQuestion: JSON.stringify(timePerQuestion),
-          confidenceLevels: JSON.stringify(confidenceLevels),
-        },
+        query: queryParams,
       });
       return;
     }
@@ -353,6 +422,13 @@ export default function Assessment() {
   const isQuick = router.query.mode === "quick";
   const progress = totalQuestions > 0 ? ((currentIndex) / totalQuestions) * 100 : 0;
 
+  // لون شريط التقدم حسب الأداء
+  const getProgressColor = () => {
+    if (score >= 70) return COLORS.success;
+    if (score >= 40) return COLORS.warning;
+    return COLORS.error;
+  };
+
   const getDifficultyLabel = (difficulty) => {
     const levels = {
       1: { label: "🟢 سهل", color: COLORS.success },
@@ -374,12 +450,6 @@ export default function Assessment() {
     return map[level] || level || "تذكر";
   };
 
-  const confidenceOptions = [
-    { level: 25, label: "غير متأكد", icon: "🤔", color: COLORS.warning },
-    { level: 50, label: "متأكد إلى حد ما", icon: "📖", color: COLORS.teal },
-    { level: 90, label: "متأكد تماماً", icon: "💪", color: COLORS.success },
-  ];
-
   const optionLetters = ["أ", "ب", "ج", "د"];
 
   return (
@@ -397,9 +467,6 @@ export default function Assessment() {
             .stat-value { font-size: 18px !important; }
             .stat-icon { font-size: 18px !important; }
             .stat-label { font-size: 11px !important; }
-            .confidence-buttons { flex-direction: column !important; gap: 8px !important; }
-            .confidence-button { width: 100% !important; padding: 12px !important; min-height: 48px !important; }
-            .confidence-container { padding: 16px !important; }
             .writing-input { font-size: 14px !important; min-height: 100px !important; }
             .submit-writing-button { width: 100% !important; padding: 12px !important; }
             .next-button { width: 100% !important; justify-content: center !important; }
@@ -435,11 +502,28 @@ export default function Assessment() {
               <span style={styles.statLabel}>الإجابات الخاطئة</span>
             </div>
           </div>
+          {isQuick && (
+            <div style={{ ...styles.statCard, backgroundColor: "#FFF8E1", borderColor: "#FFE082" }}>
+              <span style={styles.statIcon}>⚡</span>
+              <div style={styles.statInfo}>
+                <span style={{ ...styles.statValue, color: "#E65100" }}>سريع</span>
+                <span style={styles.statLabel}>نوع التقييم</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div style={styles.progressContainer}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 13, color: COLORS.muted }}>
+              {currentIndex + 1} / {totalQuestions}
+            </span>
+            <span style={styles.remainingQuestions}>
+              {totalQuestions - (currentIndex + 1)} أسئلة متبقية
+            </span>
+          </div>
           <div style={styles.progressBar}>
-            <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+            <div style={{ ...styles.progressFill, width: `${progress}%`, backgroundColor: getProgressColor() }} />
           </div>
         </div>
 
@@ -453,14 +537,12 @@ export default function Assessment() {
               })()}
               <span style={styles.cognitiveBadge}>{getCognitiveLabel(currentQuestion.cognitiveLevel)}</span>
               {currentQuestion.isWriting && <span style={styles.writingBadge}>✏️ كتابي</span>}
-              <span style={{ ...styles.topicBadge, backgroundColor: COLORS.teal, fontSize: 11 }}>
-                {currentIndex + 1} / {totalQuestions}
-              </span>
+              {isQuick && <span style={styles.quickBadge}>⚡ سريع</span>}
             </div>
 
             <h2 style={{ ...styles.questionText, className: "question-text" }}>{currentQuestion.question}</h2>
 
-            {!showFeedback && !showConfidence && (
+            {!showFeedback && (
               <>
                 {currentQuestion.isWriting ? (
                   <div style={styles.writingContainer}>
@@ -486,10 +568,10 @@ export default function Assessment() {
                       const optionIndex = idx + 1;
                       const isHovered = hoveredOption === optionIndex;
                       let optionStyle = { ...styles.optionButton };
-                      if (isHovered && !showFeedback && !showConfidence) {
+                      if (isHovered && !showFeedback) {
                         optionStyle = { ...optionStyle, borderColor: COLORS.teal, backgroundColor: "#F0F7F8", transform: "translateX(-4px)" };
                       }
-                      if (showFeedback || showConfidence) {
+                      if (showFeedback) {
                         optionStyle = { ...optionStyle, cursor: "not-allowed", opacity: 0.6 };
                       }
                       return (
@@ -500,7 +582,7 @@ export default function Assessment() {
                           onMouseLeave={() => setHoveredOption(null)}
                           style={optionStyle}
                           className="option-button"
-                          disabled={showFeedback || showConfidence}
+                          disabled={showFeedback}
                         >
                           <span style={styles.optionLetter}>{optionLetters[idx]}</span>
                           <span style={styles.optionText}>{option}</span>
@@ -512,44 +594,47 @@ export default function Assessment() {
               </>
             )}
 
-            {showConfidence && (
-              <div style={styles.confidenceContainer} className="confidence-container">
-                <p style={styles.confidenceQuestion}>ما مدى ثقتك في إجابتك؟</p>
-                <div style={{ ...styles.confidenceButtons, className: "confidence-buttons" }}>
-                  {confidenceOptions.map((opt) => (
-                    <button
-                      key={opt.level}
-                      onClick={() => handleConfidence(opt.level)}
-                      onMouseEnter={() => setHoveredConfidence(opt.level)}
-                      onMouseLeave={() => setHoveredConfidence(null)}
-                      style={{
-                        ...styles.confidenceButton,
-                        borderColor: hoveredConfidence === opt.level ? opt.color : "#e6ecf1",
-                        ...(hoveredConfidence === opt.level ? { backgroundColor: "#F0F7F8", transform: "translateY(-2px)" } : {}),
-                      }}
-                      className="confidence-button"
-                    >
-                      <span style={styles.confidenceIcon}>{opt.icon}</span>
-                      <span>{opt.label}</span>
-                    </button>
-                  ))}
-                </div>
-                <p style={styles.confidenceHint}>هذا يساعدنا في تحليل أخطائك بدقة أكبر</p>
-              </div>
-            )}
-
             {showFeedback && (
               <div style={{ ...styles.feedbackContainer, ...(lastAnswerCorrect ? styles.feedbackCorrect : styles.feedbackWrong), className: "feedback-container" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={styles.feedbackIcon}>{lastAnswerCorrect ? "✅" : "❌"}</span>
-                  <div>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexDirection: "column", flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <span style={styles.feedbackIcon}>{lastAnswerCorrect ? "✅" : "❌"}</span>
                     <span style={{ ...styles.feedbackText, ...(lastAnswerCorrect ? styles.feedbackCorrectText : styles.feedbackWrongText) }}>
-                      {lastAnswerCorrect ? "إجابة صحيحة!" : "إجابة خاطئة"}
+                      {lastAnswerCorrect ? "إجابة صحيحة! 🎉" : "إجابة خاطئة"}
                     </span>
-                    {!lastAnswerCorrect && currentQuestion.isWriting && (
-                      <p style={styles.feedbackCorrectAnswer}>الإجابة المتوقعة: <strong>{currentQuestion.expectedAnswer}</strong></p>
-                    )}
                   </div>
+
+                  {!lastAnswerCorrect && (
+                    <>
+                      {currentQuestion.isWriting && (
+                        <p style={styles.feedbackCorrectAnswer}>
+                          الإجابة المتوقعة: <strong>{currentQuestion.expectedAnswer}</strong>
+                        </p>
+                      )}
+                      {!currentQuestion.isWriting && currentQuestion.options && (
+                        <p style={styles.feedbackCorrectAnswer}>
+                          الإجابة الصحيحة: <strong>{currentQuestion.options[currentQuestion.correct - 1]}</strong>
+                        </p>
+                      )}
+                      {/* 🔥 رسالة الخطأ المخصصة */}
+                      <div style={{ marginTop: 4 }}>
+                        <p style={styles.feedbackExplanation}>
+                          <span style={{ fontWeight: 700 }}>💡 سبب الخطأ:</span> {getErrorFeedbackMessage(lastErrorType || 'conceptual', currentQuestion).text}
+                        </p>
+                        {lastExplanation && (
+                          <p style={{ ...styles.feedbackExplanation, color: COLORS.muted, fontSize: 13 }}>
+                            {lastExplanation}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {lastAnswerCorrect && (
+                    <p style={{ ...styles.feedbackExplanation, color: COLORS.successDark, fontSize: 14 }}>
+                      🌟 أحسنت! استمر بهذا الأداء.
+                    </p>
+                  )}
                 </div>
                 <button onClick={goToNextOrFinish} style={{ ...styles.nextButton, className: "next-button" }}>
                   {currentIndex + 1 >= totalQuestions ? "📊 عرض النتيجة" : "السؤال التالي ←"}
@@ -564,19 +649,6 @@ export default function Assessment() {
             </div>
           )}
         </main>
-
-        <footer style={styles.footer}>
-          <div style={styles.footerInner}>
-            <div style={styles.footerCol}>
-              <h3 style={styles.footerBrand}>SmartLab</h3>
-              <p style={styles.footerText}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
-            </div>
-            <div style={styles.footerCol}>
-              <h4 style={styles.footerHeading}>تواصل معنا</h4>
-              <button style={styles.footerIconBtn} aria-label="راسلنا عبر البريد الإلكتروني"><MailIcon /></button>
-            </div>
-          </div>
-        </footer>
       </div>
     </>
   );
