@@ -1,5 +1,5 @@
 // pages/assessment/[id].js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -149,6 +149,7 @@ export default function Assessment() {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [answerDetails, setAnswerDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -222,6 +223,20 @@ export default function Assessment() {
     const isCorrect = optionIndex === currentQuestion.correct;
     setLastAnswerCorrect(isCorrect);
     setAnswers((prev) => [...prev, isCorrect]);
+
+    // تخزين تفاصيل الإجابة للتحليل
+    setAnswerDetails((prev) => [...prev, {
+      questionId: currentQuestion.id || currentIndex,
+      selectedOption: optionIndex,
+      isCorrect: isCorrect,
+      timeTaken: timeTaken,
+      topic: currentQuestion.topic || 'عام',
+      subSkill: currentQuestion.subSkill || 'عام',
+      cognitiveLevel: currentQuestion.cognitiveLevel || 'remembering',
+      difficulty: currentQuestion.difficulty || 1,
+      isWriting: currentQuestion.isWriting || false,
+    }]);
+
     setShowConfidence(true);
   };
 
@@ -235,6 +250,20 @@ export default function Assessment() {
     const isCorrect = userAnswer === expected;
     setLastAnswerCorrect(isCorrect);
     setAnswers((prev) => [...prev, isCorrect]);
+
+    setAnswerDetails((prev) => [...prev, {
+      questionId: currentQuestion.id || currentIndex,
+      selectedOption: userAnswer,
+      isCorrect: isCorrect,
+      timeTaken: timeTaken,
+      topic: currentQuestion.topic || 'عام',
+      subSkill: currentQuestion.subSkill || 'عام',
+      cognitiveLevel: currentQuestion.cognitiveLevel || 'remembering',
+      difficulty: currentQuestion.difficulty || 1,
+      isWriting: true,
+      writtenAnswer: userAnswer,
+    }]);
+
     setShowConfidence(true);
   };
 
@@ -257,6 +286,7 @@ export default function Assessment() {
         query: {
           answers: JSON.stringify(answers),
           questions: JSON.stringify(questions),
+          answerDetails: JSON.stringify(answerDetails),
           assessmentId: router.query.id,
           total: questions.length,
           mode: router.query.mode || "full",
@@ -376,12 +406,6 @@ export default function Assessment() {
             .feedback-container { flex-direction: column !important; align-items: stretch !important; }
             .question-meta { gap: 6px !important; }
             .topic-badge { font-size: 11px !important; padding: 3px 10px !important; }
-          }
-          @media (max-width: 480px) {
-            .stat-card { min-width: 60px !important; }
-            .stat-value { font-size: 16px !important; }
-            .stat-label { font-size: 10px !important; }
-            .question-text { font-size: 15px !important; }
           }
         `}</style>
       </Head>
