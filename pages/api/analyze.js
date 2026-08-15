@@ -1,6 +1,9 @@
-// pages/api/analyze.js - النسخة النهائية مع التحليل الذكي المتقدم والتنبؤ المهني
+// pages/api/analyze.js - النسخة النهائية المتكاملة مع التحليل العبقري
 import { getAllBasicsQuestions } from '../../data/questions/basics';
 
+// ============================================================
+// 🔷 الثوابت والأقسام التعليمية
+// ============================================================
 const LEARNING_STAGES = {
   'concepts': [
     { id: 'net_def', concept: 'تعريف الشبكة', icon: '🌐', topic: 'Network Basics' },
@@ -114,365 +117,7 @@ const DIAGNOSTIC_SKILLS = {
 };
 
 // ============================================================
-// 🧠 التحليل الذكي المتقدم (المهارات الفرعية + الأخطاء الذكية)
-// ============================================================
-
-const SUB_SKILLS = {
-  'IPv4': [
-    { id: 'ipv4_structure', name: 'بنية عنوان IPv4 (الأوكتتات)', keywords: ['octet', 'بنية', 'أجزاء', 'تقسيم'] },
-    { id: 'ipv4_binary', name: 'تحويل الأنظمة (ثنائي/عشري)', keywords: ['تحويل', 'ثنائي', 'عشري', 'binary'] },
-    { id: 'ipv4_classes', name: 'تصنيفات العناوين (Class A/B/C)', keywords: ['class', 'تصنيف', 'فئة'] },
-    { id: 'ipv4_public_private', name: 'العناوين العامة والخاصة', keywords: ['خاصة', 'عامة', 'private', 'public'] },
-    { id: 'ipv4_subnetting', name: 'حسابات Subnetting', keywords: ['subnet', 'شبكة فرعية', 'cidr'] },
-    { id: 'ipv4_vlsm', name: 'VLSM و CIDR', keywords: ['vlsm', 'cidr', 'تلخيص'] },
-  ],
-  'Subnetting': [
-    { id: 'subnet_concept', name: 'مفهوم Subnetting', keywords: ['مفهوم', 'فكرة'] },
-    { id: 'subnet_cidr', name: 'ترميز CIDR', keywords: ['cidr', '/', 'ترميز'] },
-    { id: 'subnet_network_id', name: 'تحديد Network ID', keywords: ['network id', 'معرف الشبكة'] },
-    { id: 'subnet_broadcast', name: 'حساب عنوان البث', keywords: ['broadcast', 'بث'] },
-    { id: 'subnet_hosts', name: 'حساب عدد المضيفين', keywords: ['hosts', 'مضيفين', 'عدد'] },
-    { id: 'subnet_flsm_vlsm', name: 'FLSM و VLSM', keywords: ['flsm', 'vlsm'] },
-  ],
-  'IPv6': [
-    { id: 'ipv6_structure', name: 'بنية عنوان IPv6', keywords: ['بنية', 'أجزاء'] },
-    { id: 'ipv6_types', name: 'أنواع عناوين IPv6', keywords: ['types', 'أنواع'] },
-    { id: 'ipv6_shorten', name: 'اختصار عناوين IPv6', keywords: ['اختصار', 'shorten'] },
-    { id: 'ipv6_comparison', name: 'مقارنة IPv4 و IPv6', keywords: ['مقارنة', 'comparison'] },
-  ],
-  'OSI Model': [
-    { id: 'osi_layers', name: 'طبقات OSI السبع', keywords: ['طبقات', 'layers'] },
-    { id: 'osi_functions', name: 'وظائف كل طبقة', keywords: ['وظائف', 'functions'] },
-    { id: 'osi_protocols', name: 'البروتوكولات في OSI', keywords: ['بروتوكولات', 'protocols'] },
-    { id: 'osi_pdu', name: 'وحدات البيانات PDU', keywords: ['pdu', 'وحدات'] },
-  ],
-  'Network Devices': [
-    { id: 'device_switch', name: 'المبدل Switch', keywords: ['switch', 'مبدل'] },
-    { id: 'device_router', name: 'الموجه Router', keywords: ['router', 'موجه'] },
-    { id: 'device_firewall', name: 'جدار الحماية', keywords: ['firewall', 'جدار'] },
-    { id: 'device_access_point', name: 'نقطة الوصول AP', keywords: ['access point', 'ap'] },
-  ],
-  'Email Protocols': [
-    { id: 'email_smtp', name: 'بروتوكول SMTP', keywords: ['smtp'] },
-    { id: 'email_pop3', name: 'بروتوكول POP3', keywords: ['pop3'] },
-    { id: 'email_imap', name: 'بروتوكول IMAP', keywords: ['imap'] },
-    { id: 'email_ports', name: 'المنافذ الافتراضية', keywords: ['ports', 'منافذ'] },
-  ],
-  'TCP/IP': [
-    { id: 'tcpip_layers', name: 'طبقات TCP/IP', keywords: ['طبقات', 'layers'] },
-    { id: 'tcpip_tcp_vs_udp', name: 'الفرق بين TCP و UDP', keywords: ['tcp', 'udp'] },
-    { id: 'tcpip_handshake', name: 'المصافحة الثلاثية', keywords: ['handshake', 'مصافحة'] },
-    { id: 'tcpip_http', name: 'بروتوكول HTTP', keywords: ['http'] },
-  ],
-};
-
-function identifySubSkill(question) {
-  const topic = question.topic || '';
-  const subSkill = question.subSkill || '';
-  const questionText = question.question || '';
-  const skills = SUB_SKILLS[topic] || [];
-  for (const skill of skills) {
-    for (const keyword of skill.keywords) {
-      if (subSkill.toLowerCase().includes(keyword) || 
-          questionText.toLowerCase().includes(keyword) ||
-          topic.toLowerCase().includes(keyword)) {
-        return skill.id;
-      }
-    }
-  }
-  return null;
-}
-
-function analyzeSubSkillsDeeply(questions, numericAnswers, rawAnswers) {
-  const subSkillResults = {};
-  questions.forEach((q, i) => {
-    const skillId = identifySubSkill(q);
-    if (!skillId) return;
-    if (!subSkillResults[skillId]) {
-      subSkillResults[skillId] = {
-        total: 0,
-        correct: 0,
-        errors: [],
-        times: [],
-        name: skillId,
-        topic: q.topic || 'عام'
-      };
-    }
-    const stats = subSkillResults[skillId];
-    stats.total++;
-    const isCorrect = q.isWriting ? 
-      (rawAnswers[i] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase() : 
-      numericAnswers[i] === q.correct;
-    if (isCorrect) {
-      stats.correct++;
-    } else {
-      const errorType = classifyError(q, rawAnswers[i], numericAnswers[i]);
-      stats.errors.push({
-        question: q.question,
-        yourAnswer: rawAnswers[i] || numericAnswers[i],
-        correctAnswer: q.expectedAnswer || q.options?.[q.correct - 1] || '',
-        errorType: errorType,
-        subSkill: skillId
-      });
-    }
-  });
-  const result = {};
-  for (const [skillId, stats] of Object.entries(subSkillResults)) {
-    const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-    const errorTypes = stats.errors.map(e => e.errorType);
-    const dominantError = getMostCommon(errorTypes);
-    let rootCause = '', solution = '', youtubeSearch = '';
-    if (dominantError === 'conceptual') {
-      rootCause = 'ضعف في فهم المفهوم الأساسي';
-      solution = 'راجع الشرح النظري للمفهوم من المصادر الموثوقة';
-      youtubeSearch = `شرح ${stats.name} بالعربي مفهوم`;
-    } else if (dominantError === 'calculation') {
-      rootCause = 'أخطاء في العمليات الحسابية';
-      solution = 'تدرب على الحسابات خطوة بخطوة واستخدم آلة حاسبة للتحقق';
-      youtubeSearch = `تمارين ${stats.name} بالعربي`;
-    } else if (dominantError === 'application') {
-      rootCause = 'صعوبة في تطبيق المعلومة على سيناريوهات جديدة';
-      solution = 'حل تمارين تطبيقية متنوعة تغطي سيناريوهات مختلفة';
-      youtubeSearch = `تطبيقات ${stats.name} بالعربي`;
-    } else if (dominantError === 'memorization') {
-      rootCause = 'اعتماد على الحفظ بدون فهم عميق';
-      solution = 'حاول إعادة صياغة المعلومة بكلماتك الخاصة وربطها بمفاهيم أخرى';
-      youtubeSearch = `فهم ${stats.name} بالعربي`;
-    } else {
-      rootCause = 'يحتاج مراجعة عامة للمهارة';
-      solution = 'راجع الأساسيات وقم بحل تمارين متنوعة';
-      youtubeSearch = `شرح ${stats.name} بالعربي`;
-    }
-    result[skillId] = {
-      name: stats.name,
-      topic: stats.topic,
-      percentage: pct,
-      correct: stats.correct,
-      total: stats.total,
-      level: pct >= 80 ? 'متقن' : pct >= 50 ? 'قيد التعلم' : 'ضعيف',
-      errors: stats.errors,
-      errorCount: stats.errors.length,
-      dominantError: dominantError || 'none',
-      rootCause: rootCause,
-      solution: solution,
-      youtubeSearch: youtubeSearch,
-      priority: pct < 50 ? 'حرجة' : pct < 70 ? 'متوسطة' : 'منخفضة'
-    };
-  }
-  return result;
-}
-
-function classifyError(question, rawAnswer, numericAnswer) {
-  const q = question;
-  const subSkill = q.subSkill || '';
-  const cognitiveLevel = q.cognitiveLevel || 'remembering';
-  if (cognitiveLevel === 'remembering') return 'memorization';
-  if (cognitiveLevel === 'applying' || cognitiveLevel === 'analyzing') return 'application';
-  if (subSkill.includes('Subnet') || subSkill.includes('Calculation') || subSkill.includes('Network_ID')) {
-    return 'calculation';
-  }
-  if (cognitiveLevel === 'understanding' || cognitiveLevel === 'evaluating' || cognitiveLevel === 'creating') {
-    return 'conceptual';
-  }
-  return 'conceptual';
-}
-
-function generateSurgicalLearningMap(subSkillAnalysis, topicAnalysis) {
-  const weakSkills = Object.entries(subSkillAnalysis)
-    .filter(([_, data]) => data.percentage < 70)
-    .sort((a, b) => a[1].percentage - b[1].percentage);
-  const criticalSkills = weakSkills.filter(([_, data]) => data.percentage < 40);
-  const moderateSkills = weakSkills.filter(([_, data]) => data.percentage >= 40 && data.percentage < 70);
-  return {
-    critical: criticalSkills.map(([id, data]) => ({
-      skillId: id,
-      name: data.name,
-      percentage: data.percentage,
-      rootCause: data.rootCause,
-      solution: data.solution,
-      youtubeSearch: data.youtubeSearch,
-      exercises: Math.max(5, Math.round((100 - data.percentage) / 10)),
-      priority: 'عالية جداً'
-    })),
-    moderate: moderateSkills.map(([id, data]) => ({
-      skillId: id,
-      name: data.name,
-      percentage: data.percentage,
-      rootCause: data.rootCause,
-      solution: data.solution,
-      youtubeSearch: data.youtubeSearch,
-      exercises: Math.max(3, Math.round((100 - data.percentage) / 15)),
-      priority: 'متوسطة'
-    })),
-    mastered: Object.entries(subSkillAnalysis)
-      .filter(([_, data]) => data.percentage >= 80)
-      .map(([id, data]) => ({
-        skillId: id,
-        name: data.name,
-        percentage: data.percentage,
-        priority: 'منخفضة (مكتمل)'
-      }))
-  };
-}
-
-function generatePreciseLessons(subSkillAnalysis, weaknesses) {
-  const lessons = [];
-  for (const [skillId, data] of Object.entries(subSkillAnalysis)) {
-    if (data.percentage < 70) {
-      lessons.push({
-        skillId: skillId,
-        topic: data.name,
-        percentage: data.percentage,
-        reason: data.rootCause || 'يحتاج مراجعة',
-        solution: data.solution || 'راجع الأساسيات',
-        youtubeSearch: data.youtubeSearch || `شرح ${data.name} بالعربي`,
-        exercises: Math.max(3, Math.round((100 - data.percentage) / 10)),
-        priority: data.percentage < 40 ? 'عالية' : 'متوسطة'
-      });
-    }
-  }
-  for (const w of weaknesses) {
-    const exists = lessons.some(l => l.topic.includes(w.topic));
-    if (!exists) {
-      lessons.push({
-        skillId: w.topic,
-        topic: w.topic,
-        percentage: w.percentage,
-        reason: w.reason || 'ضعف عام في الموضوع',
-        solution: w.solution || 'راجع الموضوع من البداية',
-        youtubeSearch: `شرح ${w.topic} بالعربي`,
-        exercises: 5,
-        priority: w.percentage < 40 ? 'عالية' : 'متوسطة'
-      });
-    }
-  }
-  return lessons.sort((a, b) => {
-    const priorityOrder = { 'عالية': 0, 'متوسطة': 1, 'منخفضة': 2 };
-    return (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1);
-  });
-}
-
-// ============================================================
-// 🧭 نظام التنبؤ بالمستقبل المهني (Career Prediction)
-// ============================================================
-
-function predictCareerPath(subSkillDeepAnalysis, topicAnalysis) {
-  const skills = Object.entries(subSkillDeepAnalysis).map(([id, data]) => ({
-    id,
-    name: data.name,
-    percentage: data.percentage,
-    level: data.level,
-    topic: data.topic,
-  }));
-
-  const careerPaths = [
-    {
-      title: 'مهندس شبكات (Network Engineer)',
-      icon: '🌐',
-      description: 'تصميم وإدارة الشبكات المحلية والواسعة، وإعداد أجهزة التوجيه والمبدلات.',
-      requiredSkills: ['ipv4_subnetting', 'ipv4_vlsm', 'subnet_cidr', 'subnet_network_id', 'device_router', 'device_switch'],
-      salaryRange: '8,000 - 15,000 $',
-      growth: 'متزايد',
-      companies: ['Cisco', 'Huawei', 'Juniper', 'شركات الاتصالات'],
-    },
-    {
-      title: 'مهندس أمن سيبراني (Security Engineer)',
-      icon: '🔒',
-      description: 'حماية الشبكات والأنظمة من الهجمات الإلكترونية، إعداد جدران الحماية وأنظمة كشف التسلل.',
-      requiredSkills: ['device_firewall', 'tcpip_tcp_vs_udp', 'tcpip_handshake', 'ipv4_public_private'],
-      salaryRange: '10,000 - 20,000 $',
-      growth: 'عال جداً',
-      companies: ['Fortinet', 'Palo Alto', 'Cisco', 'البنوك والشركات الكبرى'],
-    },
-    {
-      title: 'مهندس أنظمة (Systems Engineer)',
-      icon: '🖥️',
-      description: 'إدارة الخوادم وأنظمة التشغيل، وتكوين البنية التحتية للتقنية.',
-      requiredSkills: ['osi_layers', 'tcpip_layers', 'device_router', 'ipv4_structure'],
-      salaryRange: '7,000 - 14,000 $',
-      growth: 'مستقر',
-      companies: ['Microsoft', 'Linux', 'IBM', 'شركات التقنية'],
-    },
-    {
-      title: 'مهندس اتصالات (Telecom Engineer)',
-      icon: '📡',
-      description: 'تصميم وإدارة شبكات الاتصالات، الألياف البصرية، والاتصالات اللاسلكية.',
-      requiredSkills: ['ipv6_structure', 'ipv6_types', 'osi_layers', 'device_access_point'],
-      salaryRange: '9,000 - 16,000 $',
-      growth: 'متزايد',
-      companies: ['STC', 'Zain', 'Mobily', 'Ericsson'],
-    },
-    {
-      title: 'مهندس شبكات سحابية (Cloud Network Engineer)',
-      icon: '☁️',
-      description: 'تصميم وإدارة الشبكات في بيئات الحوسبة السحابية (AWS، Azure، GCP).',
-      requiredSkills: ['ipv4_subnetting', 'tcpip_tcp_vs_udp', 'device_firewall', 'ipv4_public_private'],
-      salaryRange: '12,000 - 22,000 $',
-      growth: 'عال جداً',
-      companies: ['Amazon', 'Microsoft', 'Google', 'Oracle'],
-    },
-    {
-      title: 'مهندس شبكات لاسلكية (Wireless Engineer)',
-      icon: '📶',
-      description: 'تصميم وإدارة شبكات الواي فاي، تحسين التغطية، وحل مشاكل الاتصال اللاسلكي.',
-      requiredSkills: ['device_access_point', 'ipv4_subnetting', 'ipv6_structure', 'osi_layers'],
-      salaryRange: '8,000 - 15,000 $',
-      growth: 'متزايد',
-      companies: ['Ubiquiti', 'Ruckus', 'Aruba', 'شركات الاتصالات'],
-    },
-  ];
-
-  const scores = careerPaths.map(path => {
-    let totalSkills = 0, matchedSkills = 0, skillDetails = [];
-    path.requiredSkills.forEach(skillId => {
-      totalSkills++;
-      const skill = skills.find(s => s.id === skillId);
-      if (skill) {
-        skillDetails.push({ name: skill.name, percentage: skill.percentage, level: skill.level });
-        if (skill.percentage >= 60) matchedSkills++;
-      } else {
-        skillDetails.push({ name: skillId, percentage: 0, level: 'غير محدد' });
-      }
-    });
-    const matchPercentage = totalSkills > 0 ? Math.round((matchedSkills / totalSkills) * 100) : 0;
-    return { ...path, matchPercentage, skillDetails };
-  });
-
-  const sorted = scores.sort((a, b) => b.matchPercentage - a.matchPercentage);
-  const top3 = sorted.slice(0, 3);
-
-  const generateLearningPlan = (path) => {
-    const weakSkills = path.skillDetails.filter(s => s.percentage < 60).map(s => s.name);
-    if (weakSkills.length === 0) return 'أنت جاهز لهذا المسار! قم بتطوير مهاراتك العملية من خلال مشاريع تطبيقية.';
-    let plan = '📚 **خطة التعلم المقترحة:**\n\n';
-    weakSkills.forEach((skill, index) => {
-      plan += `${index + 1}. **${skill}**: ابدأ بمراجعة الأساسيات، ثم حل تمارين تطبيقية، واختبر نفسك. يمكنك البحث عن دروس في يوتيوب باستخدام "شرح ${skill} بالعربي".\n`;
-    });
-    plan += '\n⏱️ **الوقت المتوقع:** 2-4 أسابيع حسب الجهد المبذول.';
-    return plan;
-  };
-
-  return {
-    topPaths: top3.map(path => ({
-      title: path.title,
-      icon: path.icon,
-      description: path.description,
-      matchPercentage: path.matchPercentage,
-      salaryRange: path.salaryRange,
-      growth: path.growth,
-      companies: path.companies,
-      learningPlan: generateLearningPlan(path),
-      skillDetails: path.skillDetails,
-    })),
-    bestMatch: top3[0] || null,
-    summary: top3.length > 0
-      ? `🌟 بناءً على مهاراتك، أنت الأكثر توافقاً مع مسار "${top3[0].title}" بنسبة ${top3[0].matchPercentage}%.`
-      : 'لم نتمكن من تحديد مسار مهني محدد، ننصحك بتطوير مهاراتك في المجالات الأساسية.',
-  };
-}
-
-// ============================================================
-// الدوال الأصلية (غير معدلة)
+// 🔷 الدوال الأساسية (الموروثة)
 // ============================================================
 
 function buildQMatrix(questions) {
@@ -495,6 +140,13 @@ function buildQMatrix(questions) {
     qMatrix[q.id || q.question] = [...new Set(skills)];
   });
   return qMatrix;
+}
+
+function getMostCommon(arr) {
+  if (!arr || arr.length === 0) return null;
+  const counts = {};
+  arr.forEach(item => { counts[item] = (counts[item]||0)+1; });
+  return Object.keys(counts).reduce((a,b) => counts[a] > counts[b] ? a : b);
 }
 
 function estimateMastery(questions, rawAnswers, numericAnswers) {
@@ -540,13 +192,6 @@ function estimateMastery(questions, rawAnswers, numericAnswers) {
     masteryProbabilities[skill] = total > 0 ? count / total : 0;
   }
   return { skills: skillList.map(s => ({ id: s, name: DIAGNOSTIC_SKILLS[s], masteryProbability: Math.round(masteryProbabilities[s] * 100), level: masteryProbabilities[s] > 0.7 ? 'متقن' : masteryProbabilities[s] > 0.4 ? 'قيد التعلم' : 'ضعيف' })), logLikelihood: bestLikelihood };
-}
-
-function getMostCommon(arr) {
-  if (!arr || arr.length === 0) return null;
-  const counts = {};
-  arr.forEach(item => { counts[item] = (counts[item]||0)+1; });
-  return Object.keys(counts).reduce((a,b) => counts[a] > counts[b] ? a : b);
 }
 
 function analyzeTopicsEnhanced(questions, numericAnswers, rawAnswers, timePerQuestion, confidenceLevels) {
@@ -730,46 +375,401 @@ function generateAllAssessmentsSummary(topicAnalysis) {
   });
 }
 
-function generateFinalInsight(score, simpleScore, weaknesses, hiddenStrengths, learningProfile, comparison, confidenceAnalysis, diagnosticMastery, topicAnalysis, effortAnalysis, questionResults, assessmentType, cognitiveProfile) {
+// ============================================================
+// 🔷 الدوال الجديدة للتحليل العبقري
+// ============================================================
+
+// دالة للحصول على اسم المهارة الفرعية من المعرف
+function getSubSkillName(skillId) {
+  const names = {
+    'net_concepts': 'المفاهيم العامة للشبكات',
+    'net_models': 'نماذج Client-Server و P2P',
+    'net_topologies': 'طبولوجيا الشبكات',
+    'net_media_cables': 'وسائط النقل والكابلات',
+    'net_tcp_vs_udp': 'الفرق بين TCP و UDP',
+    'net_vlan': 'مفهوم VLAN',
+    'net_vpn': 'مفهوم VPN',
+    'ipv4_structure': 'بنية عنوان IPv4',
+    'ipv4_classes': 'تصنيفات عناوين IPv4',
+    'ipv4_public_private': 'العناوين العامة والخاصة',
+    'ipv4_subnet_mask': 'Subnet Mask',
+    'ipv4_subnetting_calc': 'حسابات Subnetting',
+    'ipv4_network_id': 'تحديد Network ID',
+    'ipv4_broadcast': 'حساب Broadcast Address',
+    'ipv6_structure': 'بنية عنوان IPv6',
+    'ipv6_types': 'أنواع عناوين IPv6',
+    'ipv6_shorten': 'اختصار عناوين IPv6',
+    'ipv6_vs_ipv4': 'مقارنة IPv4 و IPv6',
+    'subnet_cidr': 'ترميز CIDR',
+    'subnet_calculation': 'حسابات الشبكات الفرعية',
+    'subnet_network_id': 'تحديد Network ID في Subnetting',
+    'subnet_broadcast': 'حساب Broadcast في Subnetting',
+    'subnet_hosts': 'حساب عدد المضيفين',
+    'subnet_vlsm': 'VLSM (التقسيم المتغير)',
+    'tcpip_layers': 'طبقات TCP/IP',
+    'tcpip_handshake': 'Three-Way Handshake',
+    'tcpip_http': 'بروتوكول HTTP/HTTPS',
+    'tcpip_ports': 'المنافذ الشائعة',
+    'device_switch': 'المبدل Switch',
+    'device_router': 'الموجه Router',
+    'device_firewall': 'جدار الحماية Firewall',
+    'device_access_point': 'نقطة الوصول Access Point',
+    'device_hub_bridge': 'الفرق بين Hub و Bridge',
+    'email_smtp': 'بروتوكول SMTP',
+    'email_pop3': 'بروتوكول POP3',
+    'email_imap': 'بروتوكول IMAP',
+    'email_ports': 'منافذ البريد الإلكتروني',
+    'wireless_principles': 'مبادئ الشبكات اللاسلكية',
+    'wireless_security': 'بروتوكولات الأمان اللاسلكي',
+    'security_acls': 'Access Control Lists (ACLs)',
+    'security_vpn': 'VPN للأمان',
+    'general': 'مهارة عامة'
+  };
+  return names[skillId] || skillId.replace(/_/g, ' ');
+}
+
+function getTrueRootCause(dominantError, percentage, dominantCognitive) {
+  if (percentage >= 80) return 'ممتاز! أنت متقن لهذه المهارة.';
+  if (dominantError === 'conceptual') {
+    return 'ضعف في فهم المفهوم الأساسي. تحتاج إلى إعادة بناء الفهم النظري من الصفر.';
+  }
+  if (dominantError === 'calculation') {
+    return 'أخطاء في العمليات الحسابية. تحتاج إلى تدريب منهجي على الحسابات خطوة بخطوة.';
+  }
+  if (dominantError === 'application') {
+    return 'صعوبة في تطبيق المعلومة على سيناريوهات جديدة. تحتاج إلى حل تمارين تطبيقية متنوعة.';
+  }
+  if (dominantError === 'memorization') {
+    return 'اعتماد على الحفظ بدون فهم عميق. حاول إعادة صياغة المعلومة بكلماتك الخاصة.';
+  }
+  if (dominantCognitive === 'analyzing' && percentage < 50) {
+    return 'صعوبة في تحليل المعلومات وربطها ببعضها. تحتاج إلى تدريب على ربط المفاهيم.';
+  }
+  return 'يحتاج مراجعة عامة للمهارة مع حل تمارين إضافية.';
+}
+
+function getSmartSolution(dominantError, skillId) {
+  const skillName = getSubSkillName(skillId);
+  const solutions = {
+    conceptual: `راجع الشرح النظري لـ "${skillName}" من مصادر موثوقة. ابدأ بالأساسيات ثم انتقل للمفاهيم المتقدمة. استخدم الرسوم التوضيحية لفهم العلاقات بين المفاهيم.`,
+    calculation: `تدرب على حل مسائل "${skillName}" خطوة بخطوة. استخدم ورقة وقلم لحل كل مسألة، وتحقق من صحة إجاباتك باستخدام طريقة مختلفة. كرر التمارين حتى تتقنها.`,
+    application: `ابحث عن سيناريوهات واقعية لتطبيق "${skillName}". حل تمارين متنوعة من مصادر مختلفة (كتب، مواقع، فيديوهات). حاول تصميم حلول لمشاكل حقيقية.`,
+    memorization: `حاول فهم العلاقات بين مفاهيم "${skillName}" بدلاً من حفظها. اكتب شرحاً لها بكلماتك الخاصة. علمها لشخص آخر. استخدم خرائط ذهنية لربط المعلومات.`
+  };
+  return solutions[dominantError] || `راجع "${skillName}" من الأساسيات وقم بحل تمارين تطبيقية.`;
+}
+
+function generateSmartYouTubeSearch(skillId, dominantError) {
+  const skillName = getSubSkillName(skillId);
+  const errorMap = {
+    conceptual: `شرح ${skillName} بالعربي مفهوم`,
+    calculation: `تمارين ${skillName} بالعربي`,
+    application: `تطبيقات ${skillName} بالعربي`,
+    memorization: `فهم ${skillName} بالعربي`
+  };
+  return errorMap[dominantError] || `شرح ${skillName} بالعربي`;
+}
+
+function classifyErrorFromQuestion(question, rawAnswer, numericAnswer) {
+  const cognitive = question.cognitiveLevel || 'remembering';
+  const subSkill = question.subSkill || '';
+  if (cognitive === 'remembering') return 'memorization';
+  if (cognitive === 'applying' || cognitive === 'analyzing') return 'application';
+  if (subSkill.includes('calc') || subSkill.includes('subnet') || subSkill.includes('host')) {
+    return 'calculation';
+  }
+  return 'conceptual';
+}
+
+function analyzeSubSkillsBrilliantly(questions, numericAnswers, rawAnswers) {
+  const subSkillMap = {};
+
+  questions.forEach((q, idx) => {
+    const subSkill = q.subSkill || 'general';
+    if (!subSkillMap[subSkill]) {
+      subSkillMap[subSkill] = {
+        total: 0,
+        correct: 0,
+        errors: [],
+        times: [],
+        topic: q.topic || 'عام',
+        skillName: getSubSkillName(subSkill),
+        cognitiveLevels: [],
+        errorPatterns: []
+      };
+    }
+
+    const stats = subSkillMap[subSkill];
+    stats.total++;
+    const isCorrect = q.isWriting 
+      ? (rawAnswers[idx] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase()
+      : numericAnswers[idx] === q.correct;
+
+    if (isCorrect) {
+      stats.correct++;
+    } else {
+      const errorType = q.errorPattern || classifyErrorFromQuestion(q, rawAnswers[idx], numericAnswers[idx]);
+      stats.errors.push({
+        question: q.question,
+        yourAnswer: rawAnswers[idx] || numericAnswers[idx],
+        correctAnswer: q.expectedAnswer || q.options?.[q.correct - 1] || '',
+        errorType: errorType,
+        cognitiveLevel: q.cognitiveLevel || 'remembering'
+      });
+      stats.errorPatterns.push(errorType);
+    }
+    if (q.cognitiveLevel) stats.cognitiveLevels.push(q.cognitiveLevel);
+  });
+
+  const result = {};
+  for (const [skillId, stats] of Object.entries(subSkillMap)) {
+    const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const errorPatterns = stats.errorPatterns;
+    const dominantError = getMostCommon(errorPatterns) || 'none';
+    const cognitiveLevels = stats.cognitiveLevels;
+    const dominantCognitive = getMostCommon(cognitiveLevels) || 'remembering';
+
+    const rootCause = getTrueRootCause(dominantError, pct, dominantCognitive);
+    const solution = getSmartSolution(dominantError, skillId);
+    const youtubeSearch = generateSmartYouTubeSearch(skillId, dominantError);
+
+    result[skillId] = {
+      name: stats.skillName,
+      topic: stats.topic,
+      percentage: pct,
+      correct: stats.correct,
+      total: stats.total,
+      level: pct >= 80 ? 'متقن' : pct >= 50 ? 'قيد التعلم' : 'ضعيف',
+      errors: stats.errors,
+      errorCount: stats.errors.length,
+      dominantError: dominantError,
+      dominantCognitive: dominantCognitive,
+      rootCause: rootCause,
+      solution: solution,
+      youtubeSearch: youtubeSearch,
+      priority: pct < 40 ? 'حرجة' : pct < 70 ? 'متوسطة' : 'منخفضة'
+    };
+  }
+
+  return result;
+}
+
+function generateDynamicAIInsight(score, simpleScore, subSkillAnalysis, weaknesses, strongestSkills, assessmentType, cognitiveProfile) {
   let insight = '';
-  insight += `🎯 نتيجتك: ${score}% (الدرجة الخام: ${simpleScore}%). `;
-  if (score >= 80) insight += `أداء ممتاز. تتقن المادة بعمق. `;
-  else if (score >= 60) insight += `أداء جيد. أساسك قوي مع وجود فجوات بسيطة. `;
-  else if (score >= 40) insight += `أنت في منتصف الطريق. تحتاج إلى تركيز أكبر على الأساسيات. `;
-  else insight += `مستوى مبتدئ. لا تقلق، هذه انطلاقة قوية نحو التعلم. `;
-  if (comparison.percentile >= 80) insight += `أداؤك يضعك بين أفضل 20% من المتعلمين. `;
-  else if (comparison.percentile >= 50) insight += `أنت تؤدي أفضل من نصف المتعلمين. `;
-  insight += '\n\n';
-  if (cognitiveProfile && effortAnalysis) {
-    if (effortAnalysis.avgTime < 8) insight += `⚡ أنت سريع جداً (${effortAnalysis.avgTime} ث). رائع، لكن تمهّل في الأسئلة المركبة. `;
-    else if (effortAnalysis.avgTime > 20) insight += `⏳ تأخذ وقتاً طويلاً (${effortAnalysis.avgTime} ث). تحتاج لتسريع الإيقاع للامتحان. `;
-    else insight += `⏱️ سرعة إجابتك متوازنة (${effortAnalysis.avgTime} ث). `;
+
+  if (assessmentType === 'quick') {
+    insight += `📊 **تقييم سريع - ${score}%**\n\n`;
+  } else {
+    insight += `📊 **تقييم شامل - ${score}%**\n\n`;
   }
-  if (confidenceAnalysis) {
-    if (confidenceAnalysis.highConfWrong > 20) insight += `😟 ${confidenceAnalysis.highConfWrong}% من إجاباتك الواثقة خاطئة. لديك مفاهيم خاطئة تحتاج لتصحيح فوري. `;
-    if (confidenceAnalysis.lowConfCorrect > 30) insight += `🤔 ${confidenceAnalysis.lowConfCorrect}% من إجاباتك الصحيحة كنت غير واثق بها. ثق بمعرفتك أكثر. `;
+
+  if (score >= 80) insight += `🎉 أداء استثنائي! أنت تتقن المادة بعمق. `;
+  else if (score >= 60) insight += `✅ أداء جيد. أساسك قوي مع وجود فجوات بسيطة. `;
+  else if (score >= 40) insight += `📈 أنت في منتصف الطريق. تحتاج إلى تركيز أكبر على الأساسيات. `;
+  else insight += `🌱 مستوى مبتدئ. لا تقلق، هذه انطلاقة قوية نحو التعلم. `;
+
+  if (weaknesses && weaknesses.length > 0) {
+    const topWeakness = weaknesses[0];
+    insight += `\n\n⚠️ **نقطة الضعف الأكبر**: "${topWeakness.name}" (${topWeakness.percentage}%).\n`;
+    insight += `📌 السبب: ${topWeakness.rootCause}\n`;
+    insight += `💡 الحل المقترح: ${topWeakness.solution}\n`;
   }
-  insight += '\n\n';
-  if (topicAnalysis && Object.keys(topicAnalysis).length > 0) {
-    if (assessmentType === 'topic') {
-      const [topic, data] = Object.entries(topicAnalysis)[0];
-      const pct = data.weightedPercentage || data.percentage;
-      insight += `📌 تركيزك كان على "${topic}". `;
-      if (data.level === 'قوي') insight += `نتيجتك ${pct}% تدل على إتقان جيد. ${data.tip} `;
-      else if (data.level === 'متوسط') insight += `نتيجتك ${pct}% متوسطة. ${data.tip} `;
-      else insight += `نتيجتك ${pct}% تحتاج تطويراً. ${data.tip} `;
-    } else if (assessmentType === 'full') {
-      const sorted = Object.entries(topicAnalysis).sort((a,b) => (b[1].weightedPercentage||b[1].percentage) - (a[1].weightedPercentage||a[1].percentage));
-      const best = sorted[0]; const weakest = sorted[sorted.length-1];
-      insight += `🌟 أفضل أداء: ${best[0]} (${best[1].weightedPercentage||best[1].percentage}%). `;
-      insight += `⚠️ يحتاج تركيزاً: ${weakest[0]} (${weakest[1].weightedPercentage||weakest[1].percentage}%). `;
+
+  if (strongestSkills && strongestSkills.length > 0) {
+    const topStrength = strongestSkills[0];
+    insight += `\n💪 **نقطة القوة الأكبر**: "${topStrength.name}" (${topStrength.percentage}%).\n`;
+    insight += `🌟 استمر في تطوير هذه المهارة لتصبح خبيراً فيها.\n`;
+  }
+
+  if (cognitiveProfile) {
+    insight += `\n🧠 **بصمتك المعرفية**: ${cognitiveProfile.learningStyle}\n`;
+    insight += `📖 ${cognitiveProfile.styleDescription}\n`;
+    if (cognitiveProfile.learningStyle === 'تحليلي متعمق') {
+      insight += `🔍 هذا النمط يعني أنك تجيد الأسئلة المعقدة لكن قد تحتاج لتسريع إجابتك في الأسئلة المباشرة.\n`;
+    } else if (cognitiveProfile.learningStyle === 'حدسي سريع') {
+      insight += `⚡ هذا النمط يعني أنك تجيد الأسئلة المباشرة لكن قد تخطئ في الأسئلة التي تحتاج تفكيراً عميقاً.\n`;
+    } else {
+      insight += `⚖️ هذا النمط يعني أن لديك توازناً جيداً بين السرعة والدقة.\n`;
     }
   }
-  if (weaknesses && weaknesses.length > 0) { const w = weaknesses[0]; insight += `\n💡 خطوتك القادمة: ابدأ بـ "${w.topic}" - ${w.reason}`; }
-  else if (assessmentType === 'topic' && topicAnalysis) { const [topic, data] = Object.entries(topicAnalysis)[0]; if (data.level !== 'قوي') insight += `\n💡 ركز أكثر على تمارين "${topic}".`; }
-  if (assessmentType !== 'quick') { const predicted = Math.min(98, Math.round(score + (100 - score) * 0.4)); insight += `\n📈 تقدير ذكي: مع مراجعة النظرية والتمارين، يمكنك بلوغ ${predicted}% قريباً. هذا ليس سقفاً، بل توقع متحفظ.`; }
+
+  if (assessmentType === 'quick') {
+    insight += `\n📌 **توصية للتقييم السريع**: هذا التقييم أعطاك نظرة عامة. نوصي بإجراء تقييم شامل للحصول على تحليل أعمق لكل مهارة.\n`;
+  } else {
+    insight += `\n📌 **توصية للتقييم الشامل**: ركز على المهارات التالية أولاً: `;
+    const weakNames = weaknesses.slice(0, 3).map(w => `"${w.name}"`).join('، ');
+    insight += weakNames || 'جميع مهاراتك جيدة، استمر في التدريب.';
+    insight += `\n📅 خطة مقترحة: خصص أسبوعين لمراجعة المهارات الضعيفة، ثم أعد التقييم لقياس التقدم.\n`;
+  }
+
+  const predicted = Math.min(95, Math.round(score + (100 - score) * 0.35));
+  insight += `\n🎯 **تقدير ذكي**: مع مراجعة النقاط الضعيفة، يمكنك بلوغ ${predicted}% قريباً. أنت قادر على تحقيق ذلك! 💪\n`;
+
   return insight;
 }
+
+function generateTrueSurgicalMap(subSkillAnalysis) {
+  const weakSkills = Object.entries(subSkillAnalysis)
+    .filter(([_, data]) => data.percentage < 70)
+    .sort((a, b) => a[1].percentage - b[1].percentage);
+
+  const criticalSkills = weakSkills.filter(([_, data]) => data.percentage < 40);
+  const moderateSkills = weakSkills.filter(([_, data]) => data.percentage >= 40 && data.percentage < 70);
+
+  return {
+    critical: criticalSkills.map(([id, data]) => ({
+      skillId: id,
+      name: data.name,
+      percentage: data.percentage,
+      rootCause: data.rootCause,
+      solution: data.solution,
+      youtubeSearch: data.youtubeSearch,
+      exercises: Math.max(5, Math.round((100 - data.percentage) / 8)),
+      priority: 'عالية جداً'
+    })),
+    moderate: moderateSkills.map(([id, data]) => ({
+      skillId: id,
+      name: data.name,
+      percentage: data.percentage,
+      rootCause: data.rootCause,
+      solution: data.solution,
+      youtubeSearch: data.youtubeSearch,
+      exercises: Math.max(3, Math.round((100 - data.percentage) / 12)),
+      priority: 'متوسطة'
+    })),
+    mastered: Object.entries(subSkillAnalysis)
+      .filter(([_, data]) => data.percentage >= 80)
+      .map(([id, data]) => ({
+        skillId: id,
+        name: data.name,
+        percentage: data.percentage,
+        priority: 'مكتمل 🏆'
+      }))
+  };
+}
+
+// ============================================================
+// 🔷 التنبؤ المهني (محسن)
+// ============================================================
+
+function predictCareerPath(subSkillAnalysis, topicAnalysis) {
+  const skills = Object.entries(subSkillAnalysis).map(([id, data]) => ({
+    id,
+    name: data.name,
+    percentage: data.percentage,
+    level: data.level,
+    topic: data.topic,
+  }));
+
+  const careerPaths = [
+    {
+      title: 'مهندس شبكات (Network Engineer)',
+      icon: '🌐',
+      description: 'تصميم وإدارة الشبكات المحلية والواسعة، وإعداد أجهزة التوجيه والمبدلات.',
+      requiredSkills: ['ipv4_subnetting_calc', 'subnet_vlsm', 'subnet_cidr', 'subnet_network_id', 'device_router', 'device_switch'],
+      salaryRange: '8,000 - 15,000 $',
+      growth: 'متزايد',
+      companies: ['Cisco', 'Huawei', 'Juniper', 'شركات الاتصالات'],
+    },
+    {
+      title: 'مهندس أمن سيبراني (Security Engineer)',
+      icon: '🔒',
+      description: 'حماية الشبكات والأنظمة من الهجمات الإلكترونية، إعداد جدران الحماية وأنظمة كشف التسلل.',
+      requiredSkills: ['device_firewall', 'tcpip_handshake', 'ipv4_public_private', 'security_acls'],
+      salaryRange: '10,000 - 20,000 $',
+      growth: 'عال جداً',
+      companies: ['Fortinet', 'Palo Alto', 'Cisco', 'البنوك والشركات الكبرى'],
+    },
+    {
+      title: 'مهندس أنظمة (Systems Engineer)',
+      icon: '🖥️',
+      description: 'إدارة الخوادم وأنظمة التشغيل، وتكوين البنية التحتية للتقنية.',
+      requiredSkills: ['osi_layers', 'tcpip_layers', 'device_router', 'ipv4_structure'],
+      salaryRange: '7,000 - 14,000 $',
+      growth: 'مستقر',
+      companies: ['Microsoft', 'Linux', 'IBM', 'شركات التقنية'],
+    },
+    {
+      title: 'مهندس اتصالات (Telecom Engineer)',
+      icon: '📡',
+      description: 'تصميم وإدارة شبكات الاتصالات، الألياف البصرية، والاتصالات اللاسلكية.',
+      requiredSkills: ['ipv6_structure', 'ipv6_types', 'osi_layers', 'device_access_point'],
+      salaryRange: '9,000 - 16,000 $',
+      growth: 'متزايد',
+      companies: ['STC', 'Zain', 'Mobily', 'Ericsson'],
+    },
+    {
+      title: 'مهندس شبكات سحابية (Cloud Network Engineer)',
+      icon: '☁️',
+      description: 'تصميم وإدارة الشبكات في بيئات الحوسبة السحابية (AWS، Azure، GCP).',
+      requiredSkills: ['ipv4_subnetting_calc', 'tcpip_handshake', 'device_firewall', 'ipv4_public_private'],
+      salaryRange: '12,000 - 22,000 $',
+      growth: 'عال جداً',
+      companies: ['Amazon', 'Microsoft', 'Google', 'Oracle'],
+    },
+    {
+      title: 'مهندس شبكات لاسلكية (Wireless Engineer)',
+      icon: '📶',
+      description: 'تصميم وإدارة شبكات الواي فاي، تحسين التغطية، وحل مشاكل الاتصال اللاسلكي.',
+      requiredSkills: ['device_access_point', 'ipv4_subnetting_calc', 'ipv6_structure', 'osi_layers'],
+      salaryRange: '8,000 - 15,000 $',
+      growth: 'متزايد',
+      companies: ['Ubiquiti', 'Ruckus', 'Aruba', 'شركات الاتصالات'],
+    },
+  ];
+
+  const scores = careerPaths.map(path => {
+    let totalSkills = 0, matchedSkills = 0, skillDetails = [];
+    path.requiredSkills.forEach(skillId => {
+      totalSkills++;
+      const skill = skills.find(s => s.id === skillId);
+      if (skill) {
+        skillDetails.push({ name: skill.name, percentage: skill.percentage, level: skill.level });
+        if (skill.percentage >= 60) matchedSkills++;
+      } else {
+        skillDetails.push({ name: skillId, percentage: 0, level: 'غير محدد' });
+      }
+    });
+    const matchPercentage = totalSkills > 0 ? Math.round((matchedSkills / totalSkills) * 100) : 0;
+    return { ...path, matchPercentage, skillDetails };
+  });
+
+  const sorted = scores.sort((a, b) => b.matchPercentage - a.matchPercentage);
+  const top3 = sorted.slice(0, 3);
+
+  const generateLearningPlan = (path) => {
+    const weakSkills = path.skillDetails.filter(s => s.percentage < 60).map(s => s.name);
+    if (weakSkills.length === 0) return 'أنت جاهز لهذا المسار! قم بتطوير مهاراتك العملية من خلال مشاريع تطبيقية.';
+    let plan = '📚 **خطة التعلم المقترحة:**\n\n';
+    weakSkills.forEach((skill, index) => {
+      plan += `${index + 1}. **${skill}**: ابدأ بمراجعة الأساسيات، ثم حل تمارين تطبيقية، واختبر نفسك. يمكنك البحث عن دروس في يوتيوب باستخدام "شرح ${skill} بالعربي".\n`;
+    });
+    plan += '\n⏱️ **الوقت المتوقع:** 2-4 أسابيع حسب الجهد المبذول.';
+    return plan;
+  };
+
+  return {
+    topPaths: top3.map(path => ({
+      title: path.title,
+      icon: path.icon,
+      description: path.description,
+      matchPercentage: path.matchPercentage,
+      salaryRange: path.salaryRange,
+      growth: path.growth,
+      companies: path.companies,
+      learningPlan: generateLearningPlan(path),
+      skillDetails: path.skillDetails,
+    })),
+    bestMatch: top3[0] || null,
+    summary: top3.length > 0
+      ? `🌟 بناءً على مهاراتك، أنت الأكثر توافقاً مع مسار "${top3[0].title}" بنسبة ${top3[0].matchPercentage}%.`
+      : 'لم نتمكن من تحديد مسار مهني محدد، ننصحك بتطوير مهاراتك في المجالات الأساسية.',
+  };
+}
+
+// ============================================================
+// 🔷 معالج الطلب الرئيسي
+// ============================================================
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -791,6 +791,7 @@ export default async function handler(req, res) {
     const isQuickMode = mode === 'quick';
     let assessmentType = 'topic'; if (assessmentId === 'full' && !isQuickMode) assessmentType = 'full'; else if (isQuickMode) assessmentType = 'quick';
 
+    // التحليلات الأساسية
     const topicAnalysis = analyzeTopicsEnhanced(questions, numericAnswers, answers, timePerQuestion, confidenceLevels);
     const subSkillAnalysis = analyzeSubSkills(questions, numericAnswers, answers);
     const learningProfile = analyzeLearningProfile(questions, numericAnswers, answers);
@@ -806,46 +807,79 @@ export default async function handler(req, res) {
     const rootCauseAnalysis = analyzeRootCauses(weaknesses, topicAnalysis, errors);
     const learningStages = generateLearningStages(assessmentId, topicAnalysis, subSkillAnalysis);
     const allAssessmentsSummary = assessmentType === 'full' ? generateAllAssessmentsSummary(topicAnalysis) : [];
-
     const writingAnswers = questions.filter(q => q.isWriting).map((q) => { const idx = questions.indexOf(q); return { question: q.question, userAnswer: answers[idx] !== undefined ? String(answers[idx]) : '', expectedAnswer: q.expectedAnswer || '', isCorrect: answers[idx]?.toString().trim().toLowerCase() === q.expectedAnswer?.toLowerCase() }; });
-    
-    // ===== التحليل الذكي المتقدم (المهارات الفرعية) =====
-    const subSkillDeepAnalysis = analyzeSubSkillsDeeply(questions, numericAnswers, answers);
-    const surgicalLearningMap = generateSurgicalLearningMap(subSkillDeepAnalysis, topicAnalysis);
-    const preciseLessons = generatePreciseLessons(subSkillDeepAnalysis, weaknesses);
-    const finalRecommendedLessons = preciseLessons.length > 0 ? preciseLessons : weaknesses.slice(0,3).map(w => ({ 
-      topic: w.topic, 
-      percentage: w.percentage, 
-      reason: w.reason, 
-      solution: w.solution, 
-      priority: w.priority 
+
+    // ===== التحليل العبقري الجديد =====
+    const subSkillAnalysisBrilliant = analyzeSubSkillsBrilliantly(questions, numericAnswers, answers);
+    const weakSkills = Object.entries(subSkillAnalysisBrilliant)
+      .filter(([_, data]) => data.percentage < 70)
+      .sort((a, b) => a[1].percentage - b[1].percentage)
+      .map(([id, data]) => data);
+    const strongSkills = Object.entries(subSkillAnalysisBrilliant)
+      .filter(([_, data]) => data.percentage >= 70)
+      .sort((a, b) => b[1].percentage - a[1].percentage)
+      .map(([id, data]) => data);
+    const trueSurgicalMap = generateTrueSurgicalMap(subSkillAnalysisBrilliant);
+    const dynamicInsight = generateDynamicAIInsight(
+      weightedScore,
+      simpleScore,
+      subSkillAnalysisBrilliant,
+      weakSkills,
+      strongSkills,
+      assessmentType,
+      generatedCognitiveProfile
+    );
+    const surgicalLessons = weakSkills.slice(0, 5).map(skill => ({
+      skillId: skill.name,
+      topic: skill.name,
+      percentage: skill.percentage,
+      reason: skill.rootCause || 'يحتاج مراجعة',
+      solution: skill.solution || 'راجع الأساسيات',
+      youtubeSearch: skill.youtubeSearch || `شرح ${skill.name} بالعربي`,
+      exercises: Math.max(3, Math.round((100 - skill.percentage) / 10)),
+      priority: skill.percentage < 40 ? 'عالية' : 'متوسطة'
     }));
-    
-    // ===== التنبؤ بالمستقبل المهني =====
-    const careerPrediction = predictCareerPath(subSkillDeepAnalysis, topicAnalysis);
-    
-    const insight = generateFinalInsight(weightedScore, simpleScore, weaknesses, hiddenStrengths, learningProfile, comparison, confidenceAnalysis, diagnosticMastery, topicAnalysis, effortAnalysis, questionResults, assessmentType, generatedCognitiveProfile);
+
+    // التنبؤ المهني
+    const careerPrediction = predictCareerPath(subSkillAnalysisBrilliant, topicAnalysis);
 
     return res.status(200).json({
-      success: true, mode: mode||'full', isQuickMode, assessmentType,
-      score: weightedScore, simpleScore, totalQuestions: questions.length, correctAnswers: correctCount, wrongAnswers: questions.length-correctCount,
-      topicAnalysis, subSkillAnalysis: isQuickMode ? null : subSkillAnalysis, learningProfile,
-      errors: isQuickMode ? [] : errors, weaknesses: isQuickMode ? [] : weaknesses, hiddenStrengths: isQuickMode ? [] : hiddenStrengths,
-      learningStages, allAssessmentsSummary,
+      success: true,
+      mode: mode || 'full',
+      isQuickMode,
+      assessmentType,
+      score: weightedScore,
+      simpleScore,
+      totalQuestions: questions.length,
+      correctAnswers: correctCount,
+      wrongAnswers: questions.length - correctCount,
+      topicAnalysis,
+      subSkillAnalysis: isQuickMode ? null : subSkillAnalysis,
+      learningProfile,
+      errors: isQuickMode ? [] : errors,
+      weaknesses: isQuickMode ? [] : weaknesses,
+      hiddenStrengths: isQuickMode ? [] : hiddenStrengths,
+      learningStages,
+      allAssessmentsSummary,
       writingAnswers: isQuickMode ? [] : writingAnswers,
       cognitiveProfile: generatedCognitiveProfile,
-      recommendedLessons: isQuickMode ? [] : finalRecommendedLessons,
-      confidenceAnalysis, effortAnalysis, comparison,
+      recommendedLessons: isQuickMode ? [] : surgicalLessons,
+      confidenceAnalysis,
+      effortAnalysis,
+      comparison,
       personalizedPlan: isQuickMode ? null : personalizedPlan,
       diagnosticMastery: isQuickMode ? null : diagnosticMastery,
       rootCauseAnalysis: isQuickMode ? [] : rootCauseAnalysis,
-      insight, questionResults,
-      subSkillDeepAnalysis: isQuickMode ? null : subSkillDeepAnalysis,
-      surgicalLearningMap: isQuickMode ? null : surgicalLearningMap,
+      insight: dynamicInsight, // الرؤية الجديدة
+      questionResults,
+      subSkillAnalysisBrilliant: isQuickMode ? null : subSkillAnalysisBrilliant,
+      trueSurgicalMap: isQuickMode ? null : trueSurgicalMap,
       careerPrediction: isQuickMode ? null : careerPrediction,
+      weakSkills: isQuickMode ? [] : weakSkills,
+      strongSkills: isQuickMode ? [] : strongSkills,
     });
-  } catch (error) { 
-    console.error('خطأ:', error); 
-    return res.status(500).json({ success: false, error: error.message }); 
+  } catch (error) {
+    console.error('خطأ:', error);
+    return res.status(500).json({ success: false, error: error.message });
   }
 }
