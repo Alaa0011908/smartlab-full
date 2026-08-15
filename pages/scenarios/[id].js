@@ -1,5 +1,5 @@
 // pages/scenarios/[id].js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Navbar from "../../components/Navbar";
@@ -12,13 +12,45 @@ export default function ScenarioDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const fileInputRef = useRef(null);
+
+  // ===== حالة المستخدم ومستواه (جديد) =====
+  const [userLevel, setUserLevel] = useState('beginner');
+  const [userName, setUserName] = useState('زميلنا');
 
   const [currentMainStep, setCurrentMainStep] = useState(0);
   const [currentSubStep, setCurrentSubStep] = useState(0);
 
   const mainSteps = ["مقابلة العمل", "تنفيذ التصميم", "تسليم المشروع"];
   const subSteps = ["تحديد الاحتياجات", "المفاوضة على السعر", "تحديد آليات الدفع والتسليم"];
+
+  // ===== قراءة مستوى المستخدم من آخر تحليل (جديد) =====
+  useEffect(() => {
+    try {
+      const analysis = JSON.parse(localStorage.getItem('latestAnalysis') || 'null');
+      if (analysis && analysis.score) {
+        if (analysis.score >= 75) setUserLevel('advanced');
+        else if (analysis.score >= 50) setUserLevel('intermediate');
+        else setUserLevel('beginner');
+      }
+      // قراءة اسم المستخدم (مؤقت)
+      const savedName = localStorage.getItem('userName') || 'زميلنا';
+      if (savedName) setUserName(savedName);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  }, []);
+
+  // ===== رسالة ترحيب مخصصة حسب المستوى (جديد) =====
+  const getWelcomeMessage = () => {
+    const messages = {
+      beginner: `مرحباً بك ${userName}! هذا السيناريو مناسب لمستواك الحالي (مبتدئ). سأساعدك خطوة بخطوة لفهم الأساسيات. لا تتردد في طرح أي سؤال.`,
+      intermediate: `أهلاً ${userName}! مستوى متوسط. هذا السيناريو مصمم لتحدي مهاراتك وتطويرها. أظهر لي ما لديك من خبرات.`,
+      advanced: `مرحباً ${userName}! مستوى متقدم. هذا السيناريو يختبر قدراتك الاحترافية في تصميم الشبكات. أتوقع منك حلولاً مبتكرة ومتكاملة.`
+    };
+    return messages[userLevel] || messages.beginner;
+  };
 
   const scenarios = {
     cafe: {
@@ -124,106 +156,122 @@ export default function ScenarioDetail() {
     }
   };
 
-  // ===== الدالة الذكية لتحليل الردود واكتشاف الأخطاء =====
-  const analyzeResponse = (scenarioId, query) => {
-    // قاعدة عامة: إذا كان السؤال مختصراً جداً (أقل من 4 كلمات) يُعتبر غير كافٍ
-    const wordCount = query.split(' ').length;
-    if (wordCount < 3) {
-      return {
-        type: 'incomplete',
-        reply: "❌ ردك مختصر جداً. نحتاج تفاصيل أكثر لتقييم فهمك للسيناريو. حاول أن تشرح خطواتك بوضوح، مثلاً: 'سأستخدم 3 نقاط وصول موزعة كذا...' ثم اشرح الأسباب."
-      };
-    }
-
-    // تحليل الأخطاء حسب السيناريو
-    if (scenarioId === 'cafe') {
-      // أخطاء شائعة في سيناريو المقهى
-      if (query.includes('1') && query.includes('access point') && !query.includes('2') && !query.includes('3')) {
-        return {
-          type: 'error',
-          reply: "❗ للأسف، إجابتك غير دقيقة. مقهى بـ 50 زبون يومياً يحتاج على الأقل 3-4 نقاط وصول (Access Points) لتغطية الصالة والمكاتب والكاشير. نقطة وصول واحدة غير كافية وستسبب ازدحاماً وضعف إشارة. الحل الأمثل:\n- نقطة في منتصف صالة الجلوس.\n- نقطة قرب الكاشير.\n- نقطة في المكاتب الإدارية.\n- نقطة احتياطية أو خارجية إذا لزم الأمر.\nجرب مرة أخرى مع ذكر التوزيع المقترح."
-        };
-      }
-      if (query.includes('vlan') && (query.includes('واحد') || query.includes('شبكة واحدة') || query.includes('بدون تقسيم'))) {
-        return {
-          type: 'error',
-          reply: "⚠️ هذا خطأ! في شبكة المقهى، لا يمكن الاكتفاء بشبكة واحدة. يجب تقسيم الشبكة إلى VLANs معزولة:\n- VLAN للزبائن (معزول عن بقية الشبكة).\n- VLAN للكاشير ونقاط البيع.\n- VLAN للإدارة والموظفين.\n- VLAN لإدارة الأجهزة.\nهذا التقسيم يحمي بيانات العملاء ويمنع أي اختراق. أعد صياغة اقتراحك مع ذكر التقسيم المطلوب."
-        };
-      }
-      if (query.includes('راوتر') && !query.includes('جدار') && !query.includes('firewall') && !query.includes('أمان')) {
-        return {
-          type: 'error',
-          reply: "🔒 أنت نسيت جانب الأمان! الراوتر وحده لا يكفي؛ يجب أن يكون مزوداً بجدار ناري (Firewall) لحماية الشبكة من الهجمات. أيضاً، عليك التفكير في تحديثات البرامج الثابتة وكلمات مرور قوية. أضف هذا البعد إلى خطتك."
-        };
-      }
-      // إذا كانت الإجابة صحيحة نسبياً
-      if (query.includes('3') && (query.includes('access point') || query.includes('نقاط وصول')) && query.includes('vlan')) {
-        return {
-          type: 'good',
-          reply: "✅ ممتاز! اقتراحك جيد ويغطي الجوانب الأساسية. لكن دعنا نعمق: ما هي أنواع نقاط الوصول التي ستختارها؟ هل ستدعم Wi-Fi 6؟ وكيف ستؤمن الشبكة اللاسلكية؟ فكر في WPA3 والبوابة التفاعلية. أجب على هذه النقاط لتكمل إجابتك."
-        };
-      }
-    }
-
-    if (scenarioId === 'hospital') {
-      if (query.includes('شبكة واحدة') || query.includes('بدون عزل')) {
-        return {
-          type: 'error',
-          reply: "🚨 هذا غير مقبول أمنياً! في المركز الطبي، يجب عزل كل قسم بشبكة VLAN منفصلة:\n- VLAN للاستقبال.\n- VLAN للعيادات.\n- VLAN للمخبر (معزول تماماً).\n- VLAN للإدارة.\n- VLAN للضيوف.\nعدم العزل يعرض بيانات المرضى للخطر. أعد تصميم الـ VLANs مع ذكر آلية العزل."
-        };
-      }
-      if (query.includes('firewall') && !query.includes('ips') && !query.includes('ids') && !query.includes('تسجيل')) {
-        return {
-          type: 'error',
-          reply: "⚠️ جدار ناري فقط لا يكفي للمركز الطبي. تحتاج إلى نظام كشف ومنع التسلل (IPS/IDS) وتسجيل جميع العمليات (Logging) للامتثال للمعايير الصحية. أضف هذه الميزات إلى خطة الأمان."
-        };
-      }
-      if (query.includes('سرعة') && !query.includes('ألياف') && !query.includes('fiber')) {
-        return {
-          type: 'error',
-          reply: "❌ السرعة وحدها ليست كافية. لضمان استقرار الشبكة في المركز الطبي، يجب استخدام كابلات ألياف بصرية للوصلات الأساسية وتوزيع الأحمال باستخدام LACP. فكر أيضاً في مسارات احتياطية (Redundancy)."
-        };
-      }
-      if (query.includes('vlan') && query.includes('مخبر') && query.includes('عزل')) {
-        return {
-          type: 'good',
-          reply: "✅ جيد، أنت تدرك أهمية عزل المخبر. لكن ماذا عن حماية البيانات المنقولة بين الأقسام؟ استخدم تشفيراً قوياً وطبّق سياسات ACLs لمنع الوصول غير المصرح به. هات التفاصيل."
-        };
-      }
-    }
-
-    if (scenarioId === 'office') {
-      if (query.includes('vpn') && !query.includes('مصادقة') && !query.includes('2fa') && !query.includes('ثنائية')) {
-        return {
-          type: 'error',
-          reply: "🔓 المصادقة الثنائية (2FA) ليست خياراً، بل ضرورة لتأمين VPN. بدونها، تظل الشبكة عرضة للاختراق. أضف 2FA إلى اقتراحك واذكر بروتوكولاً مناسباً مثل OpenVPN أو WireGuard."
-        };
-      }
-      if (query.includes('ip') && (query.includes('نطاق واحد') || query.includes('شبكة فرعية واحدة'))) {
-        return {
-          type: 'error',
-          reply: "📌 استخدام نطاق IP واحد لجميع الأقسام خطأ إداري وأمني. يجب توزيع العناوين كالتالي:\n- الموظفين: 192.168.1.0/24\n- الإدارة: 192.168.100.0/24\n- VPN: 10.8.0.0/24\n- الضيوف: 192.168.200.0/24\nهذا يسهل الإدارة ويحسن الأداء. أعد صياغة توزيع الـ IPs."
-        };
-      }
-      if (query.includes('توسع') && !query.includes('ألياف') && !query.includes('قابلية')) {
-        return {
-          type: 'error',
-          reply: "⚠️ للتوسع المستقبلي، يجب التخطيط لربط الطابقين بألياف بصرية واستخدام سويتشات قابلة للتكديس. كما يجب اختيار عنونة مرنة (CIDR) لتسهيل إضافة شبكات جديدة. لم تذكر أي من هذه النقاط، راجع إجابتك."
-        };
-      }
-      if (query.includes('vpn') && query.includes('openvpn') && query.includes('2fa')) {
-        return {
-          type: 'good',
-          reply: "✅ ممتاز! أنت على الطريق الصحيح مع OpenVPN و2FA. لكن ماذا عن سياسات الوصول (RBAC) وكيف ستحدد صلاحيات كل موظف؟ أيضاً، ما هو الحل لضمان سرعة الاتصال عند ازدحام VPN؟ فكر في توزيع الأحمال أو استخدام أكثر من خادم VPN."
-        };
-      }
-    }
-
-    // إذا لم يتم اكتشاف خطأ معين، نُعيد رداً عاماً يحفز المستخدم على التفكير بشكل أعمق
-    return {
-      type: 'neutral',
-      reply: "🧐 فكرة جيدة، لكني أريدك أن تتعمق أكثر. هل فكرت في الجوانب التالية:\n- التكلفة التقريبية.\n- سهولة الصيانة والإدارة.\n- قابلية التوسع.\n- الأمان.\nأعد صياغة إجابتك مع أخذ هذه النقاط بعين الاعتبار، وسأقيمها بدقة."
+  // ===== دالة توليد ردود ذكية حسب مستوى المستخدم (معدل) =====
+  const generateSmartReply = (scenarioId, query, userLevel) => {
+    // ردود عامة للترحيب أو الأسئلة العامة حسب المستوى
+    const generalReplies = {
+      cafe: userLevel === 'advanced' 
+        ? "مرحباً الخبير! سعيد بمناقشة متطلبات المقهى مع شخص متمكن. اطرح أسئلتك المتقدمة."
+        : userLevel === 'intermediate'
+        ? "مرحباً! مستوى متوسط، ممتاز. دعنا نتعمق أكثر في تفاصيل شبكة المقهى."
+        : "مرحباً! سعيد بمناقشة متطلبات المقهى معك. اطرح أي سؤال، وسأساعدك خطوة بخطوة.",
+      hospital: userLevel === 'advanced'
+        ? "أهلاً بك! مستوى متقدم، هذا ممتاز. المركز الطبي يحتاج شبكة عالية الأمان والموثوقية. تفضل بطرح أسئلتك."
+        : "أهلاً بك! المركز الطبي يحتاج شبكة عالية الأمان. سنتعمق في التفاصيل معاً.",
+      office: userLevel === 'advanced'
+        ? "مرحباً الخبير! الشركة الناشئة تحتاج شبكة مرنة ومتقدمة. أتوقع منك حلولاً احترافية."
+        : "مرحباً! الشركة الناشئة تحتاج شبكة مرنة وقابلة للتوسع. تفضل بطرح أسئلتك."
     };
+
+    // تعريف كلمات مفتاحية لكل موضوع مع ردود مفصلة
+    const replyRules = {
+      cafe: [
+        {
+          keywords: ['access point', 'ap', 'نقطة وصول', 'تغطية', 'عدد الـ ap', 'كم ap'],
+          reply: userLevel === 'advanced'
+            ? "للمقهى المتطور، أنصحك بـ 4 نقاط وصول (Access Points) مع توزيع استراتيجي:\n- AP1 (Wi-Fi 6): في منتصف صالة الجلوس لـ 50 زبون.\n- AP2 (Wi-Fi 6): بالقرب من منطقة الكاشير لتغطية نقاط البيع.\n- AP3: في المكاتب الإدارية.\n- AP4: خارجي لتغطية الفناء.\nاستخدم نقاط وصول تدعم MU-MIMO و OFDMA لتحسين الأداء مع ازدحام المستخدمين."
+            : userLevel === 'intermediate'
+            ? "لمقهى بـ 50 زبون، أنصحك بـ 3-4 نقاط وصول موزعة كالتالي:\n- AP1: في منتصف صالة الجلوس لتغطية الزبائن.\n- AP2: بالقرب من الكاشير.\n- AP3: في المكاتب الإدارية.\nاستخدم نقاط وصول تدعم PoE لتسهيل التركيب."
+            : "لمقهى بـ 50 زبون، تحتاج 3-4 نقاط وصول. الأفضل:\n- نقطة في منتصف الصالة.\n- نقطة قرب الكاشير.\n- نقطة في المكاتب الإدارية.\nاستخدم نقاط وصول تدعم Wi-Fi 5 على الأقل.",
+        },
+        {
+          keywords: ['vlan', 'تصميم vlan', 'شبكات افتراضية', 'تقسيم الشبكة', 'عزل'],
+          reply: userLevel === 'advanced'
+            ? "تصميم VLANs المتقدم للمقهى:\n- VLAN 10: شبكة الزبائن (مع بوابة مصادقة و WPA3-Enterprise)\n- VLAN 20: شبكة الكاشير وأجهزة نقاط البيع (معزولة تماماً)\n- VLAN 30: شبكة الإدارة والموظفين (مع تصريح وصول محدود)\n- VLAN 40: إدارة الأجهزة (Management) مع قيود صارمة\n- ACLs لمنع الاتصال بين VLAN 10 و VLAN 20"
+            : userLevel === 'intermediate'
+            ? "تصميم VLANs المقترح:\n- VLAN 10: شبكة الزبائن (معزولة)\n- VLAN 20: شبكة الكاشير\n- VLAN 30: شبكة الإدارة\n- VLAN 40: إدارة الأجهزة\nهذا يمنع وصول الزبائن للأجهزة الحساسة."
+            : "تصميم VLANs بسيط:\n- شبكة للزبائن (معزولة)\n- شبكة للكاشير\n- شبكة للإدارة\nهذا يضمن الأمان الأساسي للمقهى.",
+        },
+        {
+          keywords: ['تجهيزات', 'معدات', 'أجهزة', 'راوتر', 'سويتش', 'كابلات'],
+          reply: userLevel === 'advanced'
+            ? "التجهيزات الاحترافية للمقهى:\n- راوتر (Router) مع جدار ناري (Next-Gen Firewall) و IPS/IDS\n- سويتش (Switch) 24 منفذ PoE+ لإدارة الطاقة\n- 4 نقاط وصول (Access Points) Wi-Fi 6\n- كابلات UTP Cat6a (10Gb)\n- UPS مركزي\n- نظام مراقبة شبكة (Network Monitoring) مثل PRTG\n- خادم مصادقة (RADIUS) لإدارة المستخدمين"
+            : userLevel === 'intermediate'
+            ? "التجهيزات الأساسية:\n- راوتر مع جدار ناري\n- سويتش 24 منفذ PoE\n- 3-4 نقاط وصول جيدة\n- كابلات UTP Cat6\n- مودم من مزود الخدمة\n- UPS لحماية الأجهزة"
+            : "التجهيزات البسيطة:\n- راوتر مع جدار ناري\n- سويتش 24 منفذ\n- 3 نقاط وصول\n- كابلات UTP Cat6\n- مودم",
+        },
+        {
+          keywords: ['أمان', 'security', 'حماية', 'جدار ناري', 'كلمة مرور', 'تشويش'],
+          reply: userLevel === 'advanced'
+            ? "لتعزيز أمان شبكة المقهى بشكل احترافي:\n- فعّل WPA3-Enterprise مع مصادقة 802.1X\n- استخدم جدار ناري (Next-Gen) مع IPS/IDS\n- طبّق تحديثات البرامج الثابتة (Firmware) تلقائياً\n- راقب الشبكة باستخدام SIEM\n- فعّل التجزئة الدقيقة (Micro-segmentation) باستخدام ACLs"
+            : userLevel === 'intermediate'
+            ? "لتعزيز الأمان:\n- فعّل WPA2-Enterprise على شبكة الزبائن\n- استخدم جدار ناري لحجب المنافذ غير الضرورية\n- غيّر كلمات المرور الافتراضية\n- حدّث البرامج الثابتة بانتظام"
+            : "لأمان المقهى:\n- استخدم كلمة مرور قوية للـ WiFi\n- فعّل جدار ناري بسيط\n- غيّر كلمات المرور الافتراضية",
+        },
+        {
+          keywords: ['سعر', 'تكلفة', 'ميزانية', 'كم تكلف', 'السعر'],
+          reply: userLevel === 'advanced'
+            ? "التكلفة التقريبية للمقهى المتطور:\n- راوتر مع NGFW: 500-800$\n- سويتش PoE+ 24 منفذ: 400-600$\n- نقاط وصول Wi-Fi 6 (4): 800-1200$\n- كابلات Cat6a وتركيب: 200-400$\n- نظام مراقبة: 200-500$\nالمجموع: 2100-3500$ مع جودة عالية."
+            : userLevel === 'intermediate'
+            ? "التكلفة التقريبية:\n- راوتر مع جدار ناري: 300-500$\n- سويتش PoE: 200-400$\n- نقاط وصول (3): 450-750$\n- كابلات وتركيب: 150-250$\nالمجموع: 1100-1900$"
+            : "التكلفة التقريبية:\n- راوتر: 150-300$\n- سويتش: 150-250$\n- نقاط وصول: 300-500$\n- كابلات: 100-150$\nالمجموع: 700-1200$",
+        }
+      ],
+      hospital: [
+        {
+          keywords: ['vlan', 'تصميم vlan', 'فصل الأقسام', 'عزل', 'شبكات افتراضية'],
+          reply: userLevel === 'advanced'
+            ? "تقسيم VLANs المتقدم للمركز الطبي:\n- VLAN 100: الاستقبال (مع تشفير TLS)\n- VLAN 200: العيادات الخارجية (معزولة)\n- VLAN 300: المخبر (معزول تماماً، مع جدار ناري مخصص)\n- VLAN 400: الإدارة\n- VLAN 500: الضيوف (معزول)\n- تطبيق ACLs لمنع الاتصال بين VLAN 300 و VLAN 200\n- تفعيل Private VLANs لعزل الأجهزة داخل VLAN"
+            : userLevel === 'intermediate'
+            ? "تقسيم VLANs المقترح:\n- VLAN 100: الاستقبال\n- VLAN 200: العيادات\n- VLAN 300: المخبر (معزول)\n- VLAN 400: الإدارة\n- VLAN 500: الضيوف\nالمخبر يجب أن يكون معزولاً تماماً."
+            : "تقسيم VLANs:\n- الاستقبال\n- العيادات\n- المخبر (معزول)\n- الإدارة\n- الضيوف",
+        },
+        {
+          keywords: ['أمان', 'firewall', 'جدار ناري', 'حماية', 'خصوصية', 'تشفير'],
+          reply: userLevel === 'advanced'
+            ? "متطلبات الأمان المتقدمة للمركز الطبي:\n- جدار ناري (Next-Gen) مع IPS/IDS و SSL Inspection\n- 802.1X للمصادقة على الأجهزة\n- تشفير البيانات الحساسة باستخدام AES-256\n- تسجيل وتحليل السجلات باستخدام SIEM\n- تفعيل تحديثات أمنية تلقائية\n- نظام كشف التسلل (IDS) على VLAN 300\n- سياسات DLP لمنع تسرب البيانات"
+            : userLevel === 'intermediate'
+            ? "متطلبات الأمان:\n- جدار ناري مع IPS/IDS\n- 802.1X للمصادقة\n- تشفير البيانات\n- تسجيل العمليات\n- تحديثات أمنية مستمرة"
+            : "متطلبات الأمان الأساسية:\n- جدار ناري\n- تشفير البيانات\n- تحديثات أمنية",
+        },
+        {
+          keywords: ['سرعة', 'استقرار', 'استمرارية', 'بطء', 'انقطاع'],
+          reply: userLevel === 'advanced'
+            ? "لضمان السرعة والاستقرار المتقدم:\n- سويتشات بسرعة 10Gb للوصلات الأساسية\n- LACP لتجميع الروابط وزيادة العرض\n- مسارات احتياطية (Redundancy) مع بروتوكولات مثل STP و VRRP\n- كابلات ألياف بصرية Single-mode\n- مراقبة باستخدام SolarWinds أو Nagios\n- QoS لتحديد أولوية حركة البيانات الطبية"
+            : userLevel === 'intermediate'
+            ? "لضمان السرعة والاستقرار:\n- سويتشات بسرعة 1Gb\n- LACP لتوزيع الأحمال\n- مسارات احتياطية للمعدات الحيوية\n- كابلات ألياف بصرية للوصلات الطويلة"
+            : "لضمان السرعة:\n- استخدم سويتشات سريعة\n- كابلات جيدة\n- راقب الشبكة باستمرار",
+        }
+      ],
+      office: [
+        {
+          keywords: ['vpn', 'اتصال عن بعد', 'remote', 'موظفين عن بعد', 'تأمين الاتصال'],
+          reply: userLevel === 'advanced'
+            ? "لإعداد VPN احترافي وآمن:\n- استخدم بروتوكول WireGuard (الأسرع والأكثر أماناً)\n- خصص نطاق IP منفصل للموظفين عن بعد (10.8.0.0/24)\n- فعّل المصادقة الثنائية (2FA) مع تطبيق مثل Google Authenticator\n- طبّق سياسات RBAC لتحديد صلاحيات الوصول\n- استخدم شهادات SSL/TLS للتشفير\n- راقب جلسات VPN باستخدام نظام مراقبة\n- وفر خوادم VPN موزعة جغرافياً لتقليل الزمن"
+            : userLevel === 'intermediate'
+            ? "لإعداد VPN:\n- استخدم OpenVPN أو WireGuard\n- خصص نطاق IP منفصل\n- فعّل المصادقة الثنائية (2FA)\n- حدد صلاحيات الوصول حسب المسمى الوظيفي"
+            : "لإعداد VPN بسيط:\n- استخدم OpenVPN\n- خصص نطاق IP للموظفين عن بعد\n- حدد صلاحيات الوصول",
+        },
+        {
+          keywords: ['ip', 'عنونة', 'توزيع ip', 'subnet', 'شبكة فرعية', 'IP Addressing'],
+          reply: userLevel === 'advanced'
+            ? "توزيع IP Addressing المتقدم للشركة:\n- الشبكة الداخلية: 192.168.0.0/16\n- الموظفين: 192.168.1.0/24 (مع إمكانية التوسع إلى /23)\n- الإدارة: 192.168.100.0/24\n- VPN: 10.8.0.0/24 (مع إمكانية التوسع)\n- الضيوف: 192.168.200.0/24 (معزول)\n- إدارة الأجهزة: 192.168.250.0/24\n- استخدام VLSM لتوزيع دقيق حسب الحاجة"
+            : userLevel === 'intermediate'
+            ? "توزيع IP Addressing:\n- الموظفين: 192.168.1.0/24\n- الإدارة: 192.168.100.0/24\n- VPN: 10.8.0.0/24\n- الضيوف: 192.168.200.0/24"
+            : "توزيع IP بسيط:\n- شبكة واحدة للموظفين\n- شبكة منفصلة للإدارة\n- شبكة للـ VPN",
+        }
+      ]
+    };
+
+    const rules = replyRules[scenarioId] || [];
+    for (let rule of rules) {
+      for (let keyword of rule.keywords) {
+        if (query.includes(keyword)) {
+          return rule.reply;
+        }
+      }
+    }
+    return generalReplies[scenarioId] || "ممتاز! استمر في طرح أسئلتك، وسأجيبك بأكبر قدر من التفاصيل التقنية.";
   };
 
   const handleSend = async (directText = null) => {
@@ -258,7 +306,8 @@ export default function ScenarioDetail() {
           history: messages.map(m => ({
             role: m.sender === 'user' ? 'user' : 'assistant',
             content: m.text
-          }))
+          })),
+          userLevel: userLevel // إضافة مستوى المستخدم
         })
       });
 
@@ -272,10 +321,12 @@ export default function ScenarioDetail() {
     } catch (error) {
       await new Promise(resolve => setTimeout(resolve, 800));
       const query = textToSend.toLowerCase();
-      const analysis = analyzeResponse(id, query);
+      // استخدام الدالة الذكية مع مستوى المستخدم
+      const aiReply = generateSmartReply(id, query, userLevel);
+
       setMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, sender: 'client', text: analysis.reply }
+        { id: Date.now() + 1, sender: 'client', text: aiReply }
       ]);
     } finally {
       setIsLoading(false);
@@ -289,6 +340,8 @@ export default function ScenarioDetail() {
           .workspace-layout { flex-direction: column !important; }
           .sidebar-layout { width: 100% !important; order: -1; }
           .chat-card-layout { height: 60vh !important; }
+          .desktop-nav { display: none !important; }
+          .burger-btn { display: flex !important; }
           .footer-container-layout { flex-direction: column !important; gap: 1.5rem; text-align: center; }
           .footer-brand-txt { text-align: center !important; }
         }
@@ -357,7 +410,7 @@ export default function ScenarioDetail() {
                 <div style={styles.clientMessageRow}>
                   <img src={scenario.avatar} alt={scenario.clientName} style={styles.avatar} />
                   <div style={styles.messageBubbleClient}>
-                    مرحباً بك! أنا {scenario.clientName} {scenario.role} وسأكون سعيداً بمساعدتك في هذا السيناريو. اشرح لي كيف ستبدأ في تصميم هذه الشبكة؟ كم Access Point أحتاج؟ وكيف تصمم الـ VLANs؟ وما هي التجهيزات المطلوبة؟
+                    {getWelcomeMessage()} اشرح لي كيف ستبدأ في تصميم هذه الشبكة؟ كم Access Point أحتاج؟ وكيف تصمم الـ VLANs؟ وما هي التجهيزات المطلوبة؟
                   </div>
                 </div>
 
@@ -381,7 +434,7 @@ export default function ScenarioDetail() {
                   <div style={styles.clientMessageRow}>
                     <img src={scenario.avatar} alt={scenario.clientName} style={styles.avatar} />
                     <div style={styles.messageBubbleClient}>
-                      <span style={styles.typingText}>جاري تحليل ردك وتقييم دقته...</span>
+                      <span style={styles.typingText}>جاري قراءة ردك وتحليله هندسياً...</span>
                     </div>
                   </div>
                 )}
@@ -392,7 +445,7 @@ export default function ScenarioDetail() {
                 <textarea
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="اكتب ردك هنا... (سيتم تقييم احترافيتك ودقتك)"
+                  placeholder="اكتب ردك هنا... (سيتم تقييم احترافيتك وتعاطفك)"
                   style={styles.textArea}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -415,7 +468,7 @@ export default function ScenarioDetail() {
                 </div>
 
                 <div style={styles.evaluationFooterRow}>
-                  <span style={styles.evaluationText}>يتم تقييم: <strong style={{color: '#032639'}}>الوضوح، الدقة، الشمولية، الأمان</strong></span>
+                  <span style={styles.evaluationText}>يتم تقييم: <strong style={{color: '#032639'}}>الوضوح، التعاطف، التوجيه نحو الحل</strong></span>
                   <p style={styles.projectMiniLabel}>{scenario.projectLabel}</p>
                 </div>
               </div>
@@ -478,6 +531,28 @@ export default function ScenarioDetail() {
                       </li>
                     ))}
                   </ul>
+                </div>
+
+                {/* ===== عرض مستوى المستخدم (جديد) ===== */}
+                <div style={{ marginTop: 16, padding: '12px 16px', backgroundColor: '#F0F7F8', borderRadius: 12, border: '1px solid #17919e' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0D1E3B' }}>
+                    🎯 مستواك الحالي: 
+                    <span style={{ 
+                      backgroundColor: userLevel === 'advanced' ? '#2ECC71' : userLevel === 'intermediate' ? '#F39C12' : '#17919e',
+                      color: 'white',
+                      padding: '2px 12px',
+                      borderRadius: 12,
+                      marginRight: 8,
+                      fontSize: 12
+                    }}>
+                      {userLevel === 'advanced' ? 'متقدم' : userLevel === 'intermediate' ? 'متوسط' : 'مبتدئ'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>
+                    {userLevel === 'advanced' && '🌟 مستوى عالٍ. نوصي بحل السيناريوهات المتقدمة.'}
+                    {userLevel === 'intermediate' && '📈 مستوى جيد. استمر في التحدي وتطوير مهاراتك.'}
+                    {userLevel === 'beginner' && '🌱 بداية رائعة! هذا السيناريو مناسب لمستواك.'}
+                  </div>
                 </div>
               </div>
 
