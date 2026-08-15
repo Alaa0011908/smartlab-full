@@ -20,6 +20,7 @@ const COLORS = {
   success: "#2ECC71",
   warning: "#F39C12",
   error: "#E74C3C",
+  gold: "#FFD700",
 };
 
 const styles = {
@@ -35,7 +36,7 @@ const styles = {
   },
   main: {
     flex: 1,
-    maxWidth: 900,
+    maxWidth: 1000,
     width: "100%",
     margin: "0 auto",
     padding: "50px 24px 80px",
@@ -48,24 +49,9 @@ const styles = {
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
     marginBottom: 32,
   },
-  heroIcon: {
-    fontSize: 56,
-    marginBottom: 12,
-    display: "block",
-  },
-  heroTitle: {
-    fontSize: 32,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 8px",
-  },
-  heroDesc: {
-    fontSize: 17,
-    color: COLORS.muted,
-    lineHeight: 1.8,
-    maxWidth: 560,
-    margin: "0 auto 32px",
-  },
+  heroIcon: { fontSize: 56, marginBottom: 12, display: "block" },
+  heroTitle: { fontSize: 32, fontWeight: 800, color: COLORS.navy, margin: "0 0 8px" },
+  heroDesc: { fontSize: 17, color: COLORS.muted, lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px" },
   statsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
@@ -79,53 +65,21 @@ const styles = {
     border: "1px solid " + COLORS.border,
     textAlign: "center",
   },
-  statValue: {
-    fontSize: 32,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 4px",
-  },
-  statLabel: {
-    fontSize: 14,
-    color: COLORS.muted,
-    margin: 0,
-  },
-  statValueCorrect: {
-    color: COLORS.success,
-  },
-  statValueWrong: {
-    color: COLORS.error,
-  },
-  statValueTime: {
-    color: COLORS.teal,
-  },
+  statValue: { fontSize: 32, fontWeight: 800, color: COLORS.navy, margin: "0 0 4px" },
+  statLabel: { fontSize: 14, color: COLORS.muted, margin: 0 },
+  statValueCorrect: { color: COLORS.success },
+  statValueWrong: { color: COLORS.error },
+  statValueTime: { color: COLORS.teal },
   scoreContainer: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     marginBottom: 32,
   },
-  scoreCircle: {
-    position: "relative",
-    width: 180,
-    height: 180,
-  },
-  scoreCircleSvg: {
-    width: "100%",
-    height: "100%",
-    transform: "rotate(-90deg)",
-  },
-  scoreCircleBg: {
-    fill: "none",
-    stroke: COLORS.border,
-    strokeWidth: 12,
-  },
-  scoreCircleFill: {
-    fill: "none",
-    strokeWidth: 12,
-    strokeLinecap: "round",
-    transition: "stroke-dashoffset 1.5s ease",
-  },
+  scoreCircle: { position: "relative", width: 180, height: 180 },
+  scoreCircleSvg: { width: "100%", height: "100%", transform: "rotate(-90deg)" },
+  scoreCircleBg: { fill: "none", stroke: COLORS.border, strokeWidth: 12 },
+  scoreCircleFill: { fill: "none", strokeWidth: 12, strokeLinecap: "round", transition: "stroke-dashoffset 1.5s ease" },
   scoreText: {
     position: "absolute",
     top: "50%",
@@ -133,20 +87,186 @@ const styles = {
     transform: "translate(-50%, -50%)",
     textAlign: "center",
   },
-  scoreNumber: {
-    fontSize: 40,
-    fontWeight: 800,
+  scoreNumber: { fontSize: 40, fontWeight: 800, color: COLORS.navy, display: "block" },
+  scoreLabel: { fontSize: 14, color: COLORS.muted, display: "block" },
+  insightBox: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 12,
+    textAlign: "right",
+    whiteSpace: "pre-wrap",
+  },
+  insightText: { fontSize: 15, color: COLORS.text, lineHeight: 1.8, margin: 0 },
+
+  // ===== خريطة التعلم التفاعلية =====
+  mapSection: {
+    backgroundColor: COLORS.white,
+    borderRadius: 24,
+    padding: "32px 28px",
+    marginBottom: 32,
+    boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
+  },
+  mapTitle: {
+    fontSize: 24,
+    fontWeight: 700,
     color: COLORS.navy,
-    display: "block",
+    margin: "0 0 8px",
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    flexWrap: "wrap",
   },
-  scoreLabel: {
-    fontSize: 14,
+  mapSubtitle: {
+    fontSize: 15,
     color: COLORS.muted,
-    display: "block",
+    margin: "0 0 20px",
   },
-  accordionContainer: {
-    marginTop: 24,
+  mapGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gap: 16,
   },
+  mapStation: {
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 16,
+    padding: "16px 18px",
+    border: "2px solid " + COLORS.border,
+    transition: "all 0.3s ease",
+    cursor: "default",
+    position: "relative",
+  },
+  mapStationCompleted: {
+    borderColor: COLORS.success,
+    backgroundColor: "#F0FAF5",
+  },
+  mapStationLearning: {
+    borderColor: COLORS.warning,
+    backgroundColor: "#FFF8E1",
+  },
+  mapStationWeak: {
+    borderColor: COLORS.error,
+    backgroundColor: "#FFEBEE",
+  },
+  stationIcon: { fontSize: 28, display: "block", marginBottom: 8 },
+  stationName: { fontSize: 15, fontWeight: 700, color: COLORS.navy, margin: "0 0 4px" },
+  stationStatus: { fontSize: 13, fontWeight: 600 },
+  stationStatusCompleted: { color: COLORS.success },
+  stationStatusLearning: { color: COLORS.warning },
+  stationStatusWeak: { color: COLORS.error },
+  stationLearnBtn: {
+    marginTop: 10,
+    padding: "6px 16px",
+    backgroundColor: COLORS.teal,
+    color: COLORS.white,
+    border: "none",
+    borderRadius: 8,
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "background-color 0.25s ease",
+    fontFamily: "inherit",
+    width: "100%",
+  },
+  stationLearnBtnWeak: {
+    backgroundColor: COLORS.error,
+  },
+
+  // ===== زر التنبؤ المهني =====
+  careerButton: {
+    display: "inline-block",
+    backgroundColor: COLORS.gold,
+    color: COLORS.navy,
+    border: "none",
+    borderRadius: 12,
+    padding: "14px 36px",
+    fontSize: 17,
+    fontWeight: 700,
+    cursor: "pointer",
+    transition: "all 0.25s ease",
+    fontFamily: "inherit",
+    marginTop: 16,
+    boxShadow: "0 4px 16px rgba(255, 215, 0, 0.3)",
+    minHeight: 56,
+  },
+
+  // ===== المودال =====
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+    padding: "20px",
+  },
+  modalContent: {
+    backgroundColor: COLORS.white,
+    borderRadius: 24,
+    maxWidth: 700,
+    width: "100%",
+    maxHeight: "90vh",
+    overflowY: "auto",
+    padding: "40px",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+    position: "relative",
+  },
+  modalClose: {
+    position: "absolute",
+    top: 16,
+    left: 20,
+    background: "none",
+    border: "none",
+    fontSize: 28,
+    cursor: "pointer",
+    color: COLORS.muted,
+    transition: "color 0.25s ease",
+  },
+  modalTitle: { fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: "0 0 8px", textAlign: "center" },
+  modalSubtitle: { fontSize: 16, color: COLORS.muted, textAlign: "center", margin: "0 0 24px" },
+  careerCard: {
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 16,
+    padding: "20px 24px",
+    marginBottom: 16,
+    border: "1px solid " + COLORS.border,
+  },
+  careerCardTop: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+    flexWrap: "wrap",
+  },
+  careerTitle: { fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: 0 },
+  careerMatch: { fontSize: 16, fontWeight: 700, color: COLORS.teal },
+  careerDesc: { fontSize: 15, color: COLORS.text, margin: "0 0 8px" },
+  careerMeta: { display: "flex", gap: 16, fontSize: 14, color: COLORS.muted, flexWrap: "wrap" },
+  careerMetaItem: { display: "flex", alignItems: "center", gap: 4 },
+  careerSkills: { marginTop: 12 },
+  skillBar: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 },
+  skillBarName: { fontSize: 13, width: 120, flexShrink: 0, textAlign: "right" },
+  skillBarTrack: { flex: 1, height: 6, backgroundColor: COLORS.border, borderRadius: 4, overflow: "hidden" },
+  skillBarFill: { height: "100%", borderRadius: 4, transition: "width 0.5s ease" },
+  skillBarPct: { fontSize: 12, fontWeight: 700, width: 40, textAlign: "left" },
+  careerPlan: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    padding: "16px 20px",
+    marginTop: 12,
+    border: "1px dashed " + COLORS.teal,
+    whiteSpace: "pre-wrap",
+    fontSize: 14,
+    lineHeight: 1.8,
+  },
+
+  // ===== أكورديون =====
+  accordionContainer: { marginTop: 24 },
   accordionItem: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
@@ -172,50 +292,15 @@ const styles = {
     transition: "background-color 0.2s ease",
     minHeight: 56,
   },
-  accordionHeaderHover: {
-    backgroundColor: COLORS.lightGray,
-  },
-  accordionHeaderIcon: {
-    fontSize: 20,
-    marginLeft: 12,
-  },
-  accordionChevron: {
-    fontSize: 18,
-    transition: "transform 0.3s ease",
-    marginRight: 12,
-  },
-  accordionChevronOpen: {
-    transform: "rotate(180deg)",
-  },
-  accordionBody: {
-    padding: "0 24px 24px 24px",
-    borderTop: "1px solid " + COLORS.border,
-    marginTop: 0,
-    backgroundColor: COLORS.white,
-  },
-  accordionBodyInner: {
-    paddingTop: 20,
-    fontSize: 15,
-    color: COLORS.text,
-    lineHeight: 1.8,
-  },
-  insightBox: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 12,
-    textAlign: "right",
-    whiteSpace: "pre-wrap",
-  },
-  insightText: {
-    fontSize: 15,
-    color: COLORS.text,
-    lineHeight: 1.8,
-    margin: 0,
-  },
-  topicBreakdown: {
-    marginTop: 12,
-  },
+  accordionHeaderHover: { backgroundColor: COLORS.lightGray },
+  accordionHeaderIcon: { fontSize: 20, marginLeft: 12 },
+  accordionChevron: { fontSize: 18, transition: "transform 0.3s ease", marginRight: 12 },
+  accordionChevronOpen: { transform: "rotate(180deg)" },
+  accordionBody: { padding: "0 24px 24px 24px", borderTop: "1px solid " + COLORS.border, backgroundColor: COLORS.white },
+  accordionBodyInner: { paddingTop: 20, fontSize: 15, color: COLORS.text, lineHeight: 1.8 },
+
+  // ===== أقسام تحليلية =====
+  topicBreakdown: { marginTop: 12 },
   topicItem: {
     display: "flex",
     justifyContent: "space-between",
@@ -223,91 +308,11 @@ const styles = {
     padding: "10px 0",
     borderBottom: "1px solid " + COLORS.border,
   },
-  topicName: {
-    fontSize: 14,
-    color: COLORS.text,
-    flex: "0 0 120px",
-    textAlign: "right",
-  },
-  topicBar: {
-    flex: 1,
-    height: 6,
-    backgroundColor: COLORS.border,
-    borderRadius: 4,
-    margin: "0 12px",
-    overflow: "hidden",
-  },
-  topicFill: {
-    height: "100%",
-    borderRadius: 4,
-    transition: "width 0.5s ease",
-  },
-  topicScore: {
-    fontSize: 14,
-    fontWeight: 700,
-    color: COLORS.navy,
-    minWidth: 40,
-    textAlign: "left",
-  },
-  lessonItem: {
-    padding: "8px 0",
-    borderBottom: "1px solid " + COLORS.border,
-    fontSize: 14,
-  },
-  courseButton: {
-    display: "inline-block",
-    backgroundColor: COLORS.orange,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 12,
-    padding: "14px 36px",
-    fontSize: 17,
-    fontWeight: 700,
-    cursor: "pointer",
-    textDecoration: "none",
-    transition: "background-color 0.25s ease, transform 0.25s ease",
-    margin: "8px 8px",
-    minHeight: 56,
-    textAlign: "center",
-  },
-  scenarioButton: {
-    display: "inline-block",
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 12,
-    padding: "14px 36px",
-    fontSize: 17,
-    fontWeight: 700,
-    cursor: "pointer",
-    textDecoration: "none",
-    transition: "background-color 0.25s ease, transform 0.25s ease",
-    margin: "8px 8px",
-    minHeight: 56,
-    textAlign: "center",
-  },
-  backLink: {
-    display: "inline-block",
-    color: COLORS.muted,
-    fontSize: 15,
-    textDecoration: "none",
-    transition: "color 0.25s ease",
-    textAlign: "center",
-    marginTop: 20,
-  },
-  errorItem: {
-    padding: "6px 0",
-    borderBottom: "1px solid " + COLORS.border,
-    fontSize: 14,
-  },
-  badge: {
-    display: "inline-block",
-    padding: "2px 12px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 600,
-    marginRight: 8,
-  },
+  topicName: { fontSize: 14, color: COLORS.text, flex: "0 0 120px", textAlign: "right" },
+  topicBar: { flex: 1, height: 6, backgroundColor: COLORS.border, borderRadius: 4, margin: "0 12px", overflow: "hidden" },
+  topicFill: { height: "100%", borderRadius: 4, transition: "width 0.5s ease" },
+  topicScore: { fontSize: 14, fontWeight: 700, color: COLORS.navy, minWidth: 40, textAlign: "left" },
+  lessonItem: { padding: "8px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 14 },
   skillItem: {
     display: "flex",
     justifyContent: "space-between",
@@ -323,36 +328,58 @@ const styles = {
     borderBottom: "1px solid " + COLORS.border,
     fontSize: 14,
   },
-  stageIcon: {
-    fontSize: 24,
-    width: 36,
+  stageIcon: { fontSize: 24, width: 36, textAlign: "center" },
+  stageStatus: { fontSize: 12, fontWeight: 600, padding: "2px 10px", borderRadius: 12 },
+  errorItem: { padding: "6px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 14 },
+  badge: { display: "inline-block", padding: "2px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, marginRight: 8 },
+
+  // ===== أزرار الإجراءات =====
+  buttonGroup: { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 12, marginTop: 24 },
+  courseButton: {
+    display: "inline-block",
+    backgroundColor: COLORS.orange,
+    color: COLORS.white,
+    border: "none",
+    borderRadius: 12,
+    padding: "14px 36px",
+    fontSize: 17,
+    fontWeight: 700,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "background-color 0.25s ease, transform 0.25s ease",
+    margin: "4px 4px",
+    minHeight: 56,
     textAlign: "center",
   },
-  stageStatus: {
-    fontSize: 12,
-    fontWeight: 600,
-    padding: "2px 10px",
+  scenarioButton: {
+    display: "inline-block",
+    backgroundColor: COLORS.teal,
+    color: COLORS.white,
+    border: "none",
     borderRadius: 12,
+    padding: "14px 36px",
+    fontSize: 17,
+    fontWeight: 700,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "background-color 0.25s ease, transform 0.25s ease",
+    margin: "4px 4px",
+    minHeight: 56,
+    textAlign: "center",
   },
-  buttonGroup: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 12,
-    marginTop: 24,
+  backLink: {
+    display: "inline-block",
+    color: COLORS.muted,
+    fontSize: 15,
+    textDecoration: "none",
+    transition: "color 0.25s ease",
+    textAlign: "center",
+    marginTop: 20,
   },
 };
 
-// ===== مكون Accordion الداخلي =====
-const AccordionSection = ({
-  id,
-  title,
-  icon,
-  isOpen,
-  onToggle,
-  children,
-  alwaysOpen = false,
-}) => {
+// ===== مكون الأكورديون =====
+const AccordionSection = ({ id, title, icon, isOpen, onToggle, children, alwaysOpen = false }) => {
   const [hover, setHover] = useState(false);
   return (
     <div style={styles.accordionItem}>
@@ -370,14 +397,7 @@ const AccordionSection = ({
           {title}
         </span>
         {!alwaysOpen && (
-          <span
-            style={{
-              ...styles.accordionChevron,
-              ...(isOpen ? styles.accordionChevronOpen : {}),
-            }}
-          >
-            ▼
-          </span>
+          <span style={{ ...styles.accordionChevron, ...(isOpen ? styles.accordionChevronOpen : {}) }}>▼</span>
         )}
       </button>
       {(alwaysOpen || isOpen) && (
@@ -393,16 +413,8 @@ function getScenarioLink(score, cognitiveProfile) {
   let level = 'beginner';
   if (score >= 75) level = 'advanced';
   else if (score >= 50) level = 'intermediate';
-  
-  if (cognitiveProfile && cognitiveProfile.learningStyle === 'تحليلي متعمق') {
-    if (score >= 60) level = 'advanced';
-  }
-  
-  const map = {
-    beginner: '/scenarios/cafe',
-    intermediate: '/scenarios/hospital',
-    advanced: '/scenarios/office',
-  };
+  if (cognitiveProfile && cognitiveProfile.learningStyle === 'تحليلي متعمق' && score >= 60) level = 'advanced';
+  const map = { beginner: '/scenarios/cafe', intermediate: '/scenarios/hospital', advanced: '/scenarios/office' };
   return map[level] || '/scenarios/cafe';
 }
 
@@ -412,14 +424,7 @@ export default function Result() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [circleProgress, setCircleProgress] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const [showCareerModal, setShowCareerModal] = useState(false);
 
   const [expandedSections, setExpandedSections] = useState({
     bassema: false,
@@ -436,10 +441,7 @@ export default function Result() {
   });
 
   const toggleSection = (id) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   useEffect(() => {
@@ -470,9 +472,7 @@ export default function Result() {
           }),
         });
 
-        if (!response.ok) {
-          throw new Error("فشل في تحليل النتائج");
-        }
+        if (!response.ok) throw new Error("فشل في تحليل النتائج");
 
         const data = await response.json();
         setAnalysis(data);
@@ -488,9 +488,7 @@ export default function Result() {
         });
         localStorage.setItem("assessmentResults", JSON.stringify(savedResults));
 
-        setTimeout(() => {
-          setCircleProgress(data.score);
-        }, 300);
+        setTimeout(() => setCircleProgress(data.score), 300);
       } catch (err) {
         console.error("Error:", err);
         setError(err.message || "حدث خطأ في تحليل النتيجة");
@@ -499,9 +497,7 @@ export default function Result() {
       }
     };
 
-    if (router.isReady) {
-      fetchAnalysis();
-    }
+    if (router.isReady) fetchAnalysis();
   }, [router.isReady, router.query]);
 
   if (loading) {
@@ -550,25 +546,12 @@ export default function Result() {
   }
 
   const {
-    score,
-    totalQuestions,
-    correctAnswers,
-    wrongAnswers,
-    topicAnalysis,
-    subSkillAnalysis,
-    learningProfile,
-    errors,
-    weaknesses,
-    hiddenStrengths,
-    learningStages,
-    cognitiveProfile,
-    confidenceAnalysis,
-    effortAnalysis,
-    diagnosticMastery,
-    rootCauseAnalysis,
-    recommendedLessons,
-    insight,
-    writingAnswers,
+    score, totalQuestions, correctAnswers, wrongAnswers,
+    topicAnalysis, subSkillDeepAnalysis, careerPrediction,
+    cognitiveProfile, confidenceAnalysis, effortAnalysis,
+    errors, weaknesses, hiddenStrengths, learningStages,
+    diagnosticMastery, rootCauseAnalysis, recommendedLessons,
+    insight, writingAnswers,
   } = analysis;
 
   const avgTimePerQuestion = effortAnalysis?.avgTime || 0;
@@ -586,6 +569,9 @@ export default function Result() {
     return COLORS.error;
   };
 
+  const scenarioLink = getScenarioLink(score, cognitiveProfile);
+
+  // ===== دوال العرض =====
   const renderTopicBars = () => {
     if (!topicAnalysis || Object.keys(topicAnalysis).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للموضوعات.</p>;
@@ -609,11 +595,135 @@ export default function Result() {
     );
   };
 
+  const renderInteractiveMap = () => {
+    if (!subSkillDeepAnalysis || Object.keys(subSkillDeepAnalysis).length === 0) {
+      return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية لبناء الخريطة التفاعلية.</p>;
+    }
+
+    const sortedSkills = Object.entries(subSkillDeepAnalysis).sort((a, b) => a[1].percentage - b[1].percentage);
+
+    return (
+      <div style={styles.mapGrid}>
+        {sortedSkills.map(([id, skill]) => {
+          const isCompleted = skill.percentage >= 80;
+          const isLearning = skill.percentage >= 50 && skill.percentage < 80;
+          const isWeak = skill.percentage < 50;
+
+          let statusText = '';
+          let statusStyle = {};
+          let stationStyle = { ...styles.mapStation };
+
+          if (isCompleted) {
+            statusText = '✅ مكتملة';
+            statusStyle = styles.stationStatusCompleted;
+            stationStyle = { ...stationStyle, ...styles.mapStationCompleted };
+          } else if (isLearning) {
+            statusText = '⏳ قيد التعلم';
+            statusStyle = styles.stationStatusLearning;
+            stationStyle = { ...stationStyle, ...styles.mapStationLearning };
+          } else {
+            statusText = '❌ تحتاج مراجعة';
+            statusStyle = styles.stationStatusWeak;
+            stationStyle = { ...stationStyle, ...styles.mapStationWeak };
+          }
+
+          return (
+            <div key={id} style={stationStyle}>
+              <span style={styles.stationIcon}>📌</span>
+              <div style={styles.stationName}>{skill.name}</div>
+              <div style={{ fontSize: 13, color: COLORS.muted }}>{skill.topic}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, margin: "4px 0" }}>{skill.percentage}%</div>
+              <div style={{ ...styles.stationStatus, ...statusStyle }}>{statusText}</div>
+              {isWeak && (
+                <button
+                  style={{ ...styles.stationLearnBtn, ...styles.stationLearnBtnWeak }}
+                  onClick={() => router.push('/course')}
+                >
+                  📖 تعلم الآن
+                </button>
+              )}
+              {isLearning && (
+                <button style={styles.stationLearnBtn} onClick={() => router.push('/course')}>
+                  📈 واصل التعلم
+                </button>
+              )}
+              {isCompleted && (
+                <div style={{ fontSize: 13, color: COLORS.success, fontWeight: 600, marginTop: 8 }}>
+                  🏆 أتقنت هذه المهارة
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderCareerModal = () => {
+    if (!careerPrediction || !careerPrediction.topPaths) return null;
+
+    return (
+      <div style={styles.modalOverlay} onClick={() => setShowCareerModal(false)}>
+        <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <button style={styles.modalClose} onClick={() => setShowCareerModal(false)}>✕</button>
+          <h2 style={styles.modalTitle}>🚀 مستقبلك المهني</h2>
+          <p style={styles.modalSubtitle}>بناءً على مهاراتك، إليك المسارات المهنية الأنسب لك</p>
+
+          {careerPrediction.topPaths.map((path, idx) => (
+            <div key={idx} style={styles.careerCard}>
+              <div style={styles.careerCardTop}>
+                <div>
+                  <span style={{ fontSize: 28 }}>{path.icon}</span>
+                  <h3 style={styles.careerTitle}>{path.title}</h3>
+                </div>
+                <span style={styles.careerMatch}>{path.matchPercentage}% توافق</span>
+              </div>
+              <p style={styles.careerDesc}>{path.description}</p>
+              <div style={styles.careerMeta}>
+                <span style={styles.careerMetaItem}>💰 {path.salaryRange}</span>
+                <span style={styles.careerMetaItem}>📈 النمو: {path.growth}</span>
+                <span style={styles.careerMetaItem}>🏢 {path.companies.join('، ')}</span>
+              </div>
+              <div style={styles.careerSkills}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>📊 مهاراتك في هذا المسار:</div>
+                {path.skillDetails.slice(0, 6).map((skill, i) => {
+                  const color = skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error;
+                  return (
+                    <div key={i} style={styles.skillBar}>
+                      <span style={styles.skillBarName}>{skill.name}</span>
+                      <div style={styles.skillBarTrack}>
+                        <div style={{ ...styles.skillBarFill, width: `${skill.percentage}%`, backgroundColor: color }} />
+                      </div>
+                      <span style={styles.skillBarPct}>{skill.percentage}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={styles.careerPlan}>
+                <strong>📚 خطة التعلم:</strong>
+                <div style={{ marginTop: 8 }}>{path.learningPlan}</div>
+              </div>
+            </div>
+          ))}
+
+          <div style={{ textAlign: "center", marginTop: 16 }}>
+            <button
+              onClick={() => setShowCareerModal(false)}
+              style={{ ...styles.courseButton, backgroundColor: COLORS.teal }}
+            >
+              فهمت، شكراً 🙏
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderSubSkills = () => {
-    if (!subSkillAnalysis || Object.keys(subSkillAnalysis).length === 0) {
+    if (!analysis.subSkillAnalysis || Object.keys(analysis.subSkillAnalysis).length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمهارات الفرعية.</p>;
     }
-    return Object.entries(subSkillAnalysis).map(([skill, data]) => {
+    return Object.entries(analysis.subSkillAnalysis).map(([skill, data]) => {
       const color = data.percentage >= 70 ? COLORS.success : data.percentage >= 50 ? COLORS.warning : COLORS.error;
       return (
         <div key={skill} style={styles.skillItem}>
@@ -739,64 +849,26 @@ export default function Result() {
     ));
   };
 
-  const scenarioLink = getScenarioLink(score, cognitiveProfile);
-
   return (
     <>
       <Head>
         <title>نتيجة التقييم - Smart Lab</title>
-        <meta name="description" content="نتيجة تقييمك في منصة سمارت لاب مع تحليل مفصل." />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
-          @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
-            .stat-value { font-size: 24px !important; }
-            .result-hero { padding: 32px 20px 36px !important; }
-            .result-hero-title { font-size: 28px !important; }
-            .score-circle { width: 150px !important; height: 150px !important; }
-            .score-number { font-size: 36px !important; }
-            .topic-name { flex: 0 0 90px !important; font-size: 13px !important; }
-          }
           @media (max-width: 640px) {
-            .main { padding: 20px 12px 60px !important; }
+            .map-grid { grid-template-columns: 1fr !important; }
+            .modal-content { padding: 24px 16px !important; }
+            .modal-title { font-size: 22px !important; }
+            .career-card { padding: 16px !important; }
+            .skill-bar-name { width: 80px !important; font-size: 12px !important; }
+            .career-btn { width: 100% !important; text-align: center !important; }
+            .stats-grid { grid-template-columns: 1fr !important; }
             .result-hero { padding: 24px 16px 32px !important; }
-            .result-hero-title { font-size: 24px !important; }
-            .hero-desc { font-size: 15px !important; }
-            .stats-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
-            .stat-value { font-size: 24px !important; }
-            .stat-card { padding: 14px 12px !important; }
-            .score-circle { width: 140px !important; height: 140px !important; }
-            .score-number { font-size: 32px !important; }
-            .score-label { font-size: 12px !important; }
+            .topic-name { flex: 0 0 70px !important; font-size: 12px !important; }
+            .course-btn, .scenario-btn { width: 100% !important; text-align: center !important; }
+            .button-group { flex-direction: column !important; gap: 8px !important; }
             .accordion-header { padding: 14px 16px !important; font-size: 14px !important; min-height: 48px !important; }
             .accordion-body { padding: 0 16px 16px 16px !important; }
-            .accordion-body-inner { padding-top: 16px !important; font-size: 14px !important; }
-            .topic-name { flex: 0 0 70px !important; font-size: 12px !important; }
-            .topic-score { font-size: 12px !important; min-width: 30px !important; }
-            .topic-bar { margin: 0 8px !important; }
-            .course-btn, .scenario-btn { width: 100% !important; padding: 14px !important; font-size: 15px !important; margin: 4px 0 !important; }
-            .button-group { flex-direction: column !important; gap: 8px !important; }
-            .insight-text { font-size: 14px !important; }
-            .hero-icon { font-size: 40px !important; }
-            .stage-item { font-size: 13px !important; gap: 8px !important; }
-            .stage-icon { font-size: 20px !important; width: 28px !important; }
-            .skill-item { font-size: 13px !important; }
-            .error-item { font-size: 13px !important; }
-            .lesson-item { font-size: 13px !important; }
-          }
-          @media (max-width: 480px) {
-            .result-hero { padding: 20px 12px 24px !important; }
-            .result-hero-title { font-size: 20px !important; }
-            .score-circle { width: 120px !important; height: 120px !important; }
-            .score-number { font-size: 28px !important; }
-            .stat-value { font-size: 20px !important; }
-            .stat-label { font-size: 11px !important; }
-            .accordion-header { font-size: 13px !important; padding: 12px 14px !important; }
-            .accordion-header-icon { font-size: 16px !important; margin-left: 8px !important; }
-            .accordion-chevron { font-size: 14px !important; margin-right: 8px !important; }
-            .topic-name { flex: 0 0 60px !important; font-size: 11px !important; }
-            .topic-score { font-size: 11px !important; min-width: 28px !important; }
-            .insight-text { font-size: 13px !important; }
           }
         `}</style>
       </Head>
@@ -804,15 +876,12 @@ export default function Result() {
       <div style={styles.page} dir="rtl">
         <Navbar />
 
-        <main style={styles.main} className="main">
+        <main style={styles.main}>
+          {/* ===== Hero Section ===== */}
           <div style={styles.hero} className="result-hero">
-            <span style={styles.heroIcon} className="hero-icon">🎯</span>
-            <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>
-              انتهى التقييم
-            </h1>
-            <p style={{ ...styles.heroDesc, className: "hero-desc" }}>
-              لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.
-            </p>
+            <span style={styles.heroIcon}>🎯</span>
+            <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>انتهى التقييم</h1>
+            <p style={styles.heroDesc}>لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.</p>
 
             <div style={styles.scoreContainer}>
               <div style={{ ...styles.scoreCircle, className: "score-circle" }}>
@@ -831,10 +900,8 @@ export default function Result() {
                   />
                 </svg>
                 <div style={styles.scoreText}>
-                  <span style={{ ...styles.scoreNumber, className: "score-number" }}>
-                    {Math.round(circleProgress)}%
-                  </span>
-                  <span style={styles.scoreLabel} className="score-label">النتيجة النهائية</span>
+                  <span style={{ ...styles.scoreNumber, className: "score-number" }}>{Math.round(circleProgress)}%</span>
+                  <span style={styles.scoreLabel}>النتيجة النهائية</span>
                 </div>
               </div>
             </div>
@@ -858,143 +925,108 @@ export default function Result() {
 
             {insight && (
               <div style={styles.insightBox}>
-                <p style={styles.insightText} className="insight-text">💡 {insight}</p>
+                <p style={styles.insightText}>💡 {insight}</p>
               </div>
             )}
           </div>
 
+          {/* ===== خريطة التعلم التفاعلية ===== */}
+          <div style={styles.mapSection}>
+            <div style={styles.mapTitle}>
+              🗺️ خريطة التعلم التفاعلية
+              <span style={{ fontSize: 14, fontWeight: 400, color: COLORS.muted }}>
+                ({Object.keys(subSkillDeepAnalysis || {}).length} مهارة)
+              </span>
+            </div>
+            <p style={styles.mapSubtitle}>المحطات المكتملة ✅، والتي قيد التعلم ⏳، والتي تحتاج مراجعة ❌. اضغط على "تعلم الآن" لبدء رحلة التعلم.</p>
+            {renderInteractiveMap()}
+
+            {careerPrediction && careerPrediction.topPaths && (
+              <div style={{ textAlign: "center", marginTop: 20 }}>
+                <button
+                  style={styles.careerButton}
+                  className="career-btn"
+                  onClick={() => setShowCareerModal(true)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.03)';
+                    e.currentTarget.style.boxShadow = '0 6px 24px rgba(255, 215, 0, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 215, 0, 0.3)';
+                  }}
+                >
+                  🧭 اكتشف مستقبلك المهني
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* ===== مودال التنبؤ المهني ===== */}
+          {showCareerModal && renderCareerModal()}
+
+          {/* ===== أكورديون الأقسام التحليلية ===== */}
           <div style={styles.accordionContainer}>
-            <AccordionSection
-              id="bassema"
-              title="🧠 البصمة المعرفية"
-              icon="🧠"
-              isOpen={expandedSections.bassema}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="bassema" title="🧠 البصمة المعرفية" icon="🧠" isOpen={expandedSections.bassema} onToggle={toggleSection}>
               {cognitiveProfile ? (
                 <>
                   <p><strong>نمط التعلم:</strong> {cognitiveProfile.learningStyle}</p>
                   <p>{cognitiveProfile.styleDescription}</p>
                   <p><strong>مستوى الثقة التقديري:</strong> {cognitiveProfile.confidenceLevel}%</p>
                 </>
-              ) : (
-                <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن البصمة المعرفية.</p>
-              )}
+              ) : <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن البصمة المعرفية.</p>}
             </AccordionSection>
 
-            <AccordionSection
-              id="thiqa"
-              title="📊 الثقة مقابل المعرفة"
-              icon="📊"
-              isOpen={expandedSections.thiqa}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="thiqa" title="📊 الثقة مقابل المعرفة" icon="📊" isOpen={expandedSections.thiqa} onToggle={toggleSection}>
               {confidenceAnalysis ? (
                 <>
                   <p><strong>إجابات واثقة وصحيحة:</strong> {confidenceAnalysis.highConfCorrect}%</p>
                   <p><strong>إجابات واثقة وخاطئة:</strong> {confidenceAnalysis.highConfWrong}%</p>
                   <p><strong>إجابات غير واثقة وصحيحة:</strong> {confidenceAnalysis.lowConfCorrect}%</p>
                   <p><strong>إجابات غير واثقة وخاطئة:</strong> {confidenceAnalysis.lowConfWrong}%</p>
-                  <div style={{ ...styles.insightBox, marginTop: 12 }}>
-                    <p style={styles.insightText}>💡 {confidenceAnalysis.insight}</p>
-                  </div>
+                  <div style={styles.insightBox}><p style={styles.insightText}>💡 {confidenceAnalysis.insight}</p></div>
                 </>
-              ) : (
-                <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن الثقة.</p>
-              )}
+              ) : <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن الثقة.</p>}
             </AccordionSection>
 
-            <AccordionSection
-              id="mawdooAt"
-              title="📚 الموضوعات"
-              icon="📚"
-              isOpen={expandedSections.mawdooAt}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="mawdooAt" title="📚 الموضوعات" icon="📚" isOpen={expandedSections.mawdooAt} onToggle={toggleSection}>
               {renderTopicBars()}
             </AccordionSection>
 
-            <AccordionSection
-              id="marahil"
-              title="✍️ المراحل الكتابية"
-              icon="✍️"
-              isOpen={expandedSections.marahil}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="marahil" title="✍️ المراحل الكتابية" icon="✍️" isOpen={expandedSections.marahil} onToggle={toggleSection}>
               {renderWritingAnswers()}
             </AccordionSection>
 
-            <AccordionSection
-              id="masar"
-              title="🗺️ المسار الأيقوني"
-              icon="🗺️"
-              isOpen={expandedSections.masar}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="masar" title="🗺️ المسار الأيقوني" icon="🗺️" isOpen={expandedSections.masar} onToggle={toggleSection}>
               {renderLearningStages()}
             </AccordionSection>
 
-            <AccordionSection
-              id="maharat"
-              title="🔧 المهارات الفرعية"
-              icon="🔧"
-              isOpen={expandedSections.maharat}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="maharat" title="🔧 المهارات الفرعية" icon="🔧" isOpen={expandedSections.maharat} onToggle={toggleSection}>
               {renderSubSkills()}
             </AccordionSection>
 
-            <AccordionSection
-              id="akhta"
-              title="❌ تحليل الأخطاء"
-              icon="❌"
-              isOpen={expandedSections.akhta}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="akhta" title="❌ تحليل الأخطاء" icon="❌" isOpen={expandedSections.akhta} onToggle={toggleSection}>
               {renderErrors()}
             </AccordionSection>
 
-            <AccordionSection
-              id="noqat"
-              title="💪 نقاط القوة"
-              icon="💪"
-              isOpen={expandedSections.noqat}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="noqat" title="💪 نقاط القوة" icon="💪" isOpen={expandedSections.noqat} onToggle={toggleSection}>
               {renderStrengths()}
             </AccordionSection>
 
-            <AccordionSection
-              id="tashkhis"
-              title="🔬 التشخيص العميق"
-              icon="🔬"
-              isOpen={expandedSections.tashkhis}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="tashkhis" title="🔬 التشخيص العميق" icon="🔬" isOpen={expandedSections.tashkhis} onToggle={toggleSection}>
               {renderDiagnostic()}
             </AccordionSection>
 
-            <AccordionSection
-              id="sabab"
-              title="🕵️ السبب الجذري"
-              icon="🕵️"
-              isOpen={expandedSections.sabab}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="sabab" title="🕵️ السبب الجذري" icon="🕵️" isOpen={expandedSections.sabab} onToggle={toggleSection}>
               {renderRootCauses()}
             </AccordionSection>
 
-            <AccordionSection
-              id="doroos"
-              title="📖 الدروس المقترحة"
-              icon="📖"
-              isOpen={expandedSections.doroos}
-              onToggle={toggleSection}
-            >
+            <AccordionSection id="doroos" title="📖 الدروس المقترحة" icon="📖" isOpen={expandedSections.doroos} onToggle={toggleSection}>
               {renderLessons()}
             </AccordionSection>
           </div>
 
+          {/* ===== أزرار الإجراءات ===== */}
           <div style={styles.buttonGroup} className="button-group">
             <Link href="/course" style={styles.courseButton} className="course-btn">
               🚀 ابدأ كورسك المخصص
@@ -1005,9 +1037,7 @@ export default function Result() {
           </div>
 
           <div style={{ textAlign: "center" }}>
-            <Link href="/assessment/categories" style={styles.backLink}>
-              ← العودة إلى التقييمات
-            </Link>
+            <Link href="/assessment/categories" style={styles.backLink}>← العودة إلى التقييمات</Link>
           </div>
         </main>
 
@@ -1015,15 +1045,11 @@ export default function Result() {
           <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 30 }}>
             <div>
               <h3 style={{ fontSize: 22, fontWeight: 800, margin: "0 0 8px" }}>SmartLab</h3>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", maxWidth: 300 }}>
-                منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.
-              </p>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", maxWidth: 300 }}>منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.</p>
             </div>
             <div>
               <h4 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 12px" }}>تواصل معنا</h4>
-              <a href="mailto:info@smartlab.com" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 14 }}>
-                info@smartlab.com
-              </a>
+              <a href="mailto:info@smartlab.com" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 14 }}>info@smartlab.com</a>
             </div>
           </div>
           <div style={{ textAlign: "center", marginTop: 30, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
