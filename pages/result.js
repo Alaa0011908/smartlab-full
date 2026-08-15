@@ -89,266 +89,104 @@ const styles = {
   },
   scoreNumber: { fontSize: 40, fontWeight: 800, color: COLORS.navy, display: "block" },
   scoreLabel: { fontSize: 14, color: COLORS.muted, display: "block" },
-  insightBox: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 12,
-    textAlign: "right",
-    whiteSpace: "pre-wrap",
-  },
-  insightText: { fontSize: 15, color: COLORS.text, lineHeight: 1.8, margin: 0 },
+  scoreLevel: { fontSize: 16, fontWeight: 700, marginTop: 4, display: "block" },
 
-  // خريطة التعلم التفاعلية
-  mapSection: {
-    backgroundColor: COLORS.white,
-    borderRadius: 24,
-    padding: "32px 28px",
-    marginBottom: 32,
-    boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
+  // 🔥 الخطة العملية (Actionable Plan)
+  actionablePlan: {
+    backgroundColor: '#FFF8E1',
+    borderRadius: '16px',
+    padding: '24px 28px',
+    border: '2px solid #FFE082',
+    marginBottom: '24px',
+    direction: 'rtl',
   },
-  mapTitle: {
-    fontSize: 24,
+  actionablePlanTitle: {
+    fontSize: '20px',
+    fontWeight: 800,
+    color: '#E65100',
+    margin: '0 0 12px',
+  },
+  planRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginBottom: '6px',
+  },
+  planRowIcon: { fontSize: '20px', flexShrink: 0 },
+  planRowLabel: { fontWeight: 700 },
+  planExercises: {
+    marginTop: '8px',
+    paddingRight: '24px',
+  },
+  planExerciseItem: { marginBottom: '6px' },
+  planVideoLink: {
+    display: 'inline-block',
+    backgroundColor: '#FF0000',
+    color: 'white',
+    padding: '8px 20px',
+    borderRadius: '8px',
+    textDecoration: 'none',
     fontWeight: 700,
-    color: COLORS.navy,
-    margin: "0 0 8px",
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    flexWrap: "wrap",
+    marginTop: '8px',
   },
-  mapSubtitle: {
-    fontSize: 15,
-    color: COLORS.muted,
-    margin: "0 0 20px",
-  },
-  mapGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: 16,
-  },
-  mapStation: {
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 16,
-    padding: "16px 18px",
-    border: "2px solid " + COLORS.border,
-    transition: "all 0.3s ease",
-    cursor: "default",
-    position: "relative",
-  },
-  mapStationCompleted: {
-    borderColor: COLORS.success,
-    backgroundColor: "#F0FAF5",
-  },
-  mapStationLearning: {
-    borderColor: COLORS.warning,
-    backgroundColor: "#FFF8E1",
-  },
-  mapStationWeak: {
-    borderColor: COLORS.error,
-    backgroundColor: "#FFEBEE",
-  },
-  stationIcon: { fontSize: 28, display: "block", marginBottom: 8 },
-  stationName: { fontSize: 15, fontWeight: 700, color: COLORS.navy, margin: "0 0 4px" },
-  stationStatus: { fontSize: 13, fontWeight: 600 },
-  stationStatusCompleted: { color: COLORS.success },
-  stationStatusLearning: { color: COLORS.warning },
-  stationStatusWeak: { color: COLORS.error },
-  stationLearnBtn: {
-    marginTop: 10,
-    padding: "6px 16px",
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 8,
-    fontSize: 13,
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-    fontFamily: "inherit",
-    width: "100%",
-  },
-  stationLearnBtnWeak: {
-    backgroundColor: COLORS.error,
+  planNextStep: {
+    marginTop: '12px',
+    padding: '12px 16px',
+    backgroundColor: '#E3F2FD',
+    borderRadius: '8px',
+    border: '1px solid #90CAF9',
   },
 
-  // زر التنبؤ المهني
-  careerButton: {
-    display: "inline-block",
-    backgroundColor: COLORS.gold,
-    color: COLORS.navy,
-    border: "none",
-    borderRadius: 12,
-    padding: "14px 36px",
-    fontSize: 17,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "all 0.25s ease",
-    fontFamily: "inherit",
-    marginTop: 16,
-    boxShadow: "0 4px 16px rgba(255, 215, 0, 0.3)",
-    minHeight: 56,
+  // ✅ البصمة المعرفية
+  cognitiveProfile: {
+    backgroundColor: '#E8F5E9',
+    borderRadius: '16px',
+    padding: '20px 24px',
+    border: '1px solid #A5D6A7',
+    marginBottom: '24px',
   },
-
-  // المودال
-  modalOverlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    backdropFilter: "blur(4px)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-    padding: "20px",
+  cognitiveTitle: {
+    fontSize: '18px',
+    fontWeight: 800,
+    color: '#2E7D32',
+    margin: '0 0 8px',
   },
-  modalContent: {
-    backgroundColor: COLORS.white,
-    borderRadius: 24,
-    maxWidth: 700,
-    width: "100%",
-    maxHeight: "90vh",
-    overflowY: "auto",
-    padding: "40px",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
-    position: "relative",
+  cognitiveHow: {
+    fontSize: '14px',
+    color: COLORS.text,
+    lineHeight: 1.8,
+    marginBottom: '8px',
   },
-  modalClose: {
-    position: "absolute",
-    top: 16,
-    left: 20,
-    background: "none",
-    border: "none",
-    fontSize: 28,
-    cursor: "pointer",
+  cognitiveWhy: {
+    fontSize: '14px',
     color: COLORS.muted,
-    transition: "color 0.25s ease",
-  },
-  modalTitle: { fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: "0 0 8px", textAlign: "center" },
-  modalSubtitle: { fontSize: 16, color: COLORS.muted, textAlign: "center", margin: "0 0 24px" },
-  careerCard: {
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 16,
-    padding: "20px 24px",
-    marginBottom: 16,
-    border: "1px solid " + COLORS.border,
-  },
-  careerCardTop: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-    flexWrap: "wrap",
-  },
-  careerTitle: { fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: 0 },
-  careerMatch: { fontSize: 16, fontWeight: 700, color: COLORS.teal },
-  careerDesc: { fontSize: 15, color: COLORS.text, margin: "0 0 8px" },
-  careerMeta: { display: "flex", gap: 16, fontSize: 14, color: COLORS.muted, flexWrap: "wrap" },
-  careerMetaItem: { display: "flex", alignItems: "center", gap: 4 },
-  careerSkills: { marginTop: 12 },
-  skillBar: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 },
-  skillBarName: { fontSize: 13, width: 120, flexShrink: 0, textAlign: "right" },
-  skillBarTrack: { flex: 1, height: 6, backgroundColor: COLORS.border, borderRadius: 4, overflow: "hidden" },
-  skillBarFill: { height: "100%", borderRadius: 4, transition: "width 0.5s ease" },
-  skillBarPct: { fontSize: 12, fontWeight: 700, width: 40, textAlign: "left" },
-  careerPlan: {
-    backgroundColor: COLORS.white,
-    borderRadius: 12,
-    padding: "16px 20px",
-    marginTop: 12,
-    border: "1px dashed " + COLORS.teal,
-    whiteSpace: "pre-wrap",
-    fontSize: 14,
     lineHeight: 1.8,
   },
 
-  // أكورديون
-  accordionContainer: { marginTop: 24 },
-  accordionItem: {
+  // 🗺️ خريطة التعلم الجراحية
+  surgicalMap: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    marginBottom: 12,
-    boxShadow: "0 2px 12px rgba(13,30,59,0.05)",
-    overflow: "hidden",
-    border: "1px solid " + COLORS.border,
-  },
-  accordionHeader: {
-    width: "100%",
-    padding: "18px 24px",
-    backgroundColor: COLORS.white,
-    border: "none",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    cursor: "pointer",
-    fontFamily: "inherit",
-    fontSize: 16,
-    fontWeight: 700,
-    color: COLORS.navy,
-    textAlign: "right",
-    transition: "background-color 0.2s ease",
-    minHeight: 56,
-  },
-  accordionHeaderHover: { backgroundColor: COLORS.lightGray },
-  accordionHeaderIcon: { fontSize: 20, marginLeft: 12 },
-  accordionChevron: { fontSize: 18, transition: "transform 0.3s ease", marginRight: 12 },
-  accordionChevronOpen: { transform: "rotate(180deg)" },
-  accordionBody: { padding: "0 24px 24px 24px", borderTop: "1px solid " + COLORS.border, backgroundColor: COLORS.white },
-  accordionBodyInner: { paddingTop: 20, fontSize: 15, color: COLORS.text, lineHeight: 1.8 },
-
-  // أقسام تحليلية داخل الأكورديون
-  topicBreakdown: { marginTop: 12 },
-  topicItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 0",
-    borderBottom: "1px solid " + COLORS.border,
-  },
-  topicName: { fontSize: 14, color: COLORS.text, flex: "0 0 120px", textAlign: "right" },
-  topicBar: { flex: 1, height: 6, backgroundColor: COLORS.border, borderRadius: 4, margin: "0 12px", overflow: "hidden" },
-  topicFill: { height: "100%", borderRadius: 4, transition: "width 0.5s ease" },
-  topicScore: { fontSize: 14, fontWeight: 700, color: COLORS.navy, minWidth: 40, textAlign: "left" },
-  lessonItem: { padding: "8px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 14 },
-  skillItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "6px 0",
-    borderBottom: "1px solid " + COLORS.border,
-    fontSize: 14,
-  },
-  stageItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    padding: "8px 0",
-    borderBottom: "1px solid " + COLORS.border,
-    fontSize: 14,
-  },
-  stageIcon: { fontSize: 24, width: 36, textAlign: "center" },
-  stageStatus: { fontSize: 12, fontWeight: 600, padding: "2px 10px", borderRadius: 12 },
-  errorItem: { padding: "6px 0", borderBottom: "1px solid " + COLORS.border, fontSize: 14 },
-  badge: { display: "inline-block", padding: "2px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, marginRight: 8 },
-  brilliantSkillCard: {
-    backgroundColor: COLORS.lightGray,
-    padding: '16px',
-    borderRadius: '12px',
-    marginBottom: '12px',
+    padding: '20px 24px',
+    marginBottom: 24,
     border: '1px solid ' + COLORS.border,
   },
-  surgicalCritical: {
+  surgicalTitle: {
+    fontSize: '18px',
+    fontWeight: 800,
+    color: COLORS.navy,
+    margin: '0 0 12px',
+  },
+  criticalBadge: {
     backgroundColor: '#FFEBEE',
-    padding: '12px',
+    padding: '8px 12px',
     borderRadius: '8px',
-    marginBottom: '8px',
+    marginBottom: '6px',
     borderRight: '4px solid ' + COLORS.error,
   },
-  surgicalModerate: {
+  moderateBadge: {
     backgroundColor: '#FFF8E1',
-    padding: '10px',
+    padding: '8px 12px',
     borderRadius: '8px',
     marginBottom: '6px',
     borderRight: '4px solid ' + COLORS.warning,
@@ -361,6 +199,62 @@ const styles = {
     display: 'inline-block',
     margin: '4px',
   },
+
+  // 🏆 التنبؤ المهني
+  careerCard: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: '16px',
+    padding: '20px 24px',
+    border: '1px solid #FFE0B2',
+    marginBottom: '24px',
+  },
+  careerTitle: { fontSize: '18px', fontWeight: 800, color: '#E65100', margin: '0 0 4px' },
+  careerSubtitle: { fontSize: '14px', color: COLORS.muted, marginBottom: '12px' },
+  careerPaths: { display: 'flex', flexDirection: 'column', gap: '8px' },
+  careerPathItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '8px 12px',
+    backgroundColor: COLORS.white,
+    borderRadius: '8px',
+    border: '1px solid #FFE0B2',
+  },
+  careerPathName: { fontWeight: 700 },
+  careerPathMatch: { fontWeight: 700, color: COLORS.teal },
+
+  // 📊 الأكورديونات المختصرة
+  accordionContainer: { marginTop: 16 },
+  accordionItem: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    marginBottom: 12,
+    boxShadow: "0 2px 12px rgba(13,30,59,0.05)",
+    overflow: "hidden",
+    border: "1px solid " + COLORS.border,
+  },
+  accordionHeader: {
+    width: "100%",
+    padding: "16px 24px",
+    backgroundColor: COLORS.white,
+    border: "none",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    cursor: "pointer",
+    fontFamily: "inherit",
+    fontSize: 15,
+    fontWeight: 700,
+    color: COLORS.navy,
+    textAlign: "right",
+    transition: "background-color 0.2s ease",
+    minHeight: 50,
+  },
+  accordionHeaderHover: { backgroundColor: COLORS.lightGray },
+  accordionChevron: { fontSize: 16, transition: "transform 0.3s ease", marginRight: 12 },
+  accordionChevronOpen: { transform: "rotate(180deg)" },
+  accordionBody: { padding: "0 24px 20px 24px", borderTop: "1px solid " + COLORS.border },
+  accordionBodyInner: { paddingTop: 16, fontSize: 14, color: COLORS.text, lineHeight: 1.8 },
 
   // أزرار الإجراءات
   buttonGroup: { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 12, marginTop: 24 },
@@ -405,10 +299,32 @@ const styles = {
     textAlign: "center",
     marginTop: 20,
   },
+  skillItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '4px 0',
+    borderBottom: '1px solid ' + COLORS.border,
+    fontSize: 14,
+  },
+  errorItem: {
+    padding: '4px 0',
+    borderBottom: '1px solid ' + COLORS.border,
+    fontSize: 14,
+  },
+  badge: {
+    display: 'inline-block',
+    padding: '2px 10px',
+    borderRadius: 12,
+    fontSize: 11,
+    fontWeight: 600,
+    marginRight: 8,
+  },
 };
 
-// ===== مكون الأكورديون =====
-const AccordionSection = ({ id, title, icon, isOpen, onToggle, children, alwaysOpen = false }) => {
+// ============================================================
+// 🧩 مكون الأكورديون
+// ============================================================
+const AccordionSection = ({ id, title, icon, isOpen, onToggle, children }) => {
   const [hover, setHover] = useState(false);
   return (
     <div style={styles.accordionItem}>
@@ -417,19 +333,17 @@ const AccordionSection = ({ id, title, icon, isOpen, onToggle, children, alwaysO
           ...styles.accordionHeader,
           ...(hover ? styles.accordionHeaderHover : {}),
         }}
-        onClick={() => !alwaysOpen && onToggle(id)}
+        onClick={() => onToggle(id)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        <span style={{ display: "flex", alignItems: "center" }}>
-          <span style={styles.accordionHeaderIcon}>{icon}</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span>{icon}</span>
           {title}
         </span>
-        {!alwaysOpen && (
-          <span style={{ ...styles.accordionChevron, ...(isOpen ? styles.accordionChevronOpen : {}) }}>▼</span>
-        )}
+        <span style={{ ...styles.accordionChevron, ...(isOpen ? styles.accordionChevronOpen : {}) }}>▼</span>
       </button>
-      {(alwaysOpen || isOpen) && (
+      {isOpen && (
         <div style={styles.accordionBody}>
           <div style={styles.accordionBodyInner}>{children}</div>
         </div>
@@ -438,40 +352,16 @@ const AccordionSection = ({ id, title, icon, isOpen, onToggle, children, alwaysO
   );
 };
 
-// ===== دالة تحديد مسار السيناريو حسب المستوى =====
-function getScenarioLink(score, cognitiveProfile) {
-  let level = 'beginner';
-  if (score >= 75) level = 'advanced';
-  else if (score >= 50) level = 'intermediate';
-  if (cognitiveProfile && cognitiveProfile.learningStyle === 'تحليلي متعمق' && score >= 60) level = 'advanced';
-  const map = { beginner: '/scenarios/cafe', intermediate: '/scenarios/hospital', advanced: '/scenarios/office' };
-  return map[level] || '/scenarios/cafe';
-}
-
-// ===== المكون الرئيسي =====
+// ============================================================
+// 🎯 المكون الرئيسي
+// ============================================================
 export default function Result() {
   const router = useRouter();
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [circleProgress, setCircleProgress] = useState(0);
-  const [showCareerModal, setShowCareerModal] = useState(false);
-
-  const [expandedSections, setExpandedSections] = useState({
-    bassema: false,
-    thiqa: false,
-    mawdooAt: false,
-    marahil: false,
-    masar: false,
-    maharat: false,
-    akhta: false,
-    noqat: false,
-    tashkhis: false,
-    sabab: false,
-    doroos: false,
-    brilliantSubSkills: false,
-    surgicalMap: false,
-  });
+  const [expandedSections, setExpandedSections] = useState({});
 
   const toggleSection = (id) => {
     setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -480,9 +370,34 @@ export default function Result() {
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
-        const { answers, questions, assessmentId, timePerQuestion, confidenceLevels, mode } = router.query;
+        const { answers, questions, assessmentId, timePerQuestion, confidenceLevels, mode, quickResult } = router.query;
         if (!answers || !assessmentId) {
           setError("لا توجد بيانات لعرض النتيجة");
+          setLoading(false);
+          return;
+        }
+
+        // ✅ إذا كان تقييم سريع، استخدم quickResult مباشرة
+        if (quickResult) {
+          const quickData = JSON.parse(quickResult);
+          setAnalysis({
+            isQuick: true,
+            score: quickData.score,
+            totalQuestions: quickData.total,
+            correctAnswers: quickData.correct,
+            wrongAnswers: quickData.wrong,
+            actionablePlan: {
+              hasWeakness: quickData.score < 70,
+              priority: quickData.score < 70 ? 'تحتاج مراجعة' : '🎉 ممتاز!',
+              priorityLevel: quickData.score >= 80 ? 'ممتاز' : quickData.score >= 60 ? 'جيد' : 'يحتاج تحسين',
+            },
+            insight: quickData.score >= 80 
+              ? '🎉 أداء ممتاز! أنت على الطريق الصحيح.'
+              : quickData.score >= 60 
+              ? '📈 أداء جيد. هناك مجال للتحسين.'
+              : '📚 تحتاج إلى مراجعة الأساسيات. لا تقلق، هذا طبيعي!',
+          });
+          setTimeout(() => setCircleProgress(quickData.score), 300);
           setLoading(false);
           return;
         }
@@ -508,9 +423,8 @@ export default function Result() {
         if (!response.ok) throw new Error("فشل في تحليل النتائج");
 
         const data = await response.json();
-        setAnalysis(data);
+        setAnalysis({ ...data, isQuick: mode === 'quick' });
 
-        // حفظ في localStorage لاستخدامه في الصفحات الأخرى
         localStorage.setItem('latestAnalysis', JSON.stringify(data));
 
         const savedResults = JSON.parse(localStorage.getItem("assessmentResults") || "[]");
@@ -536,186 +450,181 @@ export default function Result() {
     if (router.isReady) fetchAnalysis();
   }, [router.isReady, router.query]);
 
-  // دوال العرض
-  const renderTopicBars = () => {
-    if (!analysis.topicAnalysis || Object.keys(analysis.topicAnalysis).length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للموضوعات.</p>;
-    }
-    return (
-      <div style={styles.topicBreakdown}>
-        {Object.entries(analysis.topicAnalysis).map(([topic, data]) => {
-          const pct = data.weightedPercentage || data.percentage || 0;
-          const color = pct >= 70 ? COLORS.success : pct >= 50 ? COLORS.warning : COLORS.error;
-          return (
-            <div key={topic} style={styles.topicItem}>
-              <span style={styles.topicName}>{topic}</span>
-              <div style={styles.topicBar}>
-                <div style={{ ...styles.topicFill, width: pct + "%", backgroundColor: color }} />
-              </div>
-              <span style={styles.topicScore}>{pct}%</span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+  // ============================================================
+  // 🔥 دوال العرض
+  // ============================================================
 
-  const renderInteractiveMap = () => {
-    const subSkills = analysis.subSkillAnalysisBrilliant;
-    if (!subSkills || Object.keys(subSkills).length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية لبناء الخريطة التفاعلية.</p>;
-    }
+  const renderActionablePlan = () => {
+    const plan = analysis.actionablePlan;
+    if (!plan) return null;
 
-    const sorted = Object.entries(subSkills).sort((a, b) => a[1].percentage - b[1].percentage);
+    if (!plan.hasWeakness) {
+      return (
+        <div style={{
+          backgroundColor: '#E8F5E9',
+          borderRadius: '16px',
+          padding: '20px 24px',
+          border: '2px solid #2ECC71',
+          marginBottom: '24px',
+          textAlign: 'center',
+        }}>
+          <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#2E7D32', margin: '0 0 4px' }}>
+            🎉 {plan.priority}
+          </h3>
+          <p style={{ fontSize: '15px', color: '#1B5E20' }}>
+            {plan.nextStep || 'أنت متقن لجميع المهارات! استمر في التطوير.'}
+          </p>
+        </div>
+      );
+    }
 
     return (
-      <div style={styles.mapGrid}>
-        {sorted.map(([id, skill]) => {
-          const isCompleted = skill.percentage >= 80;
-          const isLearning = skill.percentage >= 50 && skill.percentage < 80;
-          const isWeak = skill.percentage < 50;
-
-          let statusText = '', statusStyle = {}, stationStyle = { ...styles.mapStation };
-          if (isCompleted) {
-            statusText = '✅ مكتملة';
-            statusStyle = styles.stationStatusCompleted;
-            stationStyle = { ...stationStyle, ...styles.mapStationCompleted };
-          } else if (isLearning) {
-            statusText = '⏳ قيد التعلم';
-            statusStyle = styles.stationStatusLearning;
-            stationStyle = { ...stationStyle, ...styles.mapStationLearning };
-          } else {
-            statusText = '❌ تحتاج مراجعة';
-            statusStyle = styles.stationStatusWeak;
-            stationStyle = { ...stationStyle, ...styles.mapStationWeak };
-          }
-
-          return (
-            <div key={id} style={stationStyle}>
-              <span style={styles.stationIcon}>📌</span>
-              <div style={styles.stationName}>{skill.name}</div>
-              <div style={{ fontSize: 13, color: COLORS.muted }}>{skill.topic}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, margin: "4px 0" }}>{skill.percentage}%</div>
-              <div style={{ ...styles.stationStatus, ...statusStyle }}>{statusText}</div>
-              {isWeak && (
-                <button
-                  style={{ ...styles.stationLearnBtn, ...styles.stationLearnBtnWeak }}
-                  onClick={() => router.push('/course')}
-                >
-                  📖 تعلم الآن
-                </button>
-              )}
-              {isLearning && (
-                <button style={styles.stationLearnBtn} onClick={() => router.push('/course')}>
-                  📈 واصل التعلم
-                </button>
-              )}
-              {isCompleted && (
-                <div style={{ fontSize: 13, color: COLORS.success, fontWeight: 600, marginTop: 8 }}>
-                  🏆 أتقنت هذه المهارة
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  // عرض المهارات الفرعية العبقري
-  const renderBrilliantSubSkills = () => {
-    const subSkills = analysis.subSkillAnalysisBrilliant;
-    if (!subSkills || Object.keys(subSkills).length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمهارات الفرعية.</p>;
-    }
-
-    const sorted = Object.entries(subSkills).sort((a, b) => a[1].percentage - b[1].percentage);
-
-    return sorted.map(([id, skill]) => (
-      <div key={id} style={{ ...styles.brilliantSkillCard, borderColor: skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <span style={{ fontWeight: 700, fontSize: '16px' }}>{skill.name}</span>
-          <span style={{ fontWeight: 700, fontSize: '18px', color: skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error }}>
-            {skill.percentage}%
+      <div style={styles.actionablePlan}>
+        <h3 style={styles.actionablePlanTitle}>
+          🎯 أولويتك الأولى: {plan.priority}
+          <span style={{
+            display: 'inline-block',
+            marginRight: '12px',
+            fontSize: '14px',
+            backgroundColor: plan.priorityLevel.includes('حرجة') ? '#FFEBEE' : '#FFF8E1',
+            color: plan.priorityLevel.includes('حرجة') ? '#C62828' : '#E65100',
+            padding: '2px 12px',
+            borderRadius: '12px',
+          }}>
+            {plan.priorityLevel}
           </span>
-        </div>
-        <div style={{ height: '6px', backgroundColor: COLORS.border, borderRadius: '4px', overflow: 'hidden', marginBottom: '8px' }}>
-          <div style={{ height: '100%', width: `${skill.percentage}%`, backgroundColor: skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error, borderRadius: '4px', transition: 'width 0.5s ease' }} />
-        </div>
-        <div style={{ fontSize: '14px', color: COLORS.muted, marginBottom: '4px' }}>
-          المستوى: {skill.level} | الأخطاء: {skill.errorCount}
-        </div>
-        {skill.percentage < 70 && (
-          <>
-            <div style={{ fontSize: '13px', color: COLORS.text, marginTop: '4px' }}>
-              <span style={{ fontWeight: 600 }}>🔍 السبب الجذري:</span> {skill.rootCause}
+        </h3>
+
+        <div style={{ display: 'grid', gap: '8px' }}>
+          {plan.specificError && (
+            <div style={styles.planRow}>
+              <span style={styles.planRowIcon}>📌</span>
+              <span><span style={styles.planRowLabel}>مشكلتك بالضبط:</span> {plan.specificError}</span>
             </div>
-            <div style={{ fontSize: '13px', color: COLORS.teal, marginTop: '4px' }}>
-              <span style={{ fontWeight: 600 }}>💡 الحل المقترح:</span> {skill.solution}
+          )}
+          {plan.rootCause && (
+            <div style={styles.planRow}>
+              <span style={styles.planRowIcon}>🔍</span>
+              <span><span style={styles.planRowLabel}>السبب الجذري:</span> {plan.rootCause}</span>
             </div>
+          )}
+          {plan.solution && (
+            <div style={styles.planRow}>
+              <span style={styles.planRowIcon}>💡</span>
+              <span><span style={styles.planRowLabel}>الحل المقترح:</span> {plan.solution}</span>
+            </div>
+          )}
+          {plan.timeRequired && (
+            <div style={styles.planRow}>
+              <span style={styles.planRowIcon}>⏱️</span>
+              <span><span style={styles.planRowLabel}>الوقت المطلوب:</span> {plan.timeRequired} دقيقة</span>
+            </div>
+          )}
+          {plan.exercises && plan.exercises.length > 0 && (
             <div style={{ marginTop: '8px' }}>
-              <a
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(skill.youtubeSearch)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'inline-block', backgroundColor: '#FF0000', color: 'white', padding: '4px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
-              >
-                ▶ بحث في يوتيوب
+              <span style={styles.planRowLabel}>📝 تمارين محددة:</span>
+              <ol style={styles.planExercises}>
+                {plan.exercises.map((ex, idx) => (
+                  <li key={idx} style={styles.planExerciseItem}>{ex}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+          {plan.videoLink && (
+            <div>
+              <a href={plan.videoLink} target="_blank" rel="noopener noreferrer" style={styles.planVideoLink}>
+                ▶ شاهد فيديو شرح
               </a>
             </div>
-          </>
-        )}
+          )}
+          {plan.nextStep && (
+            <div style={styles.planNextStep}>
+              <strong>🚀 خطوتك التالية:</strong> {plan.nextStep}
+            </div>
+          )}
+        </div>
       </div>
-    ));
+    );
   };
 
-  // خريطة التعلم الجراحية
-  const renderSurgicalMap = () => {
-    const map = analysis.trueSurgicalMap;
-    if (!map) return <p style={{ color: COLORS.muted }}>لا توجد خريطة جراحية متاحة.</p>;
+  const renderCognitiveProfile = () => {
+    const profile = analysis.cognitiveProfile;
+    if (!profile) return null;
+
+    let howWeKnow = '';
+    if (profile.learningStyle === 'تحليلي متعمق') {
+      howWeKnow = 'بناءً على سرعتك في الإجابة (متوسط {avg} ثانية) ودقتك العالية ({pct}%). أنت تميل للتفكير العميق قبل الإجابة، وهذا يظهر في أسئلة التحليل (OSI, Subnetting) حيث أداؤك أفضل. في المقابل، أنت أبطأ قليلاً في الأسئلة المباشرة لأنك تحلل حتى البسيط منها.';
+    } else if (profile.learningStyle === 'حدسي سريع') {
+      howWeKnow = 'بناءً على سرعتك في الإجابة (متوسط {avg} ثانية) ودقتك الجيدة ({pct}%). أنت تعتمد على البديهة والاسترجاع السريع للمعلومات. هذا يساعدك في الأسئلة المباشرة لكن قد يسبب أخطاء في الأسئلة التي تحتاج تفكيراً عميقاً.';
+    } else {
+      howWeKnow = 'بناءً على سرعتك المتوسطة في الإجابة (متوسط {avg} ثانية) ودقتك ({pct}%). لديك توازن جيد بين السرعة والدقة، مما يجعلك مرناً في التعامل مع مختلف أنواع الأسئلة.';
+    }
+
+    const avgTime = analysis.effortAnalysis?.avgTime || 'غير محدد';
+    const pct = analysis.score || 0;
+    howWeKnow = howWeKnow.replace(/{avg}/g, avgTime).replace(/{pct}/g, pct);
+
+    let whyImportant = '';
+    if (profile.learningStyle === 'تحليلي متعمق') {
+      whyImportant = 'معرفة نمطك المعرفي تساعدك في: (١) اختيار طريقة المذاكرة المناسبة لك – ركز على الفهم العميق بدلاً من الحفظ السريع. (٢) تحسين أدائك في الامتحانات العملية حيث تحتاج للتفكير المنظم. (٣) إدارة وقتك بشكل أفضل في الأسئلة المعقدة.';
+    } else if (profile.learningStyle === 'حدسي سريع') {
+      whyImportant = 'معرفة نمطك المعرفي تساعدك في: (١) الاستفادة من سرعتك في الإجابات المباشرة. (٢) تدريب نفسك على التوقف قليلاً في الأسئلة المعقدة قبل الإجابة. (٣) تحقيق توازن أفضل بين السرعة والدقة.';
+    } else {
+      whyImportant = 'معرفة نمطك المعرفي تساعدك في: (١) الحفاظ على التوازن بين السرعة والدقة. (٢) اختيار التمارين المناسبة لتطوير كلا الجانبين. (٣) تحسين أدائك في جميع أنواع الأسئلة.';
+    }
 
     return (
-      <div>
-        <h4 style={{ color: COLORS.error }}>🔴 مهارات حرجة (تحتاج تركيز فوري)</h4>
+      <div style={styles.cognitiveProfile}>
+        <h4 style={styles.cognitiveTitle}>🧠 بصمتك المعرفية: {profile.learningStyle}</h4>
+        <p style={styles.cognitiveHow}><strong>📌 كيف وصلنا لهذه النتيجة؟</strong><br />{howWeKnow}</p>
+        <p style={styles.cognitiveWhy}><strong>💡 لماذا هذا مهم لك؟</strong><br />{whyImportant}</p>
+      </div>
+    );
+  };
+
+  const renderSurgicalMap = () => {
+    const map = analysis.trueSurgicalMap;
+    if (!map) return <p style={{ color: COLORS.muted }}>لا توجد خريطة تعلم جراحية متاحة.</p>;
+
+    return (
+      <div style={styles.surgicalMap}>
+        <h4 style={styles.surgicalTitle}>🗺️ خريطة التعلم الجراحية</h4>
+
+        <h5 style={{ color: COLORS.error, marginBottom: '4px' }}>🔴 مهارات حرجة (تحتاج تركيز فوري)</h5>
         {map.critical.length === 0 ? (
-          <p style={{ color: COLORS.success }}>🎉 لا توجد مهارات حرجة! أداء رائع.</p>
+          <p style={{ color: COLORS.success, fontSize: '14px' }}>🎉 لا توجد مهارات حرجة!</p>
         ) : (
-          map.critical.map((skill, idx) => (
-            <div key={idx} style={styles.surgicalCritical}>
+          map.critical.slice(0, 5).map((skill, idx) => (
+            <div key={idx} style={styles.criticalBadge}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontWeight: 700 }}>{skill.name}</span>
-                <span style={{ color: COLORS.error }}>{skill.percentage}%</span>
+                <span style={{ color: COLORS.error, fontWeight: 700 }}>{skill.percentage}%</span>
               </div>
-              <div style={{ fontSize: '13px' }}>🔍 {skill.rootCause}</div>
-              <div style={{ fontSize: '13px', color: COLORS.teal }}>💡 {skill.solution}</div>
-              <div style={{ marginTop: '4px' }}>
-                <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(skill.youtubeSearch)}`} target="_blank" style={{ color: '#FF0000', fontSize: '13px' }}>▶ بحث في يوتيوب</a>
-                <span style={{ marginRight: '12px', fontSize: '13px', color: COLORS.muted }}>📝 {skill.exercises} تمرين</span>
-              </div>
+              <div style={{ fontSize: '13px', color: COLORS.muted }}>{skill.rootCause?.substring(0, 80)}...</div>
             </div>
           ))
         )}
 
-        <h4 style={{ marginTop: '20px', color: COLORS.warning }}>🟡 مهارات متوسطة</h4>
+        <h5 style={{ color: COLORS.warning, marginTop: '12px', marginBottom: '4px' }}>🟡 مهارات متوسطة</h5>
         {map.moderate.length === 0 ? (
-          <p style={{ color: COLORS.muted }}>لا توجد مهارات متوسطة.</p>
+          <p style={{ color: COLORS.muted, fontSize: '14px' }}>لا توجد مهارات متوسطة.</p>
         ) : (
-          map.moderate.map((skill, idx) => (
-            <div key={idx} style={styles.surgicalModerate}>
+          map.moderate.slice(0, 3).map((skill, idx) => (
+            <div key={idx} style={styles.moderateBadge}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>{skill.name}</span>
-                <span>{skill.percentage}%</span>
+                <span style={{ color: COLORS.warning }}>{skill.percentage}%</span>
               </div>
             </div>
           ))
         )}
 
-        <h4 style={{ marginTop: '20px', color: COLORS.success }}>✅ مهارات متقنة</h4>
+        <h5 style={{ color: COLORS.success, marginTop: '12px', marginBottom: '4px' }}>✅ مهارات متقنة</h5>
         {map.mastered.length === 0 ? (
-          <p style={{ color: COLORS.muted }}>لا توجد مهارات متقنة بعد.</p>
+          <p style={{ color: COLORS.muted, fontSize: '14px' }}>لا توجد مهارات متقنة بعد.</p>
         ) : (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {map.mastered.map((skill, idx) => (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {map.mastered.slice(0, 6).map((skill, idx) => (
               <span key={idx} style={styles.masteredBadge}>🏆 {skill.name}</span>
             ))}
           </div>
@@ -724,97 +633,45 @@ export default function Result() {
     );
   };
 
-  // مودال التنبؤ المهني
-  const renderCareerModal = () => {
+  const renderCareerPrediction = () => {
     const career = analysis.careerPrediction;
     if (!career || !career.topPaths) return null;
 
     return (
-      <div style={styles.modalOverlay} onClick={() => setShowCareerModal(false)}>
-        <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-          <button style={styles.modalClose} onClick={() => setShowCareerModal(false)}>✕</button>
-          <h2 style={styles.modalTitle}>🚀 مستقبلك المهني</h2>
-          <p style={styles.modalSubtitle}>بناءً على مهاراتك، إليك المسارات المهنية الأنسب لك</p>
-
-          {career.topPaths.map((path, idx) => (
-            <div key={idx} style={styles.careerCard}>
-              <div style={styles.careerCardTop}>
-                <div>
-                  <span style={{ fontSize: 28 }}>{path.icon}</span>
-                  <h3 style={styles.careerTitle}>{path.title}</h3>
-                </div>
-                <span style={styles.careerMatch}>{path.matchPercentage}% توافق</span>
-              </div>
-              <p style={styles.careerDesc}>{path.description}</p>
-              <div style={styles.careerMeta}>
-                <span style={styles.careerMetaItem}>💰 {path.salaryRange}</span>
-                <span style={styles.careerMetaItem}>📈 النمو: {path.growth}</span>
-                <span style={styles.careerMetaItem}>🏢 {path.companies.join('، ')}</span>
-              </div>
-
-              <div style={styles.careerSkills}>
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>📊 مهاراتك في هذا المسار:</div>
-                {path.skillDetails.slice(0, 6).map((skill, i) => {
-                  const color = skill.percentage >= 70 ? COLORS.success : skill.percentage >= 50 ? COLORS.warning : COLORS.error;
-                  return (
-                    <div key={i} style={styles.skillBar}>
-                      <span style={styles.skillBarName}>{skill.name}</span>
-                      <div style={styles.skillBarTrack}>
-                        <div style={{ ...styles.skillBarFill, width: `${skill.percentage}%`, backgroundColor: color }} />
-                      </div>
-                      <span style={styles.skillBarPct}>{skill.percentage}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div style={styles.careerPlan}>
-                <strong>📚 خطة التعلم:</strong>
-                <div style={{ marginTop: 8 }}>{path.learningPlan}</div>
-              </div>
+      <div style={styles.careerCard}>
+        <h4 style={styles.careerTitle}>🚀 مستقبلك المهني</h4>
+        <p style={styles.careerSubtitle}>بناءً على مهاراتك، إليك المسارات المهنية الأنسب لك</p>
+        <div style={styles.careerPaths}>
+          {career.topPaths.slice(0, 3).map((path, idx) => (
+            <div key={idx} style={styles.careerPathItem}>
+              <span style={styles.careerPathName}>
+                {path.icon} {path.title}
+              </span>
+              <span style={styles.careerPathMatch}>{path.matchPercentage}%</span>
             </div>
           ))}
-
-          <div style={{ textAlign: "center", marginTop: 16 }}>
-            <button
-              onClick={() => setShowCareerModal(false)}
-              style={{ ...styles.courseButton, backgroundColor: COLORS.teal }}
-            >
-              فهمت، شكراً 🙏
-            </button>
-          </div>
         </div>
+        {career.summary && (
+          <p style={{ fontSize: '14px', color: COLORS.muted, marginTop: '12px' }}>
+            {career.summary}
+          </p>
+        )}
       </div>
     );
   };
 
-  // باقي الدوال القديمة
-  const renderSubSkills = () => {
-    if (!analysis.subSkillAnalysis || Object.keys(analysis.subSkillAnalysis).length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمهارات الفرعية.</p>;
-    }
-    return Object.entries(analysis.subSkillAnalysis).map(([skill, data]) => {
-      const color = data.percentage >= 70 ? COLORS.success : data.percentage >= 50 ? COLORS.warning : COLORS.error;
-      return (
-        <div key={skill} style={styles.skillItem}>
-          <span>{data.skillName || skill}</span>
-          <span style={{ fontWeight: 700, color }}>{data.percentage}%</span>
-        </div>
-      );
-    });
-  };
-
   const renderErrors = () => {
     if (!analysis.errors || analysis.errors.length === 0) {
-      return <p style={{ color: COLORS.muted }}>🎉 لا توجد أخطاء! أداء ممتاز.</p>;
+      return <p style={{ color: COLORS.success }}>🎉 لا توجد أخطاء! أداء ممتاز.</p>;
     }
-    return analysis.errors.slice(0, 10).map((err, idx) => (
+    return analysis.errors.slice(0, 8).map((err, idx) => (
       <div key={idx} style={styles.errorItem}>
-        <strong>{err.topic}</strong> – {err.question.substring(0, 60)}... <br />
+        <strong>{err.topic}</strong> – {err.question.substring(0, 50)}...
+        <br />
         <span style={{ color: COLORS.error }}>❌ إجابتك: {err.yourAnswer}</span>
         <span style={{ color: COLORS.success, marginRight: 12 }}>✅ الصحيح: {err.correctAnswer}</span>
         <span style={{ ...styles.badge, backgroundColor: COLORS.lightGray, color: COLORS.muted }}>
-          {err.errorPattern === 'conceptual' ? 'مفهومي' : err.errorPattern === 'calculation' ? 'حسابي' : 'تطبيقي'}
+          {err.errorPattern === 'conceptual' ? 'مفهومي' : err.errorPattern === 'calculation' ? 'حسابي' : err.errorPattern === 'application' ? 'تطبيقي' : 'حفظي'}
         </span>
       </div>
     ));
@@ -827,19 +684,21 @@ export default function Result() {
     const hidden = analysis.hiddenStrengths || [];
 
     if (strongTopics.length === 0 && hidden.length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد نقاط قوة بارزة حالياً، لكن مع التدريب ستتحسن.</p>;
+      return <p style={{ color: COLORS.muted }}>لا توجد نقاط قوة بارزة حالياً.</p>;
     }
 
     return (
       <>
-        {strongTopics.map(([topic, data]) => (
-          <div key={topic} style={{ padding: "4px 0" }}>
-            💪 <strong>{topic}</strong> – {data.weightedPercentage || data.percentage}%
+        {strongTopics.slice(0, 4).map(([topic, data]) => (
+          <div key={topic} style={styles.skillItem}>
+            <span>💪 {topic}</span>
+            <span style={{ color: COLORS.success }}>{data.weightedPercentage || data.percentage}%</span>
           </div>
         ))}
-        {hidden.map((s, idx) => (
-          <div key={idx} style={{ padding: "4px 0" }}>
-            {s.icon || '🌟'} <strong>{s.title}</strong> – {s.description}
+        {hidden.slice(0, 2).map((s, idx) => (
+          <div key={idx} style={styles.skillItem}>
+            <span>{s.icon || '🌟'} {s.title}</span>
+            <span style={{ color: COLORS.teal }}>{s.percentage}%</span>
           </div>
         ))}
       </>
@@ -848,48 +707,20 @@ export default function Result() {
 
   const renderLearningStages = () => {
     if (!analysis.learningStages || analysis.learningStages.length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد مراحل تعلم متاحة لهذا التقييم.</p>;
+      return <p style={{ color: COLORS.muted }}>لا توجد مراحل تعلم متاحة.</p>;
     }
-    return analysis.learningStages.map((stage, idx) => {
+    return analysis.learningStages.slice(0, 8).map((stage, idx) => {
       const statusColor = stage.level === 'مكتمل' ? COLORS.success : stage.level === 'جزئياً' ? COLORS.warning : COLORS.border;
-      const statusLabel = stage.level === 'مكتمل' ? '✅' : stage.level === 'جزئياً' ? '⚠️' : '⏳';
       return (
-        <div key={idx} style={styles.stageItem}>
-          <span style={styles.stageIcon}>{stage.icon}</span>
-          <span style={{ flex: 1 }}>{stage.concept}</span>
-          <span style={{ ...styles.stageStatus, backgroundColor: statusColor + "30", color: statusColor }}>
-            {statusLabel} {stage.percentage}%
+        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '4px 0', borderBottom: '1px solid ' + COLORS.border }}>
+          <span style={{ fontSize: 20 }}>{stage.icon}</span>
+          <span style={{ flex: 1, fontSize: 14 }}>{stage.concept}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: statusColor }}>
+            {stage.percentage}%
           </span>
         </div>
       );
     });
-  };
-
-  const renderDiagnostic = () => {
-    if (!analysis.diagnosticMastery || !analysis.diagnosticMastery.skills) {
-      return <p style={{ color: COLORS.muted }}>بيانات التشخيص العميق غير متوفرة.</p>;
-    }
-    return analysis.diagnosticMastery.skills.slice(0, 10).map((skill, idx) => (
-      <div key={idx} style={styles.skillItem}>
-        <span>{skill.name}</span>
-        <span style={{ fontWeight: 700, color: skill.masteryProbability >= 70 ? COLORS.success : COLORS.warning }}>
-          {skill.masteryProbability}% – {skill.level}
-        </span>
-      </div>
-    ));
-  };
-
-  const renderRootCauses = () => {
-    if (!analysis.rootCauseAnalysis || analysis.rootCauseAnalysis.length === 0) {
-      return <p style={{ color: COLORS.muted }}>لم يتم تحديد أسباب جذرية واضحة.</p>;
-    }
-    return analysis.rootCauseAnalysis.map((rc, idx) => (
-      <div key={idx} style={{ padding: "8px 0", borderBottom: "1px solid " + COLORS.border }}>
-        <strong>{rc.primaryTopic}</strong> – {rc.description}
-        <br />
-        <span style={{ fontSize: 13, color: COLORS.muted }}>الحل: {rc.solution}</span>
-      </div>
-    ));
   };
 
   const renderLessons = () => {
@@ -897,30 +728,19 @@ export default function Result() {
     if (lessons.length === 0) {
       return <p style={{ color: COLORS.muted }}>لا توجد دروس مقترحة حالياً.</p>;
     }
-    return lessons.map((lesson, idx) => (
-      <div key={idx} style={styles.lessonItem}>
-        • <strong>{lesson.topic}</strong> ({lesson.percentage}%) – {lesson.reason}
+    return lessons.slice(0, 5).map((lesson, idx) => (
+      <div key={idx} style={{ padding: '4px 0', borderBottom: '1px solid ' + COLORS.border }}>
+        <span style={{ fontWeight: 700 }}>{lesson.topic}</span>
+        <span style={{ color: COLORS.muted, fontSize: 13 }}> ({lesson.percentage}%)</span>
         <br />
-        <span style={{ fontSize: 13, color: COLORS.muted }}>💡 {lesson.solution}</span>
+        <span style={{ fontSize: 13, color: COLORS.muted }}>💡 {lesson.solution?.substring(0, 60)}...</span>
       </div>
     ));
   };
 
-  const renderWritingAnswers = () => {
-    if (!analysis.writingAnswers || analysis.writingAnswers.length === 0) {
-      return <p style={{ color: COLORS.muted }}>لا توجد إجابات كتابية في هذا التقييم.</p>;
-    }
-    return analysis.writingAnswers.slice(0, 5).map((wa, idx) => (
-      <div key={idx} style={{ padding: "6px 0", borderBottom: "1px solid " + COLORS.border }}>
-        <div><strong>السؤال:</strong> {wa.question.substring(0, 80)}...</div>
-        <div><span style={{ color: COLORS.error }}>إجابتك: {wa.userAnswer || '(فارغة)'}</span></div>
-        <div><span style={{ color: COLORS.success }}>الإجابة النموذجية: {wa.expectedAnswer}</span></div>
-        <div>{wa.isCorrect ? '✅ صحيحة' : '❌ غير صحيحة'}</div>
-      </div>
-    ));
-  };
-
-  // معالجة حالة التحميل والخطأ
+  // ============================================================
+  // ⏳ معالجة حالة التحميل والخطأ
+  // ============================================================
   if (loading) {
     return (
       <div style={styles.page}>
@@ -966,15 +786,16 @@ export default function Result() {
     );
   }
 
-  // استخراج البيانات
+  // ============================================================
+  // 📊 استخراج البيانات
+  // ============================================================
   const {
     score, totalQuestions, correctAnswers, wrongAnswers,
-    cognitiveProfile, confidenceAnalysis, effortAnalysis,
-    insight, assessmentType,
+    cognitiveProfile, effortAnalysis, insight, isQuick,
   } = analysis;
 
   const avgTimePerQuestion = effortAnalysis?.avgTime || 0;
-  const totalTime = Math.round(avgTimePerQuestion * totalQuestions);
+  const totalTime = Math.round(avgTimePerQuestion * (totalQuestions || 0));
   const minutes = Math.floor(totalTime / 60);
   const seconds = totalTime % 60;
 
@@ -988,7 +809,19 @@ export default function Result() {
     return COLORS.error;
   };
 
-  const scenarioLink = getScenarioLink(score, cognitiveProfile);
+  const getLevelText = (pct) => {
+    if (pct >= 80) return '🏆 متقدم';
+    if (pct >= 65) return '🌟 جيد جداً';
+    if (pct >= 50) return '📈 متوسط';
+    if (pct >= 35) return '📚 مبتدئ';
+    return '🌱 أساسي';
+  };
+
+  const getScenarioLink = () => {
+    if (score >= 75) return '/scenarios/office';
+    if (score >= 50) return '/scenarios/hospital';
+    return '/scenarios/cafe';
+  };
 
   return (
     <>
@@ -997,19 +830,12 @@ export default function Result() {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.5" />
         <style>{`
           @media (max-width: 640px) {
-            .map-grid { grid-template-columns: 1fr !important; }
-            .modal-content { padding: 24px 16px !important; }
-            .modal-title { font-size: 22px !important; }
-            .career-card { padding: 16px !important; }
-            .skill-bar-name { width: 80px !important; font-size: 12px !important; }
-            .career-btn { width: 100% !important; text-align: center !important; }
             .stats-grid { grid-template-columns: 1fr !important; }
             .result-hero { padding: 24px 16px 32px !important; }
-            .topic-name { flex: 0 0 70px !important; font-size: 12px !important; }
-            .course-btn, .scenario-btn { width: 100% !important; text-align: center !important; }
+            .actionable-plan { padding: 18px 16px !important; }
             .button-group { flex-direction: column !important; gap: 8px !important; }
-            .accordion-header { padding: 14px 16px !important; font-size: 14px !important; min-height: 48px !important; }
-            .accordion-body { padding: 0 16px 16px 16px !important; }
+            .course-btn, .scenario-btn { width: 100% !important; text-align: center !important; }
+            .plan-exercises { padding-right: 16px !important; }
           }
         `}</style>
       </Head>
@@ -1018,16 +844,20 @@ export default function Result() {
         <Navbar />
 
         <main style={styles.main}>
-          {/* ===== القسم العلوي (دائماً مفتوح) ===== */}
+          {/* ===== القسم العلوي ===== */}
           <div style={styles.hero} className="result-hero">
-            <span style={styles.heroIcon}>🎯</span>
-            <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>انتهى التقييم</h1>
+            <span style={styles.heroIcon}>{isQuick ? '⚡' : '🎯'}</span>
+            <h1 style={styles.heroTitle}>
+              {isQuick ? 'تقييم سريع - نظرة عامة' : 'تقرير التقييم الشامل'}
+            </h1>
             <p style={styles.heroDesc}>
-              لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.
+              {isQuick
+                ? 'هذا تقييم سريع أعطاك نظرة عامة على مستواك. للتشخيص العميق، جرب التقييم الشامل.'
+                : 'تحليل مفصل لمهاراتك مع خطة عمل مخصصة لتحسين أدائك.'}
             </p>
 
             <div style={styles.scoreContainer}>
-              <div style={{ ...styles.scoreCircle, className: "score-circle" }}>
+              <div style={styles.scoreCircle}>
                 <svg style={styles.scoreCircleSvg} viewBox="0 0 180 180">
                   <circle cx="90" cy="90" r={radius} style={styles.scoreCircleBg} />
                   <circle
@@ -1043,8 +873,9 @@ export default function Result() {
                   />
                 </svg>
                 <div style={styles.scoreText}>
-                  <span style={{ ...styles.scoreNumber, className: "score-number" }}>{Math.round(circleProgress)}%</span>
-                  <span style={styles.scoreLabel}>النتيجة النهائية</span>
+                  <span style={styles.scoreNumber}>{Math.round(circleProgress)}%</span>
+                  <span style={styles.scoreLabel}>النتيجة</span>
+                  <span style={styles.scoreLevel}>{getLevelText(circleProgress)}</span>
                 </div>
               </div>
             </div>
@@ -1067,126 +898,68 @@ export default function Result() {
             </div>
 
             {insight && (
-              <div style={styles.insightBox}>
-                <p style={styles.insightText}>💡 {insight}</p>
+              <div style={{ backgroundColor: COLORS.lightGray, padding: 16, borderRadius: 12, textAlign: 'right' }}>
+                <p style={{ fontSize: 15, color: COLORS.text, margin: 0, lineHeight: 1.8 }}>💡 {insight}</p>
               </div>
             )}
           </div>
 
-          {/* ===== خريطة التعلم التفاعلية ===== */}
-          <div style={styles.mapSection}>
-            <div style={styles.mapTitle}>
-              🗺️ خريطة التعلم التفاعلية
-              <span style={{ fontSize: 14, fontWeight: 400, color: COLORS.muted }}>
-                ({analysis.subSkillAnalysisBrilliant ? Object.keys(analysis.subSkillAnalysisBrilliant).length : 0} مهارة)
-              </span>
-            </div>
-            <p style={styles.mapSubtitle}>المحطات المكتملة ✅، والتي قيد التعلم ⏳، والتي تحتاج مراجعة ❌. اضغط على "تعلم الآن" لبدء رحلة التعلم.</p>
-            {renderInteractiveMap()}
+          {/* ===== 🔥 الخطة العملية ===== */}
+          {renderActionablePlan()}
 
-            {analysis.careerPrediction && analysis.careerPrediction.topPaths && (
-              <div style={{ textAlign: "center", marginTop: 20 }}>
-                <button
-                  style={styles.careerButton}
-                  className="career-btn"
-                  onClick={() => setShowCareerModal(true)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.03)';
-                    e.currentTarget.style.boxShadow = '0 6px 24px rgba(255, 215, 0, 0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 215, 0, 0.3)';
-                  }}
-                >
-                  🧭 اكتشف مستقبلك المهني
-                </button>
-              </div>
-            )}
-          </div>
+          {/* ===== 🧠 البصمة المعرفية ===== */}
+          {renderCognitiveProfile()}
 
-          {/* ===== مودال التنبؤ المهني ===== */}
-          {showCareerModal && renderCareerModal()}
+          {/* ===== 🗺️ خريطة التعلم الجراحية ===== */}
+          {!isQuick && renderSurgicalMap()}
 
-          {/* ===== الأكورديون ===== */}
+          {/* ===== 🚀 التنبؤ المهني ===== */}
+          {!isQuick && renderCareerPrediction()}
+
+          {/* ===== 📊 الأكورديونات المختصرة ===== */}
           <div style={styles.accordionContainer}>
-            {/* البصمة المعرفية */}
-            <AccordionSection id="bassema" title="🧠 البصمة المعرفية" icon="🧠" isOpen={expandedSections.bassema} onToggle={toggleSection}>
-              {cognitiveProfile ? (
-                <>
-                  <p><strong>نمط التعلم:</strong> {cognitiveProfile.learningStyle}</p>
-                  <p>{cognitiveProfile.styleDescription}</p>
-                  <p><strong>مستوى الثقة التقديري:</strong> {cognitiveProfile.confidenceLevel}%</p>
-                </>
-              ) : <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن البصمة المعرفية.</p>}
-            </AccordionSection>
-
-            {/* الثقة مقابل المعرفة */}
-            <AccordionSection id="thiqa" title="📊 الثقة مقابل المعرفة" icon="📊" isOpen={expandedSections.thiqa} onToggle={toggleSection}>
-              {confidenceAnalysis ? (
-                <>
-                  <p><strong>إجابات واثقة وصحيحة:</strong> {confidenceAnalysis.highConfCorrect}%</p>
-                  <p><strong>إجابات واثقة وخاطئة:</strong> {confidenceAnalysis.highConfWrong}%</p>
-                  <p><strong>إجابات غير واثقة وصحيحة:</strong> {confidenceAnalysis.lowConfCorrect}%</p>
-                  <p><strong>إجابات غير واثقة وخاطئة:</strong> {confidenceAnalysis.lowConfWrong}%</p>
-                  <div style={styles.insightBox}><p style={styles.insightText}>💡 {confidenceAnalysis.insight}</p></div>
-                </>
-              ) : <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية عن الثقة.</p>}
-            </AccordionSection>
-
-            {/* الموضوعات */}
-            <AccordionSection id="mawdooAt" title="📚 الموضوعات" icon="📚" isOpen={expandedSections.mawdooAt} onToggle={toggleSection}>
-              {renderTopicBars()}
-            </AccordionSection>
-
-            {/* المراحل الكتابية */}
-            <AccordionSection id="marahil" title="✍️ المراحل الكتابية" icon="✍️" isOpen={expandedSections.marahil} onToggle={toggleSection}>
-              {renderWritingAnswers()}
-            </AccordionSection>
-
-            {/* المسار الأيقوني */}
-            <AccordionSection id="masar" title="🗺️ المسار الأيقوني" icon="🗺️" isOpen={expandedSections.masar} onToggle={toggleSection}>
-              {renderLearningStages()}
-            </AccordionSection>
-
-            {/* المهارات الفرعية (القديم) */}
-            <AccordionSection id="maharat" title="🔧 المهارات الفرعية" icon="🔧" isOpen={expandedSections.maharat} onToggle={toggleSection}>
-              {renderSubSkills()}
-            </AccordionSection>
-
-            {/* تحليل الأخطاء */}
-            <AccordionSection id="akhta" title="❌ تحليل الأخطاء" icon="❌" isOpen={expandedSections.akhta} onToggle={toggleSection}>
+            {/* الأخطاء */}
+            <AccordionSection
+              id="errors"
+              title="❌ تحليل الأخطاء"
+              icon="❌"
+              isOpen={expandedSections.errors}
+              onToggle={toggleSection}
+            >
               {renderErrors()}
             </AccordionSection>
 
             {/* نقاط القوة */}
-            <AccordionSection id="noqat" title="💪 نقاط القوة" icon="💪" isOpen={expandedSections.noqat} onToggle={toggleSection}>
+            <AccordionSection
+              id="strengths"
+              title="💪 نقاط القوة"
+              icon="💪"
+              isOpen={expandedSections.strengths}
+              onToggle={toggleSection}
+            >
               {renderStrengths()}
             </AccordionSection>
 
-            {/* التشخيص العميق */}
-            <AccordionSection id="tashkhis" title="🔬 التشخيص العميق" icon="🔬" isOpen={expandedSections.tashkhis} onToggle={toggleSection}>
-              {renderDiagnostic()}
-            </AccordionSection>
-
-            {/* السبب الجذري */}
-            <AccordionSection id="sabab" title="🕵️ السبب الجذري" icon="🕵️" isOpen={expandedSections.sabab} onToggle={toggleSection}>
-              {renderRootCauses()}
+            {/* مراحل التعلم */}
+            <AccordionSection
+              id="stages"
+              title="🗺️ مراحل التعلم"
+              icon="🗺️"
+              isOpen={expandedSections.stages}
+              onToggle={toggleSection}
+            >
+              {renderLearningStages()}
             </AccordionSection>
 
             {/* الدروس المقترحة */}
-            <AccordionSection id="doroos" title="📖 الدروس المقترحة" icon="📖" isOpen={expandedSections.doroos} onToggle={toggleSection}>
+            <AccordionSection
+              id="lessons"
+              title="📖 الدروس المقترحة"
+              icon="📖"
+              isOpen={expandedSections.lessons}
+              onToggle={toggleSection}
+            >
               {renderLessons()}
-            </AccordionSection>
-
-            {/* تحليل المهارات الفرعية العبقري (جديد) */}
-            <AccordionSection id="brilliantSubSkills" title="🔬 تحليل المهارات الفرعية الفعلي" icon="🔬" isOpen={expandedSections.brilliantSubSkills} onToggle={toggleSection}>
-              {renderBrilliantSubSkills()}
-            </AccordionSection>
-
-            {/* خريطة التعلم الجراحية (جديد) */}
-            <AccordionSection id="surgicalMap" title="🗺️ خريطة التعلم الجراحية" icon="🗺️" isOpen={expandedSections.surgicalMap} onToggle={toggleSection}>
-              {renderSurgicalMap()}
             </AccordionSection>
           </div>
 
@@ -1195,7 +968,7 @@ export default function Result() {
             <Link href="/course" style={styles.courseButton} className="course-btn">
               🚀 ابدأ كورسك المخصص
             </Link>
-            <Link href={scenarioLink} style={styles.scenarioButton} className="scenario-btn">
+            <Link href={getScenarioLink()} style={styles.scenarioButton} className="scenario-btn">
               🎭 جرّب محاكي العميل
             </Link>
           </div>
