@@ -35,12 +35,12 @@ const styles = {
     height: "70px",
     width: "100%",
   },
-  // ✅ الشعار على اليسار
   logoContainer: {
     display: "flex",
     alignItems: "center",
     gap: "8px",
     flexShrink: 0,
+    textDecoration: "none",
   },
   logoText: {
     fontSize: "24px",
@@ -52,7 +52,6 @@ const styles = {
   logoAccent: {
     color: COLORS.teal,
   },
-  // ✅ الروابط في المنتصف (Desktop)
   navLinks: {
     display: "flex",
     alignItems: "center",
@@ -75,7 +74,6 @@ const styles = {
     color: COLORS.teal,
     borderBottom: `3px solid ${COLORS.teal}`,
   },
-  // ✅ أزرار تسجيل الدخول على اليمين
   authButtons: {
     display: "flex",
     alignItems: "center",
@@ -108,7 +106,6 @@ const styles = {
     transition: "all 0.25s ease",
     fontFamily: "inherit",
   },
-  // ✅ الـ Hamburger (للجوال)
   hamburger: {
     display: "none",
     flexDirection: "column",
@@ -125,7 +122,6 @@ const styles = {
     borderRadius: "2px",
     transition: "all 0.3s ease",
   },
-  // ✅ القائمة المنطوية (للجوال)
   mobileMenu: {
     display: "none",
     flexDirection: "column",
@@ -183,15 +179,11 @@ const styles = {
   },
 };
 
-// ============================================================
-// 🏠 مكون الـ Navbar الرئيسي
-// ============================================================
 export default function Navbar() {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // التحقق من حجم الشاشة
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -216,19 +208,16 @@ export default function Navbar() {
     return router.pathname === path || router.pathname.startsWith(path + "/");
   };
 
-  // ✅ عرض الجوال أو الديسكتوب
   if (isMobile) {
     return (
       <nav style={styles.navbar}>
         <div style={styles.navbarInner}>
-          {/* الشعار على اليسار */}
           <Link href="/" style={styles.logoContainer}>
             <span style={styles.logoText}>
               Smart<span style={styles.logoAccent}>Lab</span>
             </span>
           </Link>
 
-          {/* Hamburger Menu */}
           <button onClick={toggleMobileMenu} style={styles.hamburger} aria-label="القائمة">
             <span style={styles.hamburgerLine} />
             <span style={styles.hamburgerLine} />
@@ -236,7 +225,6 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* القائمة المنطوية */}
         <div style={{ ...styles.mobileMenu, ...(isMobileMenuOpen ? styles.mobileMenuOpen : {}) }}>
           {navItems.map((item) => (
             <Link
@@ -264,18 +252,15 @@ export default function Navbar() {
     );
   }
 
-  // ✅ عرض الديسكتوب
   return (
     <nav style={styles.navbar}>
       <div style={styles.navbarInner}>
-        {/* الشعار على اليسار */}
         <Link href="/" style={styles.logoContainer}>
           <span style={styles.logoText}>
             Smart<span style={styles.logoAccent}>Lab</span>
           </span>
         </Link>
 
-        {/* الروابط في المنتصف */}
         <ul style={styles.navLinks}>
           {navItems.map((item) => (
             <li key={item.href}>
@@ -302,7 +287,6 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* أزرار تسجيل الدخول على اليمين */}
         <div style={styles.authButtons}>
           <Link
             href="/auth/login"
