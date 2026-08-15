@@ -135,6 +135,7 @@ const styles = {
     textDecoration: "none",
     display: "inline-block",
     transition: "background-color 0.25s ease, transform 0.25s ease",
+    minHeight: 56,
   },
   lessonsContainer: {
     display: "flex",
@@ -152,6 +153,14 @@ const styles = {
   lessonCardCompleted: {
     borderColor: COLORS.success,
     backgroundColor: "#F0FAF5",
+  },
+  lessonCardHigh: {
+    borderColor: COLORS.error,
+    backgroundColor: "#FFEBEE",
+  },
+  lessonCardMedium: {
+    borderColor: COLORS.warning,
+    backgroundColor: "#FFF8E1",
   },
   lessonHeader: {
     display: "flex",
@@ -302,18 +311,24 @@ function generateYouTubeSearchQuery(topic, reason) {
     'Switching': 'شرح Switching بالعربي',
     'Network Basics': 'أساسيات الشبكات بالعربي',
     'Network Devices': 'أجهزة الشبكات بالعربي',
+    'بنية عنوان IPv4': 'شرح بنية عنوان IPv4 بالعربي',
+    'تحويل الأنظمة': 'شرح تحويل الأنظمة ثنائي عشري بالعربي',
+    'تصنيفات العناوين': 'شرح تصنيفات IPv4 بالعربي',
+    'العناوين العامة والخاصة': 'شرح العناوين العامة والخاصة IPv4',
+    'حسابات Subnetting': 'شرح حسابات Subnetting بالعربي',
+    'VLSM': 'شرح VLSM بالعربي',
   };
 
   let searchTerm = topic;
   for (const [key, value] of Object.entries(keywords)) {
-    if (topic.toLowerCase().includes(key.toLowerCase())) {
+    if (topic.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(topic.toLowerCase())) {
       searchTerm = value;
       break;
     }
   }
 
-  if (reason && reason.includes('صعوبة في')) {
-    searchTerm += ' ' + reason.replace('صعوبة في', 'شرح');
+  if (reason && reason.includes('ضعف')) {
+    searchTerm += ' ' + reason.replace('ضعف في', 'شرح');
   }
 
   return searchTerm;
@@ -338,21 +353,52 @@ export default function Course() {
       const latest = savedResults[savedResults.length - 1];
       setScore(latest.score || 0);
 
+      // محاولة قراءة التحليل العميق
       const storedAnalysis = JSON.parse(localStorage.getItem('latestAnalysis') || 'null');
 
       let lessonData = [];
-      if (storedAnalysis && storedAnalysis.recommendedLessons && storedAnalysis.recommendedLessons.length > 0) {
-        lessonData = storedAnalysis.recommendedLessons.map((lesson, index) => ({
+
+      // استخدام التحليل العميق إذا كان موجوداً
+      if (storedAnalysis && storedAnalysis.subSkillDeepAnalysis) {
+        const deepAnalysis = storedAnalysis.subSkillDeepAnalysis;
+        const weakSkills = Object.entries(deepAnalysis)
+          .filter(([_, data]) => data.percentage < 70)
+          .sort((a, b) => a[1].percentage - b[1].percentage);
+
+        lessonData = weakSkills.map(([id, data], index) => ({
           id: index,
-          topic: lesson.topic,
-          percentage: lesson.percentage || 0,
-          reason: lesson.reason || 'يحتاج مراجعة',
-          solution: lesson.solution || 'راجع الأساسيات وطبق تمارين',
-          searchQuery: generateYouTubeSearchQuery(lesson.topic, lesson.reason),
-          exercises: Math.max(3, Math.round((100 - (lesson.percentage || 50)) / 10)),
+          topic: data.name,
+          percentage: data.percentage,
+          reason: data.rootCause || 'يحتاج مراجعة',
+          solution: data.solution || 'راجع الأساسيات وقم بحل تمارين',
+          searchQuery: data.youtubeSearch || generateYouTubeSearchQuery(data.name, data.rootCause),
+          exercises: Math.max(3, Math.round((100 - data.percentage) / 10)),
           completed: false,
+          priority: data.percentage < 40 ? 'عالية' : data.percentage < 70 ? 'متوسطة' : 'منخفضة',
+          errors: data.errors || [],
+          errorCount: data.errorCount || 0,
         }));
-      } else {
+
+        // إذا لم تكن هناك مهارات ضعيفة، استخدم الدروس المقترحة العادية
+        if (lessonData.length === 0 && storedAnalysis.recommendedLessons) {
+          lessonData = storedAnalysis.recommendedLessons.map((lesson, index) => ({
+            id: index,
+            topic: lesson.topic,
+            percentage: lesson.percentage || 0,
+            reason: lesson.reason || 'يحتاج مراجعة',
+            solution: lesson.solution || 'راجع الأساسيات وقم بحل تمارين',
+            searchQuery: generateYouTubeSearchQuery(lesson.topic, lesson.reason),
+            exercises: Math.max(3, Math.round((100 - (lesson.percentage || 50)) / 10)),
+            completed: false,
+            priority: (lesson.percentage || 50) < 40 ? 'عالية' : 'متوسطة',
+            errors: [],
+            errorCount: 0,
+          }));
+        }
+      }
+
+      // إذا لم تكن هناك بيانات كافية، استخدم الوضع الاحتياطي
+      if (lessonData.length === 0) {
         const weakTopics = [
           { topic: 'Subnetting', reason: 'صعوبة في حسابات الشبكات الفرعية' },
           { topic: 'IPv4', reason: 'صعوبة في فهم بنية العناوين' },
@@ -370,9 +416,13 @@ export default function Course() {
           searchQuery: generateYouTubeSearchQuery(item.topic, item.reason),
           exercises: Math.max(3, 5 - index),
           completed: false,
+          priority: index === 0 ? 'عالية' : 'متوسطة',
+          errors: [],
+          errorCount: 0,
         }));
       }
 
+      // قراءة الدروس المكتملة
       const savedCompleted = JSON.parse(localStorage.getItem('courseCompletedLessons') || '[]');
       lessonData = lessonData.map(lesson => ({
         ...lesson,
@@ -407,6 +457,24 @@ export default function Course() {
   const completedCount = lessons.filter(l => l.completed).length;
   const totalCount = lessons.length;
   const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  // ترتيب الدروس حسب الأولوية
+  const sortedLessons = [...lessons].sort((a, b) => {
+    const priorityOrder = { 'عالية': 0, 'متوسطة': 1, 'منخفضة': 2 };
+    return (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1);
+  });
+
+  const getPriorityStyle = (priority) => {
+    if (priority === 'عالية') return styles.lessonCardHigh;
+    if (priority === 'متوسطة') return styles.lessonCardMedium;
+    return {};
+  };
+
+  const getPriorityLabel = (priority) => {
+    if (priority === 'عالية') return { label: '🔴 أولوية عالية', color: COLORS.error };
+    if (priority === 'متوسطة') return { label: '🟡 أولوية متوسطة', color: COLORS.warning };
+    return { label: '🟢 أولوية منخفضة', color: COLORS.success };
+  };
 
   if (loading) {
     return (
@@ -504,99 +572,124 @@ export default function Course() {
               </div>
 
               <div style={styles.lessonsContainer}>
-                {lessons.map((lesson) => (
-                  <div
-                    key={lesson.id}
-                    style={{
-                      ...styles.lessonCard,
-                      ...(lesson.completed ? styles.lessonCardCompleted : {}),
-                    }}
-                    className="lesson-card"
-                  >
-                    <div style={styles.lessonHeader} className="lesson-header">
-                      <div>
-                        <h3 style={styles.lessonTitle} className="lesson-title">
-                          {lesson.completed && '✅ '}
-                          {lesson.topic}
-                        </h3>
-                        <div style={styles.lessonMeta} className="lesson-meta">
-                          <span style={styles.lessonMetaItem}>
-                            📊 المستوى: {lesson.percentage}%
+                {sortedLessons.map((lesson) => {
+                  const priorityInfo = getPriorityLabel(lesson.priority);
+                  const priorityStyle = getPriorityStyle(lesson.priority);
+
+                  return (
+                    <div
+                      key={lesson.id}
+                      style={{
+                        ...styles.lessonCard,
+                        ...(lesson.completed ? styles.lessonCardCompleted : {}),
+                        ...(priorityStyle && !lesson.completed ? priorityStyle : {}),
+                      }}
+                      className="lesson-card"
+                    >
+                      <div style={styles.lessonHeader} className="lesson-header">
+                        <div>
+                          <h3 style={styles.lessonTitle} className="lesson-title">
+                            {lesson.completed && '✅ '}
+                            {lesson.topic}
+                          </h3>
+                          <div style={styles.lessonMeta} className="lesson-meta">
+                            <span style={styles.lessonMetaItem}>
+                              📊 المستوى: {lesson.percentage}%
+                            </span>
+                            <span style={styles.lessonMetaItem}>
+                              📝 {lesson.exercises} تمرين
+                            </span>
+                            {lesson.errorCount > 0 && (
+                              <span style={styles.lessonMetaItem}>
+                                ❌ {lesson.errorCount} خطأ
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div style={styles.lessonStatus}>
+                          <span
+                            style={{
+                              ...styles.lessonBadge,
+                              backgroundColor: lesson.percentage < 50 ? '#FEE2E2' : '#FEF3C7',
+                              color: lesson.percentage < 50 ? '#991B1B' : '#92400E',
+                            }}
+                          >
+                            {lesson.percentage < 50 ? 'يحتاج تركيز عالٍ' : 'يحتاج تحسين'}
                           </span>
-                          <span style={styles.lessonMetaItem}>
-                            📝 {lesson.exercises} تمرين
+                          <span style={{ color: priorityInfo.color, fontWeight: 700 }}>
+                            {priorityInfo.label}
                           </span>
+                          {lesson.completed && (
+                            <span style={{ color: COLORS.success, fontWeight: 700 }}>
+                              ✅ مكتمل
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <div style={styles.lessonStatus}>
-                        <span
-                          style={{
-                            ...styles.lessonBadge,
-                            backgroundColor: lesson.percentage < 50 ? '#FEE2E2' : '#FEF3C7',
-                            color: lesson.percentage < 50 ? '#991B1B' : '#92400E',
-                          }}
-                        >
-                          {lesson.percentage < 50 ? 'يحتاج تركيز عالٍ' : 'يحتاج تحسين'}
-                        </span>
-                        {lesson.completed && (
-                          <span style={{ color: COLORS.success, fontWeight: 700 }}>
-                            ✅ مكتمل
-                          </span>
-                        )}
+
+                      <div style={styles.lessonBody}>
+                        <p style={styles.lessonDescription} className="lesson-description">
+                          <strong>السبب:</strong> {lesson.reason}
+                          <br />
+                          <strong>الحل:</strong> {lesson.solution}
+                          {lesson.errors && lesson.errors.length > 0 && (
+                            <>
+                              <br />
+                              <strong>الأخطاء الشائعة:</strong>
+                              <ul style={{ marginTop: 4, paddingRight: 20 }}>
+                                {lesson.errors.slice(0, 3).map((err, idx) => (
+                                  <li key={idx} style={{ fontSize: 13 }}>{err.question?.substring(0, 50)}...</li>
+                                ))}
+                              </ul>
+                            </>
+                          )}
+                        </p>
+
+                        <div style={styles.lessonActions} className="lesson-actions">
+                          <a
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(lesson.searchQuery)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={styles.youtubeButton}
+                            className="youtube-btn"
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = '#CC0000';
+                              e.currentTarget.style.transform = 'scale(1.02)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = '#FF0000';
+                              e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                          >
+                            ▶ شاهد على يوتيوب
+                          </a>
+                          <button
+                            onClick={() => toggleComplete(lesson.id)}
+                            style={{
+                              ...styles.completeButton,
+                              ...(lesson.completed ? styles.completeButtonDone : {}),
+                            }}
+                            className="complete-btn"
+                            onMouseEnter={(e) => {
+                              if (!lesson.completed) {
+                                e.currentTarget.style.backgroundColor = COLORS.teal;
+                                e.currentTarget.style.color = COLORS.white;
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!lesson.completed) {
+                                e.currentTarget.style.backgroundColor = COLORS.border;
+                                e.currentTarget.style.color = COLORS.text;
+                              }
+                            }}
+                          >
+                            {lesson.completed ? '✅ تم الإكمال' : '☑️ وضع علامة كمكتمل'}
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <div style={styles.lessonBody}>
-                      <p style={styles.lessonDescription} className="lesson-description">
-                        <strong>السبب:</strong> {lesson.reason}
-                        <br />
-                        <strong>الحل:</strong> {lesson.solution}
-                      </p>
-
-                      <div style={styles.lessonActions} className="lesson-actions">
-                        <a
-                          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(lesson.searchQuery)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={styles.youtubeButton}
-                          className="youtube-btn"
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#CC0000';
-                            e.currentTarget.style.transform = 'scale(1.02)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#FF0000';
-                            e.currentTarget.style.transform = 'scale(1)';
-                          }}
-                        >
-                          ▶ شاهد على يوتيوب
-                        </a>
-                        <button
-                          onClick={() => toggleComplete(lesson.id)}
-                          style={{
-                            ...styles.completeButton,
-                            ...(lesson.completed ? styles.completeButtonDone : {}),
-                          }}
-                          className="complete-btn"
-                          onMouseEnter={(e) => {
-                            if (!lesson.completed) {
-                              e.currentTarget.style.backgroundColor = COLORS.teal;
-                              e.currentTarget.style.color = COLORS.white;
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!lesson.completed) {
-                              e.currentTarget.style.backgroundColor = COLORS.border;
-                              e.currentTarget.style.color = COLORS.text;
-                            }
-                          }}
-                        >
-                          {lesson.completed ? '✅ تم الإكمال' : '☑️ وضع علامة كمكتمل'}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div style={styles.actionsContainer} className="actions-container">
