@@ -1,11 +1,21 @@
 // pages/assessment/[id].js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
 import Navbar from "../../components/Navbar";
 import { getAssessmentQuestions, getAssessmentName } from '../../data/questions/basics';
+import { 
+  initializeTheta, 
+  getNextQuestion, 
+  updateThetaAfterAnswer,
+  estimateTheta,
+  getStudentLevel
+} from '../../lib/adaptiveEngine';
 
+// ============================================================
+// 🎨 الألوان والأنماط (نفسها)
+// ============================================================
 const COLORS = {
   teal: "#17919e",
   tealDark: "#127a86",
@@ -122,29 +132,18 @@ const styles = {
   loadingContainer: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, backgroundColor: COLORS.bg },
   spinner: { width: 48, height: 48, border: "4px solid #e6ecf1", borderTop: "4px solid " + COLORS.teal, borderRadius: "50%", animation: "spin 1s linear infinite" },
   errorBox: { backgroundColor: "#FFEBEE", padding: "2rem", borderRadius: 16, textAlign: "center", border: "1px solid #FFCDD2", maxWidth: 500, margin: "auto" },
-  remainingQuestions: {
-    fontSize: "14px",
-    fontWeight: 600,
-    color: COLORS.muted,
-    marginRight: "12px",
-  },
-  quickBadge: {
-    backgroundColor: "#FFF8E1",
-    color: "#E65100",
-    padding: "4px 14px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 700,
-    display: "inline-block",
-    marginRight: 8,
-  },
+  remainingQuestions: { fontSize: "14px", fontWeight: 600, color: COLORS.muted, marginRight: "12px" },
+  quickBadge: { backgroundColor: "#FFF8E1", color: "#E65100", padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700, display: "inline-block", marginRight: 8 },
 };
 
+// ============================================================
+// 🧠 مكون التقييم الرئيسي
+// ============================================================
 export default function Assessment() {
   const router = useRouter();
-  const [questions, setQuestions] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState([]);
+  const [questions, setQuestions] = useState([]);       // جميع الأسئلة المتاحة
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [answers, setAnswers] = useState([]);           // الإجابات (boolean)
   const [answerDetails, setAnswerDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -160,172 +159,129 @@ export default function Assessment() {
   const [lastErrorType, setLastErrorType] = useState(null);
   const [lastExplanation, setLastExplanation] = useState("");
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // === 🔥 الحالات الجديدة للتكيف الذكي ===
+  const [theta, setTheta] = useState(0);
+  const [answeredIds, setAnsweredIds] = useState([]);
+  const [eventsLog, setEventsLog] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
+  const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
 
+  // ============================================================
+  // 🔷 دوال مساعدة
+  // ============================================================
   const correctCount = answers.filter(a => a === true || a === 1).length;
   const wrongCount = answers.filter(a => a === false || a === 0).length;
   const answeredCount = answers.length;
-  const totalQuestions = questions.length;
   const score = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
 
-  useEffect(() => {
-    if (router.isReady) {
-      setIsReady(true);
-    }
-  }, [router.isReady]);
+  // تسجيل الأحداث
+  const logEvent = (type, payload = {}) => {
+    setEventsLog(prev => [...prev, { type, timestamp: Date.now(), ...payload }]);
+  };
 
-  useEffect(() => {
-    if (!isReady) return;
-
-    const { id, mode } = router.query;
-    if (!id) {
-      setError("معرف التقييم غير موجود");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const assessmentQuestions = getAssessmentQuestions(id);
-      if (!assessmentQuestions || assessmentQuestions.length === 0) {
-        setError("لا توجد أسئلة لهذا التقييم");
-        setLoading(false);
-        return;
-      }
-      const shuffled = [...assessmentQuestions].sort(() => Math.random() - 0.5);
-      const limit = mode === "quick" ? 15 : 0;
-      const limitedQuestions = limit > 0 ? shuffled.slice(0, limit) : shuffled;
-      setQuestions(limitedQuestions);
-      setQuestionStartTime(Date.now());
-      setLoading(false);
-    } catch (err) {
-      console.error("Error loading assessment:", err);
-      setError("حدث خطأ في تحميل التقييم: " + (err.message || ""));
-      setLoading(false);
-    }
-  }, [isReady, router.query]);
-
-  // ============================================================
-  // 🔥 دالة الحصول على رسالة خطأ مخصصة حسب نوع الخطأ
-  // ============================================================
+  // الحصول على رسالة خطأ مخصصة (نفسها)
   const getErrorFeedbackMessage = (errorType, question) => {
     const messages = {
-      conceptual: {
-        text: '🔍 هذا الخطأ يشير إلى عدم فهم المفهوم الأساسي. راجع التعريفات جيداً.',
-        explanation: 'المفاهيم النظرية تحتاج إلى فهم عميق، حاول إعادة قراءة الشرح من مصدر موثوق.'
-      },
-      calculation: {
-        text: '🧮 يبدو أن هناك خطأ في الحساب. تأكد من تنفيذ العمليات خطوة بخطوة.',
-        explanation: 'استخدم ورقة وقلم لحل المسائل، وتأكد من كل خطوة قبل الانتقال للخطوة التالية.'
-      },
-      application: {
-        text: '⚙️ تحتاج إلى تطبيق المعلومة على سياق جديد. حاول حل تمارين مشابهة.',
-        explanation: 'التطبيق العملي يختلف عن الحفظ النظري، جرب حل مسائل من مصادر مختلفة.'
-      },
-      memorization: {
-        text: '📚 قد يكون الاعتماد على الحفظ دون فهم. حاول إعادة صياغة المعلومة بكلماتك.',
-        explanation: 'حاول فهم العلاقات بين المفاهيم بدلاً من حفظها بشكل منفصل.'
-      }
+      conceptual: { text: '🔍 هذا الخطأ يشير إلى عدم فهم المفهوم الأساسي. راجع التعريفات جيداً.', explanation: 'المفاهيم النظرية تحتاج إلى فهم عميق، حاول إعادة قراءة الشرح من مصدر موثوق.' },
+      calculation: { text: '🧮 يبدو أن هناك خطأ في الحساب. تأكد من تنفيذ العمليات خطوة بخطوة.', explanation: 'استخدم ورقة وقلم لحل المسائل، وتأكد من كل خطوة قبل الانتقال للخطوة التالية.' },
+      application: { text: '⚙️ تحتاج إلى تطبيق المعلومة على سياق جديد. حاول حل تمارين مشابهة.', explanation: 'التطبيق العملي يختلف عن الحفظ النظري، جرب حل مسائل من مصادر مختلفة.' },
+      memorization: { text: '📚 قد يكون الاعتماد على الحفظ دون فهم. حاول إعادة صياغة المعلومة بكلماتك.', explanation: 'حاول فهم العلاقات بين المفاهيم بدلاً من حفظها بشكل منفصل.' }
     };
     return messages[errorType] || messages.conceptual;
   };
 
-  // ============================================================
-  // 🔥 دالة تحديد نوع الخطأ من السؤال
-  // ============================================================
   const getErrorTypeFromQuestion = (question) => {
     if (question.errorPattern) return question.errorPattern;
     const cognitive = question.cognitiveLevel || 'remembering';
     const subSkill = question.subSkill || '';
-    
     if (cognitive === 'remembering') return 'memorization';
     if (cognitive === 'applying' || cognitive === 'analyzing') return 'application';
-    if (subSkill.includes('calc') || subSkill.includes('subnet') || subSkill.includes('host')) {
-      return 'calculation';
-    }
+    if (subSkill.includes('calc') || subSkill.includes('subnet') || subSkill.includes('host')) return 'calculation';
     return 'conceptual';
   };
 
   // ============================================================
-  // 🔥 معالج اختيار الإجابة (بدون ثقة)
+  // 🔷 معالجة الإجابات
   // ============================================================
   const handleOptionSelect = (optionIndex) => {
-    if (showFeedback || loading) return;
+    if (showFeedback || loading || !currentQuestion) return;
     setSelectedOption(optionIndex);
     const timeTaken = (Date.now() - questionStartTime) / 1000;
-    setTimePerQuestion((prev) => [...prev, timeTaken]);
-    const currentQuestion = questions[currentIndex];
+    setTimePerQuestion(prev => [...prev, timeTaken]);
     const isCorrect = optionIndex === currentQuestion.correct;
     setLastAnswerCorrect(isCorrect);
-    setAnswers((prev) => [...prev, isCorrect]);
+    setAnswers(prev => [...prev, isCorrect]);
 
-    // تحديد نوع الخطأ
+    // تسجيل الحدث
+    logEvent('select_option', { optionIndex, isCorrect, timeTaken });
+
+    // تحديث القدرة (Theta)
+    const newTheta = updateThetaAfterAnswer(theta, currentQuestion, isCorrect);
+    setTheta(newTheta);
+    setAnsweredIds(prev => [...prev, currentQuestion.id]);
+
+    // تحديد نوع الخطأ للتغذية الراجعة
     const errorType = getErrorTypeFromQuestion(currentQuestion);
     setLastErrorType(errorType);
     const feedback = getErrorFeedbackMessage(errorType, currentQuestion);
     setLastExplanation(feedback.explanation);
 
-    setAnswerDetails((prev) => [...prev, {
-      questionId: currentQuestion.id || currentIndex,
+    setAnswerDetails(prev => [...prev, {
+      questionId: currentQuestion.id,
       selectedOption: optionIndex,
-      isCorrect: isCorrect,
-      timeTaken: timeTaken,
+      isCorrect,
+      timeTaken,
       topic: currentQuestion.topic || 'عام',
       subSkill: currentQuestion.subSkill || 'عام',
       cognitiveLevel: currentQuestion.cognitiveLevel || 'remembering',
       difficulty: currentQuestion.difficulty || 1,
       isWriting: false,
-      errorType: errorType,
+      errorType,
     }]);
 
-    // ✅ عرض التغذية الراجعة مباشرة (بدون ثقة)
     setShowFeedback(true);
   };
 
-  // ============================================================
-  // 🔥 معالج الإجابة الكتابية (بدون ثقة)
-  // ============================================================
   const handleWritingSubmit = () => {
-    if (!writtenAnswer.trim() || showFeedback || loading) return;
+    if (!writtenAnswer.trim() || showFeedback || loading || !currentQuestion) return;
     const timeTaken = (Date.now() - questionStartTime) / 1000;
-    setTimePerQuestion((prev) => [...prev, timeTaken]);
-    const currentQuestion = questions[currentIndex];
+    setTimePerQuestion(prev => [...prev, timeTaken]);
     const userAnswer = writtenAnswer.trim().toLowerCase();
     const expected = currentQuestion.expectedAnswer?.toLowerCase() || "";
     const isCorrect = userAnswer === expected;
     setLastAnswerCorrect(isCorrect);
-    setAnswers((prev) => [...prev, isCorrect]);
+    setAnswers(prev => [...prev, isCorrect]);
 
-    // تحديد نوع الخطأ
+    logEvent('submit_writing', { answer: userAnswer, isCorrect, timeTaken });
+
+    const newTheta = updateThetaAfterAnswer(theta, currentQuestion, isCorrect);
+    setTheta(newTheta);
+    setAnsweredIds(prev => [...prev, currentQuestion.id]);
+
     const errorType = getErrorTypeFromQuestion(currentQuestion);
     setLastErrorType(errorType);
     const feedback = getErrorFeedbackMessage(errorType, currentQuestion);
     setLastExplanation(feedback.explanation);
 
-    setAnswerDetails((prev) => [...prev, {
-      questionId: currentQuestion.id || currentIndex,
+    setAnswerDetails(prev => [...prev, {
+      questionId: currentQuestion.id,
       selectedOption: userAnswer,
-      isCorrect: isCorrect,
-      timeTaken: timeTaken,
+      isCorrect,
+      timeTaken,
       topic: currentQuestion.topic || 'عام',
       subSkill: currentQuestion.subSkill || 'عام',
       cognitiveLevel: currentQuestion.cognitiveLevel || 'remembering',
       difficulty: currentQuestion.difficulty || 1,
       isWriting: true,
       writtenAnswer: userAnswer,
-      errorType: errorType,
+      errorType,
     }]);
 
-    // ✅ عرض التغذية الراجعة مباشرة (بدون ثقة)
     setShowFeedback(true);
   };
 
   // ============================================================
-  // 🔥 الانتقال للسؤال التالي أو النتيجة
+  // 🔷 الانتقال للسؤال التالي أو إنهاء التقييم
   // ============================================================
   const goToNextOrFinish = () => {
     setShowFeedback(false);
@@ -336,25 +292,31 @@ export default function Assessment() {
     setLastErrorType(null);
     setLastExplanation("");
 
-    if (currentIndex + 1 >= questions.length) {
+    // اختيار السؤال التالي باستخدام المحرك الذكي
+    const next = getNextQuestion(theta, answeredIds, allQuestions);
+    if (next) {
+      setCurrentQuestion(next);
+    } else {
+      // انتهى التقييم
       const queryParams = {
         answers: JSON.stringify(answers),
-        questions: JSON.stringify(questions),
+        questions: JSON.stringify(allQuestions),
         answerDetails: JSON.stringify(answerDetails),
         assessmentId: router.query.id,
-        total: questions.length,
+        total: allQuestions.length,
         mode: router.query.mode || "full",
         timePerQuestion: JSON.stringify(timePerQuestion),
-        confidenceLevels: JSON.stringify([]), // مصفوفة فارغة (بدون ثقة)
+        eventsLog: JSON.stringify(eventsLog),
+        theta: JSON.stringify(theta),
+        answeredIds: JSON.stringify(answeredIds),
       };
 
-      // ✅ إذا كان التقييم سريعاً، أضف quickResult
       if (router.query.mode === 'quick') {
         const quickResult = {
-          score: Math.round((correctCount / totalQuestions) * 100),
-          total: totalQuestions,
+          score: Math.round((correctCount / totalQuestionsCount) * 100),
+          total: totalQuestionsCount,
           correct: correctCount,
-          wrong: totalQuestions - correctCount,
+          wrong: totalQuestionsCount - correctCount,
         };
         queryParams.quickResult = JSON.stringify(quickResult);
       }
@@ -363,10 +325,78 @@ export default function Assessment() {
         pathname: "/result",
         query: queryParams,
       });
+    }
+  };
+
+  // ============================================================
+  // 🔷 تحميل الأسئلة وتهيئة التقييم
+  // ============================================================
+  useEffect(() => {
+    if (router.isReady) {
+      setIsReady(true);
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
+    if (!isReady) return;
+    const { id, mode } = router.query;
+    if (!id) {
+      setError("معرف التقييم غير موجود");
+      setLoading(false);
       return;
     }
-    setCurrentIndex((prev) => prev + 1);
-  };
+
+    try {
+      let assessmentQuestions = getAssessmentQuestions(id);
+      if (!assessmentQuestions || assessmentQuestions.length === 0) {
+        setError("لا توجد أسئلة لهذا التقييم");
+        setLoading(false);
+        return;
+      }
+
+      // خلط الأسئلة
+      const shuffled = [...assessmentQuestions].sort(() => Math.random() - 0.5);
+      const limit = mode === "quick" ? 12 : 0;  // السريع 12 سؤالاً
+      const limited = limit > 0 ? shuffled.slice(0, limit) : shuffled;
+
+      setAllQuestions(limited);
+      setTotalQuestionsCount(limited.length);
+
+      // تهيئة القدرة
+      const initialTheta = initializeTheta();
+      setTheta(initialTheta);
+
+      // اختيار أول سؤال باستخدام CAT
+      const first = getNextQuestion(initialTheta, [], limited);
+      setCurrentQuestion(first);
+      setQuestionStartTime(Date.now());
+      setLoading(false);
+    } catch (err) {
+      console.error("Error loading assessment:", err);
+      setError("حدث خطأ في تحميل التقييم: " + (err.message || ""));
+      setLoading(false);
+    }
+  }, [isReady, router.query]);
+
+  // ============================================================
+  // 🔷 التحقق من انتهاء التقييم (إذا لم يعد هناك أسئلة)
+  // ============================================================
+  useEffect(() => {
+    if (!loading && allQuestions.length > 0 && answeredIds.length === allQuestions.length) {
+      // تم الإجابة على جميع الأسئلة، ننتقل للنتيجة تلقائياً
+      goToNextOrFinish();
+    }
+  }, [answeredIds, allQuestions, loading]);
+
+  // ============================================================
+  // 🔷 واجهة المستخدم (UI)
+  // ============================================================
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   if (!isReady || loading) {
     return (
@@ -383,7 +413,7 @@ export default function Assessment() {
     );
   }
 
-  if (error || !questions.length) {
+  if (error || !allQuestions.length) {
     return (
       <div style={styles.container}>
         <Navbar />
@@ -400,29 +430,24 @@ export default function Assessment() {
     );
   }
 
-  if (currentIndex >= questions.length) {
+  if (!currentQuestion) {
     return (
       <div style={styles.container}>
         <Navbar />
         <div style={{ ...styles.main, display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
           <div style={styles.errorBox}>
             <h3 style={{ color: COLORS.success, marginBottom: 8 }}>🎉 انتهى التقييم!</h3>
-            <p style={{ color: COLORS.muted, marginBottom: 16 }}>لقد أتممت جميع الأسئلة. جارٍ التوجيه إلى صفحة النتيجة...</p>
-            <Link href="/result" style={{ ...styles.nextButton, display: "inline-block", textDecoration: "none" }}>
-              📊 عرض النتيجة
-            </Link>
+            <p style={{ color: COLORS.muted, marginBottom: 16 }}>جارٍ التوجيه إلى صفحة النتيجة...</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const currentQuestion = questions[currentIndex];
   const assessmentName = getAssessmentName ? getAssessmentName(router.query.id) : router.query.id;
   const isQuick = router.query.mode === "quick";
-  const progress = totalQuestions > 0 ? ((currentIndex) / totalQuestions) * 100 : 0;
+  const progress = totalQuestionsCount > 0 ? ((answeredIds.length) / totalQuestionsCount) * 100 : 0;
 
-  // لون شريط التقدم حسب الأداء
   const getProgressColor = () => {
     if (score >= 70) return COLORS.success;
     if (score >= 40) return COLORS.warning;
@@ -480,6 +505,7 @@ export default function Assessment() {
       <div style={styles.container} dir="rtl">
         <Navbar />
 
+        {/* شريط الإحصائيات */}
         <div style={styles.statsBar} className="stats-bar">
           <div style={styles.statCard}>
             <span style={styles.statIcon}>📊</span>
@@ -513,13 +539,14 @@ export default function Assessment() {
           )}
         </div>
 
+        {/* شريط التقدم */}
         <div style={styles.progressContainer}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <span style={{ fontSize: 13, color: COLORS.muted }}>
-              {currentIndex + 1} / {totalQuestions}
+              {answeredIds.length + 1} / {totalQuestionsCount}
             </span>
             <span style={styles.remainingQuestions}>
-              {totalQuestions - (currentIndex + 1)} أسئلة متبقية
+              {totalQuestionsCount - (answeredIds.length + 1)} أسئلة متبقية
             </span>
           </div>
           <div style={styles.progressBar}>
@@ -527,6 +554,7 @@ export default function Assessment() {
           </div>
         </div>
 
+        {/* السؤال الحالي */}
         <main style={styles.main}>
           <div style={styles.questionCard} className="question-card">
             <div style={styles.questionMeta} className="question-meta">
@@ -550,7 +578,12 @@ export default function Assessment() {
                       style={styles.writingInput}
                       className="writing-input"
                       value={writtenAnswer}
-                      onChange={(e) => setWrittenAnswer(e.target.value)}
+                      onChange={(e) => {
+                        setWrittenAnswer(e.target.value);
+                        logEvent('change_writing', { length: e.target.value.length });
+                      }}
+                      onFocus={() => logEvent('focus_writing')}
+                      onBlur={() => logEvent('blur_writing')}
                       placeholder="اكتب إجابتك هنا..."
                       rows={4}
                     />
@@ -578,8 +611,14 @@ export default function Assessment() {
                         <button
                           key={idx}
                           onClick={() => handleOptionSelect(optionIndex)}
-                          onMouseEnter={() => setHoveredOption(optionIndex)}
-                          onMouseLeave={() => setHoveredOption(null)}
+                          onMouseEnter={() => {
+                            setHoveredOption(optionIndex);
+                            logEvent('hover_option', { optionIndex });
+                          }}
+                          onMouseLeave={() => {
+                            setHoveredOption(null);
+                            logEvent('unhover_option', { optionIndex });
+                          }}
                           style={optionStyle}
                           className="option-button"
                           disabled={showFeedback}
@@ -616,7 +655,7 @@ export default function Assessment() {
                           الإجابة الصحيحة: <strong>{currentQuestion.options[currentQuestion.correct - 1]}</strong>
                         </p>
                       )}
-                      {/* 🔥 رسالة الخطأ المخصصة */}
+                      {/* رسالة الخطأ المخصصة */}
                       <div style={{ marginTop: 4 }}>
                         <p style={styles.feedbackExplanation}>
                           <span style={{ fontWeight: 700 }}>💡 سبب الخطأ:</span> {getErrorFeedbackMessage(lastErrorType || 'conceptual', currentQuestion).text}
@@ -637,7 +676,7 @@ export default function Assessment() {
                   )}
                 </div>
                 <button onClick={goToNextOrFinish} style={{ ...styles.nextButton, className: "next-button" }}>
-                  {currentIndex + 1 >= totalQuestions ? "📊 عرض النتيجة" : "السؤال التالي ←"}
+                  {answeredIds.length >= totalQuestionsCount - 1 ? "📊 عرض النتيجة" : "السؤال التالي ←"}
                 </button>
               </div>
             )}
@@ -645,7 +684,7 @@ export default function Assessment() {
 
           {isQuick && (
             <div style={{ backgroundColor: "#FFF8E1", padding: "12px 18px", borderRadius: 12, textAlign: "center", border: "1px solid #FFE082", fontSize: 14, color: "#E65100" }}>
-              ⚡ تقييم سريع: {totalQuestions} سؤال فقط. ركز على الإجابات الصحيحة!
+              ⚡ تقييم سريع: {totalQuestionsCount} سؤال فقط. ركز على الإجابات الصحيحة!
             </div>
           )}
         </main>
