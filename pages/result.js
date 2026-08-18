@@ -1,11 +1,21 @@
-// pages/result.js - النسخة النهائية (Surgical Result Page)
+// pages/result.js
+// ============================================================
+// 📊 صفحة عرض النتيجة الديناميكية - النسخة المتطورة
+// تعرض التحليل الكامل: البصمة المعرفية، شجرة المهارات، 
+// الأسباب الجذرية، الخطة العلاجية، والتأثير المستقبلي
+// ============================================================
+
 import React, { useState, useEffect } from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
+import SkillTree from "../components/SkillTree";
 import { getAssessmentName } from "../data/questions/basics";
 
+// ============================================================
+// 🎨 الألوان والأنماط
+// ============================================================
 const COLORS = {
   teal: "#17919e",
   tealDark: "#127a86",
@@ -36,13 +46,11 @@ const styles = {
   },
   main: {
     flex: 1,
-    maxWidth: 900,
+    maxWidth: 1000,
     width: "100%",
     margin: "0 auto",
     padding: "40px 20px 60px",
   },
-
-  // ===== البطاقة الرئيسية =====
   heroCard: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -59,8 +67,8 @@ const styles = {
   scoreNumber: { fontSize: 40, fontWeight: 800, color: COLORS.navy, display: "block" },
   scoreLabel: { fontSize: 13, color: COLORS.muted, display: "block" },
 
-  // ===== الملخص الجراحي =====
-  surgicalCard: {
+  // === البطاقات التشخيصية ===
+  diagnosticCard: {
     backgroundColor: '#FFF8E1',
     borderRadius: 16,
     padding: '24px',
@@ -68,12 +76,23 @@ const styles = {
     marginBottom: 20,
     textAlign: 'right',
   },
-  surgicalTitle: { fontSize: 18, fontWeight: 800, color: '#E65100', margin: '0 0 12px' },
-  surgicalRow: { display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8, fontSize: 15 },
-  surgicalIcon: { flexShrink: 0, fontSize: 18 },
-  surgicalText: { lineHeight: 1.7 },
+  diagnosticTitle: {
+    fontSize: 18,
+    fontWeight: 800,
+    color: '#E65100',
+    margin: '0 0 12px',
+  },
+  diagnosticRow: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginBottom: 8,
+    fontSize: 15,
+    lineHeight: 1.7,
+  },
+  diagnosticIcon: { flexShrink: 0, fontSize: 18, marginTop: 2 },
 
-  // ===== الخطة العملية =====
+  // === الخطة العلاجية ===
   planCard: {
     backgroundColor: '#E8F5E9',
     borderRadius: 16,
@@ -82,12 +101,22 @@ const styles = {
     marginBottom: 20,
     textAlign: 'right',
   },
-  planTitle: { fontSize: 18, fontWeight: 800, color: '#2E7D32', margin: '0 0 12px' },
-  planSection: { fontSize: 15, fontWeight: 700, color: '#1B5E20', margin: '10px 0 6px' },
-  planItem: { fontSize: 14, color: '#333', lineHeight: 1.8, marginBottom: 4, paddingRight: 16 },
+  planTitle: {
+    fontSize: 18,
+    fontWeight: 800,
+    color: '#2E7D32',
+    margin: '0 0 12px',
+  },
+  planItem: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 1.8,
+    marginBottom: 4,
+    paddingRight: 16,
+  },
 
-  // ===== التنبؤ المهني =====
-  careerCard: {
+  // === شجرة المهارات ===
+  treeCard: {
     backgroundColor: '#E3F2FD',
     borderRadius: 16,
     padding: '24px',
@@ -95,41 +124,42 @@ const styles = {
     marginBottom: 20,
     textAlign: 'right',
   },
-  careerTitle: { fontSize: 18, fontWeight: 800, color: '#0D47A1', margin: '0 0 12px' },
-  careerRow: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: 15 },
-  careerMatch: { fontWeight: 800, color: COLORS.teal },
+  treeTitle: {
+    fontSize: 18,
+    fontWeight: 800,
+    color: '#0D47A1',
+    margin: '0 0 12px',
+  },
 
-  // ===== أكورديون =====
-  accordionItem: {
-    backgroundColor: COLORS.white,
+  // === بطاقة المهارة الضعيفة ===
+  weakSkillCard: {
+    backgroundColor: '#FFEBEE',
     borderRadius: 12,
-    marginBottom: 8,
-    boxShadow: "0 2px 8px rgba(13,30,59,0.04)",
-    border: "1px solid " + COLORS.border,
-    overflow: "hidden",
+    padding: '16px',
+    border: '1px solid #FFCDD2',
+    marginBottom: 12,
   },
-  accordionHeader: {
-    width: "100%",
-    padding: "14px 18px",
-    backgroundColor: COLORS.white,
-    border: "none",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    cursor: "pointer",
-    fontFamily: "inherit",
-    fontSize: 14,
+  weakSkillTitle: {
+    fontSize: 16,
     fontWeight: 700,
-    color: COLORS.navy,
-    textAlign: "right",
+    color: '#C62828',
   },
-  accordionChevron: { fontSize: 14, transition: "transform 0.3s ease" },
-  accordionChevronOpen: { transform: "rotate(180deg)" },
-  accordionBody: { padding: "0 18px 16px", borderTop: "1px solid " + COLORS.border },
-  accordionBodyInner: { paddingTop: 14, fontSize: 14, color: COLORS.text, lineHeight: 1.8 },
+  weakSkillDetail: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 1.7,
+    marginTop: 4,
+  },
+  weakSkillLabel: { fontWeight: 700, color: '#555' },
 
-  // ===== أزرار =====
-  buttonGroup: { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 10, marginTop: 24 },
+  // === الأزرار ===
+  buttonGroup: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 12,
+    marginTop: 24,
+  },
   courseButton: {
     display: "inline-block",
     backgroundColor: COLORS.orange,
@@ -158,39 +188,52 @@ const styles = {
     textAlign: "center",
     minWidth: 160,
   },
-
-  // ===== عناصر إضافية =====
-  skillItem: { display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid ' + COLORS.border, fontSize: 13 },
-  errorItem: { padding: '6px 0', borderBottom: '1px solid ' + COLORS.border, fontSize: 13 },
   videoLink: {
     display: 'inline-block',
     backgroundColor: '#FF0000',
     color: 'white',
-    padding: '8px 16px',
+    padding: '6px 16px',
     borderRadius: 8,
     textDecoration: 'none',
     fontWeight: 700,
-    marginTop: 8,
+    marginTop: 6,
     fontSize: 13,
   },
+  backLink: {
+    color: COLORS.muted,
+    fontSize: 14,
+    textDecoration: "none",
+    textAlign: "center",
+    display: "block",
+    marginTop: 20,
+  },
+  loadingContainer: { textAlign: "center", padding: "100px 0" },
+  reportContainer: {
+    backgroundColor: '#f0f4f8',
+    padding: '20px 24px',
+    borderRadius: 16,
+    marginBottom: 20,
+    border: '1px solid #dde4ec',
+    textAlign: 'right',
+    lineHeight: 1.9,
+    fontSize: 15,
+    color: '#1a2332',
+    whiteSpace: 'pre-wrap'
+  },
+  reportTitle: {
+    fontSize: 17,
+    fontWeight: 800,
+    color: COLORS.navy,
+    marginBottom: 12,
+  },
+  confidenceBadge: {
+    display: 'inline-block',
+    padding: '4px 14px',
+    borderRadius: 20,
+    fontSize: 13,
+    fontWeight: 700,
+  },
 };
-
-// ============================================================
-// 🧩 مكون الأكورديون
-// ============================================================
-const AccordionSection = ({ id, title, icon, isOpen, onToggle, children }) => (
-  <div style={styles.accordionItem}>
-    <button style={styles.accordionHeader} onClick={() => onToggle(id)}>
-      <span>{icon} {title}</span>
-      <span style={{ ...styles.accordionChevron, ...(isOpen ? styles.accordionChevronOpen : {}) }}>▼</span>
-    </button>
-    {isOpen && (
-      <div style={styles.accordionBody}>
-        <div style={styles.accordionBodyInner}>{children}</div>
-      </div>
-    )}
-  </div>
-);
 
 // ============================================================
 // 🎯 المكون الرئيسي
@@ -201,24 +244,27 @@ export default function Result() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [circleProgress, setCircleProgress] = useState(0);
-  const [expandedSections, setExpandedSections] = useState({});
+  const [aiReport, setAiReport] = useState(null);
+  const [showFullDetails, setShowFullDetails] = useState(true);
 
-  const toggleSection = (id) => {
-    setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
+  // ============================================================
+  // 🔷 جلب وتحليل النتائج
+  // ============================================================
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
-        const { answers, questions, assessmentId, timePerQuestion, confidenceLevels, mode, quickResult } = router.query;
-        
+        const { 
+          answers, questions, assessmentId, timePerQuestion, 
+          eventsLog, theta, answeredIds, mode, quickResult 
+        } = router.query;
+
         if (!answers || !assessmentId) {
           setError("لا توجد بيانات لعرض النتيجة");
           setLoading(false);
           return;
         }
 
-        // ===== التقييم السريع: استخدام quickResult مباشرة =====
+        // التعامل مع التقييم السريع
         if (quickResult) {
           const quickData = JSON.parse(quickResult);
           setAnalysis({
@@ -227,43 +273,31 @@ export default function Result() {
             totalQuestions: quickData.total,
             correctAnswers: quickData.correct,
             wrongAnswers: quickData.wrong,
-            surgicalSummary: {
-              score: quickData.score,
-              topPriority: quickData.score < 70 ? 'تحتاج مراجعة' : '🎉 ممتاز!',
-              rootCause: quickData.score < 70 ? 'أكمل التقييم الشامل لتحليل أدق' : 'لا توجد ثغرات حرجة',
-              impact: '',
-              treatmentTime: 0,
-              confidenceLevel: '',
+            cognitiveProfile: { 
+              style: '⚡ تقييم سريع', 
+              description: 'هذا تقييم سريع. يُوصى بإجراء التقييم الشامل للحصول على تحليل دقيق.',
+              confidenceLevel: 'متوسطة'
             },
-            actionablePlan: {
-              priority: quickData.score < 70 ? 'تحتاج مراجعة' : '🎉 ممتاز!',
-              priorityLevel: quickData.score >= 80 ? 'ممتاز' : quickData.score >= 60 ? 'جيد' : 'يحتاج تحسين',
-              rootCause: 'أكمل التقييم الشامل لتحليل أدق',
-              solution: '',
-              videoLink: '',
-              timeRequired: 0,
-              today: [],
-              thisWeek: [],
-              hasWeakness: quickData.score < 70,
-            },
-            careerFit: null,
-            insight: quickData.score >= 80
-              ? '🎉 أداء ممتاز! أنت على الطريق الصحيح.'
-              : quickData.score >= 60
-              ? '📈 أداء جيد. هناك مجال للتحسين.'
-              : '📚 تحتاج إلى مراجعة الأساسيات.',
+            skillTree: {},
+            weakestSkills: [],
+            fallbackReport: quickData.score >= 70 
+              ? '🎉 أداء جيد في التقييم السريع! ننصح بإجراء التقييم الشامل للحصول على تحليل دقيق لجميع مهاراتك.'
+              : '📚 يحتاج إلى تحسين. ننصح بإجراء التقييم الشامل لتحديد نقاط الضعف بدقة.',
           });
           setTimeout(() => setCircleProgress(quickData.score), 300);
           setLoading(false);
           return;
         }
 
-        // ===== التقييم الشامل: استدعاء API =====
+        // التقييم الشامل
         const parsedAnswers = JSON.parse(answers);
         const parsedQuestions = JSON.parse(questions || "[]");
         const timeData = JSON.parse(timePerQuestion || "[]");
-        const confidenceData = JSON.parse(confidenceLevels || "[]");
+        const eventsData = JSON.parse(eventsLog || "[]");
+        const thetaData = JSON.parse(theta || "0");
+        const answeredIdsData = JSON.parse(answeredIds || "[]");
 
+        // استدعاء API التحليل
         const response = await fetch("/api/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -272,7 +306,9 @@ export default function Result() {
             questions: parsedQuestions,
             assessmentId,
             timePerQuestion: timeData,
-            confidenceLevels: confidenceData,
+            eventsLog: JSON.stringify(eventsData),
+            theta: JSON.stringify(thetaData),
+            answeredIds: JSON.stringify(answeredIdsData),
             mode: mode || "full",
           }),
         });
@@ -280,9 +316,9 @@ export default function Result() {
         if (!response.ok) throw new Error("فشل في تحليل النتائج");
 
         const data = await response.json();
-        setAnalysis({ ...data, isQuick: mode === 'quick' });
+        setAnalysis(data);
 
-        // حفظ للوحة التشخيص
+        // حفظ النتائج في localStorage
         const savedResults = JSON.parse(localStorage.getItem("assessmentResults") || "[]");
         savedResults.push({
           assessmentName: getAssessmentName(assessmentId),
@@ -293,6 +329,22 @@ export default function Result() {
           date: new Date().toISOString(),
         });
         localStorage.setItem("assessmentResults", JSON.stringify(savedResults));
+        localStorage.setItem("latestAnalysis", JSON.stringify(data));
+
+        // محاولة جلب تقرير AI ودود (اختياري)
+        try {
+          const aiRes = await fetch("/api/generate-report", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ analysisData: data }),
+          });
+          if (aiRes.ok) {
+            const aiData = await aiRes.json();
+            if (aiData.success) setAiReport(aiData.report);
+          }
+        } catch (aiError) {
+          console.log("AI Report غير متاح، استخدام النص الاحتياطي");
+        }
 
         setTimeout(() => setCircleProgress(data.score), 300);
       } catch (err) {
@@ -307,28 +359,41 @@ export default function Result() {
   }, [router.isReady, router.query]);
 
   // ============================================================
-  // ⏳ حالات التحميل والخطأ
+  // 🔷 حالات التحميل والخطأ
   // ============================================================
   if (loading) {
     return (
       <div style={styles.page}>
         <Navbar />
-        <div style={{ textAlign: "center", padding: "100px 0" }}>
+        <div style={styles.loadingContainer}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك...</h2>
+          <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك بعمق...</h2>
+          <p style={{ color: COLORS.muted }}>نحن ندرس إجاباتك وسلوكك لتقديم تقرير دقيق وشخصي</p>
+          <div style={{ marginTop: 20 }}>
+            <div style={{ 
+              width: 48, 
+              height: 48, 
+              border: `4px solid ${COLORS.border}`, 
+              borderTop: `4px solid ${COLORS.teal}`, 
+              borderRadius: "50%", 
+              animation: "spin 1s linear infinite",
+              margin: "0 auto"
+            }} />
+          </div>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !analysis) {
     return (
       <div style={styles.page}>
         <Navbar />
         <div style={{ ...styles.main, textAlign: "center", paddingTop: 60 }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>❌</div>
           <h2 style={{ color: COLORS.error }}>حدث خطأ</h2>
-          <p style={{ color: COLORS.muted }}>{error}</p>
+          <p style={{ color: COLORS.muted }}>{error || "لا توجد بيانات"}</p>
           <Link href="/assessment/categories" style={{ color: COLORS.teal, fontWeight: 700 }}>
             العودة للتقييمات
           </Link>
@@ -337,13 +402,13 @@ export default function Result() {
     );
   }
 
-  if (!analysis) return null;
-
+  // ============================================================
+  // 🔷 استخراج البيانات
+  // ============================================================
   const {
     score, totalQuestions, correctAnswers, wrongAnswers,
-    surgicalSummary, actionablePlan, careerFit, insight,
-    cognitiveProfile, confidenceAnalysis, masteryResults,
-    errors, weakSkills, strongSkills, isQuick,
+    cognitiveProfile, skillTree, weakestSkills, fallbackReport,
+    isQuick, confidence, cognitiveStyle, level
   } = analysis;
 
   const radius = 70;
@@ -370,25 +435,28 @@ export default function Result() {
     return '/scenarios/cafe';
   };
 
+  const getConfidenceColor = (level) => {
+    if (level === 'عالية جداً' || level === 'عالية') return COLORS.success;
+    if (level === 'متوسطة') return COLORS.warning;
+    return COLORS.error;
+  };
+
+  // ============================================================
+  // 🔷 واجهة العرض
+  // ============================================================
   return (
     <>
       <Head>
         <title>نتيجة التقييم - Smart Lab</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <style>{`
-          @media (max-width: 640px) {
-            .result-main { padding: 20px 12px 40px !important; }
-            .hero-card { padding: 28px 16px !important; }
-          }
-        `}</style>
       </Head>
 
       <div style={styles.page} dir="rtl">
         <Navbar />
-        <main style={{ ...styles.main, className: "result-main" }}>
+        <main style={styles.main}>
           
           {/* ===== البطاقة الرئيسية ===== */}
-          <div style={{ ...styles.heroCard, className: "hero-card" }}>
+          <div style={styles.heroCard}>
             <div style={styles.scoreCircle}>
               <svg style={styles.scoreCircleSvg} viewBox="0 0 160 160">
                 <circle cx="80" cy="80" r={radius} style={styles.scoreCircleBg} />
@@ -408,150 +476,203 @@ export default function Result() {
               </div>
             </div>
 
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: COLORS.navy, margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: COLORS.navy }}>
               {isQuick ? '⚡ تقييم سريع' : '📊 التقييم الشامل'}
             </h2>
-            <p style={{ fontSize: 14, color: COLORS.muted, margin: 0 }}>
+            <p style={{ fontSize: 14, color: COLORS.muted }}>
               {correctAnswers || 0} صحيح من {totalQuestions || 0} أسئلة
             </p>
-
-            {insight && (
-              <div style={{ backgroundColor: COLORS.lightGray, padding: 14, borderRadius: 10, marginTop: 16, textAlign: 'right' }}>
-                <p style={{ fontSize: 14, color: COLORS.text, margin: 0, lineHeight: 1.8 }}>💡 {insight}</p>
+            {level && level.label && (
+              <div style={{ 
+                marginTop: 12, 
+                display: 'inline-block',
+                padding: '4px 20px',
+                borderRadius: 20,
+                backgroundColor: getCircleColor(circleProgress) + '22',
+                border: `1px solid ${getCircleColor(circleProgress)}`,
+                fontSize: 14,
+                fontWeight: 700,
+                color: getCircleColor(circleProgress)
+              }}>
+                {level.emoji} {level.label}
               </div>
             )}
           </div>
 
-          {/* ===== الملخص الجراحي ===== */}
-          {surgicalSummary && surgicalSummary.topPriority && (
-            <div style={styles.surgicalCard}>
-              <h3 style={styles.surgicalTitle}>🎯 أولويتك القصوى</h3>
-              <div style={styles.surgicalRow}>
-                <span style={styles.surgicalIcon}>📌</span>
-                <span style={styles.surgicalText}><strong>المشكلة:</strong> {surgicalSummary.topPriority}</span>
-              </div>
-              {surgicalSummary.rootCause && (
-                <div style={styles.surgicalRow}>
-                  <span style={styles.surgicalIcon}>🔍</span>
-                  <span style={styles.surgicalText}><strong>السبب الجذري:</strong> {surgicalSummary.rootCause}</span>
+          {/* ===== البصمة المعرفية والثقة ===== */}
+          {(cognitiveProfile || confidence || cognitiveStyle) && (
+            <div style={styles.diagnosticCard}>
+              <h3 style={styles.diagnosticTitle}>🧠 بصمتك المعرفية</h3>
+              
+              {cognitiveProfile?.style && (
+                <div style={styles.diagnosticRow}>
+                  <span style={styles.diagnosticIcon}>🎯</span>
+                  <span><strong>أسلوبك:</strong> {cognitiveProfile.style}</span>
                 </div>
               )}
-              {surgicalSummary.treatmentTime > 0 && (
-                <div style={styles.surgicalRow}>
-                  <span style={styles.surgicalIcon}>⏱️</span>
-                  <span style={styles.surgicalText}><strong>الوقت المطلوب:</strong> {surgicalSummary.treatmentTime} دقيقة</span>
+              
+              {cognitiveProfile?.description && (
+                <div style={styles.diagnosticRow}>
+                  <span style={styles.diagnosticIcon}>📝</span>
+                  <span>{cognitiveProfile.description}</span>
                 </div>
               )}
-            </div>
-          )}
 
-          {/* ===== الخطة العملية ===== */}
-          {actionablePlan && actionablePlan.hasWeakness && (
-            <div style={styles.planCard}>
-              <h3 style={styles.planTitle}>📝 خطتك العلاجية</h3>
-              {actionablePlan.today && actionablePlan.today.length > 0 && (
-                <>
-                  <p style={styles.planSection}>اليوم:</p>
-                  {actionablePlan.today.map((item, idx) => (
-                    <p key={idx} style={styles.planItem}>☑ {item}</p>
-                  ))}
-                </>
-              )}
-              {actionablePlan.thisWeek && actionablePlan.thisWeek.length > 0 && (
-                <>
-                  <p style={styles.planSection}>هذا الأسبوع:</p>
-                  {actionablePlan.thisWeek.map((item, idx) => (
-                    <p key={idx} style={styles.planItem}>☑ {item}</p>
-                  ))}
-                </>
-              )}
-              {actionablePlan.videoLink && actionablePlan.videoLink !== '#' && (
-                <a href={actionablePlan.videoLink} target="_blank" rel="noopener noreferrer" style={styles.videoLink}>
-                  ▶ شاهد فيديو الشرح
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* ===== التنبؤ المهني ===== */}
-          {careerFit && careerFit.bestMatch && (
-            <div style={styles.careerCard}>
-              <h3 style={styles.careerTitle}>🚀 مستقبلك المهني</h3>
-              <div style={styles.careerRow}>
-                <span>{careerFit.bestMatchIcon || '💼'}</span>
-                <span style={{ fontWeight: 700 }}>{careerFit.bestMatch}</span>
-                <span style={styles.careerMatch}>{careerFit.matchPercentage}%</span>
-              </div>
-              {careerFit.nextStep && (
-                <p style={{ fontSize: 14, color: COLORS.text, margin: '8px 0 0' }}>
-                  📚 {careerFit.nextStep}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* ===== أكورديونات التحليل ===== */}
-          <div style={{ marginTop: 20 }}>
-            {/* المهارات */}
-            {masteryResults && masteryResults.length > 0 && (
-              <AccordionSection id="skills" title="📊 خريطة مهاراتك" icon="📊" isOpen={!!expandedSections.skills} onToggle={toggleSection}>
-                {masteryResults.map((skill, idx) => (
-                  <div key={idx} style={styles.skillItem}>
-                    <span>{skill.name}</span>
-                    <span style={{ color: skill.level === 'متقن' ? COLORS.success : skill.level === 'قيد التعلم' ? COLORS.warning : COLORS.error }}>
-                      {skill.percentage}% {skill.level === 'متقن' ? '✅' : skill.level === 'قيد التعلم' ? '⚠️' : '❌'}
+              {confidence && (
+                <div style={styles.diagnosticRow}>
+                  <span style={styles.diagnosticIcon}>✅</span>
+                  <span>
+                    <strong>مستوى الثقة في التقدير:</strong>{' '}
+                    <span style={{
+                      backgroundColor: getConfidenceColor(confidence.confidenceLevel),
+                      color: 'white',
+                      padding: '2px 12px',
+                      borderRadius: 12,
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}>
+                      {confidence.confidenceLevel}
                     </span>
-                  </div>
-                ))}
-              </AccordionSection>
-            )}
-
-            {/* الأخطاء */}
-            {errors && errors.length > 0 && (
-              <AccordionSection id="errors" title="❌ تحليل أخطائك" icon="❌" isOpen={!!expandedSections.errors} onToggle={toggleSection}>
-                {errors.slice(0, 8).map((err, idx) => (
-                  <div key={idx} style={styles.errorItem}>
-                    <strong>{err.question}</strong>
-                    <br />
-                    <span style={{ color: COLORS.error }}>❌ {err.yourAnswer}</span>
-                    <span style={{ color: COLORS.success, marginRight: 8 }}>✅ {err.correctAnswer}</span>
-                    {err.explanation && (
-                      <p style={{ fontSize: 12, color: COLORS.muted }}>💡 {err.explanation}</p>
+                    {confidence.confidenceDescription && (
+                      <span style={{ marginRight: 8, fontSize: 13, color: '#666' }}>
+                        ({confidence.confidenceDescription})
+                      </span>
                     )}
+                  </span>
+                </div>
+              )}
+
+              {cognitiveProfile?.speedIndex && (
+                <div style={styles.diagnosticRow}>
+                  <span style={styles.diagnosticIcon}>⏱️</span>
+                  <span><strong>سرعة الأداء:</strong> {cognitiveProfile.speedIndex}</span>
+                </div>
+              )}
+
+              {cognitiveProfile?.hesitationIndex !== undefined && (
+                <div style={styles.diagnosticRow}>
+                  <span style={styles.diagnosticIcon}>🔄</span>
+                  <span><strong>مؤشر التردد:</strong> {Math.round(cognitiveProfile.hesitationIndex * 100)}%</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ===== التقرير الجميل ===== */}
+          {(aiReport || fallbackReport) && (
+            <div style={styles.reportContainer}>
+              <h3 style={styles.reportTitle}>
+                {aiReport ? '🤖 تحليل ذكي مخصص' : '📋 ملخص تحليلك'}
+              </h3>
+              {aiReport || fallbackReport}
+            </div>
+          )}
+
+          {/* ===== أضعف المهارات ===== */}
+          {weakestSkills && weakestSkills.length > 0 && (
+            <div style={styles.diagnosticCard}>
+              <h3 style={styles.diagnosticTitle}>🔍 أضعف المهارات (تحليل الأسباب الجذرية)</h3>
+              <p style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>
+                هذه هي المجالات التي تحتاج إلى تركيز أكبر. تم تحديد السبب الجذري والتأثير المستقبلي لكل منها.
+              </p>
+              {weakestSkills.map((skill, idx) => (
+                <div key={idx} style={styles.weakSkillCard}>
+                  <div style={styles.weakSkillTitle}>
+                    {idx + 1}. {skill.name} ({skill.percentage}%)
                   </div>
-                ))}
-              </AccordionSection>
-            )}
+                  <div style={styles.weakSkillDetail}>
+                    <span style={styles.weakSkillLabel}>🧩 السبب الجذري:</span> {skill.rootCause || 'غير محدد'}
+                  </div>
+                  <div style={styles.weakSkillDetail}>
+                    <span style={styles.weakSkillLabel}>📉 التأثير على المستقبل:</span> {skill.futureImpact || 'سيؤثر على فهمك للموضوعات المتقدمة'}
+                  </div>
+                  {skill.remediationVideoQuery && (
+                    <div style={{ marginTop: 6 }}>
+                      <a 
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(skill.remediationVideoQuery)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={styles.videoLink}
+                      >
+                        ▶ شاهد شرحاً لهذه الثغرة
+                      </a>
+                    </div>
+                  )}
+                  {skill.errorPattern && (
+                    <div style={{ ...styles.weakSkillDetail, fontSize: 13, color: '#888' }}>
+                      <span style={styles.weakSkillLabel}>📌 نمط الخطأ:</span> {skill.errorPattern}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
-            {/* البصمة المعرفية */}
-            {cognitiveProfile && (
-              <AccordionSection id="cognitive" title="🧠 بصمتك المعرفية" icon="🧠" isOpen={!!expandedSections.cognitive} onToggle={toggleSection}>
-                <p style={{ fontWeight: 700 }}>{cognitiveProfile.learningStyle}</p>
-                <p>{cognitiveProfile.styleDescription}</p>
-              </AccordionSection>
-            )}
+          {/* ===== شجرة المهارات ===== */}
+          {skillTree && Object.keys(skillTree).length > 0 && (
+            <div style={styles.treeCard}>
+              <h3 style={styles.treeTitle}>🌳 خريطة مهاراتك (شجرة التعلم التفاعلية)</h3>
+              <p style={{ fontSize: 14, color: '#666', marginBottom: 12 }}>
+                🟢 متقن (≥70%) | 🟡 قيد التعلم (30-70%) | 🔴 ضعيف (&lt;30%)
+              </p>
+              <SkillTree treeData={skillTree} />
+            </div>
+          )}
 
-            {/* مصفوفة الثقة */}
-            {confidenceAnalysis && (
-              <AccordionSection id="confidence" title="✅ هل تثق بنفسك بشكل صحيح؟" icon="✅" isOpen={!!expandedSections.confidence} onToggle={toggleSection}>
-                <p>واثق ومصيب: {confidenceAnalysis.highConfCorrect}%</p>
-                <p>واثق ومخطئ: {confidenceAnalysis.highConfWrong}%</p>
-                <p>غير واثق ومصيب: {confidenceAnalysis.lowConfCorrect}%</p>
-                <p>غير واثق ومخطئ: {confidenceAnalysis.lowConfWrong}%</p>
-                <p style={{ color: COLORS.teal, fontWeight: 700 }}>💡 {confidenceAnalysis.insight}</p>
-              </AccordionSection>
-            )}
-          </div>
+          {/* ===== الخطة العلاجية ===== */}
+          {weakestSkills && weakestSkills.length > 0 && (
+            <div style={styles.planCard}>
+              <h3 style={styles.planTitle}>📝 خطتك العلاجية المقترحة</h3>
+              <div style={styles.planItem}>
+                <strong>🎯 الهدف:</strong> معالجة الثغرات في {weakestSkills.map(s => s.name).join('، ')}
+              </div>
+              <div style={styles.planItem}>
+                <strong>⏱️ الوقت المقترح:</strong> {Math.max(15, weakestSkills.length * 15)} دقيقة يومياً
+              </div>
+              <div style={styles.planItem}>
+                <strong>📚 الخطوات المقترحة:</strong>
+                <ul style={{ marginTop: 6, paddingRight: 20 }}>
+                  {weakestSkills.slice(0, 3).map((s, i) => (
+                    <li key={i}>
+                      <strong>{s.name}:</strong> {s.rootCause || 'راجع الأساسيات'} 
+                      {s.remediationVideoQuery && ` (شاهد: "${s.remediationVideoQuery}")`}
+                    </li>
+                  ))}
+                  <li>حل 5-10 تمارين تطبيقية على كل مفهوم ضعيف</li>
+                  <li>عد إلى التقييم واختبر نفسك مرة أخرى بعد أسبوع</li>
+                </ul>
+              </div>
+              <div style={styles.planItem}>
+                <strong>📊 توقع التحسن:</strong> مع الالتزام بالخطة، يمكنك رفع مستواك بنسبة 15-25% في غضون أسبوعين.
+              </div>
+            </div>
+          )}
 
           {/* ===== أزرار الإجراءات ===== */}
           <div style={styles.buttonGroup}>
-            <Link href="/course" style={styles.courseButton}>🚀 ابدأ كورسك المخصص</Link>
-            <Link href={getScenarioLink()} style={styles.scenarioButton}>🎭 جرّب محاكي العميل</Link>
+            <Link href="/course" style={styles.courseButton}>
+              🚀 ابدأ كورسك المخصص
+            </Link>
+            <Link href={getScenarioLink()} style={styles.scenarioButton}>
+              🎭 جرّب محاكي العميل
+            </Link>
+            {isQuick && (
+              <Link href={`/assessment/${router.query.assessmentId}?mode=full`} style={{ 
+                ...styles.courseButton, 
+                backgroundColor: COLORS.teal,
+                minWidth: 140
+              }}>
+                📊 تقييم شامل
+              </Link>
+            )}
           </div>
 
           <div style={{ textAlign: "center", marginTop: 20 }}>
-            <Link href="/assessment/categories" style={{ color: COLORS.muted, fontSize: 14, textDecoration: "none" }}>
+            <Link href="/assessment/categories" style={styles.backLink}>
               ← العودة إلى التقييمات
+            </Link>
+            <Link href="/dashboard" style={{ ...styles.backLink, marginTop: 8, color: COLORS.teal }}>
+              📊 عرض لوحة التشخيص
             </Link>
           </div>
         </main>
