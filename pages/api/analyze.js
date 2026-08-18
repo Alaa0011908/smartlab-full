@@ -1,10 +1,19 @@
-// pages/api/analyze.js - النسخة النهائية (Surgical AI Engine)
+// pages/api/analyze.js
+// ============================================================
+// 🧠 محرك التشخيص العصبي (Neuro-Diagnostic Engine)
+// الإصدار: 2.0 - ديناميكي بالكامل
+// ============================================================
+
 import { getAllBasicsQuestions } from '../../data/questions/basics';
+import { estimateTheta } from '../../lib/adaptiveEngine';
 
 // ============================================================
-// 🔷 جدول توحيد المهارات (SubSkill Unification)
+// 🔷 دوال مساعدة (توحيد المهارات، الأسماء، إلخ)
 // ============================================================
+
+// جدول توحيد المهارات (للتجميع)
 const SKILL_UNIFICATION = {
+  // أساسيات
   'net_concepts': 'net_concepts',
   'net_models': 'net_models',
   'net_topologies': 'net_topologies',
@@ -12,6 +21,7 @@ const SKILL_UNIFICATION = {
   'net_tcp_vs_udp': 'net_tcp_vs_udp',
   'net_vlan': 'net_vlan',
   'net_vpn': 'net_vpn',
+  // IPv4
   'ipv4_structure': 'ipv4_structure',
   'ipv4_classes': 'ipv4_classes',
   'ipv4_public_private': 'ipv4_public_private',
@@ -19,30 +29,36 @@ const SKILL_UNIFICATION = {
   'ipv4_subnetting_calc': 'ipv4_subnetting_calc',
   'ipv4_network_id': 'ipv4_network_id',
   'ipv4_broadcast': 'ipv4_broadcast',
+  // Subnetting
   'subnet_cidr': 'subnet_cidr',
   'subnet_calculation': 'subnet_calculation',
   'subnet_network_id': 'subnet_network_id',
   'subnet_broadcast': 'subnet_broadcast',
   'subnet_hosts': 'subnet_hosts',
   'subnet_vlsm': 'subnet_vlsm',
+  // IPv6
   'ipv6_structure': 'ipv6_structure',
   'ipv6_types': 'ipv6_types',
   'ipv6_shorten': 'ipv6_shorten',
   'ipv6_vs_ipv4': 'ipv6_vs_ipv4',
+  // TCP/IP
   'tcpip_layers': 'tcpip_layers',
   'tcpip_tcp_vs_udp': 'tcpip_tcp_vs_udp',
   'tcpip_handshake': 'tcpip_handshake',
   'tcpip_http': 'tcpip_http',
   'tcpip_ports': 'tcpip_ports',
+  // أجهزة
   'device_switch': 'device_switch',
   'device_router': 'device_router',
   'device_firewall': 'device_firewall',
   'device_access_point': 'device_access_point',
   'device_hub_bridge': 'device_hub_bridge',
+  // البريد
   'email_smtp': 'email_smtp',
   'email_pop3': 'email_pop3',
   'email_imap': 'email_imap',
   'email_ports': 'email_ports',
+  // الأمن واللاسلكي
   'wireless_principles': 'wireless_principles',
   'wireless_security': 'wireless_security',
   'security_acls': 'security_acls',
@@ -53,9 +69,6 @@ function unifySkill(skill) {
   return SKILL_UNIFICATION[skill] || skill;
 }
 
-// ============================================================
-// 🔷 أسماء المهارات بالعربية
-// ============================================================
 function getSkillDisplayName(skillId) {
   const names = {
     'net_concepts': 'مفاهيم الشبكات الأساسية',
@@ -105,168 +118,255 @@ function getSkillDisplayName(skillId) {
 }
 
 // ============================================================
-// 🔷 مصفوفة التشخيص (Q-Matrix)
+// 🔷 1. تحليل الإجابات وتجميع المهارات
 // ============================================================
-function buildQMatrix(questions) {
-  const qMatrix = {};
-  questions.forEach(q => {
-    const unifiedSkill = unifySkill(q.subSkill);
-    qMatrix[q.id] = [unifiedSkill];
-  });
-  return qMatrix;
-}
 
-// ============================================================
-// 🔷 محرك الإتقان السريع (Fast Mastery Engine)
-// ============================================================
-function estimateMasteryFast(questions, numericAnswers, rawAnswers) {
-  const qMatrix = buildQMatrix(questions);
-  const skillStats = {};
+function computeSkillStats(questions, numericAnswers, rawAnswers) {
+  const skillMap = {};
 
   questions.forEach((q, idx) => {
-    const isCorrect = q.isWriting 
+    const isCorrect = q.isWriting
       ? (rawAnswers[idx] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase()
       : numericAnswers[idx] === q.correct;
 
-    const skill = qMatrix[q.id] ? qMatrix[q.id][0] : 'general';
-    const unifiedSkill = unifySkill(skill);
-    
-    if (!skillStats[unifiedSkill]) {
-      skillStats[unifiedSkill] = { total: 0, correct: 0 };
-    }
-    skillStats[unifiedSkill].total++;
-    if (isCorrect) skillStats[unifiedSkill].correct++;
+    // استخدام subSkills (مصفوفة) أو subSkill (نص) للتوافق مع الإصدارات القديمة
+    const skillList = q.subSkills || [q.subSkill || 'general'];
+    skillList.forEach(skill => {
+      const unified = unifySkill(skill);
+      if (!skillMap[unified]) {
+        skillMap[unified] = {
+          total: 0,
+          correct: 0,
+          name: getSkillDisplayName(unified),
+          errorPatterns: [],
+          rootCauses: [],
+          futureImpacts: [],
+          remediationQueries: [],
+        };
+      }
+      skillMap[unified].total++;
+      if (isCorrect) {
+        skillMap[unified].correct++;
+      } else {
+        // تجميع معلومات التشخيص من السؤال (إذا وجدت)
+        if (q.diagnostic) {
+          skillMap[unified].errorPatterns.push(q.diagnostic.errorPattern || 'general');
+          skillMap[unified].rootCauses.push(q.diagnostic.rootCause || '');
+          skillMap[unified].futureImpacts.push(q.diagnostic.futureImpact || '');
+          skillMap[unified].remediationQueries.push(q.diagnostic.remediationVideoQuery || '');
+        }
+      }
+    });
   });
 
-  const skills = Object.entries(skillStats).map(([skill, stats]) => {
+  // تحويل إلى مصفوفة ونسب مئوية
+  const results = Object.entries(skillMap).map(([id, stats]) => {
     const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    // استخراج أكثر الأخطاء شيوعاً لهذه المهارة
+    const mostCommonError = stats.errorPatterns.length > 0
+      ? stats.errorPatterns.sort((a, b) =>
+          stats.errorPatterns.filter(v => v === a).length -
+          stats.errorPatterns.filter(v => v === b).length
+        ).pop()
+      : 'general';
+
+    const rootCause = stats.rootCauses.length > 0
+      ? stats.rootCauses.sort((a, b) => a.length - b.length)[0] // أقصر سبب (الأكثر تحديداً)
+      : 'يحتاج مراجعة عامة';
+
+    const futureImpact = stats.futureImpacts.length > 0
+      ? stats.futureImpacts.sort((a, b) => a.length - b.length)[0]
+      : 'سيؤثر على فهم الموضوعات المتقدمة';
+
+    const remediationQuery = stats.remediationQueries.length > 0
+      ? stats.remediationQueries.sort((a, b) => a.length - b.length)[0]
+      : `شرح ${stats.name}`;
+
     return {
-      id: skill,
-      name: getSkillDisplayName(skill),
-      percentage: percentage,
-      level: percentage >= 80 ? 'متقن' : percentage >= 50 ? 'قيد التعلم' : 'ضعيف',
+      id,
+      name: stats.name,
+      percentage,
+      level: percentage >= 70 ? 'متقن' : percentage >= 50 ? 'قيد التعلم' : 'ضعيف',
       total: stats.total,
       correct: stats.correct,
+      errorPattern: mostCommonError,
+      rootCause,
+      futureImpact,
+      remediationVideoQuery: remediationQuery,
     };
-  }).sort((a, b) => a.percentage - b.percentage);
-
-  return skills;
-}
-
-// ============================================================
-// 🔷 تحليل الأخطاء الذكي
-// ============================================================
-function analyzeErrorsSmart(questions, numericAnswers, rawAnswers) {
-  const errors = [];
-  
-  questions.forEach((q, idx) => {
-    const isCorrect = q.isWriting 
-      ? (rawAnswers[idx] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase()
-      : numericAnswers[idx] === q.correct;
-
-    if (!isCorrect) {
-      errors.push({
-        question: q.question.substring(0, 80),
-        topic: q.topic,
-        subSkill: q.subSkill,
-        yourAnswer: q.isWriting ? (rawAnswers[idx] || '(فارغة)').toString() : (q.options ? q.options[numericAnswers[idx] - 1] : 'غير معروف'),
-        correctAnswer: q.isWriting ? (q.expectedAnswer || '') : (q.options ? q.options[q.correct - 1] : ''),
-        errorPattern: q.errorPattern || 'conceptual',
-        cognitiveLevel: q.cognitiveLevel || 'remembering',
-        explanation: q.explanation || '',
-      });
-    }
   });
 
-  return errors;
+  // ترتيب من الأضعف إلى الأقوى
+  return results.sort((a, b) => a.percentage - b.percentage);
 }
 
 // ============================================================
-// 🔷 توليد الخطة العملية (Actionable Plan)
+// 🔷 2. بناء شجرة المهارات الهرمية (Skill Tree)
 // ============================================================
-function generateActionablePlan(masteryResults, errors, score) {
-  if (!masteryResults || masteryResults.length === 0) {
-    return {
-      priority: 'لا توجد بيانات كافية',
-      priorityLevel: 'غير محدد',
-      rootCause: 'أكمل التقييم للحصول على تحليل',
-      solution: 'أعد التقييم',
-      videoLink: '#',
-      exercises: [],
-      timeRequired: 0,
-      today: [],
-      thisWeek: [],
-      hasWeakness: false,
+
+function buildSkillTree(skillStats, questions) {
+  // إنشاء عقدة لكل مهارة
+  const nodes = {};
+  skillStats.forEach(stat => {
+    nodes[stat.id] = {
+      name: stat.name,
+      percentage: stat.percentage,
+      level: stat.level,
+      children: {},
+      // نضيف معلومات تشخيصية للعقدة
+      rootCause: stat.rootCause,
+      futureImpact: stat.futureImpact,
+      remediationQuery: stat.remediationVideoQuery,
     };
+  });
+
+  // بناء العلاقات باستخدام prerequisites من الأسئلة
+  questions.forEach(q => {
+    const prereqs = q.prerequisites || [];
+    const skills = q.subSkills || [q.subSkill || 'general'];
+    skills.forEach(skill => {
+      const unified = unifySkill(skill);
+      if (nodes[unified]) {
+        prereqs.forEach(pre => {
+          const preUnified = unifySkill(pre);
+          if (nodes[preUnified]) {
+            // إضافة العقدة الحالية كطفل للعقدة السابقة
+            nodes[preUnified].children[unified] = nodes[unified];
+          }
+        });
+      }
+    });
+  });
+
+  // إزالة العقد المكررة (يمكن تحسينها)
+  // نعيد الكائن مع العقد الجذرية (التي ليس لها آباء)
+  // هنا نبسط: نعيد الكائن كاملاً، وسيتم عرضه بشكل متكرر في SkillTree.js
+  return nodes;
+}
+
+// ============================================================
+// 🔷 3. استنتاج الثقة والأسلوب المعرفي من السلوك
+// ============================================================
+
+function inferBehavioralMetrics(eventsLog, timePerQuestion, totalQuestions) {
+  const events = Array.isArray(eventsLog) ? eventsLog : (typeof eventsLog === 'string' ? JSON.parse(eventsLog) : []);
+  const times = Array.isArray(timePerQuestion) ? timePerQuestion : (typeof timePerQuestion === 'string' ? JSON.parse(timePerQuestion) : []);
+
+  // عدد أحداث التردد (تمرير الماوس، تغيير الخيارات)
+  const hoverEvents = events.filter(e => e.type === 'hover_option' || e.type === 'unhover_option').length;
+  const changeEvents = events.filter(e => e.type === 'select_option').length; // قد تحتاج لتحسين
+  const avgTime = times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
+
+  // مؤشر التردد
+  const hesitationIndex = totalQuestions > 0 ? hoverEvents / totalQuestions : 0;
+
+  let confidenceLevel = 'متوسطة';
+  let speedIndex = 'متوسط';
+
+  if (avgTime < 10 && hesitationIndex < 0.2) {
+    confidenceLevel = 'عالية (واثق)';
+    speedIndex = 'سريع';
+  } else if (avgTime > 25 || hesitationIndex > 0.6) {
+    confidenceLevel = 'منخفضة (متردد)';
+    speedIndex = 'بطيء';
+  } else {
+    confidenceLevel = 'متوسطة';
+    speedIndex = 'متوسط';
   }
 
-  const weakSkills = masteryResults.filter(s => s.percentage < 70);
-  
-  if (weakSkills.length === 0) {
+  return { confidenceLevel, hesitationIndex, speedIndex, avgTime };
+}
+
+function inferCognitiveStyle(avgTime, confidenceLevel) {
+  let style = 'متوازن';
+  let description = 'لديك توازن جيد بين السرعة والدقة.';
+
+  if (avgTime < 10 && confidenceLevel === 'عالية (واثق)') {
+    style = 'حدسي سريع (مندفع)';
+    description = 'أنت سريع في الإجابة وتعتمد على البديهة. قد تخطئ في الأسئلة المعقدة التي تحتاج إلى تفكير عميق. نصيحة: تأن قليلاً في الأسئلة الصعبة.';
+  } else if (avgTime > 25 && confidenceLevel === 'منخفضة (متردد)') {
+    style = 'تحليلي متعمق (متردد)';
+    description = 'أنت تفكر بعمق وتدقق في التفاصيل، مما يجعلك دقيقاً لكن بطيئاً. نصيحة: تدرب على حل الأسئلة بسرعة ضمن وقت محدد.';
+  } else if (avgTime < 10 && confidenceLevel === 'منخفضة (متردد)') {
+    style = 'متردد وسريع (غير مستقر)';
+    description = 'تجاوب بسرعة لكنك غير واثق من إجاباتك. قد يكون ذلك بسبب عدم الاستقرار المعرفي. حاول مراجعة الأساسيات بانتظام.';
+  } else if (avgTime > 25 && confidenceLevel === 'عالية (واثق)') {
+    style = 'استراتيجي متأنٍ';
+    description = 'تأخذ وقتك في التفكير وإجاباتك صحيحة غالباً. هذا أسلوب مثالي للامتحانات التي تتطلب دقة عالية.';
+  }
+
+  return { style, description };
+}
+
+// ============================================================
+// 🔷 4. تحليل الأخطاء واستخراج أضعف المهارات
+// ============================================================
+
+function extractWeakestSkills(skillStats, limit = 3) {
+  // نأخذ المهارات الأضعف (أقل نسبة)
+  const weakest = skillStats
+    .filter(s => s.percentage < 70) // أقل من 70% تعتبر ضعيفة
+    .sort((a, b) => a.percentage - b.percentage)
+    .slice(0, limit);
+
+  return weakest.map(s => ({
+    name: s.name,
+    percentage: s.percentage,
+    rootCause: s.rootCause || 'يحتاج مراجعة عامة',
+    futureImpact: s.futureImpact || 'سيؤثر على فهم الموضوعات المتقدمة',
+    remediationVideoQuery: s.remediationVideoQuery || `شرح ${s.name}`,
+    errorPattern: s.errorPattern || 'general',
+  }));
+}
+
+// ============================================================
+// 🔷 5. توليد خطة علاجية ديناميكية
+// ============================================================
+
+function generateDynamicPlan(weakestSkills, score) {
+  if (!weakestSkills || weakestSkills.length === 0) {
     return {
-      priority: '🎉 ممتاز! أنت متقن لجميع المهارات',
+      hasWeakness: false,
+      priority: '🎉 ممتاز! لا توجد ثغرات حرجة',
       priorityLevel: 'ممتاز',
-      rootCause: 'لا توجد ثغرات حرجة',
+      rootCause: 'لا توجد ثغرات',
       solution: 'استمر في التطوير والممارسة',
-      videoLink: '#',
-      exercises: [],
       timeRequired: 0,
       today: ['حافظ على مستواك بمراجعة أسبوعية'],
       thisWeek: ['جرب تحديات متقدمة'],
-      hasWeakness: false,
+      videoLink: '#',
     };
   }
 
-  const topWeakness = weakSkills[0];
-  const relatedErrors = errors.filter(e => e.subSkill === topWeakness.id);
-  const dominantError = relatedErrors.length > 0 
-    ? (relatedErrors[0].errorPattern || 'conceptual')
-    : 'conceptual';
-
-  const rootCauseMap = {
-    conceptual: 'خطأ مفاهيمي - تحتاج إلى فهم أعمق للمفهوم الأساسي',
-    calculation: 'خطأ حسابي - تحتاج إلى تدريب على الحسابات خطوة بخطوة',
-    application: 'صعوبة في التطبيق - تحتاج إلى حل تمارين عملية متنوعة',
-    memorization: 'اعتماد على الحفظ - تحتاج إلى فهم العلاقات بدلاً من الحفظ',
-  };
-
-  const solutionMap = {
-    conceptual: 'راجع الشرح النظري من مصادر موثوقة، وافهم العلاقات بين المفاهيم',
-    calculation: 'تدرب على حل المسائل خطوة بخطوة، واستخدم ورقة وقلم',
-    application: 'حل سيناريوهات عملية متنوعة، وجرب تطبيق المفهوم في مواقف مختلفة',
-    memorization: 'حاول فهم "لماذا" بدلاً من حفظ "ماذا"، واشرح المفهوم بكلماتك',
-  };
-
-  const youtubeQuery = `شرح ${topWeakness.name} بالعربي`;
-  const videoLink = `https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeQuery)}`;
-
+  const topWeakness = weakestSkills[0];
   const timeRequired = Math.max(15, Math.ceil((100 - topWeakness.percentage) / 5) * 5);
 
   return {
+    hasWeakness: true,
     priority: topWeakness.name,
     priorityLevel: topWeakness.percentage < 30 ? 'حرجة 🚨' : topWeakness.percentage < 50 ? 'متوسطة ⚠️' : 'منخفضة ✅',
-    rootCause: rootCauseMap[dominantError] || 'يحتاج مراجعة عامة',
-    solution: solutionMap[dominantError] || 'راجع الأساسيات وحل تمارين',
-    videoLink: videoLink,
+    rootCause: topWeakness.rootCause,
+    solution: `راجع الفيديوهات التعليمية حول ${topWeakness.name}، وحل تمارين عملية لتثبيت الفهم.`,
     timeRequired: timeRequired,
     today: [
-      `شاهد فيديو: ${youtubeQuery}`,
+      `شاهد: ${topWeakness.remediationVideoQuery}`,
       `حل 3 تمارين على ${topWeakness.name}`,
     ],
     thisWeek: [
-      `أكمل 20 تمرين على ${topWeakness.name}`,
+      `أكمل 10 تمارين على ${topWeakness.name}`,
       `اختبر نفسك في ${topWeakness.name} مرة أخرى`,
-      ...(weakSkills.length > 1 ? [`راجع ${weakSkills[1].name}`] : []),
+      ...(weakestSkills.length > 1 ? [`راجع ${weakestSkills[1].name}`] : []),
     ],
-    hasWeakness: true,
+    videoLink: `https://www.youtube.com/results?search_query=${encodeURIComponent(topWeakness.remediationVideoQuery)}`,
     currentPercentage: topWeakness.percentage,
   };
 }
 
 // ============================================================
-// 🔷 التنبؤ المهني (Career Fit)
+// 🔷 6. التنبؤ المهني (Career Fit) محسّن
 // ============================================================
-function generateCareerFit(masteryResults, topicAnalysis) {
+
+function generateCareerFit(skillStats) {
   const careerPaths = [
     {
       title: 'فني دعم فني (Help Desk)',
@@ -301,7 +401,7 @@ function generateCareerFit(masteryResults, topicAnalysis) {
   ];
 
   const skillMap = {};
-  masteryResults.forEach(s => {
+  skillStats.forEach(s => {
     skillMap[s.id] = s.percentage;
   });
 
@@ -339,183 +439,201 @@ function generateCareerFit(masteryResults, topicAnalysis) {
 }
 
 // ============================================================
-// 🔷 معالج الطلب الرئيسي
+// 🔷 7. المولد الاحتياطي للتقرير (Fallback)
 // ============================================================
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  
-  try {
-    const { answers, questions: sentQuestions, assessmentId, timePerQuestion, confidenceLevels, mode } = req.body;
-    
-    if (!answers || !Array.isArray(answers)) return res.status(400).json({ error: 'No answers' });
-    
-    const questions = sentQuestions?.length > 0 ? sentQuestions : getAllBasicsQuestions();
-    if (!questions.length) return res.status(404).json({ error: 'No questions' });
 
+function generateFallbackReport(score, cognitiveStyle, weakestSkills) {
+  let report = `📊 **تحليل أدائك:**\n`;
+  report += `- النتيجة: ${score}%\n`;
+  report += `- أسلوبك المعرفي: ${cognitiveStyle.style}\n`;
+  report += `- ${cognitiveStyle.description}\n\n`;
+
+  if (weakestSkills && weakestSkills.length > 0) {
+    report += `🔍 **نقاط الضعف الرئيسية:**\n`;
+    weakestSkills.forEach(s => {
+      report += `  - ${s.name} (${s.percentage}%): ${s.rootCause}\n`;
+      report += `    التأثير المستقبلي: ${s.futureImpact}\n`;
+    });
+    report += `\n📝 **خطة علاجية مقترحة:**\n`;
+    report += `  - شاهد الفيديوهات التعليمية حول ${weakestSkills[0].name}\n`;
+    report += `  - حل تمارين عملية لتثبيت الفهم\n`;
+  } else {
+    report += `🎉 **ممتاز!** أنت متقن لجميع المهارات التي تم اختبارها.`;
+  }
+
+  return report;
+}
+
+// ============================================================
+// 🔷 المعالج الرئيسي (Handler)
+// ============================================================
+
+export default async function handler(req, res) {
+  // التأكد من أن الطلب POST
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    // استقبال البيانات من الطلب
+    const {
+      answers,
+      questions: sentQuestions,
+      assessmentId,
+      timePerQuestion,
+      eventsLog,
+      theta,
+      mode,
+    } = req.body;
+
+    // التحقق من وجود إجابات
+    if (!answers || !Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ error: 'No answers provided' });
+    }
+
+    // جلب الأسئلة (إما المرسلة أو جميع الأسئلة)
+    const questions = sentQuestions?.length > 0 ? sentQuestions : getAllBasicsQuestions();
+    if (!questions || questions.length === 0) {
+      return res.status(404).json({ error: 'No questions found' });
+    }
+
+    // تحويل الإجابات إلى أرقام (للمقارنة)
     const numericAnswers = answers.map((a, i) => {
       const q = questions[i];
       if (q?.isWriting) {
         const num = Number(a);
-        return isNaN(num) ? 1 : (num === 1 ? 1 : 2);
+        return isNaN(num) ? 1 : num === 1 ? 1 : 2;
       }
       const num = Number(a);
-      return (isNaN(num) || num < 1 || num > 4) ? 1 : num;
+      return isNaN(num) || num < 1 || num > 4 ? 1 : num;
     });
 
-    // ============ النتيجة ============
-    let totalWeight = 0, earnedWeight = 0, correctCount = 0;
-    const questionResults = [];
-    
+    // ============================================================
+    // 1. حساب النتيجة المئوية الأساسية (للمقارنة)
+    // ============================================================
+    let correctCount = 0;
     questions.forEach((q, i) => {
-      const weight = (q.difficulty || 1) + (['analyzing', 'evaluating', 'creating'].includes(q.cognitiveLevel) ? 0.5 : 0);
-      totalWeight += weight;
-      
-      const isCorrect = q.isWriting 
+      const isCorrect = q.isWriting
         ? (answers[i] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase()
         : numericAnswers[i] === q.correct;
-      
-      if (isCorrect) {
-        earnedWeight += weight;
-        correctCount++;
-      }
-      
-      questionResults.push({
-        isCorrect,
-        weight,
-        time: timePerQuestion?.[i] || 0,
-        confidence: confidenceLevels?.[i] || 50,
-        difficulty: q.difficulty || 1,
-        topic: q.topic || 'عام',
-        cognitiveLevel: q.cognitiveLevel || 'remembering',
-        subSkill: q.subSkill || 'عام',
-        errorPattern: q.errorPattern || 'conceptual',
-      });
+      if (isCorrect) correctCount++;
     });
-
-    const weightedScore = totalWeight > 0 ? Math.round((earnedWeight / totalWeight) * 100) : 0;
     const simpleScore = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
-    const isQuickMode = mode === 'quick';
-    let assessmentType = 'topic';
-    if (assessmentId === 'full' && !isQuickMode) assessmentType = 'full';
-    else if (isQuickMode) assessmentType = 'quick';
 
-    // ============ التحليلات الذكية الجديدة ============
-    const masteryResults = estimateMasteryFast(questions, numericAnswers, answers);
-    const errorsSmart = analyzeErrorsSmart(questions, numericAnswers, answers);
-    const actionablePlan = generateActionablePlan(masteryResults, errorsSmart, weightedScore);
-    
-    // ============ مصفوفة الثقة ============
-    let highConfCorrect = 0, lowConfCorrect = 0, highConfWrong = 0, lowConfWrong = 0;
-    questionResults.forEach(q => {
-      if (q.confidence >= 70) { if (q.isCorrect) highConfCorrect++; else highConfWrong++; }
-      else { if (q.isCorrect) lowConfCorrect++; else lowConfWrong++; }
-    });
-    const totalConf = questionResults.length || 1;
-    const confidenceAnalysis = {
-      highConfCorrect: Math.round((highConfCorrect / totalConf) * 100),
-      lowConfCorrect: Math.round((lowConfCorrect / totalConf) * 100),
-      highConfWrong: Math.round((highConfWrong / totalConf) * 100),
-      lowConfWrong: Math.round((lowConfWrong / totalConf) * 100),
-      insight: highConfWrong > 20 
-        ? 'لديك ثقة مفرطة في إجابات خاطئة. راجع المفاهيم الأساسية.'
-        : lowConfCorrect > 30
-        ? 'أنت تعرف أكثر مما تعتقد! ثق بمعرفتك.'
-        : 'مستوى ثقتك متوازن مع أدائك.',
-    };
+    // ============================================================
+    // 2. تحليل المهارات (إحصائي)
+    // ============================================================
+    const skillStats = computeSkillStats(questions, numericAnswers, answers);
 
-    // ============ البصمة المعرفية ============
-    const avgTime = timePerQuestion?.length > 0 
-      ? timePerQuestion.reduce((a, b) => a + b, 0) / timePerQuestion.length 
-      : null;
-    const correctPct = questions.length > 0 ? (correctCount / questions.length) * 100 : 0;
-    
-    let learningStyle = 'متوازن';
-    let styleDescription = 'لديك توازن جيد بين السرعة والدقة.';
-    if (avgTime && avgTime < 8 && correctPct > 60) {
-      learningStyle = 'حدسي سريع';
-      styleDescription = 'أنت سريع في الإجابة وتعتمد على البديهة. تدرب على التمهل في الأسئلة المعقدة.';
-    } else if (avgTime && avgTime > 15 && correctPct > 70) {
-      learningStyle = 'تحليلي متعمق';
-      styleDescription = 'أنت تفكر بعمق وتدقق في التفاصيل. تدرب على زيادة سرعتك.';
+    // ============================================================
+    // 3. تقدير القدرة باستخدام IRT (إذا كان هناك معاملات)
+    // ============================================================
+    let estimatedTheta = 0;
+    try {
+      // بناء مصفوفة الإجابات مع معرفات الأسئلة
+      const answeredItems = questions.map((q, i) => ({
+        questionId: q.id,
+        isCorrect: q.isWriting
+          ? (answers[i] || '').toString().trim().toLowerCase() === (q.expectedAnswer || '').trim().toLowerCase()
+          : numericAnswers[i] === q.correct,
+      }));
+      estimatedTheta = estimateTheta(answeredItems, questions);
+    } catch (e) {
+      console.warn('فشل تقدير ثيتا، استخدام القيمة الافتراضية 0', e);
+      estimatedTheta = 0;
     }
-    
-    const cognitiveProfile = {
-      learningStyle,
-      styleDescription,
-      confidenceLevel: Math.round(correctPct),
-    };
 
-    // ============ التنبؤ المهني ============
-    const careerFit = generateCareerFit(masteryResults, null);
+    // ============================================================
+    // 4. استنتاج الثقة والأسلوب المعرفي من السلوك
+    // ============================================================
+    const behavior = inferBehavioralMetrics(eventsLog, timePerQuestion, questions.length);
+    const cognitive = inferCognitiveStyle(behavior.avgTime, behavior.confidenceLevel);
 
-    // ============ الملخص الجراحي ============
-    const surgicalSummary = {
-      score: weightedScore,
-      topPriority: actionablePlan.priority,
-      rootCause: actionablePlan.rootCause,
-      impact: actionablePlan.hasWeakness 
-        ? `هذه الثغرة تؤثر على ${actionablePlan.currentPercentage}% من أدائك في هذا المجال`
-        : 'لا توجد ثغرات حرجة',
-      treatmentTime: actionablePlan.timeRequired,
-      confidenceLevel: confidenceAnalysis.insight,
-    };
+    // ============================================================
+    // 5. بناء شجرة المهارات
+    // ============================================================
+    const skillTree = buildSkillTree(skillStats, questions);
 
-    // ============ الاستجابة النهائية ============
-    return res.status(200).json({
+    // ============================================================
+    // 6. استخراج أضعف المهارات
+    // ============================================================
+    const weakestSkills = extractWeakestSkills(skillStats, 3);
+
+    // ============================================================
+    // 7. توليد خطة علاجية
+    // ============================================================
+    const actionablePlan = generateDynamicPlan(weakestSkills, simpleScore);
+
+    // ============================================================
+    // 8. التنبؤ المهني
+    // ============================================================
+    const careerFit = generateCareerFit(skillStats);
+
+    // ============================================================
+    // 9. توليد تقرير احتياطي (في حال فشل الـ AI)
+    // ============================================================
+    const fallbackReport = generateFallbackReport(simpleScore, cognitive, weakestSkills);
+
+    // ============================================================
+    // 10. بناء JSON النهائي (خام)
+    // ============================================================
+    const rawAnalysis = {
       success: true,
       mode: mode || 'full',
-      isQuickMode,
-      assessmentType,
-      
+      isQuick: mode === 'quick',
+
       // النتيجة الأساسية
-      score: weightedScore,
-      simpleScore,
+      score: simpleScore,
       totalQuestions: questions.length,
       correctAnswers: correctCount,
       wrongAnswers: questions.length - correctCount,
-      
-      // الملخص الجراحي (الأهم)
-      surgicalSummary,
-      
-      // الخطة العملية
+
+      // تقدير القدرة (IRT)
+      estimatedTheta,
+
+      // التحليلات السلوكية
+      cognitiveProfile: {
+        style: cognitive.style,
+        description: cognitive.description,
+        confidenceLevel: behavior.confidenceLevel,
+        hesitationIndex: behavior.hesitationIndex,
+        speedIndex: behavior.speedIndex,
+        avgTime: behavior.avgTime,
+      },
+
+      // شجرة المهارات الهرمية
+      skillTree,
+
+      // أضعف المهارات مع التشخيص
+      weakestSkills,
+
+      // الخطة العلاجية
       actionablePlan,
-      
+
       // التنبؤ المهني
       careerFit,
-      
-      // التحليلات الذكية
-      masteryResults,
-      errors: errorsSmart,
-      weakSkills: masteryResults.filter(s => s.percentage < 70),
-      strongSkills: masteryResults.filter(s => s.percentage >= 70),
-      
-      // البصمة المعرفية
-      cognitiveProfile,
-      
-      // مصفوفة الثقة
-      confidenceAnalysis,
-      
-      // الرؤية المختصرة
-      insight: surgicalSummary.topPriority !== 'لا توجد بيانات كافية'
-        ? `🎯 أولويتك: ${surgicalSummary.topPriority}. ${surgicalSummary.rootCause}. خصص ${surgicalSummary.treatmentTime} دقيقة للعلاج.`
-        : 'أكمل التقييم للحصول على تحليل',
-      
-      // تحليلات إضافية (متوافقة مع الصفحة)
-      topicAnalysis: {},
-      learningProfile: {},
-      diagnosticMastery: { skills: masteryResults },
-      recommendedLessons: masteryResults.filter(s => s.percentage < 70).slice(0, 5).map(s => ({
-        topic: s.name,
-        percentage: s.percentage,
-        reason: 'يحتاج مراجعة',
-        solution: actionablePlan.solution,
-      })),
-      learningStages: [],
-      allAssessmentsSummary: [],
-    });
-    
+
+      // المهارات المسطحة (للتوافق مع العرض القديم إن أردت)
+      flatSkills: skillStats,
+
+      // التقرير الاحتياطي (نص)
+      fallbackReport,
+
+      // رؤية مختصرة
+      insight: actionablePlan.hasWeakness
+        ? `🎯 أولويتك: ${actionablePlan.priority}. ${actionablePlan.rootCause}. خصص ${actionablePlan.timeRequired} دقيقة للعلاج.`
+        : '🎉 ممتاز! لا توجد ثغرات حرجة.',
+    };
+
+    // ============================================================
+    // 11. إرجاع النتيجة
+    // ============================================================
+    return res.status(200).json(rawAnalysis);
   } catch (error) {
-    console.error('خطأ:', error);
-    return res.status(500).json({ success: false, error: error.message });
+    console.error('❌ خطأ في تحليل النتائج:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'حدث خطأ غير متوقع أثناء التحليل',
+    });
   }
 }
