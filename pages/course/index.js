@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+import { getAllBasicsQuestions } from '../../data/questions/basics';
+import { generateCounterQuestions } from '../../lib/adaptiveEngine';
 
 const COLORS = {
   teal: "#17919e",
@@ -40,21 +42,9 @@ const styles = {
     margin: "0 auto",
     padding: "30px 16px 60px",
   },
-  pageHeader: {
-    marginBottom: 40,
-  },
-  pageTitle: {
-    fontSize: 36,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 8px",
-  },
-  pageSubtitle: {
-    fontSize: 17,
-    color: COLORS.muted,
-    margin: 0,
-    lineHeight: 1.7,
-  },
+  pageHeader: { marginBottom: 40 },
+  pageTitle: { fontSize: 36, fontWeight: 800, color: COLORS.navy, margin: "0 0 8px" },
+  pageSubtitle: { fontSize: 17, color: COLORS.muted, margin: 0, lineHeight: 1.7 },
   progressCard: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
@@ -63,41 +53,12 @@ const styles = {
     boxShadow: "0 4px 16px rgba(13,30,59,0.06)",
     border: "1px solid " + COLORS.border,
   },
-  progressHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  progressLabel: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: COLORS.navy,
-  },
-  progressPercentage: {
-    fontSize: 18,
-    fontWeight: 800,
-    color: COLORS.teal,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: COLORS.border,
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: COLORS.teal,
-    borderRadius: 4,
-    transition: "width 0.6s ease",
-  },
-  progressStats: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: 8,
-    fontSize: 13,
-    color: COLORS.muted,
-  },
+  progressHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
+  progressLabel: { fontSize: 16, fontWeight: 700, color: COLORS.navy },
+  progressPercentage: { fontSize: 18, fontWeight: 800, color: COLORS.teal },
+  progressBar: { height: 8, backgroundColor: COLORS.border, borderRadius: 4, overflow: "hidden" },
+  progressFill: { height: "100%", backgroundColor: COLORS.teal, borderRadius: 4, transition: "width 0.6s ease" },
+  progressStats: { display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 13, color: COLORS.muted },
   emptyContainer: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
@@ -105,24 +66,9 @@ const styles = {
     textAlign: "center",
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
   },
-  emptyIcon: {
-    fontSize: 72,
-    marginBottom: 24,
-    display: "block",
-  },
-  emptyTitle: {
-    fontSize: 28,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 16px",
-  },
-  emptyDesc: {
-    fontSize: 17,
-    color: COLORS.muted,
-    lineHeight: 1.8,
-    maxWidth: 520,
-    margin: "0 auto 32px",
-  },
+  emptyIcon: { fontSize: 72, marginBottom: 24, display: "block" },
+  emptyTitle: { fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: "0 0 16px" },
+  emptyDesc: { fontSize: 17, color: COLORS.muted, lineHeight: 1.8, maxWidth: 520, margin: "0 auto 32px" },
   emptyButton: {
     backgroundColor: COLORS.teal,
     color: COLORS.white,
@@ -137,11 +83,7 @@ const styles = {
     transition: "background-color 0.25s ease, transform 0.25s ease",
     minHeight: 56,
   },
-  lessonsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
+  lessonsContainer: { display: "flex", flexDirection: "column", gap: 12 },
   lessonCard: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
@@ -150,75 +92,18 @@ const styles = {
     border: "1px solid " + COLORS.border,
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
   },
-  lessonCardCompleted: {
-    borderColor: COLORS.success,
-    backgroundColor: "#F0FAF5",
-  },
-  lessonCardHigh: {
-    borderColor: COLORS.error,
-    backgroundColor: "#FFEBEE",
-  },
-  lessonCardMedium: {
-    borderColor: COLORS.warning,
-    backgroundColor: "#FFF8E1",
-  },
-  lessonHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: 16,
-    flexWrap: "wrap",
-  },
-  lessonTitle: {
-    fontSize: 20,
-    fontWeight: 700,
-    color: COLORS.navy,
-    margin: "0 0 4px",
-  },
-  lessonBadge: {
-    display: "inline-block",
-    padding: "4px 14px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 700,
-  },
-  lessonStatus: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    fontSize: 14,
-    fontWeight: 600,
-    color: COLORS.muted,
-  },
-  lessonBody: {
-    marginTop: 12,
-  },
-  lessonDescription: {
-    fontSize: 15,
-    color: COLORS.text,
-    lineHeight: 1.8,
-    margin: "0 0 12px",
-  },
-  lessonMeta: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 16,
-    fontSize: 14,
-    color: COLORS.muted,
-  },
-  lessonMetaItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-  },
-  lessonActions: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 12,
-    marginTop: 16,
-    paddingTop: 16,
-    borderTop: "1px solid " + COLORS.border,
-  },
+  lessonCardCompleted: { borderColor: COLORS.success, backgroundColor: "#F0FAF5" },
+  lessonCardHigh: { borderColor: COLORS.error, backgroundColor: "#FFEBEE" },
+  lessonCardMedium: { borderColor: COLORS.warning, backgroundColor: "#FFF8E1" },
+  lessonHeader: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap" },
+  lessonTitle: { fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: "0 0 4px" },
+  lessonBadge: { display: "inline-block", padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 },
+  lessonStatus: { display: "flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: COLORS.muted },
+  lessonBody: { marginTop: 12 },
+  lessonDescription: { fontSize: 15, color: COLORS.text, lineHeight: 1.8, margin: "0 0 12px" },
+  lessonMeta: { display: "flex", flexWrap: "wrap", gap: 16, fontSize: 14, color: COLORS.muted },
+  lessonMetaItem: { display: "flex", alignItems: "center", gap: 6 },
+  lessonActions: { display: "flex", flexWrap: "wrap", gap: 12, marginTop: 16, paddingTop: 16, borderTop: "1px solid " + COLORS.border },
   youtubeButton: {
     display: "inline-flex",
     alignItems: "center",
@@ -250,17 +135,8 @@ const styles = {
     transition: "all 0.25s ease",
     minHeight: 48,
   },
-  completeButtonDone: {
-    backgroundColor: COLORS.success,
-    color: COLORS.white,
-  },
-  actionsContainer: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 12,
-    marginTop: 32,
-  },
+  completeButtonDone: { backgroundColor: COLORS.success, color: COLORS.white },
+  actionsContainer: { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 12, marginTop: 32 },
   actionButton: {
     display: "inline-block",
     padding: "14px 36px",
@@ -274,19 +150,9 @@ const styles = {
     minHeight: 56,
     textAlign: "center",
   },
-  actionButtonPrimary: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-  },
-  actionButtonSecondary: {
-    backgroundColor: "transparent",
-    color: COLORS.orange,
-    border: "2px solid " + COLORS.orange,
-  },
-  loadingContainer: {
-    textAlign: "center",
-    padding: "100px 0",
-  },
+  actionButtonPrimary: { backgroundColor: COLORS.teal, color: COLORS.white },
+  actionButtonSecondary: { backgroundColor: "transparent", color: COLORS.orange, border: "2px solid " + COLORS.orange },
+  loadingContainer: { textAlign: "center", padding: "100px 0" },
   spinner: {
     width: 48,
     height: 48,
@@ -296,43 +162,16 @@ const styles = {
     animation: "spin 1s linear infinite",
     margin: "0 auto 16px",
   },
+  antiQuestionCard: {
+    backgroundColor: '#FFF8E1',
+    borderRadius: 10,
+    padding: '14px 18px',
+    marginTop: 8,
+    border: '1px solid #FFE082',
+  },
+  antiQuestionTitle: { fontSize: 14, fontWeight: 700, color: '#E65100' },
+  antiQuestionText: { fontSize: 14, color: '#333', marginTop: 4 },
 };
-
-function generateYouTubeSearchQuery(topic, reason) {
-  const keywords = {
-    'subnetting': 'شرح Subnetting بالعربي',
-    'IPv4': 'شرح IPv4 بالعربي',
-    'IPv6': 'شرح IPv6 بالعربي',
-    'OSI': 'شرح نموذج OSI بالعربي',
-    'TCP/IP': 'شرح TCP/IP بالعربي',
-    'VLAN': 'شرح VLAN بالعربي',
-    'VPN': 'شرح VPN بالعربي',
-    'Routing': 'شرح Routing بالعربي',
-    'Switching': 'شرح Switching بالعربي',
-    'Network Basics': 'أساسيات الشبكات بالعربي',
-    'Network Devices': 'أجهزة الشبكات بالعربي',
-    'بنية عنوان IPv4': 'شرح بنية عنوان IPv4 بالعربي',
-    'تحويل الأنظمة': 'شرح تحويل الأنظمة ثنائي عشري بالعربي',
-    'تصنيفات العناوين': 'شرح تصنيفات IPv4 بالعربي',
-    'العناوين العامة والخاصة': 'شرح العناوين العامة والخاصة IPv4',
-    'حسابات Subnetting': 'شرح حسابات Subnetting بالعربي',
-    'VLSM': 'شرح VLSM بالعربي',
-  };
-
-  let searchTerm = topic;
-  for (const [key, value] of Object.entries(keywords)) {
-    if (topic.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(topic.toLowerCase())) {
-      searchTerm = value;
-      break;
-    }
-  }
-
-  if (reason && reason.includes('ضعف')) {
-    searchTerm += ' ' + reason.replace('ضعف في', 'شرح');
-  }
-
-  return searchTerm;
-}
 
 export default function Course() {
   const router = useRouter();
@@ -341,88 +180,89 @@ export default function Course() {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [score, setScore] = useState(0);
   const [hasData, setHasData] = useState(false);
+  const [weakSkills, setWeakSkills] = useState([]);
+  const [antiQuestions, setAntiQuestions] = useState([]);
 
   useEffect(() => {
     try {
+      // قراءة آخر تحليل
       const savedResults = JSON.parse(localStorage.getItem('assessmentResults') || '[]');
-      if (savedResults.length === 0) {
+      const latestAnalysis = JSON.parse(localStorage.getItem('latestAnalysis') || 'null');
+
+      if (!latestAnalysis || savedResults.length === 0) {
         setLoading(false);
+        setHasData(false);
         return;
       }
 
       const latest = savedResults[savedResults.length - 1];
       setScore(latest.score || 0);
 
-      // محاولة قراءة التحليل العميق
-      const storedAnalysis = JSON.parse(localStorage.getItem('latestAnalysis') || 'null');
-
-      let lessonData = [];
-
-      // استخدام التحليل العميق إذا كان موجوداً
-      if (storedAnalysis && storedAnalysis.subSkillDeepAnalysis) {
-        const deepAnalysis = storedAnalysis.subSkillDeepAnalysis;
-        const weakSkills = Object.entries(deepAnalysis)
-          .filter(([_, data]) => data.percentage < 70)
-          .sort((a, b) => a[1].percentage - b[1].percentage);
-
-        lessonData = weakSkills.map(([id, data], index) => ({
-          id: index,
-          topic: data.name,
-          percentage: data.percentage,
-          reason: data.rootCause || 'يحتاج مراجعة',
-          solution: data.solution || 'راجع الأساسيات وقم بحل تمارين',
-          searchQuery: data.youtubeSearch || generateYouTubeSearchQuery(data.name, data.rootCause),
-          exercises: Math.max(3, Math.round((100 - data.percentage) / 10)),
-          completed: false,
-          priority: data.percentage < 40 ? 'عالية' : data.percentage < 70 ? 'متوسطة' : 'منخفضة',
-          errors: data.errors || [],
-          errorCount: data.errorCount || 0,
-        }));
-
-        // إذا لم تكن هناك مهارات ضعيفة، استخدم الدروس المقترحة العادية
-        if (lessonData.length === 0 && storedAnalysis.recommendedLessons) {
-          lessonData = storedAnalysis.recommendedLessons.map((lesson, index) => ({
-            id: index,
-            topic: lesson.topic,
-            percentage: lesson.percentage || 0,
-            reason: lesson.reason || 'يحتاج مراجعة',
-            solution: lesson.solution || 'راجع الأساسيات وقم بحل تمارين',
-            searchQuery: generateYouTubeSearchQuery(lesson.topic, lesson.reason),
-            exercises: Math.max(3, Math.round((100 - (lesson.percentage || 50)) / 10)),
-            completed: false,
-            priority: (lesson.percentage || 50) < 40 ? 'عالية' : 'متوسطة',
-            errors: [],
-            errorCount: 0,
+      // استخراج المهارات الضعيفة من آخر تحليل
+      let weakSkillsData = latestAnalysis.weakestSkills || [];
+      if (weakSkillsData.length === 0 && latestAnalysis.masteryResults) {
+        // احتياطي: استخرج المهارات الأقل من 70%
+        weakSkillsData = latestAnalysis.masteryResults
+          .filter(s => s.percentage < 70)
+          .sort((a, b) => a.percentage - b.percentage)
+          .slice(0, 5)
+          .map(s => ({
+            name: s.name,
+            percentage: s.percentage,
+            rootCause: s.rootCause || 'يحتاج مراجعة',
+            futureImpact: s.futureImpact || 'سيؤثر على فهمك للموضوعات المتقدمة',
+            remediationVideoQuery: s.remediationVideoQuery || `شرح ${s.name}`,
+            errorPattern: s.errorPattern || 'general'
           }));
-        }
       }
 
-      // إذا لم تكن هناك بيانات كافية، استخدم الوضع الاحتياطي
+      setWeakSkills(weakSkillsData);
+
+      // توليد الأسئلة المضادة من قاعدة الأسئلة
+      const allQuestions = getAllBasicsQuestions();
+      const counterQuestions = generateCounterQuestions(weakSkillsData, allQuestions, 5);
+      setAntiQuestions(counterQuestions);
+
+      // بناء قائمة الدروس من المهارات الضعيفة
+      let lessonData = weakSkillsData.map((skill, index) => ({
+        id: index,
+        topic: skill.name,
+        percentage: skill.percentage || 0,
+        reason: skill.rootCause || 'يحتاج مراجعة',
+        solution: `راجع المفهوم الأساسي وقم بحل تمارين تطبيقية على ${skill.name}`,
+        searchQuery: skill.remediationVideoQuery || `شرح ${skill.name} بالعربي`,
+        exercises: Math.max(3, Math.round((100 - (skill.percentage || 50)) / 10)),
+        completed: false,
+        priority: skill.percentage < 30 ? 'عالية' : skill.percentage < 60 ? 'متوسطة' : 'منخفضة',
+        errors: [],
+        errorCount: 0,
+        futureImpact: skill.futureImpact || '',
+      }));
+
+      // إذا لم تكن هناك مهارات ضعيفة، أضف دروساً احتياطية
       if (lessonData.length === 0) {
         const weakTopics = [
           { topic: 'Subnetting', reason: 'صعوبة في حسابات الشبكات الفرعية' },
           { topic: 'IPv4', reason: 'صعوبة في فهم بنية العناوين' },
           { topic: 'OSI Model', reason: 'صعوبة في حفظ الطبقات ووظائفها' },
-          { topic: 'Routing', reason: 'صعوبة في فهم بروتوكولات التوجيه' },
         ];
-
-        const selected = weakTopics.slice(0, Math.max(2, Math.min(4, Math.floor((100 - latest.score) / 20))));
-        lessonData = selected.map((item, index) => ({
+        lessonData = weakTopics.map((item, index) => ({
           id: index,
           topic: item.topic,
           percentage: Math.max(30, 70 - index * 15),
           reason: item.reason,
           solution: 'راجع الأساسيات وقم بحل تمارين تطبيقية',
-          searchQuery: generateYouTubeSearchQuery(item.topic, item.reason),
+          searchQuery: `شرح ${item.topic} بالعربي`,
           exercises: Math.max(3, 5 - index),
           completed: false,
           priority: index === 0 ? 'عالية' : 'متوسطة',
           errors: [],
           errorCount: 0,
+          futureImpact: 'قد يؤثر على فهمك للشبكات المتقدمة',
         }));
       }
 
-      // قراءة الدروس المكتملة
+      // قراءة الدروس المكتملة من localStorage
       const savedCompleted = JSON.parse(localStorage.getItem('courseCompletedLessons') || '[]');
       lessonData = lessonData.map(lesson => ({
         ...lesson,
@@ -474,6 +314,13 @@ export default function Course() {
     if (priority === 'عالية') return { label: '🔴 أولوية عالية', color: COLORS.error };
     if (priority === 'متوسطة') return { label: '🟡 أولوية متوسطة', color: COLORS.warning };
     return { label: '🟢 أولوية منخفضة', color: COLORS.success };
+  };
+
+  const handleStartAntiQuiz = () => {
+    if (antiQuestions.length === 0) return;
+    // تخزين الأسئلة المضادة في localStorage مؤقتاً لتستخدم في صفحة تقييم خاصة
+    localStorage.setItem('antiQuestions', JSON.stringify(antiQuestions));
+    router.push('/assessment/anti?mode=anti');
   };
 
   if (loading) {
@@ -632,6 +479,12 @@ export default function Course() {
                           <strong>السبب:</strong> {lesson.reason}
                           <br />
                           <strong>الحل:</strong> {lesson.solution}
+                          {lesson.futureImpact && (
+                            <>
+                              <br />
+                              <strong>التأثير المستقبلي:</strong> {lesson.futureImpact}
+                            </>
+                          )}
                           {lesson.errors && lesson.errors.length > 0 && (
                             <>
                               <br />
@@ -691,6 +544,47 @@ export default function Course() {
                   );
                 })}
               </div>
+
+              {/* عرض الأسئلة المضادة */}
+              {antiQuestions.length > 0 && (
+                <div style={{ ...styles.progressCard, backgroundColor: '#FFF3E0', borderColor: '#FFB74D' }}>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: '#E65100', marginBottom: 12 }}>
+                    🎯 تمارين مضادة لثغراتك
+                  </h3>
+                  <p style={{ fontSize: 14, color: '#555', marginBottom: 12 }}>
+                    هذه الأسئلة مصممة خصيصاً لمعالجة نقاط الضعف لديك. حاول حلها لتعزيز فهمك.
+                  </p>
+                  <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+                    {antiQuestions.slice(0, 10).map((q, idx) => (
+                      <div key={q.id || idx} style={styles.antiQuestionCard}>
+                        <div style={styles.antiQuestionTitle}>
+                          سؤال {idx + 1}:
+                        </div>
+                        <div style={styles.antiQuestionText}>
+                          {q.question.substring(0, 120)}...
+                        </div>
+                        <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+                          المهارة: {q.subSkills ? q.subSkills.join('، ') : q.subSkill}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleStartAntiQuiz}
+                    style={{
+                      ...styles.actionButton,
+                      ...styles.actionButtonPrimary,
+                      backgroundColor: '#E65100',
+                      width: '100%',
+                      marginTop: 12,
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#BF360C'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E65100'}
+                  >
+                    🚀 حل هذه التمارين ({antiQuestions.length} سؤال)
+                  </button>
+                </div>
+              )}
 
               <div style={styles.actionsContainer} className="actions-container">
                 <Link
