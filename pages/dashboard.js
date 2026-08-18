@@ -61,24 +61,9 @@ const styles = {
     textAlign: "center",
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
   },
-  emptyIcon: {
-    fontSize: 72,
-    marginBottom: 24,
-    display: "block",
-  },
-  emptyTitle: {
-    fontSize: 28,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 16px",
-  },
-  emptyDesc: {
-    fontSize: 17,
-    color: COLORS.muted,
-    lineHeight: 1.8,
-    maxWidth: 520,
-    margin: "0 auto 32px",
-  },
+  emptyIcon: { fontSize: 72, marginBottom: 24, display: "block" },
+  emptyTitle: { fontSize: 28, fontWeight: 800, color: COLORS.navy, margin: "0 0 16px" },
+  emptyDesc: { fontSize: 17, color: COLORS.muted, lineHeight: 1.8, maxWidth: 520, margin: "0 auto 32px" },
   emptyButton: {
     backgroundColor: COLORS.teal,
     color: COLORS.white,
@@ -111,32 +96,12 @@ const styles = {
     borderRadius: 16,
     padding: "24px",
     border: "1px solid " + COLORS.border,
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
   },
-  resultCardTitle: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: COLORS.navy,
-    margin: "0 0 6px",
-  },
-  resultCardScore: {
-    fontSize: 32,
-    fontWeight: 800,
-    color: COLORS.teal,
-    margin: "0 0 4px",
-  },
-  resultCardDate: {
-    fontSize: 13,
-    color: COLORS.muted,
-    margin: 0,
-  },
-  resultCardStatus: {
-    display: "inline-block",
-    padding: "2px 12px",
-    borderRadius: 20,
-    fontSize: 12,
-    fontWeight: 600,
-    marginTop: 8,
-  },
+  resultCardTitle: { fontSize: 16, fontWeight: 600, color: COLORS.navy, margin: "0 0 6px" },
+  resultCardScore: { fontSize: 32, fontWeight: 800, color: COLORS.teal, margin: "0 0 4px" },
+  resultCardDate: { fontSize: 13, color: COLORS.muted, margin: 0 },
+  resultCardStatus: { display: "inline-block", padding: "2px 12px", borderRadius: 20, fontSize: 12, fontWeight: 600, marginTop: 8 },
   skillsSummary: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
@@ -144,16 +109,8 @@ const styles = {
     marginTop: 20,
     border: "1px solid " + COLORS.border,
   },
-  skillStats: {
-    display: "flex",
-    gap: 20,
-    flexWrap: "wrap",
-    marginTop: 8,
-  },
-  skillStat: {
-    fontSize: 14,
-    fontWeight: 600,
-  },
+  skillStats: { display: "flex", gap: 20, flexWrap: "wrap", marginTop: 8 },
+  skillStat: { fontSize: 14, fontWeight: 600 },
   careerSummary: {
     backgroundColor: "#FFF8E1",
     borderRadius: 12,
@@ -181,6 +138,23 @@ const styles = {
     display: "inline-block",
     transition: "all 0.25s ease",
   },
+  // === أنماط الرسم البياني ===
+  chartContainer: {
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 16,
+    padding: "24px",
+    marginTop: 20,
+    border: "1px solid " + COLORS.border,
+  },
+  chartTitle: { fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 },
+  chartWrapper: { display: 'flex', alignItems: 'flex-end', gap: '12px', height: '120px', paddingTop: '10px' },
+  chartBar: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' },
+  barFill: { width: '100%', borderRadius: '4px 4px 0 0', transition: 'height 0.5s ease' },
+  barLabel: { fontSize: '10px', color: COLORS.muted, textAlign: 'center', writingMode: 'vertical-lr', transform: 'rotate(180deg)', height: '40px' },
+  barValue: { fontSize: '12px', fontWeight: 700, color: COLORS.text },
+  sectionTitle: { fontSize: 18, fontWeight: 700, color: COLORS.navy, margin: "0 0 16px" },
+  weakSkillTag: { display: 'inline-block', padding: '4px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, margin: '4px', backgroundColor: '#FFEBEE', color: '#C62828' },
+  strongSkillTag: { display: 'inline-block', padding: '4px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, margin: '4px', backgroundColor: '#E8F5E9', color: '#2E7D32' },
 };
 
 export default function Dashboard() {
@@ -225,8 +199,29 @@ export default function Dashboard() {
 
   // حساب إحصائيات المهارات من آخر تحليل
   const getSkillStats = () => {
-    if (!latestAnalysis || !latestAnalysis.subSkillDeepAnalysis) return null;
-    const skills = Object.values(latestAnalysis.subSkillDeepAnalysis);
+    if (!latestAnalysis) return null;
+    
+    // محاولة استخراج المهارات من مصادر مختلفة
+    let skills = [];
+    if (latestAnalysis.masteryResults) {
+      skills = latestAnalysis.masteryResults;
+    } else if (latestAnalysis.skillTree) {
+      // تحويل الشجرة إلى قائمة مسطحة
+      const flattenTree = (tree, list = []) => {
+        Object.values(tree).forEach(node => {
+          list.push({ percentage: node.percentage, level: node.percentage >= 70 ? 'متقن' : node.percentage >= 30 ? 'قيد التعلم' : 'ضعيف' });
+          if (node.children) flattenTree(node.children, list);
+        });
+        return list;
+      };
+      skills = flattenTree(latestAnalysis.skillTree);
+    } else if (latestAnalysis.weakestSkills) {
+      // احتياطي: استخدم أضعف المهارات فقط
+      skills = latestAnalysis.weakestSkills.map(s => ({ percentage: s.percentage, level: 'ضعيف' }));
+    }
+
+    if (skills.length === 0) return null;
+
     return {
       mastered: skills.filter(s => s.percentage >= 80).length,
       learning: skills.filter(s => s.percentage >= 50 && s.percentage < 80).length,
@@ -236,6 +231,36 @@ export default function Dashboard() {
   };
 
   const skillStats = getSkillStats();
+
+  // استخراج أضعف وأقوى المهارات من آخر تحليل
+  const getWeakSkills = () => {
+    if (!latestAnalysis) return [];
+    if (latestAnalysis.weakestSkills) return latestAnalysis.weakestSkills;
+    if (latestAnalysis.masteryResults) {
+      return latestAnalysis.masteryResults.filter(s => s.percentage < 50).slice(0, 5);
+    }
+    return [];
+  };
+
+  const getStrongSkills = () => {
+    if (!latestAnalysis) return [];
+    if (latestAnalysis.masteryResults) {
+      return latestAnalysis.masteryResults.filter(s => s.percentage >= 80).slice(0, 5);
+    }
+    return [];
+  };
+
+  const weakSkills = getWeakSkills();
+  const strongSkills = getStrongSkills();
+
+  // تحضير بيانات الرسم البياني
+  const getChartData = () => {
+    const sorted = [...results].sort((a, b) => new Date(a.date) - new Date(b.date));
+    return sorted.slice(-10); // آخر 10 تقييمات
+  };
+
+  const chartData = getChartData();
+  const maxScore = Math.max(100, ...chartData.map(d => d.score || 0));
 
   return (
     <>
@@ -275,7 +300,7 @@ export default function Dashboard() {
               📊 لوحة التشخيص
             </h1>
             <p style={{ ...styles.pageSubtitle, fontSize: isMobile ? 15 : 17, className: "page-subtitle" }}>
-              يعرض هذا القسم تقريراً تفصيلياً لأدائك بعد إتمام أي تقييم.
+              يعرض هذا القسم تقريراً تفصيلياً لأدائك بعد إتمام أي تقييم، مع تتبع تطورك عبر الزمن.
             </p>
           </div>
 
@@ -294,7 +319,35 @@ export default function Dashboard() {
             </div>
           ) : (
             <div style={styles.resultsContainer} className="results-container">
-              <h3 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: "0 0 6px" }}>
+              {/* ===== الرسم البياني للتطور ===== */}
+              {chartData.length > 1 && (
+                <div style={styles.chartContainer}>
+                  <h4 style={styles.chartTitle}>📈 منحنى تطور أدائك</h4>
+                  <div style={styles.chartWrapper}>
+                    {chartData.map((item, index) => {
+                      const height = Math.max(10, (item.score / maxScore) * 100);
+                      const color = item.score >= 70 ? COLORS.success : item.score >= 50 ? COLORS.warning : COLORS.error;
+                      const date = new Date(item.date);
+                      const label = `${date.getDate()}/${date.getMonth()+1}`;
+                      return (
+                        <div key={index} style={styles.chartBar}>
+                          <div style={{ ...styles.barFill, height: `${height}%`, backgroundColor: color }} />
+                          <span style={styles.barValue}>{item.score}%</span>
+                          <span style={styles.barLabel}>{label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: COLORS.muted, marginTop: 8 }}>
+                    <span>🟢 ممتاز (≥70%)</span>
+                    <span>🟡 متوسط (50-70%)</span>
+                    <span>🔴 يحتاج تحسين (&lt;50%)</span>
+                  </div>
+                </div>
+              )}
+
+              {/* ===== إحصائيات سريعة ===== */}
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: COLORS.navy, margin: "20px 0 6px" }}>
                 📈 نتائج تقييماتك السابقة
               </h3>
               <p style={{ fontSize: 15, color: COLORS.muted, margin: "0 0 24px" }}>
@@ -302,7 +355,7 @@ export default function Dashboard() {
               </p>
 
               <div style={styles.resultsGrid} className="results-grid">
-                {results.map((result, index) => {
+                {results.slice(0, 6).map((result, index) => {
                   const status = getStatusBadge(result.score);
                   const date = new Date(result.date);
                   const formattedDate = date.toLocaleDateString("ar-EG", {
@@ -328,30 +381,63 @@ export default function Dashboard() {
                 })}
               </div>
 
-              {/* ملخص المهارات من آخر تحليل */}
-              {latestAnalysis && skillStats && (
+              {/* ===== ملخص المهارات (آخر تحليل) ===== */}
+              {latestAnalysis && (
                 <div style={styles.skillsSummary}>
                   <h4 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, margin: "0 0 8px" }}>
-                    📊 ملخص مهاراتك ({skillStats.total} مهارة)
+                    📊 ملخص آخر تحليل
                   </h4>
-                  <div style={styles.skillStats}>
-                    <span style={{ ...styles.skillStat, color: COLORS.success }}>
-                      ✅ متقنة: {skillStats.mastered}
-                    </span>
-                    <span style={{ ...styles.skillStat, color: COLORS.warning }}>
-                      ⚠️ قيد التعلم: {skillStats.learning}
-                    </span>
-                    <span style={{ ...styles.skillStat, color: COLORS.error }}>
-                      ❌ تحتاج تحسين: {skillStats.weak}
-                    </span>
-                  </div>
-
-                  {latestAnalysis.careerPrediction && latestAnalysis.careerPrediction.bestMatch && (
-                    <div style={styles.careerSummary}>
-                      🧭 أنسب مسار مهني لك: <strong>{latestAnalysis.careerPrediction.bestMatch.title}</strong> ({latestAnalysis.careerPrediction.bestMatch.matchPercentage}% توافق)
+                  
+                  {skillStats && (
+                    <div style={styles.skillStats}>
+                      <span style={{ ...styles.skillStat, color: COLORS.success }}>
+                        ✅ متقنة: {skillStats.mastered}
+                      </span>
+                      <span style={{ ...styles.skillStat, color: COLORS.warning }}>
+                        ⚠️ قيد التعلم: {skillStats.learning}
+                      </span>
+                      <span style={{ ...styles.skillStat, color: COLORS.error }}>
+                        ❌ تحتاج تحسين: {skillStats.weak}
+                      </span>
+                      <span style={{ ...styles.skillStat, color: COLORS.muted }}>
+                        📚 المجموع: {skillStats.total}
+                      </span>
                     </div>
                   )}
 
+                  {/* أقوى وأضعف المهارات */}
+                  <div style={{ marginTop: 12 }}>
+                    {strongSkills.length > 0 && (
+                      <div>
+                        <span style={{ fontWeight: 700, color: COLORS.success }}>💪 أقوى المهارات: </span>
+                        {strongSkills.slice(0, 3).map((s, i) => (
+                          <span key={i} style={styles.strongSkillTag}>{s.name} ({s.percentage}%)</span>
+                        ))}
+                      </div>
+                    )}
+                    {weakSkills.length > 0 && (
+                      <div style={{ marginTop: 6 }}>
+                        <span style={{ fontWeight: 700, color: COLORS.error }}>📌 أضعف المهارات: </span>
+                        {weakSkills.slice(0, 3).map((s, i) => (
+                          <span key={i} style={styles.weakSkillTag}>{s.name} ({s.percentage}%)</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* التوصية الوظيفية */}
+                  {latestAnalysis.careerFit && latestAnalysis.careerFit.bestMatch && (
+                    <div style={styles.careerSummary}>
+                      🧭 أنسب مسار مهني لك: <strong>{latestAnalysis.careerFit.bestMatch}</strong> ({latestAnalysis.careerFit.matchPercentage || 0}% توافق)
+                      {latestAnalysis.careerFit.nextStep && (
+                        <span style={{ display: 'block', fontSize: 13, fontWeight: 400, marginTop: 4 }}>
+                          📚 {latestAnalysis.careerFit.nextStep}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* أزرار الإجراءات السريعة */}
                   <div style={styles.quickActions}>
                     <Link href="/course" style={{ ...styles.quickActionBtn, backgroundColor: COLORS.teal, color: COLORS.white }}>
                       📚 اذهب إلى كورسك المخصص
