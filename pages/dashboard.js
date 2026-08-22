@@ -87,6 +87,11 @@ export default function DashboardPage() {
   const improving = states.filter(s => s.trend === 'improving');
   const totalEvidence = states.reduce((sum, s) => sum + s.evidenceCount, 0);
 
+  // --- Misconception Extraction ---
+  const allMisconceptions = states.flatMap(s => 
+    (s.misconceptions || []).map(m => ({ ...m, skillId: s.skillId }))
+  );
+  
   return (
     <div style={{ fontFamily: "'Segoe UI', Tahoma, 'Cairo', system-ui, sans-serif", backgroundColor: COLORS.bg, minHeight: '100vh', color: COLORS.text, direction: "rtl" }}>
       <Head>
@@ -151,10 +156,13 @@ export default function DashboardPage() {
             {/* Skill summary pills */}
             <div style={{ marginBottom: 24 }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16 }}>
-                حالة المهارات الحالية
+                حالة المهارات الحالية (Probability of Mastery)
               </h3>
               <div>
-                {states.slice(0, 12).map(s => <QuickSkillPill key={s.skillId} state={s} />)}
+                {states.length === 0 ? (
+                   <span style={{color: COLORS.muted}}>Unknown skill level - ابدأ التقييم لتحديد مستواك.</span>
+                ) : states.slice(0, 12).map(s => <QuickSkillPill key={s.skillId} state={s} />)}
+                
                 {states.length > 12 && (
                   <Link href="/intelligence" style={{ display: 'inline-block', margin: 4, padding: '8px 14px', color: COLORS.teal, textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
                     +{states.length - 12} المزيد ←
@@ -162,6 +170,35 @@ export default function DashboardPage() {
                 )}
               </div>
             </div>
+
+            {/* WOW MOMENT: Detected Misconceptions */}
+            {allMisconceptions.length > 0 && (
+              <div style={{ marginBottom: 32, backgroundColor: '#fff', borderLeft: `4px solid ${COLORS.orange}`, padding: 24, borderRadius: 12, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: 18, fontWeight: 800, color: COLORS.navy, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span>🧠</span> محرك اكتشاف المفاهيم الخاطئة (Misconception Engine)
+                </h3>
+                <p style={{ color: COLORS.muted, fontSize: 14, marginBottom: 16 }}>
+                  بناءً على تحليلات (Bayesian Knowledge Tracing)، تم اكتشاف المفاهيم الخاطئة التالية:
+                </p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {allMisconceptions.map((misc, idx) => (
+                    <div key={idx} style={{ padding: 16, backgroundColor: `${COLORS.orange}10`, borderRadius: 8, border: `1px solid ${COLORS.orange}30` }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                        <span style={{ fontWeight: 700, color: COLORS.orange }}>{misc.misconceptionId === 'misc_net_bits_host_bits' ? 'خلط بين Network Bits و Host Bits' : misc.misconceptionId}</span>
+                        <span style={{ fontSize: 12, color: COLORS.orange, fontWeight: 600, backgroundColor: '#fff', padding: '2px 8px', borderRadius: 12 }}>ثقة المحرك: {Math.round(misc.confidence * 100)}%</span>
+                      </div>
+                      <div style={{ fontSize: 13, color: COLORS.text }}>
+                        يواجه الطالب مشكلة في مهارة <strong style={{color: COLORS.teal}}>{misc.skillId.replace(/_/g, ' ')}</strong>، حيث يقوم بشكل متكرر باختيار إجابات تدل على هذا المفهوم الخاطئ. 
+                      </div>
+                      <div style={{ marginTop: 12, fontSize: 12, color: COLORS.muted, borderTop: `1px dashed ${COLORS.orange}50`, paddingTop: 8 }}>
+                        العلاج المقترح (AI Layer): تخصيص تدريب موجه على كيفية التمييز بين أجزاء عنوان الشبكة والمضيف.
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Quick actions */}
             <div>

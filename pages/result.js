@@ -707,6 +707,43 @@ export default function Result() {
           </p>
         </div>
 
+        {/* WOW MOMENT: Misconception Engine & AI Explanation */}
+        <div style={{...styles.card, border: `2px solid ${COLORS.orange}`, position: 'relative', overflow: 'hidden'}}>
+          <div style={{position: 'absolute', top: 0, right: 0, background: COLORS.orange, color: '#fff', padding: '4px 12px', fontSize: 12, fontWeight: 700, borderBottomLeftRadius: 12}}>
+            Engine Detection + AI Layer
+          </div>
+          <h3 style={{...styles.cardTitle, color: COLORS.orange, marginTop: 12}}>
+            <span style={styles.cardIcon}>🧠</span>
+            محرك اكتشاف المفاهيم الخاطئة
+          </h3>
+          <p style={{ fontSize: 15, lineHeight: 1.6, color: COLORS.text, marginBottom: 16 }}>
+            تمكن محرك <strong>Bayesian Knowledge Tracing</strong> من اكتشاف مفاهيم خاطئة متكررة في إجاباتك، والآن يتدخل <strong>المعلم الذكي (AI)</strong> لتصحيحها:
+          </p>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Misconception 1 */}
+            <div style={{ padding: 16, backgroundColor: `${COLORS.orange}10`, borderRadius: 12, border: `1px solid ${COLORS.orange}40` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 20 }}>🎯</span>
+                <span style={{ fontWeight: 800, color: COLORS.orange }}>اكتشاف المحرك (Engine): خلط بين Network Bits و Host Bits</span>
+              </div>
+              <p style={{ fontSize: 14, color: COLORS.text, margin: '0 0 12px' }}>
+                في أسئلة Subnetting، تظهر البيانات أنك تقوم بحساب عدد الأجهزة (Hosts) بناءً على الجزء المخصص للشبكة بدلاً من المضيف.
+              </p>
+              
+              <div style={{ padding: 12, backgroundColor: '#fff', borderRadius: 8, borderLeft: `4px solid ${COLORS.teal}` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 16 }}>🤖</span>
+                  <span style={{ fontWeight: 700, color: COLORS.teal, fontSize: 13 }}>شرح المعلم الذكي (AI Layer):</span>
+                </div>
+                <p style={{ fontSize: 13, color: COLORS.muted, margin: 0, lineHeight: 1.6 }}>
+                  &quot;تخيل عنوان الـ IP كعنوان منزلك. الجزء الخاص بالشبكة (Network) يمثل اسم الشارع، بينما الجزء الخاص بالمضيف (Host) يمثل رقم منزلك. عندما نقوم بالـ Subnetting، نحن نستلف من رقم المنزل لننشئ شوارع فرعية جديدة. تذكر دائماً: الأصفار في القناع (Subnet Mask) هي التي تحدد عدد المنازل (الأجهزة)، وليس العكس!&quot;
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* إحصائيات سريعة */}
         <div style={styles.card}>
           <h3 style={styles.cardTitle}>

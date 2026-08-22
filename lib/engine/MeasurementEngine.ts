@@ -216,6 +216,30 @@ export function applyMeasurementToState(
     ? newEvidence.filter(e => (e.correctness ?? 0) >= 0.5).length / newEvidence.length
     : prior.recentPerformance;
 
+  // --- MISCONCEPTION ENGINE ---
+  // Demo Mock logic: if wrong answer on subnetting, flag misconception.
+  const updatedMisconceptions = [...prior.misconceptions];
+  const hasWrongSubnetting = newEvidence.some(
+    e => e.skillId === 'subnetting' && (e.correctness ?? 1) < 0.5
+  );
+
+  if (hasWrongSubnetting) {
+    const existingIndex = updatedMisconceptions.findIndex(m => m.misconceptionId === 'misc_net_bits_host_bits');
+    if (existingIndex >= 0) {
+      updatedMisconceptions[existingIndex].evidenceCount += 1;
+      updatedMisconceptions[existingIndex].confidence = Math.min(1.0, updatedMisconceptions[existingIndex].confidence + 0.2);
+      updatedMisconceptions[existingIndex].lastObservedAt = new Date();
+    } else {
+      updatedMisconceptions.push({
+        misconceptionId: 'misc_net_bits_host_bits',
+        evidenceCount: 1,
+        confidence: 0.6,
+        firstObservedAt: new Date(),
+        lastObservedAt: new Date()
+      });
+    }
+  }
+
   return {
     ...prior,
     mastery: result.estimate,
@@ -226,6 +250,7 @@ export function applyMeasurementToState(
     recentPerformance,
     trend: deriveTrend(prior.mastery, result.estimate),
     lastObservedAt: new Date(),
+    misconceptions: updatedMisconceptions,
     status: deriveStatus(result.estimate, result.uncertainty),
   };
 }

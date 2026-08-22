@@ -81,6 +81,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // 4. Also apply BKT for comparison/logging
     const bktState = ktModel.updateState(priorState, evidence);
 
+    const learningEventLog = {
+      learner: priorState.userId || userId,
+      skill: body.skillId,
+      question: body.itemId || 'unknown',
+      answer: body.isCorrect,
+      response_time: body.responseTimeMs,
+      confidence_before: priorState.confidence,
+      confidence_after: updatedState.confidence,
+      timestamp: new Date().toISOString(),
+      model_version: "1.0"
+    };
+
+    console.log('\n[SmartLab Intelligence] Learning Event Emitted (Flywheel):');
+    console.log(JSON.stringify(learningEventLog, null, 2) + '\n');
+
     // 5. Save updated state
     await demoRepository.learnerStates.saveState(updatedState);
 
