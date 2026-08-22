@@ -1,0 +1,24 @@
+# Dependency directories (المكتبات والاعتماديات)
+node_modules/
+jspm_packages/
+
+# Next.js build outputs (ملفات البناء والتشغيل المؤقتة لـ نيكست)
+.next/
+out/
+
+# Production build (مجلدات البناء النهائي)
+build/
+dist/
+
+# Debug logs (ملفات سجلات الأخطاء)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files (ملفات البيئة والمتغيرات السرية)
+.env*.local
+
+# OS Metadata (ملفات النظام المؤقتة للويندوز والماك)
+.DS_Store
+Thumbs.db
