@@ -94,6 +94,7 @@ export async function seedDemoData(repo: InMemoryRepositoryContainer): Promise<v
 
   // 3. Seed Alex's profile
   const alexProfile: LearnerProfile = {
+    anonymous_id: 'anon_' + ALEX_USER_ID,
     userId: ALEX_USER_ID,
     displayName: 'Alex',
     email: 'alex@demo.smartlab.io',

@@ -5,7 +5,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { demoRepository } from '../../../lib/repositories/InMemoryRepository';
 import { EvidenceCollector } from '../../../lib/evidence/EvidenceCollector';
-import { MeasurementEngine } from '../../../lib/engine/MeasurementEngine';
+import { LegacyMeasurementAdapter as MeasurementEngine } from '../../../infrastructure/legacy/LegacyMeasurementAdapter';
 import { seedDemoData, ALEX_USER_ID } from '../../../scripts/seedDemoData';
 
 let seeded = false;

@@ -4,7 +4,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { demoRepository } from '../../../lib/repositories/InMemoryRepository';
-import { AdaptiveItemSelector } from '../../../lib/engine/AdaptiveItemSelector';
+import { LegacyAdaptiveAdapter as AdaptiveItemSelector } from '../../../infrastructure/legacy/LegacyAdaptiveAdapter';
 import { NETWORKING_SKILLS } from '../../../data/networking/skills';
 import { seedDemoData, ALEX_USER_ID } from '../../../scripts/seedDemoData';
 import type { AssessmentObjective } from '../../../lib/domain/types';

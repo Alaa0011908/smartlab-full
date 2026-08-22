@@ -19,7 +19,7 @@ import type {
   I18nString,
 } from '../domain/types';
 
-interface RecommendationInput {
+export interface RecommendationInput {
   learnerStates: LearnerSkillState[];
   goal: LearningGoal | null;
   availableActions: LearningAction[];

@@ -6,8 +6,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { demoRepository } from '../../../lib/repositories/InMemoryRepository';
 import { EvidenceCollector } from '../../../lib/evidence/EvidenceCollector';
-import { MeasurementEngine } from '../../../lib/engine/MeasurementEngine';
-import { BKTModel } from '../../../lib/engine/KnowledgeTracingModel';
+import { LegacyMeasurementAdapter as MeasurementEngine } from '../../../infrastructure/legacy/LegacyMeasurementAdapter';
+import { LegacyKnowledgeAdapter as BKTModel } from '../../../infrastructure/legacy/LegacyKnowledgeAdapter';
 import { seedDemoData, ALEX_USER_ID } from '../../../scripts/seedDemoData';
 import type { LearnerSkillState } from '../../../lib/domain/types';
 

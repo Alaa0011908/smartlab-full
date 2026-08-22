@@ -188,10 +188,58 @@ export interface LearnerSkillState {
   };
 }
 
-export interface LearnerProfile {
-  userId: string;
-  displayName: string;
+// ============================================================
+// ENTERPRISE & PRIVACY MODELS (PHASE 1)
+// ============================================================
+
+export interface Organization {
+  id: string;
+  name: string;
+  type: 'bootcamp' | 'university' | 'corporate' | 'demo';
+}
+
+export interface UserIdentity {
+  id: string;
   email: string;
+  organizationId: string;
+}
+
+export interface LearningEventEnvelope {
+  id: string;
+  timestamp: Date;
+  learner_id: string;
+  event_type: 'ANSWER_SUBMITTED' | 'HINT_REQUESTED' | 'REVIEW_STARTED';
+  payload: {
+    question_id?: string;
+    skill?: string;
+    correct?: boolean;
+    response_time?: number;
+    [key: string]: any;
+  };
+  context: {
+    device?: string;
+    session?: string;
+    model_version: string;
+    engine_version: string;
+    [key: string]: any;
+  };
+}
+
+export interface FeatureFlags {
+  newAdaptiveEngine: boolean;
+  eventStore: boolean;
+  newRecommendation: boolean;
+}
+
+// ============================================================
+// LEARNER PROFILE
+// ============================================================
+
+export interface LearnerProfile {
+  anonymous_id: string; // Primary ID for intelligence engine
+  userId: string;       // Legacy ID for backwards compatibility
+  displayName: string;
+  email?: string;       // Deprecated: Moving to UserIdentity
   preferredLocale: 'en' | 'ar';
   coachingStyle: CoachingStyle;
   activeGoal?: LearningGoal;
