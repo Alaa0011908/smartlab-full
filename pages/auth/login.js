@@ -1,4 +1,4 @@
-// pages/auth/login.js - النسخة النهائية مع روابط نشطة
+// pages/auth/login.js
 import Head from "next/head";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -35,21 +35,18 @@ const styles = {
     borderRadius: 24,
     boxShadow: "0 20px 60px rgba(13,30,59,0.08)",
     width: "100%",
-    maxWidth: 620,
-    padding: "48px 60px 56px",
+    maxWidth: 700,
+    padding: "40px 50px 48px",
     textAlign: "center",
     boxSizing: "border-box",
   },
   logoWrap: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 28,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 0,
+    marginBottom: 12,
   },
-  logoText: { display: "flex", gap: 5, alignItems: "baseline" },
-  logoSmart: { fontSize: 17, fontWeight: 800, color: COLORS.navy },
-  logoLab: { fontSize: 17, fontWeight: 800, color: COLORS.orange },
   title: {
     fontSize: 34,
     fontWeight: 800,
@@ -146,18 +143,20 @@ const styles = {
   },
 };
 
+// ✅ اللوغو 365x210
 function LogoMark() {
   return (
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M46 14c-6 0-11 3-14 8-3-3-8-4-12-3-6 2-9 8-7 14-5 2-7 7-5 12 2 5 6 7 11 7 2 5 6 8 11 8 6 0 11-3 13-8 6 2 12-1 14-7 2-5 0-10-3-13 3-5 3-11-2-15-3-6-8-8-14-3z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M28 34c2-5 6-8 11-8" stroke={COLORS.orange} strokeWidth="3.4" strokeLinecap="round" />
-      <circle cx="47" cy="24" r="3.4" fill={COLORS.orange} />
-      <path d="M40 18l10-4-6 8z" fill={COLORS.navy} opacity="0.7" />
-    </svg>
+    <img 
+      src="/logo.png" 
+      alt="SmartLab Logo" 
+      style={{ 
+        width: '365px', 
+        height: '210px', 
+        objectFit: 'contain',
+        display: 'block',
+        margin: '0 auto'
+      }}
+    />
   );
 }
 
@@ -261,10 +260,6 @@ export default function Login() {
         <div style={{ ...styles.card, padding: isMobile ? "36px 24px 40px" : styles.card.padding }} className="login-card">
           <div style={styles.logoWrap}>
             <LogoMark />
-            <span style={styles.logoText}>
-              <span style={styles.logoSmart}>Smart</span>
-              <span style={styles.logoLab}>Lab</span>
-            </span>
           </div>
 
           <h1 style={styles.title}>تسجيل الدخول</h1>
@@ -308,7 +303,6 @@ export default function Login() {
               </button>
             </div>
 
-            {/* ✅ الرابط المعدل لـ "نسيت كلمة المرور" */}
             <div style={styles.forgotRow}>
               <Link
                 href="/auth/forgot-password"
@@ -337,7 +331,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* ✅ الرابط المعدل لـ "إنشاء حساب جديد" */}
           <p style={styles.bottom}>
             ليس لديك حساب؟{" "}
             <Link

@@ -1,18 +1,16 @@
-// pages/auth/signup.js - النسخة النهائية المتكاملة مع Supabase
+// pages/auth/signup.js
 import Head from "next/head";
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-// ===== الألوان الجديدة الموحدة =====
 const COLORS = {
-  primary: "#0056D2",     // الأزرق الجديد (أساسي)
-  secondary: "#17919e",   // التوركوازي (ثانوي)
-  secondaryDark: "#127a86",
+  teal: "#17919e",
+  tealDark: "#127a86",
   orange: "#e1682e",
   navy: "#0d3d4e",
-  bg: "#f8f9fa",          // خلفية الصفحة الجديدة
+  bg: "#eef4f8",
   white: "#ffffff",
   text: "#0d1e3b",
   muted: "#8a99a8",
@@ -33,31 +31,29 @@ const styles = {
     justifyContent: "center",
     padding: "40px 20px",
     margin: 0,
+    boxSizing: "border-box",
   },
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
-    boxShadow: "0 20px 60px rgba(0,86,210,0.08)",
+    boxShadow: "0 20px 60px rgba(13,30,59,0.08)",
     width: "100%",
-    maxWidth: 620,
-    padding: "48px 60px 56px",
+    maxWidth: 700,
+    padding: "40px 50px 48px",
     textAlign: "center",
     boxSizing: "border-box",
   },
   logoWrap: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 28,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 0,
+    marginBottom: 12,
   },
-  logoText: { display: "flex", gap: 5, alignItems: "baseline" },
-  logoSmart: { fontSize: 17, fontWeight: 800, color: COLORS.primary },
-  logoLab: { fontSize: 17, fontWeight: 800, color: COLORS.orange },
   title: {
     fontSize: 34,
     fontWeight: 800,
-    color: COLORS.primary,
+    color: COLORS.navy,
     margin: "0 0 8px",
   },
   subtitle: {
@@ -89,7 +85,7 @@ const styles = {
     right: 20,
     top: "50%",
     transform: "translateY(-50%)",
-    color: COLORS.secondary,
+    color: COLORS.teal,
     display: "flex",
     alignItems: "center",
     pointerEvents: "none",
@@ -103,20 +99,9 @@ const styles = {
     border: "none",
     padding: 0,
     cursor: "pointer",
-    color: COLORS.secondary,
+    color: COLORS.teal,
     display: "flex",
     alignItems: "center",
-    transition: "color 0.25s ease",
-  },
-  forgotRow: {
-    textAlign: "right",
-    marginBottom: 34,
-  },
-  forgot: {
-    fontSize: 15,
-    color: COLORS.navy,
-    textDecoration: "none",
-    cursor: "pointer",
     transition: "color 0.25s ease",
   },
   submit: {
@@ -124,7 +109,7 @@ const styles = {
     height: 62,
     borderRadius: 12,
     border: "none",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.teal,
     color: COLORS.white,
     fontSize: 19,
     fontWeight: 700,
@@ -141,12 +126,12 @@ const styles = {
     cursor: "not-allowed",
   },
   bottom: {
-    marginTop: 22,
+    marginTop: 48,
     fontSize: 15,
     color: COLORS.text,
   },
   bottomLink: {
-    color: COLORS.primary,
+    color: COLORS.navy,
     fontWeight: 800,
     textDecoration: "none",
     cursor: "pointer",
@@ -158,8 +143,6 @@ const styles = {
     borderRadius: 8,
     fontSize: 14,
     textAlign: "center",
-    backgroundColor: COLORS.bg,
-    color: COLORS.text,
   },
   messageSuccess: {
     backgroundColor: "#E8F5E9",
@@ -176,7 +159,7 @@ const styles = {
     marginTop: 12,
     background: "none",
     border: "none",
-    color: COLORS.secondary,
+    color: COLORS.teal,
     cursor: "pointer",
     fontSize: 14,
     textDecoration: "underline",
@@ -184,19 +167,20 @@ const styles = {
   },
 };
 
-// ===== أيقونات SVG (مأخوذة من login.js) =====
+// ✅ اللوغو 365x210
 function LogoMark() {
   return (
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M46 14c-6 0-11 3-14 8-3-3-8-4-12-3-6 2-9 8-7 14-5 2-7 7-5 12 2 5 6 7 11 7 2 5 6 8 11 8 6 0 11-3 13-8 6 2 12-1 14-7 2-5 0-10-3-13 3-5 3-11-2-15-3-6-8-8-14-3z"
-        fill={COLORS.secondary}
-        opacity="0.9"
-      />
-      <path d="M28 34c2-5 6-8 11-8" stroke={COLORS.orange} strokeWidth="3.4" strokeLinecap="round" />
-      <circle cx="47" cy="24" r="3.4" fill={COLORS.orange} />
-      <path d="M40 18l10-4-6 8z" fill={COLORS.navy} opacity="0.7" />
-    </svg>
+    <img 
+      src="/logo.png" 
+      alt="SmartLab Logo" 
+      style={{ 
+        width: '365px', 
+        height: '210px', 
+        objectFit: 'contain',
+        display: 'block',
+        margin: '0 auto'
+      }}
+    />
   );
 }
 
@@ -247,7 +231,6 @@ function CreateArrowIcon() {
   );
 }
 
-// ===== المكون الرئيسي =====
 export default function Signup() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -259,8 +242,14 @@ export default function Signup() {
   const [message, setMessage] = useState({ text: "", type: "" });
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState("");
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1024);
 
-  // دالة إرسال رمز التحقق (مأخوذة من القديم)
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+  }
+
+  const isMobile = windowWidth <= 640;
+
   const handleSendOTP = async (e) => {
     e.preventDefault();
     if (password !== confirm) {
@@ -290,7 +279,6 @@ export default function Signup() {
     setLoading(false);
   };
 
-  // دالة التحقق من OTP
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -302,13 +290,11 @@ export default function Signup() {
     if (error) {
       setMessage({ text: `❌ ${error.message}`, type: "error" });
     } else {
-      // تسجيل الدخول ناجح → التوجه للرئيسية أو التقييم
       router.push("/assessment/categories");
     }
     setLoading(false);
   };
 
-  // إعادة تعيين لإظهار حقل البريد مجدداً
   const goBackToEmail = () => {
     setShowOtp(false);
     setOtp("");
@@ -316,7 +302,7 @@ export default function Signup() {
   };
 
   const focusStyle = (e) => {
-    e.currentTarget.style.borderColor = COLORS.secondary;
+    e.currentTarget.style.borderColor = COLORS.teal;
     e.currentTarget.style.boxShadow = `0 0 0 3px rgba(23,145,158,0.12)`;
   };
   const blurStyle = (e) => {
@@ -341,20 +327,15 @@ export default function Signup() {
       </Head>
 
       <div style={styles.page} dir="rtl">
-        <div style={styles.card} className="signup-card">
+        <div style={{ ...styles.card, padding: isMobile ? "36px 24px 40px" : styles.card.padding }} className="signup-card">
           <div style={styles.logoWrap}>
             <LogoMark />
-            <span style={styles.logoText}>
-              <span style={styles.logoSmart}>Smart</span>
-              <span style={styles.logoLab}>Lab</span>
-            </span>
           </div>
 
           <h1 style={styles.title}>إنشاء حساب</h1>
           <p style={styles.subtitle}>انضم إلى سمارت لاب وابدأ رحلتك التعليمية</p>
 
           {!showOtp ? (
-            // === المرحلة 1: إدخال البريد وكلمة المرور ===
             <form onSubmit={handleSendOTP}>
               <div style={styles.field}>
                 <span style={styles.iconRight}><MailIcon /></span>
@@ -388,8 +369,8 @@ export default function Signup() {
                   type="button"
                   style={styles.eyeBtn}
                   onClick={() => setShowPassword((v) => !v)}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.secondaryDark)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.secondary)}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.tealDark)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.teal)}
                 >
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
@@ -412,8 +393,8 @@ export default function Signup() {
                   type="button"
                   style={styles.eyeBtn}
                   onClick={() => setShowConfirm((v) => !v)}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.secondaryDark)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.secondary)}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.tealDark)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.teal)}
                 >
                   {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
@@ -431,13 +412,13 @@ export default function Signup() {
                 disabled={loading}
                 onMouseEnter={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = COLORS.secondaryDark;
+                    e.currentTarget.style.backgroundColor = COLORS.tealDark;
                     e.currentTarget.style.transform = "translateY(-2px)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = COLORS.primary;
+                    e.currentTarget.style.backgroundColor = COLORS.teal;
                     e.currentTarget.style.transform = "translateY(0)";
                   }
                 }}
@@ -446,7 +427,6 @@ export default function Signup() {
               </button>
             </form>
           ) : (
-            // === المرحلة 2: إدخال رمز OTP ===
             <form onSubmit={handleVerifyOTP}>
               <p style={{ ...styles.subtitle, marginBottom: 20 }}>
                 أدخل الرمز الذي أرسلناه إلى <strong>{email}</strong>
@@ -477,13 +457,13 @@ export default function Signup() {
                 disabled={loading}
                 onMouseEnter={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = COLORS.secondaryDark;
+                    e.currentTarget.style.backgroundColor = COLORS.tealDark;
                     e.currentTarget.style.transform = "translateY(-2px)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = COLORS.primary;
+                    e.currentTarget.style.backgroundColor = COLORS.teal;
                     e.currentTarget.style.transform = "translateY(0)";
                   }
                 }}
@@ -499,7 +479,12 @@ export default function Signup() {
 
           <p style={styles.bottom}>
             لديك حساب؟{" "}
-            <Link href="/auth/login" style={styles.bottomLink}>
+            <Link
+              href="/auth/login"
+              style={styles.bottomLink}
+              onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.teal)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.navy)}
+            >
               تسجيل الدخول
             </Link>
           </p>

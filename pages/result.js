@@ -1,24 +1,38 @@
-// pages/result.js - صفحة نتيجة التقييم مع دائرة التقدم
+// pages/result.js
+// ============================================================
+// 📊 صفحة النتيجة الديناميكية - Dynamic Results Dashboard v3.0
+// تعرض جميع التحليلات الـ 17 بشكل تفاعلي وجذاب
+// ============================================================
+
+import React, { useState, useEffect, useRef } from 'react';
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import SkillTree from "../components/SkillTree";
 import { getAssessmentName } from "../data/questions/basics";
 
+// ============================================================
+// 🎨 الألوان والأنماط
+// ============================================================
 const COLORS = {
   teal: "#17919e",
   tealDark: "#127a86",
   orange: "#e1682e",
-  navy: "#0d3d4e",
-  bg: "#eef4f8",
+  navy: "#0D1E3B",
+  bg: "#f8f9fa",
   white: "#ffffff",
-  text: "#0d1e3b",
+  text: "#0D1E3B",
   muted: "#5b6b7b",
   lightGray: "#f8f9fa",
   border: "#e6ecf1",
   success: "#2ECC71",
   warning: "#F39C12",
   error: "#E74C3C",
+  gold: "#FFD700",
+  purple: "#9B59B6",
+  pink: "#E91E63",
+  indigo: "#3F51B5",
 };
 
 const styles = {
@@ -32,145 +46,60 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
-  // ===== Header =====
-  header: {
-    backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.border}`,
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-  },
-  headerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "14px 24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-  logoText: { display: "flex", flexDirection: "column", lineHeight: 1, alignItems: "center" },
-  logoSmart: { fontSize: 15, fontWeight: 800, color: COLORS.teal },
-  logoLab: { fontSize: 13, fontWeight: 700, color: COLORS.orange },
-  nav: { display: "flex", alignItems: "center", gap: 26 },
-  navLink: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: COLORS.text,
-    textDecoration: "none",
-    cursor: "pointer",
-    transition: "color 0.25s ease",
-    paddingBottom: 4,
-  },
-  navLinkActive: { color: COLORS.teal, borderBottom: `2px solid ${COLORS.teal}` },
-  headerRight: { display: "flex", alignItems: "center", gap: 16 },
-  themeBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    color: COLORS.text,
-    display: "flex",
-    alignItems: "center",
-    transition: "transform 0.25s ease",
-  },
-  loginBtn: {
-    backgroundColor: COLORS.teal,
-    color: COLORS.white,
-    border: "none",
-    borderRadius: 8,
-    padding: "10px 22px",
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
-    textDecoration: "none",
-    display: "inline-block",
-  },
-
-  // ===== Main =====
   main: {
     flex: 1,
-    maxWidth: 900,
+    maxWidth: 1200,
     width: "100%",
     margin: "0 auto",
-    padding: "50px 24px 80px",
+    padding: "30px 20px 60px",
+  },
+  loadingContainer: {
+    textAlign: "center",
+    padding: "100px 0",
+  },
+  spinner: {
+    width: 48,
+    height: 48,
+    border: `4px solid ${COLORS.border}`,
+    borderTop: `4px solid ${COLORS.teal}`,
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
+    margin: "0 auto 16px",
   },
 
-  // ===== Hero =====
-  hero: {
+  // ===== البطاقة الرئيسية =====
+  heroCard: {
     backgroundColor: COLORS.white,
     borderRadius: 24,
-    padding: "48px 40px 52px",
-    textAlign: "center",
+    padding: "40px 30px",
     boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
-    marginBottom: 32,
+    marginBottom: 24,
+    position: "relative",
+    overflow: "hidden",
   },
-  heroIcon: {
-    fontSize: 56,
-    marginBottom: 12,
-    display: "block",
+  heroCardGradient: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: "300px",
+    height: "100%",
+    background: `linear-gradient(135deg, ${COLORS.teal}15, ${COLORS.teal}05)`,
+    borderRadius: "0 24px 24px 0",
+    pointerEvents: "none",
   },
-  heroTitle: {
-    fontSize: 32,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 8px",
-  },
-  heroDesc: {
-    fontSize: 17,
-    color: COLORS.muted,
-    lineHeight: 1.8,
-    maxWidth: 560,
-    margin: "0 auto 32px",
-  },
-
-  // ===== Stats Grid =====
-  statsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: 16,
-    marginBottom: 32,
-  },
-  statCard: {
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 16,
-    padding: "20px 16px",
-    border: `1px solid ${COLORS.border}`,
-    textAlign: "center",
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: 800,
-    color: COLORS.navy,
-    margin: "0 0 4px",
-  },
-  statLabel: {
-    fontSize: 14,
-    color: COLORS.muted,
-    margin: 0,
-  },
-  statValueCorrect: {
-    color: COLORS.success,
-  },
-  statValueWrong: {
-    color: COLORS.error,
-  },
-  statValueTime: {
-    color: COLORS.teal,
-  },
-
-  // ===== Score Circle =====
-  scoreContainer: {
+  heroContent: {
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
-    marginBottom: 32,
+    gap: 30,
+    flexWrap: "wrap",
+    position: "relative",
+    zIndex: 1,
   },
   scoreCircle: {
     position: "relative",
-    width: 180,
-    height: 180,
+    width: 160,
+    height: 160,
+    flexShrink: 0,
   },
   scoreCircleSvg: {
     width: "100%",
@@ -180,11 +109,11 @@ const styles = {
   scoreCircleBg: {
     fill: "none",
     stroke: COLORS.border,
-    strokeWidth: 12,
+    strokeWidth: 10,
   },
   scoreCircleFill: {
     fill: "none",
-    strokeWidth: 12,
+    strokeWidth: 10,
     strokeLinecap: "round",
     transition: "stroke-dashoffset 1.5s ease",
   },
@@ -196,265 +125,443 @@ const styles = {
     textAlign: "center",
   },
   scoreNumber: {
-    fontSize: 40,
+    fontSize: 38,
     fontWeight: 800,
     color: COLORS.navy,
     display: "block",
   },
   scoreLabel: {
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.muted,
     display: "block",
   },
-
-  // ===== Toggle Button =====
-  toggleButton: {
-    display: "block",
-    width: "100%",
-    padding: "16px",
-    backgroundColor: COLORS.white,
-    border: `2px solid ${COLORS.teal}`,
-    borderRadius: 16,
-    color: COLORS.teal,
-    fontSize: 18,
-    fontWeight: 700,
-    cursor: "pointer",
-    transition: "background-color 0.25s ease, color 0.25s ease, transform 0.25s ease",
-    fontFamily: "inherit",
-    marginBottom: 32,
+  heroInfo: {
+    flex: 1,
   },
-  toggleButtonActive: {
+  heroTitle: {
+    fontSize: 24,
+    fontWeight: 800,
+    color: COLORS.navy,
+    margin: "0 0 4px",
+  },
+  heroSubtitle: {
+    fontSize: 15,
+    color: COLORS.muted,
+    margin: "0 0 12px",
+  },
+  heroStats: {
+    display: "flex",
+    gap: 20,
+    flexWrap: "wrap",
+  },
+  heroStat: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    fontSize: 14,
+    color: COLORS.muted,
+  },
+  heroStatValue: {
+    fontWeight: 700,
+    color: COLORS.text,
+  },
+  levelBadge: {
+    display: "inline-block",
+    padding: "4px 16px",
+    borderRadius: 20,
+    fontSize: 13,
+    fontWeight: 700,
+    marginTop: 4,
+  },
+
+  // ===== التبويبات =====
+  tabsContainer: {
+    display: "flex",
+    gap: 4,
+    marginBottom: 24,
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 4,
+    boxShadow: "0 2px 8px rgba(13,30,59,0.04)",
+    overflowX: "auto",
+    flexWrap: "nowrap",
+  },
+  tabButton: {
+    padding: "12px 20px",
+    borderRadius: 12,
+    border: "none",
+    backgroundColor: "transparent",
+    fontSize: 14,
+    fontWeight: 600,
+    color: COLORS.muted,
+    cursor: "pointer",
+    transition: "all 0.25s ease",
+    whiteSpace: "nowrap",
+    fontFamily: "inherit",
+  },
+  tabButtonActive: {
     backgroundColor: COLORS.teal,
     color: COLORS.white,
   },
 
-  // ===== Analysis Section =====
-  analysisSection: {
+  // ===== بطاقات التحليل =====
+  card: {
     backgroundColor: COLORS.white,
-    borderRadius: 24,
-    padding: "40px",
-    boxShadow: "0 6px 24px rgba(13,30,59,0.06)",
-    marginBottom: 32,
-    transition: "all 0.3s ease",
+    borderRadius: 16,
+    padding: "24px 28px",
+    boxShadow: "0 2px 12px rgba(13,30,59,0.04)",
+    marginBottom: 20,
   },
-  analysisHidden: {
-    display: "none",
-  },
-  sectionTitle: {
-    fontSize: 22,
+  cardTitle: {
+    fontSize: 18,
     fontWeight: 700,
     color: COLORS.navy,
-    margin: "0 0 6px",
+    margin: "0 0 16px",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
   },
-  sectionDesc: {
-    fontSize: 16,
-    color: COLORS.muted,
-    margin: "0 0 24px",
-    lineHeight: 1.7,
+  cardIcon: {
+    fontSize: 22,
   },
 
-  // ===== Analysis Cards =====
+  // ===== عناصر التحليل =====
   analysisGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: 20,
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: 16,
   },
-  analysisCard: {
+  analysisItem: {
+    padding: "14px 18px",
+    borderRadius: 12,
     backgroundColor: COLORS.lightGray,
-    borderRadius: 16,
-    padding: "20px 24px",
     border: `1px solid ${COLORS.border}`,
   },
-  analysisCardIcon: {
-    fontSize: 28,
-    display: "block",
-    marginBottom: 8,
-  },
-  analysisCardTitle: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: COLORS.navy,
-    margin: "0 0 4px",
-  },
-  analysisCardDesc: {
-    fontSize: 14,
-    color: COLORS.muted,
-    lineHeight: 1.7,
-    margin: 0,
-  },
-  analysisCardBadge: {
-    display: "inline-block",
-    padding: "2px 12px",
-    borderRadius: 20,
+  analysisLabel: {
     fontSize: 12,
     fontWeight: 600,
-    marginTop: 8,
+    color: COLORS.muted,
+    display: "block",
+    marginBottom: 4,
   },
-  insightBox: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 12,
-  },
-  insightText: {
-    fontSize: 15,
+  analysisValue: {
+    fontSize: 16,
+    fontWeight: 700,
     color: COLORS.text,
-    lineHeight: 1.8,
-    margin: 0,
+  },
+  analysisDescription: {
+    fontSize: 13,
+    color: COLORS.muted,
+    marginTop: 4,
   },
 
-  // ===== Topic Breakdown =====
-  topicBreakdown: {
-    marginTop: 24,
-  },
-  topicItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 0",
-    borderBottom: `1px solid ${COLORS.border}`,
-  },
-  topicName: {
-    fontSize: 14,
-    color: COLORS.text,
-  },
-  topicBar: {
-    flex: 1,
-    height: 6,
+  // ===== شريط التقدم =====
+  progressBar: {
+    height: 8,
     backgroundColor: COLORS.border,
     borderRadius: 4,
-    margin: "0 12px",
     overflow: "hidden",
+    marginTop: 4,
   },
-  topicFill: {
+  progressFill: {
     height: "100%",
     borderRadius: 4,
-    transition: "width 0.5s ease",
+    transition: "width 0.6s ease",
   },
-  topicScore: {
-    fontSize: 14,
+
+  // ===== المهارات الضعيفة =====
+  weakSkillCard: {
+    backgroundColor: "#FFEBEE",
+    borderRadius: 12,
+    padding: "16px 18px",
+    border: "1px solid #FFCDD2",
+    marginBottom: 10,
+  },
+  weakSkillTitle: {
+    fontSize: 15,
     fontWeight: 700,
-    color: COLORS.navy,
-    minWidth: 40,
+    color: "#C62828",
+  },
+  weakSkillDetail: {
+    fontSize: 13,
+    color: "#333",
+    lineHeight: 1.7,
+    marginTop: 4,
+  },
+  weakSkillLabel: {
+    fontWeight: 700,
+    color: "#555",
+  },
+  videoLink: {
+    display: "inline-block",
+    backgroundColor: "#FF0000",
+    color: "white",
+    padding: "4px 14px",
+    borderRadius: 8,
+    textDecoration: "none",
+    fontWeight: 700,
+    marginTop: 6,
+    fontSize: 12,
+  },
+
+  // ===== المخططات =====
+  chartContainer: {
+    marginTop: 12,
+  },
+  chartRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 8,
+  },
+  chartLabel: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: COLORS.muted,
+    width: 120,
+    flexShrink: 0,
+    textAlign: "right",
+  },
+  chartTrack: {
+    flex: 1,
+    height: 20,
+    backgroundColor: COLORS.border,
+    borderRadius: 4,
+    overflow: "hidden",
+    position: "relative",
+  },
+  chartFill: {
+    height: "100%",
+    borderRadius: 4,
+    transition: "width 0.6s ease",
+  },
+  chartValue: {
+    fontSize: 12,
+    fontWeight: 600,
+    width: 40,
+    flexShrink: 0,
     textAlign: "left",
   },
 
-  // ===== Back Link =====
-  backLink: {
+  // ===== الأزرار =====
+  buttonGroup: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 12,
+    marginTop: 24,
+  },
+  primaryButton: {
     display: "inline-block",
-    color: COLORS.muted,
+    backgroundColor: COLORS.teal,
+    color: COLORS.white,
+    border: "none",
+    borderRadius: 12,
+    padding: "14px 28px",
     fontSize: 15,
+    fontWeight: 700,
+    cursor: "pointer",
     textDecoration: "none",
-    transition: "color 0.25s ease",
     textAlign: "center",
-    marginTop: 8,
+    minWidth: 160,
+    transition: "all 0.25s ease",
+  },
+  orangeButton: {
+    display: "inline-block",
+    backgroundColor: COLORS.orange,
+    color: COLORS.white,
+    border: "none",
+    borderRadius: 12,
+    padding: "14px 28px",
+    fontSize: 15,
+    fontWeight: 700,
+    cursor: "pointer",
+    textDecoration: "none",
+    textAlign: "center",
+    minWidth: 160,
+    transition: "all 0.25s ease",
+  },
+  outlineButton: {
+    display: "inline-block",
+    backgroundColor: "transparent",
+    color: COLORS.navy,
+    border: `2px solid ${COLORS.border}`,
+    borderRadius: 12,
+    padding: "12px 28px",
+    fontSize: 15,
+    fontWeight: 700,
+    cursor: "pointer",
+    textDecoration: "none",
+    textAlign: "center",
+    minWidth: 160,
+    transition: "all 0.25s ease",
+  },
+  backLink: {
+    color: COLORS.muted,
+    fontSize: 14,
+    textDecoration: "none",
+    textAlign: "center",
+    display: "block",
+    marginTop: 20,
   },
 
-  // ===== Footer =====
-  footer: {
-    backgroundColor: COLORS.navy,
-    color: COLORS.white,
-    padding: "50px 24px 40px",
+  // ===== التقرير النصي =====
+  reportContainer: {
+    backgroundColor: "#f0f4f8",
+    padding: "20px 24px",
+    borderRadius: 16,
+    border: "1px solid #dde4ec",
+    textAlign: "right",
+    lineHeight: 1.9,
+    fontSize: 15,
+    color: "#1a2332",
+    whiteSpace: "pre-wrap",
+    maxHeight: 400,
+    overflowY: "auto",
   },
-  footerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 40,
-    flexWrap: "wrap",
+  reportTitle: {
+    fontSize: 17,
+    fontWeight: 800,
+    color: COLORS.navy,
+    marginBottom: 12,
   },
-  footerCol: { flex: "1 1 260px" },
-  footerBrand: { fontSize: 22, fontWeight: 800, margin: "0 0 14px" },
-  footerText: { fontSize: 15, lineHeight: 1.9, color: "rgba(255,255,255,0.75)", margin: 0, maxWidth: 320 },
-  footerHeading: { fontSize: 18, fontWeight: 700, margin: "0 0 18px" },
-  footerIconBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: "50%",
-    border: "1px solid rgba(255,255,255,0.3)",
-    backgroundColor: "transparent",
-    color: COLORS.white,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "background-color 0.25s ease",
+
+  // ===== التنبؤات =====
+  predictionCard: {
+    backgroundColor: "#E8F5E9",
+    borderRadius: 12,
+    padding: "16px 18px",
+    border: "1px solid #A5D6A7",
+    marginBottom: 10,
+  },
+  predictionTitle: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: "#2E7D32",
+  },
+  predictionDetail: {
+    fontSize: 13,
+    color: "#333",
+    lineHeight: 1.7,
+    marginTop: 4,
+  },
+
+  // ===== المسار الوظيفي =====
+  careerCard: {
+    backgroundColor: "#E3F2FD",
+    borderRadius: 12,
+    padding: "16px 18px",
+    border: "1px solid #90CAF9",
+    marginBottom: 10,
+  },
+  careerTitle: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: "#0D47A1",
+  },
+  careerDetail: {
+    fontSize: 13,
+    color: "#333",
+    lineHeight: 1.7,
+    marginTop: 4,
+  },
+
+  // ===== استجابة =====
+  '@media (max-width: 768px)': {
+    heroContent: { flexDirection: "column", textAlign: "center" },
+    heroStats: { justifyContent: "center" },
+    tabsContainer: { flexWrap: "wrap" },
+    tabButton: { fontSize: 12, padding: "8px 14px" },
+    card: { padding: "16px" },
+    analysisGrid: { gridTemplateColumns: "1fr" },
+    chartLabel: { width: 80 },
   },
 };
 
-// ===== أيقونات SVG =====
-function LogoMark() {
-  return (
-    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path
-        d="M30 8c-4 0-7 2-9 5-2-2-5-3-8-2-4 1-6 5-5 9-3 1-5 4-4 8 1 3 4 5 7 5 1 3 4 5 7 5 4 0 7-2 8-5 4 1 8-1 9-5 1-3 0-6-2-8 2-3 2-7-1-10-2-4-5-5-9-2z"
-        fill={COLORS.teal}
-        opacity="0.9"
-      />
-      <path d="M18 22c1-3 4-5 7-5" stroke={COLORS.orange} strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="30" cy="16" r="2.4" fill={COLORS.orange} />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="2" x2="12" y2="4" />
-      <line x1="12" y1="20" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4" y2="12" />
-      <line x1="20" y1="12" x2="22" y2="12" />
-      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3" />
-      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1" />
-      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7" />
-      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9" />
-    </svg>
-  );
-}
-
-function MailIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3 7l9 6 9-6" />
-    </svg>
-  );
-}
-
-// ===== المكون الرئيسي =====
+// ============================================================
+// 🎯 المكون الرئيسي
+// ============================================================
 export default function Result() {
   const router = useRouter();
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
   const [circleProgress, setCircleProgress] = useState(0);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [aiReport, setAiReport] = useState(null);
+  const [showFullDetails, setShowFullDetails] = useState(true);
+  const [historicalData, setHistoricalData] = useState([]);
+  const circleRef = useRef(null);
 
-  const navItems = [
-    { label: "الرئيسية", active: false, href: "/" },
-    { label: "التقييم التكيفي", active: false, href: "/assessment" },
-    { label: "محاكي العميل", active: false, href: "/scenarios" },
-    { label: "لوحة التشخيص", active: false, href: "/dashboard" },
-  ];
-
-  // جلب بيانات التحليل من API
+  // ============================================================
+  // 🔷 جلب وتحليل النتائج
+  // ============================================================
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
-        const { answers, questions, assessmentId, timePerQuestion, confidenceLevels, mode } = router.query;
+        const { 
+          answers, questions, assessmentId, timePerQuestion, 
+          eventsLog, theta, answeredIds, mode, quickResult,
+          userId
+        } = router.query;
+
         if (!answers || !assessmentId) {
           setError("لا توجد بيانات لعرض النتيجة");
           setLoading(false);
           return;
         }
 
+        // جلب البيانات التاريخية من localStorage
+        let history = [];
+        try {
+          const saved = localStorage.getItem("assessmentResults");
+          if (saved) {
+            history = JSON.parse(saved);
+            setHistoricalData(history);
+          }
+        } catch (e) {
+          console.warn("Could not load history:", e);
+        }
+
+        // التعامل مع التقييم السريع
+        if (quickResult) {
+          const quickData = JSON.parse(quickResult);
+          setAnalysis({
+            isQuick: true,
+            score: quickData.score,
+            totalQuestions: quickData.total,
+            correctAnswers: quickData.correct,
+            wrongAnswers: quickData.wrong,
+            quickStats: {
+              score: quickData.score,
+              correct: quickData.correct,
+              wrong: quickData.wrong,
+              total: quickData.total,
+            },
+            cognitiveProfile: { 
+              style: '⚡ تقييم سريع', 
+              description: 'هذا تقييم سريع. يُوصى بإجراء التقييم الشامل للحصول على تحليل دقيق.',
+            },
+            flatSkills: [],
+            weakestSkills: [],
+            insight: quickData.score >= 70 
+              ? '🎉 أداء جيد في التقييم السريع! ننصح بإجراء التقييم الشامل للحصول على تحليل دقيق.'
+              : '📚 يحتاج إلى تحسين. ننصح بإجراء التقييم الشامل لتحديد نقاط الضعف بدقة.',
+          });
+          setTimeout(() => setCircleProgress(quickData.score), 300);
+          setLoading(false);
+          return;
+        }
+
+        // التقييم الشامل
         const parsedAnswers = JSON.parse(answers);
         const parsedQuestions = JSON.parse(questions || "[]");
         const timeData = JSON.parse(timePerQuestion || "[]");
-        const confidenceData = JSON.parse(confidenceLevels || "[]");
+        const eventsData = JSON.parse(eventsLog || "[]");
+        const thetaData = JSON.parse(theta || "0");
+        const answeredIdsData = JSON.parse(answeredIds || "[]");
 
+        // استدعاء API التحليل الجديد
         const response = await fetch("/api/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -463,19 +570,24 @@ export default function Result() {
             questions: parsedQuestions,
             assessmentId,
             timePerQuestion: timeData,
-            confidenceLevels: confidenceData,
+            eventsLog: JSON.stringify(eventsData),
+            theta: JSON.stringify(thetaData),
+            answeredIds: JSON.stringify(answeredIdsData),
             mode: mode || "full",
+            userId: userId || "anonymous",
+            historicalData: history,
           }),
         });
 
         if (!response.ok) {
-          throw new Error("فشل في تحليل النتائج");
+          const errorText = await response.text();
+          throw new Error(errorText || "فشل في تحليل النتائج");
         }
 
         const data = await response.json();
         setAnalysis(data);
 
-        // حفظ النتائج في localStorage للوحة التشخيص
+        // حفظ النتائج في localStorage
         const savedResults = JSON.parse(localStorage.getItem("assessmentResults") || "[]");
         savedResults.push({
           assessmentName: getAssessmentName(assessmentId),
@@ -484,14 +596,27 @@ export default function Result() {
           correctAnswers: data.correctAnswers,
           mode: mode || "full",
           date: new Date().toISOString(),
+          weakAreas: data.weakestSkills?.map(s => s.name) || [],
         });
         localStorage.setItem("assessmentResults", JSON.stringify(savedResults));
+        localStorage.setItem("latestAnalysis", JSON.stringify(data));
 
-        // تشغيل أنيميشن الدائرة
-        setTimeout(() => {
-          setCircleProgress(data.score);
-        }, 300);
+        // محاولة جلب تقرير AI
+        try {
+          const aiRes = await fetch("/api/generate-report", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ analysisData: data }),
+          });
+          if (aiRes.ok) {
+            const aiData = await aiRes.json();
+            if (aiData.success) setAiReport(aiData.report);
+          }
+        } catch (aiError) {
+          console.log("AI Report غير متاح");
+        }
 
+        setTimeout(() => setCircleProgress(data.score), 300);
       } catch (err) {
         console.error("Error:", err);
         setError(err.message || "حدث خطأ في تحليل النتيجة");
@@ -500,33 +625,894 @@ export default function Result() {
       }
     };
 
-    if (router.isReady) {
-      fetchAnalysis();
-    }
+    if (router.isReady) fetchAnalysis();
   }, [router.isReady, router.query]);
 
-  // حالة التحميل
+  // ============================================================
+  // 🔷 دوال مساعدة
+  // ============================================================
+  const getCircleColor = (pct) => {
+    if (pct >= 70) return COLORS.success;
+    if (pct >= 50) return COLORS.warning;
+    return COLORS.error;
+  };
+
+  const getLevelText = (pct) => {
+    if (pct >= 80) return '🏆 متقدم';
+    if (pct >= 65) return '🌟 جيد جداً';
+    if (pct >= 50) return '📈 متوسط';
+    if (pct >= 35) return '📚 مبتدئ';
+    return '🌱 أساسي';
+  };
+
+  const getLevelColor = (pct) => {
+    if (pct >= 80) return COLORS.purple;
+    if (pct >= 65) return COLORS.success;
+    if (pct >= 50) return COLORS.warning;
+    if (pct >= 35) return COLORS.orange;
+    return COLORS.error;
+  };
+
+  const getScenarioLink = () => {
+    const score = analysis?.score || 0;
+    if (score >= 75) return '/scenarios/office';
+    if (score >= 50) return '/scenarios/hospital';
+    return '/scenarios/cafe';
+  };
+
+  const getConfidenceColor = (level) => {
+    if (level === 'عالية جداً' || level === 'عالية') return COLORS.success;
+    if (level === 'متوسطة') return COLORS.warning;
+    return COLORS.error;
+  };
+
+  const formatTime = (seconds) => {
+    if (!seconds) return '0 ثانية';
+    if (seconds < 60) return `${Math.round(seconds)} ثانية`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    return `${mins} دقيقة ${secs} ثانية`;
+  };
+
+  // ============================================================
+  // 🔷 مكونات التبويبات
+  // ============================================================
+  const tabs = [
+    { id: 'overview', label: '📊 نظرة عامة' },
+    { id: 'temporal', label: '⏱️ التحليل الزمني' },
+    { id: 'errors', label: '❌ تحليل الأخطاء' },
+    { id: 'cognitive', label: '🧠 المسار المعرفي' },
+    { id: 'affective', label: '😊 الجانب العاطفي' },
+    { id: 'predictions', label: '🔮 التنبؤات' },
+    { id: 'career', label: '💼 المسار الوظيفي' },
+  ];
+
+  // ============================================================
+  // 🔷 عرض المحتوى حسب التبويب النشط
+  // ============================================================
+  const renderTabContent = () => {
+    if (!analysis) return null;
+
+    const {
+      score, totalQuestions, correctAnswers, wrongAnswers,
+      microTemporal, cognitivePath, deepErrors, contextual,
+      learningTrajectory, rootCauses, predictions, affective,
+      evolution, flatSkills, weakestSkills, insight,
+      quickStats, isQuick
+    } = analysis;
+
+    switch (activeTab) {
+      case 'overview':
+        return renderOverviewTab();
+      case 'temporal':
+        return renderTemporalTab();
+      case 'errors':
+        return renderErrorsTab();
+      case 'cognitive':
+        return renderCognitiveTab();
+      case 'affective':
+        return renderAffectiveTab();
+      case 'predictions':
+        return renderPredictionsTab();
+      case 'career':
+        return renderCareerTab();
+      default:
+        return renderOverviewTab();
+    }
+  };
+
+  // ===== تبويب نظرة عامة =====
+  const renderOverviewTab = () => {
+    const { score, quickStats, flatSkills, weakestSkills, insight, isQuick } = analysis;
+
+    return (
+      <div>
+        {/* بطاقة الرؤية */}
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>💡</span>
+            الرؤية العامة
+          </h3>
+          <p style={{ fontSize: 16, lineHeight: 1.8, color: COLORS.text }}>
+            {insight || 'تحليل شامل لأدائك في هذا التقييم.'}
+          </p>
+        </div>
+
+        {/* إحصائيات سريعة */}
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>📊</span>
+            إحصائيات سريعة
+          </h3>
+          <div style={styles.analysisGrid}>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>النتيجة</span>
+              <span style={styles.analysisValue}>{score}%</span>
+            </div>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>الإجابات الصحيحة</span>
+              <span style={{ ...styles.analysisValue, color: COLORS.success }}>{correctAnswers || 0}</span>
+            </div>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>الإجابات الخاطئة</span>
+              <span style={{ ...styles.analysisValue, color: COLORS.error }}>{wrongAnswers || 0}</span>
+            </div>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>المجموع</span>
+              <span style={styles.analysisValue}>{totalQuestions || 0}</span>
+            </div>
+            {quickStats?.avgTimePerQuestion && (
+              <div style={styles.analysisItem}>
+                <span style={styles.analysisLabel}>متوسط الوقت لكل سؤال</span>
+                <span style={styles.analysisValue}>{quickStats.avgTimePerQuestion} ثانية</span>
+              </div>
+            )}
+            {quickStats?.timeSpent && (
+              <div style={styles.analysisItem}>
+                <span style={styles.analysisLabel}>الوقت الإجمالي</span>
+                <span style={styles.analysisValue}>{formatTime(quickStats.timeSpent)}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* المهارات */}
+        {flatSkills && flatSkills.length > 0 && (
+          <div style={styles.card}>
+            <h3 style={styles.cardTitle}>
+              <span style={styles.cardIcon}>📚</span>
+              المهارات
+            </h3>
+            <div style={styles.analysisGrid}>
+              {flatSkills.slice(0, 8).map((skill, idx) => (
+                <div key={idx} style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>{skill.name}</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ ...styles.analysisValue, color: getCircleColor(skill.percentage) }}>
+                      {skill.percentage}%
+                    </span>
+                    <span style={{ fontSize: 12, color: COLORS.muted }}>{skill.level}</span>
+                  </div>
+                  <div style={styles.progressBar}>
+                    <div style={{ ...styles.progressFill, width: `${skill.percentage}%`, backgroundColor: getCircleColor(skill.percentage) }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {flatSkills.length > 8 && (
+              <p style={{ fontSize: 13, color: COLORS.muted, textAlign: "center", marginTop: 12 }}>
+                + {flatSkills.length - 8} مهارات أخرى
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* أضعف المهارات */}
+        {weakestSkills && weakestSkills.length > 0 && (
+          <div style={styles.card}>
+            <h3 style={styles.cardTitle}>
+              <span style={styles.cardIcon}>🔍</span>
+              نقاط الضعف الرئيسية
+            </h3>
+            {weakestSkills.slice(0, 4).map((skill, idx) => (
+              <div key={idx} style={styles.weakSkillCard}>
+                <div style={styles.weakSkillTitle}>
+                  {idx + 1}. {skill.name} ({skill.percentage}%)
+                </div>
+                <div style={styles.weakSkillDetail}>
+                  <span style={styles.weakSkillLabel}>🧩 السبب الجذري:</span> {skill.rootCause || 'غير محدد'}
+                </div>
+                <div style={styles.weakSkillDetail}>
+                  <span style={styles.weakSkillLabel}>📉 التأثير المستقبلي:</span> {skill.futureImpact || 'سيؤثر على فهمك للموضوعات المتقدمة'}
+                </div>
+                {skill.remediationVideoQuery && (
+                  <a 
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(skill.remediationVideoQuery)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={styles.videoLink}
+                  >
+                    ▶ شاهد شرحاً لهذه الثغرة
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* الأزرار */}
+        <div style={styles.buttonGroup}>
+          <Link href="/course" style={styles.primaryButton}>
+            🚀 ابدأ كورسك المخصص
+          </Link>
+          <Link href={getScenarioLink()} style={styles.orangeButton}>
+            🎭 جرّب محاكي العميل
+          </Link>
+          {isQuick && (
+            <Link href={`/assessment/${router.query.assessmentId}?mode=full`} style={{ 
+              ...styles.primaryButton, 
+              backgroundColor: COLORS.indigo,
+            }}>
+              📊 تقييم شامل
+            </Link>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ===== تبويب التحليل الزمني =====
+  const renderTemporalTab = () => {
+    const { microTemporal, quickStats } = analysis;
+
+    return (
+      <div>
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>⏱️</span>
+            التحليل الزمني الدقيق
+          </h3>
+          
+          {microTemporal ? (
+            <div>
+              <div style={styles.analysisGrid}>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>وقت القراءة (متوسط)</span>
+                  <span style={styles.analysisValue}>{Math.round(microTemporal.readingTime || 0)} ثانية</span>
+                </div>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>وقت التفكير (متوسط)</span>
+                  <span style={styles.analysisValue}>{Math.round(microTemporal.processingTime || 0)} ثانية</span>
+                </div>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>وقت القرار (متوسط)</span>
+                  <span style={styles.analysisValue}>{Math.round(microTemporal.decisionTime || 0)} ثانية</span>
+                </div>
+                {quickStats?.avgTimePerQuestion && (
+                  <div style={styles.analysisItem}>
+                    <span style={styles.analysisLabel}>متوسط الوقت الكلي</span>
+                    <span style={styles.analysisValue}>{Math.round(quickStats.avgTimePerQuestion)} ثانية</span>
+                  </div>
+                )}
+              </div>
+
+              {microTemporal.pattern && (
+                <div style={{ ...styles.analysisItem, marginTop: 12 }}>
+                  <span style={styles.analysisLabel}>النمط الزمني</span>
+                  <span style={styles.analysisValue}>{microTemporal.pattern.type === 'accelerating' ? '🚀 متسارع' : 
+                    microTemporal.pattern.type === 'decelerating' ? '🐢 متباطئ' : 
+                    microTemporal.pattern.type === 'stable' ? '📊 مستقر' : '❓ غير محدد'}</span>
+                  <div style={styles.analysisDescription}>{microTemporal.pattern.interpretation}</div>
+                  {microTemporal.pattern.recommendation && (
+                    <div style={{ ...styles.analysisDescription, color: COLORS.teal, fontWeight: 600 }}>
+                      💡 {microTemporal.pattern.recommendation}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {microTemporal.hesitationPoints && microTemporal.hesitationPoints.length > 0 && (
+                <div style={{ marginTop: 12 }}>
+                  <span style={styles.analysisLabel}>نقاط التردد</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                    {microTemporal.hesitationPoints.slice(0, 5).map((point, idx) => (
+                      <span key={idx} style={{ 
+                        backgroundColor: COLORS.warning + '20',
+                        color: COLORS.warning,
+                        padding: "2px 10px",
+                        borderRadius: 12,
+                        fontSize: 12,
+                        fontWeight: 600,
+                      }}>
+                        {point.action} (ثانية {Math.round(point.second)})
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: COLORS.muted }}>لا توجد بيانات زمنية كافية للتحليل</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ===== تبويب تحليل الأخطاء =====
+  const renderErrorsTab = () => {
+    const { deepErrors } = analysis;
+
+    if (!deepErrors || deepErrors.totalErrors === 0) {
+      return (
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>✅</span>
+            تحليل الأخطاء
+          </h3>
+          <p style={{ color: COLORS.success, fontSize: 16, fontWeight: 600 }}>
+            🎉 مذهل! لا توجد أخطاء في هذا التقييم.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>❌</span>
+            تحليل الأخطاء العميق
+          </h3>
+          
+          <div style={styles.analysisGrid}>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>مجموع الأخطاء</span>
+              <span style={{ ...styles.analysisValue, color: COLORS.error }}>{deepErrors.totalErrors}</span>
+            </div>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>أخطاء معرفية</span>
+              <span style={styles.analysisValue}>{deepErrors.errorBreakdown?.cognitive || 0}</span>
+            </div>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>أخطاء نفسية</span>
+              <span style={styles.analysisValue}>{deepErrors.errorBreakdown?.psychological || 0}</span>
+            </div>
+            <div style={styles.analysisItem}>
+              <span style={styles.analysisLabel}>أخطاء سلوكية</span>
+              <span style={styles.analysisValue}>{deepErrors.errorBreakdown?.behavioral || 0}</span>
+            </div>
+          </div>
+
+          {deepErrors.errorClusters && deepErrors.errorClusters.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <span style={styles.analysisLabel}>مجموعات الأخطاء المتكررة</span>
+              {deepErrors.errorClusters.slice(0, 4).map((cluster, idx) => (
+                <div key={idx} style={{ 
+                  ...styles.analysisItem, 
+                  marginTop: 8,
+                  borderColor: cluster.severity === 'عالية' ? COLORS.error : 
+                             cluster.severity === 'متوسطة' ? COLORS.warning : COLORS.border,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontWeight: 700 }}>{cluster.cluster}</span>
+                    <span style={{ 
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: cluster.severity === 'عالية' ? COLORS.error : 
+                             cluster.severity === 'متوسطة' ? COLORS.warning : COLORS.muted,
+                    }}>
+                      {cluster.count} أخطاء ({cluster.severity})
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 13, color: COLORS.muted }}>
+                    النمط: {cluster.pattern}
+                  </div>
+                  <div style={{ fontSize: 12, color: COLORS.teal, fontWeight: 600 }}>
+                    الإجراء الموصى به: {cluster.action}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {deepErrors.errorTypes && (
+            <div style={{ marginTop: 16 }}>
+              <span style={styles.analysisLabel}>تفاصيل أنواع الأخطاء</span>
+              <div style={styles.analysisGrid}>
+                {Object.entries(deepErrors.errorTypes).map(([category, types]) => (
+                  <div key={category} style={styles.analysisItem}>
+                    <span style={styles.analysisLabel}>
+                      {category === 'cognitive' ? '🧠 معرفي' :
+                       category === 'psychological' ? '😰 نفسي' :
+                       category === 'behavioral' ? '🔄 سلوكي' : category}
+                    </span>
+                    {Object.entries(types).map(([type, count]) => (
+                      <div key={type} style={{ display: "flex", justifyContent: "space-between" }}>
+                        <span style={{ fontSize: 13 }}>{type}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ===== تبويب المسار المعرفي =====
+  const renderCognitiveTab = () => {
+    const { cognitivePath } = analysis;
+
+    return (
+      <div>
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>🧠</span>
+            المسار المعرفي
+          </h3>
+          
+          {cognitivePath ? (
+            <div>
+              <div style={styles.analysisGrid}>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>مجموع الأخطاء</span>
+                  <span style={{ ...styles.analysisValue, color: COLORS.error }}>{cognitivePath.totalErrors || 0}</span>
+                </div>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>كثافة الأخطاء</span>
+                  <span style={styles.analysisValue}>{Math.round(cognitivePath.errorDensity || 0)}%</span>
+                </div>
+              </div>
+
+              {cognitivePath.patternShift?.detected && (
+                <div style={{ 
+                  ...styles.analysisItem, 
+                  backgroundColor: "#FFF3E0",
+                  borderColor: COLORS.orange,
+                  marginTop: 12,
+                }}>
+                  <span style={styles.analysisLabel}>⚠️ تحول النمط مكتشف</span>
+                  <div style={styles.analysisDescription}>
+                    عند السؤال {cognitivePath.patternShift.atQuestion}: 
+                    من {cognitivePath.patternShift.from} إلى {cognitivePath.patternShift.to}
+                  </div>
+                  <div style={{ ...styles.analysisDescription, fontWeight: 600, color: COLORS.orange }}>
+                    {cognitivePath.patternShift.interpretation}
+                  </div>
+                </div>
+              )}
+
+              {cognitivePath.mentalDrift?.detected && (
+                <div style={{ 
+                  ...styles.analysisItem, 
+                  backgroundColor: "#FCE4EC",
+                  borderColor: COLORS.pink,
+                  marginTop: 12,
+                }}>
+                  <span style={styles.analysisLabel}>🧠 تشتت ذهني مكتشف</span>
+                  <div style={styles.analysisDescription}>
+                    يبدأ عند السؤال {cognitivePath.mentalDrift.startQuestion}
+                  </div>
+                  <div style={styles.analysisDescription}>
+                    الأعراض: {cognitivePath.mentalDrift.symptoms?.join('، ') || 'غير محددة'}
+                  </div>
+                  <div style={{ ...styles.analysisDescription, fontWeight: 600, color: COLORS.pink }}>
+                    💡 {cognitivePath.mentalDrift.recommendation}
+                  </div>
+                </div>
+              )}
+
+              {cognitivePath.errorSequence && cognitivePath.errorSequence.length > 0 && (
+                <div style={{ marginTop: 12 }}>
+                  <span style={styles.analysisLabel}>تسلسل الأخطاء</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                    {cognitivePath.errorSequence.slice(0, 10).map((err, idx) => (
+                      <span key={idx} style={{ 
+                        backgroundColor: COLORS.error + '15',
+                        border: `1px solid ${COLORS.error}30`,
+                        padding: "2px 10px",
+                        borderRadius: 12,
+                        fontSize: 12,
+                      }}>
+                        س{err.question}: {err.topic} ({err.errorType})
+                      </span>
+                    ))}
+                    {cognitivePath.errorSequence.length > 10 && (
+                      <span style={{ fontSize: 12, color: COLORS.muted }}>
+                        + {cognitivePath.errorSequence.length - 10} أخرى
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للمسار المعرفي</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ===== تبويب الجانب العاطفي =====
+  const renderAffectiveTab = () => {
+    const { affective } = analysis;
+
+    return (
+      <div>
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>😊</span>
+            الجانب العاطفي والسلوكي
+          </h3>
+          
+          {affective ? (
+            <div>
+              <div style={styles.analysisGrid}>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>مستوى الثقة</span>
+                  <span style={{ 
+                    ...styles.analysisValue, 
+                    color: (affective.moodAnalysis?.confidence?.score || 50) >= 70 ? COLORS.success :
+                           (affective.moodAnalysis?.confidence?.score || 50) >= 40 ? COLORS.warning : COLORS.error
+                  }}>
+                    {Math.round(affective.moodAnalysis?.confidence?.score || 50)}%
+                  </span>
+                  <div style={styles.analysisDescription}>
+                    {affective.moodAnalysis?.confidence?.interpretation || ''}
+                  </div>
+                </div>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>مستوى القلق</span>
+                  <span style={{ 
+                    ...styles.analysisValue, 
+                    color: (affective.moodAnalysis?.anxiety?.score || 30) >= 60 ? COLORS.error :
+                           (affective.moodAnalysis?.anxiety?.score || 30) >= 40 ? COLORS.warning : COLORS.success
+                  }}>
+                    {Math.round(affective.moodAnalysis?.anxiety?.score || 30)}%
+                  </span>
+                  <div style={styles.analysisDescription}>
+                    {affective.moodAnalysis?.anxiety?.interpretation || ''}
+                  </div>
+                </div>
+                <div style={styles.analysisItem}>
+                  <span style={styles.analysisLabel}>مستوى التحفيز</span>
+                  <span style={{ 
+                    ...styles.analysisValue,
+                    color: (affective.moodAnalysis?.motivation?.score || 70) >= 70 ? COLORS.success : COLORS.warning
+                  }}>
+                    {Math.round(affective.moodAnalysis?.motivation?.score || 70)}%
+                  </span>
+                </div>
+              </div>
+
+              {affective.stressAnalysis && (
+                <div style={{ marginTop: 12 }}>
+                  <span style={styles.analysisLabel}>تحليل الإجهاد</span>
+                  <div style={styles.analysisGrid}>
+                    {affective.stressAnalysis.stressLevels?.map((level, idx) => (
+                      <div key={idx} style={styles.analysisItem}>
+                        <span style={styles.analysisLabel}>
+                          {level.time === 'start' ? 'بداية' :
+                           level.time === 'middle' ? 'منتصف' :
+                           level.time === 'end' ? 'نهاية' : level.time}
+                        </span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <div style={{ ...styles.progressBar, flex: 1 }}>
+                            <div style={{ ...styles.progressFill, width: `${level.level}%`, backgroundColor: level.level >= 60 ? COLORS.error : COLORS.warning }} />
+                          </div>
+                          <span style={{ fontSize: 13, fontWeight: 600 }}>{level.level}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {affective.stressAnalysis.recommendations && (
+                    <div style={{ ...styles.analysisItem, marginTop: 8, backgroundColor: "#E3F2FD" }}>
+                      <span style={styles.analysisLabel}>💡 توصيات</span>
+                      <ul style={{ margin: "4px 0 0", paddingRight: 20 }}>
+                        {affective.stressAnalysis.recommendations.slice(0, 2).map((rec, idx) => (
+                          <li key={idx} style={{ fontSize: 13, color: COLORS.text }}>{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {affective.fatigueAnalysis?.detected && (
+                <div style={{ 
+                  ...styles.analysisItem, 
+                  marginTop: 12,
+                  backgroundColor: "#FCE4EC",
+                  borderColor: COLORS.pink,
+                }}>
+                  <span style={{ ...styles.analysisLabel, color: COLORS.pink }}>⚠️ علامات التعب مكتشفة</span>
+                  <div style={styles.analysisDescription}>
+                    تبدأ من السؤال {affective.fatigueAnalysis.onsetPoint}
+                  </div>
+                  <div style={styles.analysisDescription}>
+                    {affective.fatigueAnalysis.symptoms?.join(' • ') || ''}
+                  </div>
+                  <div style={{ ...styles.analysisDescription, fontWeight: 600, color: COLORS.pink }}>
+                    💡 {affective.fatigueAnalysis.recommendation}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: COLORS.muted }}>لا توجد بيانات عاطفية كافية للتحليل</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ===== تبويب التنبؤات =====
+  const renderPredictionsTab = () => {
+    const { predictions, learningTrajectory } = analysis;
+
+    return (
+      <div>
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>🔮</span>
+            التنبؤات المستقبلية
+          </h3>
+          
+          {predictions ? (
+            <div>
+              {predictions.performancePrediction?.scenarios && (
+                <div style={{ marginBottom: 16 }}>
+                  <span style={styles.analysisLabel}>سيناريوهات الأداء المتوقعة</span>
+                  {predictions.performancePrediction.scenarios.map((scenario, idx) => (
+                    <div key={idx} style={{ 
+                      ...styles.predictionCard,
+                      backgroundColor: idx === 0 ? '#E8F5E9' : 
+                                     idx === 1 ? '#FFF8E1' : '#FFEBEE',
+                    }}>
+                      <div style={styles.predictionTitle}>
+                        {scenario.scenario} ({Math.round(scenario.probability * 100)}%)
+                      </div>
+                      <div style={styles.predictionDetail}>
+                        النتيجة المتوقعة: {scenario.score}%
+                      </div>
+                      <div style={{ ...styles.predictionDetail, fontSize: 12, color: COLORS.muted }}>
+                        الشرط: {scenario.condition}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {predictions.behaviorPrediction && (
+                <div style={styles.analysisGrid}>
+                  <div style={styles.analysisItem}>
+                    <span style={styles.analysisLabel}>سيستمر في التعلم</span>
+                    <span style={{ ...styles.analysisValue, color: predictions.behaviorPrediction.willDropout ? COLORS.error : COLORS.success }}>
+                      {predictions.behaviorPrediction.willDropout ? '❌ قد يتوقف' : '✅ سيتحسن'}
+                    </span>
+                  </div>
+                  <div style={styles.analysisItem}>
+                    <span style={styles.analysisLabel}>سيحتاج مساعدة</span>
+                    <span style={{ ...styles.analysisValue, color: predictions.behaviorPrediction.willNeedHelp ? COLORS.warning : COLORS.success }}>
+                      {predictions.behaviorPrediction.willNeedHelp ? '⚠️ نعم' : '✅ لا'}
+                    </span>
+                  </div>
+                  <div style={styles.analysisItem}>
+                    <span style={styles.analysisLabel}>الاختبار القادم</span>
+                    <span style={styles.analysisValue}>
+                      {predictions.behaviorPrediction.timeToNextAssessment || 'غير محدد'}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للتنبؤ</p>
+          )}
+        </div>
+
+        {/* منحنى التعلم */}
+        {learningTrajectory?.learningCurve?.data && learningTrajectory.learningCurve.data.length > 0 && (
+          <div style={styles.card}>
+            <h3 style={styles.cardTitle}>
+              <span style={styles.cardIcon}>📈</span>
+              منحنى التعلم
+            </h3>
+            
+            <div style={styles.analysisGrid}>
+              <div style={styles.analysisItem}>
+                <span style={styles.analysisLabel}>معدل التحسن</span>
+                <span style={{ ...styles.analysisValue, color: COLORS.success }}>
+                  {learningTrajectory.learningCurve.analysis?.improvementRate || 0}% لكل جلسة
+                </span>
+              </div>
+              <div style={styles.analysisItem}>
+                <span style={styles.analysisLabel}>الاتجاه</span>
+                <span style={{ 
+                  ...styles.analysisValue,
+                  color: learningTrajectory.learningCurve.analysis?.trend === 'متحسن' ? COLORS.success :
+                         learningTrajectory.learningCurve.analysis?.trend === 'متراجع' ? COLORS.error : COLORS.warning
+                }}>
+                  {learningTrajectory.learningCurve.analysis?.trend || 'غير محدد'}
+                </span>
+              </div>
+            </div>
+
+            {learningTrajectory.learningCurve.analysis?.prediction && (
+              <div style={{ ...styles.analysisItem, marginTop: 12, backgroundColor: "#E3F2FD" }}>
+                <span style={styles.analysisLabel}>🔮 توقع الأداء</span>
+                <div style={styles.analysisDescription}>
+                  {learningTrajectory.learningCurve.analysis.prediction}
+                </div>
+              </div>
+            )}
+
+            {learningTrajectory.turningPoints && learningTrajectory.turningPoints.length > 0 && (
+              <div style={{ marginTop: 12 }}>
+                <span style={styles.analysisLabel}>نقاط التحول</span>
+                {learningTrajectory.turningPoints.slice(0, 3).map((point, idx) => (
+                  <div key={idx} style={{ ...styles.analysisItem, marginTop: 4 }}>
+                    <span style={{ fontWeight: 700 }}>جلسة {point.session}:</span>
+                    <span style={styles.analysisDescription}>
+                      {point.event} - {point.impact}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ===== تبويب المسار الوظيفي =====
+  const renderCareerTab = () => {
+    const { predictions, learningTrajectory } = analysis;
+
+    return (
+      <div>
+        <div style={styles.card}>
+          <h3 style={styles.cardTitle}>
+            <span style={styles.cardIcon}>💼</span>
+            المسار الوظيفي المقترح
+          </h3>
+          
+          {predictions?.careerPrediction ? (
+            <div>
+              {predictions.careerPrediction.bestMatch && (
+                <div style={styles.careerCard}>
+                  <div style={styles.careerTitle}>
+                    🏆 أنسب مسار لك: {predictions.careerPrediction.bestMatch}
+                  </div>
+                  <div style={styles.careerDetail}>
+                    التوافق: {predictions.careerPrediction.matchPercentage}%
+                  </div>
+                  <div style={styles.careerDetail}>
+                    {predictions.careerPrediction.recommendation}
+                  </div>
+                </div>
+              )}
+
+              {predictions.careerPrediction.paths && predictions.careerPrediction.paths.length > 0 && (
+                <div style={{ marginTop: 12 }}>
+                  <span style={styles.analysisLabel}>المسارات المتاحة</span>
+                  {predictions.careerPrediction.paths.map((path, idx) => (
+                    <div key={idx} style={{ 
+                      ...styles.analysisItem, 
+                      marginTop: 4,
+                      borderColor: path.matchPercentage >= 70 ? COLORS.success :
+                                 path.matchPercentage >= 50 ? COLORS.warning : COLORS.border,
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 700 }}>{path.path}</span>
+                        <span style={{ 
+                          fontSize: 13, 
+                          fontWeight: 600,
+                          color: path.matchPercentage >= 70 ? COLORS.success :
+                                 path.matchPercentage >= 50 ? COLORS.warning : COLORS.muted,
+                        }}>
+                          {path.matchPercentage}%
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 12, color: COLORS.muted }}>
+                        المتطلبات: {path.requirements?.join('، ') || 'غير محددة'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: COLORS.muted }}>لا توجد بيانات كافية للتنبؤ بالمسار الوظيفي</p>
+          )}
+        </div>
+
+        {learningTrajectory?.evolution?.analysis && (
+          <div style={styles.card}>
+            <h3 style={styles.cardTitle}>
+              <span style={styles.cardIcon}>📊</span>
+              تطورك عبر الزمن
+            </h3>
+            
+            <div style={styles.analysisGrid}>
+              <div style={styles.analysisItem}>
+                <span style={styles.analysisLabel}>التحسن الإجمالي</span>
+                <span style={{ ...styles.analysisValue, color: COLORS.success }}>
+                  {learningTrajectory.evolution.analysis.improvement || '0%'}
+                </span>
+              </div>
+              <div style={styles.analysisItem}>
+                <span style={styles.analysisLabel}>الاستقرار</span>
+                <span style={styles.analysisValue}>
+                  {learningTrajectory.evolution.analysis.consistency || 'غير محدد'}
+                </span>
+              </div>
+            </div>
+
+            {learningTrajectory.evolution.analysis.prediction && (
+              <div style={{ ...styles.analysisItem, marginTop: 8, backgroundColor: "#E3F2FD" }}>
+                <span style={styles.analysisLabel}>🔮 توقع التطور</span>
+                <div style={styles.analysisDescription}>
+                  {learningTrajectory.evolution.analysis.prediction}
+                </div>
+              </div>
+            )}
+
+            {learningTrajectory.evolution.sessions && learningTrajectory.evolution.sessions.length > 0 && (
+              <div style={{ marginTop: 12 }}>
+                <span style={styles.analysisLabel}>الجلسات السابقة</span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {learningTrajectory.evolution.sessions.slice(0, 5).map((session, idx) => (
+                    <span key={idx} style={{ 
+                      backgroundColor: COLORS.border,
+                      padding: "2px 12px",
+                      borderRadius: 12,
+                      fontSize: 12,
+                    }}>
+                      جلسة {session.number}: {session.totalScore}%
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ============================================================
+  // 🔷 واجهة المستخدم الرئيسية
+  // ============================================================
   if (loading) {
     return (
-      <div style={{ ...styles.page, alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك...</h2>
-          <p style={{ color: COLORS.muted }}>يرجى الانتظار، هذا قد يستغرق بضع ثوانٍ</p>
+      <div style={styles.page}>
+        <Navbar />
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner} />
+          <h2 style={{ color: COLORS.navy }}>جاري تحليل نتائجك بعمق...</h2>
+          <p style={{ color: COLORS.muted }}>نحن ندرس إجاباتك وسلوكك لتقديم تقرير دقيق وشخصي</p>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
     );
   }
 
-  // حالة الخطأ
-  if (error) {
+  if (error || !analysis) {
     return (
       <div style={styles.page}>
-        <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>❌</div>
+        <Navbar />
+        <div style={{ ...styles.main, textAlign: "center", paddingTop: 60 }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>❌</div>
           <h2 style={{ color: COLORS.error }}>حدث خطأ</h2>
-          <p style={{ color: COLORS.muted }}>{error}</p>
-          <Link href="/assessment" style={{ ...styles.toggleButton, display: "inline-block", width: "auto" }}>
+          <p style={{ color: COLORS.muted }}>{error || "لا توجد بيانات"}</p>
+          <Link href="/assessment/categories" style={{ color: COLORS.teal, fontWeight: 700 }}>
             العودة للتقييمات
           </Link>
         </div>
@@ -534,150 +1520,48 @@ export default function Result() {
     );
   }
 
-  if (!analysis) {
-    return (
-      <div style={styles.page}>
-        <div style={{ ...styles.main, textAlign: "center", paddingTop: 80 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>📋</div>
-          <h2 style={{ color: COLORS.navy }}>لا توجد نتائج</h2>
-          <p style={{ color: COLORS.muted }}>لم يتم العثور على بيانات لهذا التقييم.</p>
-          <Link href="/assessment" style={{ ...styles.toggleButton, display: "inline-block", width: "auto" }}>
-            ابدأ تقييماً جديداً
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  // حساب الإحصائيات
-  const totalQuestions = analysis.totalQuestions || 0;
-  const correctAnswers = analysis.correctAnswers || 0;
-  const wrongAnswers = analysis.wrongAnswers || 0;
-  const score = analysis.score || 0;
-  const assessmentName = getAssessmentName(router.query.assessmentId) || "التقييم";
-
-  // وقت التقييم (تقديري)
-  const avgTimePerQuestion = analysis.questionResults?.reduce((sum, q) => sum + (q.time || 0), 0) / (analysis.questionResults?.length || 1) || 0;
-  const totalTime = Math.round(avgTimePerQuestion * totalQuestions);
-  const minutes = Math.floor(totalTime / 60);
-  const seconds = totalTime % 60;
-
-  // دالة تبديل إظهار/إخفاء التفاصيل
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
-  };
-
-  // حساب محيط الدائرة
-  const radius = 80;
+  const { score, isQuick } = analysis;
+  const radius = 70;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (circleProgress / 100) * circumference;
-
-  // لون الدائرة حسب النسبة
-  const getCircleColor = (pct) => {
-    if (pct >= 70) return COLORS.success;
-    if (pct >= 50) return COLORS.warning;
-    return COLORS.error;
-  };
 
   return (
     <>
       <Head>
         <title>نتيجة التقييم - Smart Lab</title>
-        <meta name="description" content="نتيجة تقييمك في منصة سمارت لاب مع تحليل مفصل." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>{`
-          html, body { margin: 0; padding: 0; background-color: ${COLORS.bg}; }
-          * { box-sizing: border-box; }
-          @media (max-width: 900px) {
-            .main-nav { display: none !important; }
-          }
           @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
-            .stat-value { font-size: 24px !important; }
+            .hero-content { flex-direction: column !important; text-align: center !important; }
+            .hero-stats { justify-content: center !important; }
+            .tabs-container { flex-wrap: wrap !important; }
+            .tab-btn { font-size: 12px !important; padding: 8px 14px !important; }
             .analysis-grid { grid-template-columns: 1fr !important; }
-            .result-hero { padding: 32px 20px 36px !important; }
-            .result-hero-title { font-size: 24px !important; }
-            .result-section { padding: 24px 16px !important; }
-            .score-circle { width: 140px !important; height: 140px !important; }
-            .score-number { font-size: 32px !important; }
+            .chart-label { width: 80px !important; }
           }
           @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr !important; }
+            .hero-card { padding: 20px 16px !important; }
+            .score-circle { width: 120px !important; height: 120px !important; }
+            .score-number { font-size: 28px !important; }
+            .card { padding: 16px !important; }
+            .tab-btn { font-size: 11px !important; padding: 6px 10px !important; }
           }
         `}</style>
       </Head>
 
       <div style={styles.page} dir="rtl">
-        {/* ===== Header ===== */}
-        <header style={styles.header}>
-          <div style={styles.headerInner}>
-            <div style={styles.logoWrap}>
-              <LogoMark />
-              <span style={styles.logoText}>
-                <span style={styles.logoSmart}>Smart</span>
-                <span style={styles.logoLab}>Lab</span>
-              </span>
-            </div>
-
-            <nav style={styles.nav} className="main-nav">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  style={{ ...styles.navLink, ...(item.active ? styles.navLinkActive : {}) }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div style={styles.headerRight}>
-              <button
-                style={styles.themeBtn}
-                aria-label="تبديل المظهر"
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(40deg)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "rotate(0deg)")}
-              >
-                <SunIcon />
-              </button>
-              <Link
-                href="/auth/login"
-                style={styles.loginBtn}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = COLORS.tealDark)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = COLORS.teal)}
-              >
-                تسجيل الدخول
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* ===== Main ===== */}
+        <Navbar />
         <main style={styles.main}>
-          {/* Hero */}
-          <div style={styles.hero} className="result-hero">
-            <span style={styles.heroIcon}>🎯</span>
-            <h1 style={{ ...styles.heroTitle, className: "result-hero-title" }}>
-              انتهى التقييم
-            </h1>
-            <p style={styles.heroDesc}>
-              لقد أعددنا لك تحليلاً مفصلاً لإجاباتك؛ يوضح نقاط قوتك، والجوانب التي تتطلب منك تركيزاً أكبر، بالإضافة إلى خطة تعلم مقترحة لك.
-            </p>
-
-            {/* ===== دائرة التقدم ===== */}
-            <div style={styles.scoreContainer}>
-              <div style={{ ...styles.scoreCircle, className: "score-circle" }}>
-                <svg style={styles.scoreCircleSvg} viewBox="0 0 180 180">
+          
+          {/* ===== البطاقة الرئيسية ===== */}
+          <div style={styles.heroCard} className="hero-card">
+            <div style={styles.heroCardGradient} />
+            <div style={styles.heroContent} className="hero-content">
+              <div style={styles.scoreCircle} className="score-circle">
+                <svg style={styles.scoreCircleSvg} viewBox="0 0 160 160">
+                  <circle cx="80" cy="80" r={radius} style={styles.scoreCircleBg} />
                   <circle
-                    cx="90"
-                    cy="90"
-                    r={radius}
-                    style={styles.scoreCircleBg}
-                  />
-                  <circle
-                    cx="90"
-                    cy="90"
-                    r={radius}
+                    cx="80" cy="80" r={radius}
                     style={{
                       ...styles.scoreCircleFill,
                       stroke: getCircleColor(circleProgress),
@@ -687,179 +1571,71 @@ export default function Result() {
                   />
                 </svg>
                 <div style={styles.scoreText}>
-                  <span style={{ ...styles.scoreNumber, className: "score-number" }}>
-                    {Math.round(circleProgress)}%
-                  </span>
-                  <span style={styles.scoreLabel}>النتيجة النهائية</span>
+                  <span style={styles.scoreNumber} className="score-number">{Math.round(circleProgress)}%</span>
+                  <span style={styles.scoreLabel}>{getLevelText(circleProgress)}</span>
                 </div>
               </div>
-            </div>
 
-            {/* ===== الإحصائيات ===== */}
-            <div style={styles.statsGrid} className="stats-grid">
-              <div style={styles.statCard}>
-                <p style={{ ...styles.statValue, ...styles.statValueTime }}>
-                  {minutes > 0 ? `${minutes}:${String(seconds).padStart(2, '0')}` : `${seconds}ث`}
+              <div style={styles.heroInfo}>
+                <h2 style={styles.heroTitle}>
+                  {isQuick ? '⚡ تقييم سريع' : '📊 تقييم شامل'}
+                </h2>
+                <p style={styles.heroSubtitle}>
+                  {analysis.totalQuestions || 0} سؤال • {analysis.correctAnswers || 0} صحيح • {analysis.wrongAnswers || 0} خاطئ
                 </p>
-                <p style={styles.statLabel}>⏱️ الوقت المستغرق</p>
-              </div>
-              <div style={styles.statCard}>
-                <p style={{ ...styles.statValue, ...styles.statValueWrong }}>{wrongAnswers}</p>
-                <p style={styles.statLabel}>❌ الإجابات الخاطئة</p>
-              </div>
-              <div style={styles.statCard}>
-                <p style={{ ...styles.statValue, ...styles.statValueCorrect }}>{correctAnswers}</p>
-                <p style={styles.statLabel}>✅ الإجابات الصحيحة</p>
+                <div style={styles.heroStats} className="hero-stats">
+                  <span style={styles.heroStat}>
+                    <span style={styles.heroStatValue}>✅</span> {analysis.correctAnswers || 0} صحيح
+                  </span>
+                  <span style={styles.heroStat}>
+                    <span style={styles.heroStatValue}>❌</span> {analysis.wrongAnswers || 0} خاطئ
+                  </span>
+                  <span style={styles.heroStat}>
+                    <span style={styles.heroStatValue}>📊</span> {analysis.totalQuestions || 0} سؤال
+                  </span>
+                </div>
+                <span style={{
+                  ...styles.levelBadge,
+                  backgroundColor: getLevelColor(circleProgress) + '20',
+                  color: getLevelColor(circleProgress),
+                }}>
+                  {getLevelText(circleProgress)}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* ===== زر عرض/إخفاء التفاصيل ===== */}
-          <button
-            onClick={toggleDetails}
-            style={{
-              ...styles.toggleButton,
-              ...(showDetails ? styles.toggleButtonActive : {}),
-            }}
-            onMouseEnter={(e) => {
-              if (!showDetails) {
-                e.currentTarget.style.backgroundColor = COLORS.teal;
-                e.currentTarget.style.color = COLORS.white;
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!showDetails) {
-                e.currentTarget.style.backgroundColor = COLORS.white;
-                e.currentTarget.style.color = COLORS.teal;
-              }
-            }}
-          >
-            {showDetails ? "🔽 إخفاء تحليل نتيجتك بالكامل" : "🔍 تحليل نتيجتك بالكامل"}
-          </button>
-
-          {/* ===== قسم التحليل (يظهر/يختفي) ===== */}
-          <div
-            style={{
-              ...styles.analysisSection,
-              ...(!showDetails ? styles.analysisHidden : {}),
-            }}
-            className="result-section"
-          >
-            <h2 style={styles.sectionTitle}>📊 تحليل نتيجتك بالكامل</h2>
-            <p style={styles.sectionDesc}>
-              التحليل يظهر نقاط قوتك ومجالات التحسين مع توصيات تعلم مخصصة.
-            </p>
-
-            <div style={styles.analysisGrid} className="analysis-grid">
-              {/* نقاط القوة */}
-              <div style={styles.analysisCard}>
-                <span style={styles.analysisCardIcon}>💪</span>
-                <h3 style={styles.analysisCardTitle}>نقاط القوة</h3>
-                <p style={styles.analysisCardDesc}>
-                  {analysis.topicAnalysis
-                    ? Object.entries(analysis.topicAnalysis)
-                        .filter(([_, data]) => (data.weightedPercentage || data.percentage) >= 70)
-                        .map(([topic]) => topic)
-                        .join("، ") || "تمتلك أساساً جيداً في معظم المجالات."
-                    : "تمتلك أساساً جيداً في معظم المجالات."}
-                </p>
-                <span style={{ ...styles.analysisCardBadge, backgroundColor: `${COLORS.success}20`, color: COLORS.success }}>
-                  ✅ أداء جيد
-                </span>
-              </div>
-
-              {/* مجالات التحسين */}
-              <div style={styles.analysisCard}>
-                <span style={styles.analysisCardIcon}>📈</span>
-                <h3 style={styles.analysisCardTitle}>مجالات التحسين</h3>
-                <p style={styles.analysisCardDesc}>
-                  {analysis.topicAnalysis
-                    ? Object.entries(analysis.topicAnalysis)
-                        .filter(([_, data]) => (data.weightedPercentage || data.percentage) < 50)
-                        .map(([topic]) => topic)
-                        .join("، ") || "أداؤك متوازن، استمر في التدريب!"
-                    : "أداؤك متوازن، استمر في التدريب!"}
-                </p>
-                <span style={{ ...styles.analysisCardBadge, backgroundColor: `${COLORS.warning}20`, color: COLORS.warning }}>
-                  ⚠️ يحتاج تركيز
-                </span>
-              </div>
-            </div>
-
-            {/* تحليل حسب الموضوع */}
-            {analysis.topicAnalysis && (
-              <div style={styles.topicBreakdown}>
-                <h4 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>
-                  📊 أداؤك حسب الموضوع
-                </h4>
-                {Object.entries(analysis.topicAnalysis).map(([topic, data]) => {
-                  const pct = data.weightedPercentage || data.percentage || 0;
-                  const color = pct >= 70 ? COLORS.success : pct >= 50 ? COLORS.warning : COLORS.error;
-                  return (
-                    <div key={topic} style={styles.topicItem}>
-                      <span style={styles.topicName}>{topic}</span>
-                      <div style={styles.topicBar}>
-                        <div style={{ ...styles.topicFill, width: `${pct}%`, backgroundColor: color }} />
-                      </div>
-                      <span style={styles.topicScore}>{pct}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* رؤية الذكاء الاصطناعي */}
-            {analysis.insight && (
-              <div style={styles.insightBox}>
-                <p style={styles.insightText}>💡 {analysis.insight}</p>
-              </div>
-            )}
-
-            {/* التوصيات */}
-            {analysis.recommendedLessons && analysis.recommendedLessons.length > 0 && (
-              <div style={{ marginTop: 24 }}>
-                <h4 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 12 }}>
-                  📚 دروس مقترحة
-                </h4>
-                {analysis.recommendedLessons.slice(0, 3).map((lesson, idx) => (
-                  <div key={idx} style={{ padding: "8px 0", borderBottom: `1px solid ${COLORS.border}` }}>
-                    <span style={{ fontSize: 14, color: COLORS.text }}>• {lesson.topic}: {lesson.reason}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* ===== التبويبات ===== */}
+          <div style={styles.tabsContainer} className="tabs-container">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  ...styles.tabButton,
+                  ...(activeTab === tab.id ? styles.tabButtonActive : {}),
+                }}
+                className="tab-btn"
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          {/* ===== رابط العودة ===== */}
-          <div style={{ textAlign: "center" }}>
-            <Link href="/assessment" style={styles.backLink}>
+          {/* ===== محتوى التبويب النشط ===== */}
+          {renderTabContent()}
+
+          {/* ===== روابط إضافية ===== */}
+          <div style={{ textAlign: "center", marginTop: 20 }}>
+            <Link href="/assessment/categories" style={styles.backLink}>
               ← العودة إلى التقييمات
             </Link>
+            <Link href="/dashboard" style={{ ...styles.backLink, marginTop: 8, color: COLORS.teal }}>
+              📊 عرض لوحة التشخيص
+            </Link>
           </div>
-        </main>
 
-        {/* ===== Footer ===== */}
-        <footer style={styles.footer}>
-          <div style={styles.footerInner}>
-            <div style={styles.footerCol}>
-              <h3 style={styles.footerBrand}>SmartLab</h3>
-              <p style={styles.footerText}>
-                منصة تعليمية متطورة لدعم التعلم التكيفي والمحاكاة.
-              </p>
-            </div>
-            <div style={styles.footerCol}>
-              <h4 style={styles.footerHeading}>تواصل معنا</h4>
-              <button
-                style={styles.footerIconBtn}
-                aria-label="راسلنا عبر البريد الإلكتروني"
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-              >
-                <MailIcon />
-              </button>
-            </div>
-          </div>
-        </footer>
+        </main>
       </div>
     </>
   );

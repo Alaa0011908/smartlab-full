@@ -1,498 +1,840 @@
-// =============================================================
-// 📚 data/questions/basics.js - جميع أسئلة CCNA (300 سؤال)
-// =============================================================
+// data/questions/basics.js
+// ============================================================
+// 📚 بنك الأسئلة - SmartLab (نسخة المحاسبة للتجربة)
+// المصمم: خبير محاسبة مالي
+// عدد الأسئلة: 30 سؤالاً (8 محاور رئيسية)
+// ============================================================
 
-// =============================================================
-// 📌 القسم 1: المفاهيم العامة - 50 سؤال
-// =============================================================
+export function getAllBasicsQuestions() {
+  return QUESTIONS;
+}
 
-const conceptsQuestions = [
-  // 20 سؤال أساسي (سهل)
-  { id: 'net_1', topic: 'Network Basics', subSkill: 'Network_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي الشبكة (Network) ببساطة؟', options: ['جهاز كمبيوتر واحد', 'مجموعة أجهزة متصلة لتبادل البيانات', 'نظام تشغيل', 'برنامج تصفح'], correct: 2 },
-  { id: 'net_2', topic: 'Network Basics', subSkill: 'Network_Types', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي نوع من الشبكات يغطي مساحة صغيرة مثل غرفة أو منزل؟', options: ['WAN', 'MAN', 'LAN', 'PAN'], correct: 3 },
-  { id: 'net_3', topic: 'Network Basics', subSkill: 'Network_Types', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الشبكة التي تربط عدة فروع لبنك في مدن مختلفة تصنف كـ:', options: ['LAN', 'MAN', 'WAN', 'PAN'], correct: 3 },
-  { id: 'net_4', topic: 'Network Basics', subSkill: 'Client_Server', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'في نموذج Client-Server، الخادم (Server) هو:', options: ['جهاز يطلب الخدمات', 'جهاز يقدم الخدمات والموارد', 'كابل رئيسي', 'سويتش'], correct: 2 },
-  { id: 'net_5', topic: 'Network Basics', subSkill: 'P2P', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'نموذج Peer-to-Peer (P2P) يتميز بأن:', options: ['يوجد خادم مركزي واحد', 'جميع الأجهزة متساوية، كل جهاز عميل وخادم', 'يحتاج إلى راوتر قوي', 'يستخدم فقط في الشركات الكبيرة'], correct: 2 },
-  { id: 'net_6', topic: 'Network Basics', subSkill: 'Transmission_Media', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من التالي يعتبر وسيلة نقل لاسلكية؟', options: ['كابل UTP', 'كابل ألياف بصرية', 'Wi-Fi', 'كابل محوري'], correct: 3 },
-  { id: 'net_7', topic: 'Network Basics', subSkill: 'Unicast', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'Unicast يعني إرسال البيانات إلى:', options: ['جهاز واحد محدد', 'جميع الأجهزة', 'مجموعة محددة من الأجهزة', 'لا أحد'], correct: 1 },
-  { id: 'net_8', topic: 'Network Basics', subSkill: 'Broadcast', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'Broadcast يعني إرسال البيانات إلى:', options: ['جهاز واحد', 'جميع الأجهزة في الشبكة', 'مجموعة محددة', 'الخادم فقط'], correct: 2 },
-  { id: 'net_9', topic: 'Network Basics', subSkill: 'Cables_UTP', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من الكابلات النحاسية التالية هو الأكثر شيوعاً في الشبكات المنزلية؟', options: ['كابل محوري (Coaxial)', 'UTP Cat5e أو Cat6', 'STP', 'كابل الهاتف'], correct: 2 },
-  { id: 'net_10', topic: 'Network Basics', subSkill: 'UTP_vs_STP', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من العبارات التالية تصف الفرق بين UTP و STP بدقة؟', options: ['UTP محمي، STP غير محمي', 'STP يحتوي على درع (Shield) لحماية من التداخل، UTP لا يحتوي', 'UTP أسرع من STP', 'لا فرق بينهما'], correct: 2 },
-  { id: 'net_11', topic: 'Network Basics', subSkill: 'VLAN_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الـ VLAN (Virtual Local Area Network) تستخدم لـ:', options: ['الاتصال بالإنترنت', 'تقسيم شبكة LAN واحدة إلى شبكات منطقية منفصلة', 'حماية الشبكة من الفيروسات', 'توصيل الأجهزة لاسلكياً'], correct: 2 },
-  { id: 'net_12', topic: 'Network Basics', subSkill: 'VPN_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الـ VPN (Virtual Private Network) تستخدم لـ:', options: ['تقسيم الشبكة المحلية', 'إنشاء اتصال آمن عبر شبكة عامة (مثل الإنترنت)', 'زيادة سرعة الإنترنت', 'توصيل الكابلات'], correct: 2 },
-  { id: 'net_13', topic: 'Network Basics', subSkill: 'Wired_vs_Wireless', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الفرق بين الشبكة السلكية واللاسلكية من حيث الاعتمادية هو:', options: ['اللاسلكية أكثر اعتمادية', 'السلكية عادة أكثر استقراراً وأقل عرضة للتداخل', 'لا فرق', 'السلكية أسرع دائماً'], correct: 2 },
-  { id: 'net_14', topic: 'Network Basics', subSkill: 'LAN_vs_WAN', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي من العبارات التالية تصف الفرق بين LAN و WAN بدقة؟', options: ['LAN أبطأ من WAN', 'LAN مملوكة لمؤسسة واحدة، WAN عادة تستأجر خطوطاً', 'WAN تغطي مساحة أصغر', 'LAN تستخدم عناوين عامة فقط'], correct: 2 },
-  { id: 'net_15', topic: 'Network Basics', subSkill: 'Client_Server_Failure', cognitiveLevel: 'understanding', errorPattern: 'reasoning', difficulty: 2, question: 'في نموذج Client-Server، إذا تعطل الخادم (Server)، ماذا يحدث؟', options: ['لا شيء', 'الأجهزة العميلة تفقد الخدمات التي يعتمد عليها', 'الشبكة تصبح أسرع', 'تتحول تلقائياً إلى P2P'], correct: 2 },
-  { id: 'net_16', topic: 'Network Basics', subSkill: 'Broadcast_Domain', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'في شبكة سويتش واحدة (بدون راوتر)، إذا أرسل جهاز رسالة Broadcast، إلى أين تصل؟', options: ['فقط إلى الراوتر', 'إلى جميع الأجهزة في نفس الشبكة المحلية (VLAN)', 'إلى جهاز واحد فقط', 'إلى الإنترنت كله'], correct: 2 },
-  { id: 'net_17', topic: 'Network Basics', subSkill: 'VLAN_VPN_Scenario', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة لديها شبكة LAN مقسمة إلى VLANs (المحاسبة، الموارد البشرية، الهندسة). تريد أن تسمح للموارد البشرية فقط بالوصول إلى خادم خاص خارجي عبر VPN آمن، دون أن تصل المحاسبة أو الهندسة إلى هذا الخادم. أي من المصطلحات التالية تجمع كل هذه الميزات (تقسيم منطقي + أمان اتصال خارجي + تحكم بالوصول)؟', options: ['شبكة WAN فقط', 'VLAN + VPN + Access Control', 'P2P فقط', 'LAN فقط'], correct: 2 },
-  { id: 'net_18', topic: 'Network Basics', subSkill: 'Network_Selection', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة ناشئة تريد ربط 4 مكاتب في 4 مدن مختلفة. ما هو الحل الأنسب والأكثر فعالية من حيث التكلفة؟', options: ['شبكة WAN عبر الإنترنت باستخدام VPN', 'شبكة LAN في كل مكتب على حدة', 'شبكة MAN داخل كل مدينة', 'شبكة PAN بين الأجهزة'], correct: 1 },
-  { id: 'net_19', topic: 'Network Basics', subSkill: 'Comprehensive_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'أنت مسؤول شبكة في شركة صغيرة بها 20 موظفاً في مكتب واحد. صمم شبكة متكاملة واذكر: 1) نوع الشبكة، 2) التجهيزات المطلوبة، 3) نوع الكابلات، 4) الأجهزة المستخدمة.', options: [], correct: 0, isWriting: true, expectedAnswer: 'شبكة LAN باستخدام سويتش (24 منفذ)، راوتر للاتصال بالإنترنت، كابلات UTP Cat6، طابعة شبكة، Access Point للواي فاي.' },
-  { id: 'net_20', topic: 'Network Basics', subSkill: 'Comparison_Analysis', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'قارن بين استخدام شبكة Client-Server وشبكة Peer-to-Peer في شركة بها 50 موظفاً. اذكر مميزات وعيوب كل منهما، وأيها تختار ولماذا؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'Client-Server أفضل للإدارة والأمان والتحكم، P2P مناسب للمجموعات الصغيرة. أختار Client-Server للإدارة المركزية.' },
-  // 10 أسئلة إضافية للمفاهيم العامة
-  { id: 'net_21', topic: 'Network Basics', subSkill: 'Network_Definition_Advanced', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو العنصر الأساسي في أي شبكة؟', options: ['الأجهزة المتصلة', 'الكابلات', 'البروتوكولات', 'جميع ما ذكر'], correct: 4 },
-  { id: 'net_22', topic: 'Network Basics', subSkill: 'Network_Types_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي نوع من الشبكات يغطي مساحة مدينة كاملة؟', options: ['LAN', 'MAN', 'WAN', 'PAN'], correct: 2 },
-  { id: 'net_23', topic: 'Network Basics', subSkill: 'Client_Server_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'في نموذج Client-Server، من يقدم الخدمات؟', options: ['العميل', 'الخادم', 'كلاهما', 'لا أحد'], correct: 2 },
-  { id: 'net_24', topic: 'Network Basics', subSkill: 'P2P_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'في نموذج P2P، كل جهاز يعتبر:', options: ['عميل فقط', 'خادم فقط', 'عميل وخادم معاً', 'وسيط'], correct: 3 },
-  { id: 'net_25', topic: 'Network Basics', subSkill: 'Transmission_Media_Advanced', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من التالي هو وسيلة نقل سلكية؟', options: ['Wi-Fi', 'بلوتوث', 'كابل UTP', 'الأقمار الصناعية'], correct: 3 },
-  { id: 'net_26', topic: 'Network Basics', subSkill: 'Unicast_Advanced', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'في الإرسال Unicast، البيانات تُرسل إلى:', options: ['جهاز واحد', 'جميع الأجهزة', 'مجموعة من الأجهزة', 'الخادم فقط'], correct: 1 },
-  { id: 'net_27', topic: 'Network Basics', subSkill: 'Broadcast_Advanced', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'في الإرسال Broadcast، البيانات تُرسل إلى:', options: ['جهاز واحد', 'جميع الأجهزة في الشبكة', 'مجموعة محددة', 'الخادم فقط'], correct: 2 },
-  { id: 'net_28', topic: 'Network Basics', subSkill: 'VLAN_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي فائدة الـ VLAN؟', options: ['عزل حركة البيانات', 'زيادة السرعة', 'تقليل التكلفة', 'توصيل الأجهزة'], correct: 1 },
-  { id: 'net_29', topic: 'Network Basics', subSkill: 'VPN_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي فائدة الـ VPN؟', options: ['تأمين الاتصال عبر الإنترنت', 'زيادة سرعة الإنترنت', 'توصيل الأجهزة', 'تقسيم الشبكة'], correct: 1 },
-  { id: 'net_30', topic: 'Network Basics', subSkill: 'Network_Comprehensive', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العبارات التالية تصف بدقة مفهوم الشبكة؟', options: ['مجموعة أجهزة متصلة لتبادل البيانات', 'جهاز كمبيوتر واحد', 'نظام تشغيل', 'برنامج تصفح'], correct: 1 },
-  // 20 سؤال إضافي للمفاهيم العامة (المجموع 50)
-  { id: 'net_31', topic: 'Network Basics', subSkill: 'Network_Security', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Firewall؟', options: ['جهاز أمان', 'جهاز توجيه', 'جهاز توصيل', 'جهاز تخزين'], correct: 1 },
-  { id: 'net_32', topic: 'Network Basics', subSkill: 'Network_Security_2', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي وظيفة الجدار الناري (Firewall)؟', options: ['منع الوصول غير المصرح به', 'زيادة السرعة', 'توصيل الأجهزة', 'تخزين البيانات'], correct: 1 },
-  { id: 'net_33', topic: 'Network Basics', subSkill: 'Network_Topology', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي أبسط طوبولوجيا للشبكة؟', options: ['Bus', 'Star', 'Ring', 'Mesh'], correct: 1 },
-  { id: 'net_34', topic: 'Network Basics', subSkill: 'Network_Topology_2', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طوبولوجيا تكون جميع الأجهزة متصلة بجهاز مركزي؟', options: ['Bus', 'Star', 'Ring', 'Mesh'], correct: 2 },
-  { id: 'net_35', topic: 'Network Basics', subSkill: 'Network_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو البروتوكول؟', options: ['لغة تواصل بين الأجهزة', 'نوع من الكابلات', 'جهاز شبكة', 'نظام تشغيل'], correct: 1 },
-  { id: 'net_36', topic: 'Network Basics', subSkill: 'Network_Protocols_2', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من التالي هو بروتوكول شبكة؟', options: ['TCP/IP', 'USB', 'HDMI', 'Bluetooth'], correct: 1 },
-  { id: 'net_37', topic: 'Network Basics', subSkill: 'Network_Devices_Identification', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الجهاز المستخدم لتوصيل شبكتين مختلفتين؟', options: ['سويتش', 'راوتر', 'هاب', 'جسر'], correct: 2 },
-  { id: 'net_38', topic: 'Network Basics', subSkill: 'Network_Devices_Identification_2', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الجهاز المستخدم لتوصيل أجهزة في شبكة محلية؟', options: ['سويتش', 'راوتر', 'مودم', 'جسر'], correct: 1 },
-  { id: 'net_39', topic: 'Network Basics', subSkill: 'Network_Media', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من التالي هو وسيلة نقل سلكية سريعة؟', options: ['كابل UTP', 'كابل ألياف بصرية', 'كابل محوري', 'جميع ما ذكر'], correct: 4 },
-  { id: 'net_40', topic: 'Network Basics', subSkill: 'Network_Comprehensive_2', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي مكونات الشبكة الأساسية؟', options: ['أجهزة، كابلات، بروتوكولات', 'برامج فقط', 'كابلات فقط', 'أجهزة فقط'], correct: 1 },
-  // 10 أسئلة إضافية (المجموع 50)
-  { id: 'net_41', topic: 'Network Basics', subSkill: 'Network_Bandwidth', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Bandwidth؟', options: ['عرض النطاق الترددي', 'سرعة المعالج', 'حجم الذاكرة', 'قوة الإشارة'], correct: 1 },
-  { id: 'net_42', topic: 'Network Basics', subSkill: 'Network_Latency', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Latency؟', options: ['زمن التأخير', 'سرعة النقل', 'عرض النطاق', 'قوة الإشارة'], correct: 1 },
-  { id: 'net_43', topic: 'Network Basics', subSkill: 'Network_Throughput', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Throughput؟', options: ['الإنتاجية الفعلية', 'السرعة النظرية', 'عرض النطاق', 'زمن التأخير'], correct: 1 },
-  { id: 'net_44', topic: 'Network Basics', subSkill: 'Network_Types_3', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي الشبكة التي تغطي قارة كاملة؟', options: ['LAN', 'MAN', 'WAN', 'PAN'], correct: 3 },
-  { id: 'net_45', topic: 'Network Basics', subSkill: 'Network_Types_4', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي الشبكة التي تغطي مساحة شخصية؟', options: ['LAN', 'MAN', 'WAN', 'PAN'], correct: 4 },
-  { id: 'net_46', topic: 'Network Basics', subSkill: 'Network_Client_Server', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'في نموذج Client-Server، من يطلب الخدمات؟', options: ['العميل', 'الخادم', 'كلاهما', 'لا أحد'], correct: 1 },
-  { id: 'net_47', topic: 'Network Basics', subSkill: 'Network_P2P', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي ميزة نموذج P2P؟', options: ['لا يحتاج خادم مركزي', 'أمان عالي', 'سرعة عالية', 'إدارة مركزية'], correct: 1 },
-  { id: 'net_48', topic: 'Network Basics', subSkill: 'Network_Media_2', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من التالي هو وسيلة نقل لاسلكية؟', options: ['كابل UTP', 'كابل ألياف', 'Wi-Fi', 'كابل محوري'], correct: 3 },
-  { id: 'net_49', topic: 'Network Basics', subSkill: 'Network_Protocols_3', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول HTTP؟', options: ['بروتوكول نقل النص التشعبي', 'بروتوكول نقل الملفات', 'بروتوكول البريد', 'بروتوكول التوجيه'], correct: 1 },
-  { id: 'net_50', topic: 'Network Basics', subSkill: 'Network_Comprehensive_3', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي أهمية الشبكات في العصر الحديث؟', options: ['تبادل البيانات والاتصال', 'تخزين الملفات فقط', 'طباعة المستندات', 'تشغيل الألعاب'], correct: 1 }
-];
+export function getAssessmentQuestions(assessmentId) {
+  const filtered = QUESTIONS.filter(q => {
+    if (assessmentId === 'concepts') return q.topic === 'Accounting Basics';
+    if (assessmentId === 'journal') return q.topic === 'Journal Entries';
+    if (assessmentId === 'balance') return q.topic === 'Balance Sheet';
+    if (assessmentId === 'income') return q.topic === 'Income Statement';
+    if (assessmentId === 'assets') return q.topic === 'Assets & Liabilities';
+    if (assessmentId === 'equity') return q.topic === 'Equity';
+    if (assessmentId === 'analysis') return q.topic === 'Financial Analysis';
+    if (assessmentId === 'principles') return q.topic === 'Accounting Principles';
+    if (assessmentId === 'full') return true;
+    return q.topic === 'Accounting Basics';
+  });
+  return filtered;
+}
 
-// =============================================================
-// 🌍 القسم 2: IPv4 - 40 سؤال
-// =============================================================
+export function getAssessmentName(assessmentId) {
+  const names = {
+    'concepts': 'أساسيات المحاسبة',
+    'journal': 'القيود اليومية',
+    'balance': 'الميزانية العمومية',
+    'income': 'قائمة الدخل',
+    'assets': 'الأصول والخصوم',
+    'equity': 'حقوق الملكية',
+    'analysis': 'تحليل القوائم المالية',
+    'principles': 'مبادئ المحاسبة',
+    'full': 'التقييم الشامل للمحاسبة'
+  };
+  return names[assessmentId] || 'تقييم المحاسبة';
+}
 
-const ipv4Questions = [
-  { id: 'ipv4_1', topic: 'IPv4', subSkill: 'IP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو عنوان IP؟', options: ['عنوان فيزيائي', 'عنوان منطقي (رقمي)', 'نوع من الكابلات', 'بروتوكول أمان'], correct: 2 },
-  { id: 'ipv4_2', topic: 'IPv4', subSkill: 'IPv4_Structure', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'عنوان IPv4 يتكون من جزأين، هما:', options: ['Network ID و Host ID', 'Source و Destination', 'MAC و IP', 'Public و Private'], correct: 1 },
-  { id: 'ipv4_3', topic: 'IPv4', subSkill: 'IPv4_Bits', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'كم عدد البتات (Bits) في عنوان IPv4؟', options: ['8 بتات', '16 بت', '32 بت', '128 بت'], correct: 3 },
-  { id: 'ipv4_4', topic: 'IPv4', subSkill: 'Subnet_Mask_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Subnet Mask؟', options: ['عنوان جهاز معين', 'رقم يحدد الشبكة والمضيف', 'نوع من الكابلات', 'بروتوكول توجيه'], correct: 2 },
-  { id: 'ipv4_5', topic: 'IPv4', subSkill: 'IP_Private_vs_Public', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من العناوين التالية هو عنوان خاص (Private)؟', options: ['8.8.8.8', '192.168.1.1', '13.107.42.14', '1.1.1.1'], correct: 2 },
-  { id: 'ipv4_6', topic: 'IPv4', subSkill: 'IP_Private_vs_Public', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من العناوين التالية هو عنوان عام (Public)؟', options: ['10.0.0.1', '172.16.1.1', '192.168.1.1', '8.8.8.8'], correct: 4 },
-  { id: 'ipv4_7', topic: 'IPv4', subSkill: 'IP_Private_Ranges', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو نطاق العناوين الخاصة للفئة A؟', options: ['192.168.0.0 - 192.168.255.255', '10.0.0.0 - 10.255.255.255', '172.16.0.0 - 172.31.255.255', '127.0.0.0 - 127.255.255.255'], correct: 2 },
-  { id: 'ipv4_8', topic: 'IPv4', subSkill: 'IP_Private_Ranges', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو نطاق العناوين الخاصة للفئة B؟', options: ['10.0.0.0 - 10.255.255.255', '172.16.0.0 - 172.31.255.255', '192.168.0.0 - 192.168.255.255', '169.254.0.0 - 169.254.255.255'], correct: 2 },
-  { id: 'ipv4_9', topic: 'IPv4', subSkill: 'IP_Private_Ranges', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو نطاق العناوين الخاصة للفئة C؟', options: ['10.0.0.0 - 10.255.255.255', '172.16.0.0 - 172.31.255.255', '192.168.0.0 - 192.168.255.255', '169.254.0.0 - 169.254.255.255'], correct: 3 },
-  { id: 'ipv4_10', topic: 'IPv4', subSkill: 'Gateway_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Gateway (البوابة الافتراضية)؟', options: ['جهاز يسمح للأجهزة بالخروج إلى شبكة أخرى', 'عنوان MAC للجهاز', 'نوع كابل', 'بروتوكول تشفير'], correct: 1 },
-  { id: 'ipv4_11', topic: 'IPv4', subSkill: 'Loopback_Address', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'عنوان 127.0.0.1 يُعرف باسم:', options: ['عنوان الشبكة', 'عنوان البث', 'عنوان Loopback', 'عنوان Gateway'], correct: 3 },
-  { id: 'ipv4_12', topic: 'IPv4', subSkill: 'IP_Classification', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الفئة (Class) التي يبدأ عنوانها بالبت 0 (أي من 0-127) هي:', options: ['Class A', 'Class B', 'Class C', 'Class D'], correct: 1 },
-  { id: 'ipv4_13', topic: 'IPv4', subSkill: 'Subnet_Mask_Default', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الـ Subnet Mask الافتراضي للفئة B هو:', options: ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.255'], correct: 2 },
-  { id: 'ipv4_14', topic: 'IPv4', subSkill: 'Subnet_Mask_Default', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الـ Subnet Mask الافتراضي للفئة C هو:', options: ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.255'], correct: 3 },
-  { id: 'ipv4_15', topic: 'IPv4', subSkill: 'IP_Classification', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الفئة (Class) التي يبدأ عنوانها بالبتين 10 (أي من 128-191) هي:', options: ['Class A', 'Class B', 'Class C', 'Class D'], correct: 2 },
-  { id: 'ipv4_16', topic: 'IPv4', subSkill: 'Subnet_Mask_Meaning', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الـ Subnet Mask 255.255.255.0 يعني أن:', options: ['أول 24 بت للشبكة، وآخر 8 بت للمضيف', 'أول 8 بت للشبكة، وآخر 24 بت للمضيف', 'كل البتات للمضيف', 'كل البتات للشبكة'], correct: 1 },
-  { id: 'ipv4_17', topic: 'IPv4', subSkill: 'Subnet_Mask_CIDR', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'الـ Subnet Mask 255.255.255.224 يعادل في كتابة CIDR (/x):', options: ['/24', '/25', '/26', '/27'], correct: 4 },
-  { id: 'ipv4_18', topic: 'IPv4', subSkill: 'Host_Calculation', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'ما هو عدد المضيفين الصالحين في شبكة /25؟', options: ['126', '254', '510', '1022'], correct: 1 },
-  { id: 'ipv4_19', topic: 'IPv4', subSkill: 'Increment_Calculation', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'ما هو الـ Increment في شبكة /26؟', options: ['32', '64', '128', '16'], correct: 2 },
-  { id: 'ipv4_20', topic: 'IPv4', subSkill: 'Broadcast_Calculation', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'ما هو عنوان البث (Broadcast Address) للشبكة 192.168.1.0/24؟', options: ['192.168.1.0', '192.168.1.1', '192.168.1.255', '192.168.1.254'], correct: 3 },
-  // 20 سؤال إضافي لـ IPv4 (المجموع 40)
-  { id: 'ipv4_21', topic: 'IPv4', subSkill: 'Network_ID_Determination', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'ما هو عنوان الشبكة (Network ID) لعنوان IP 192.168.5.35 مع قناع 255.255.255.224؟', options: ['192.168.5.0', '192.168.5.32', '192.168.5.35', '192.168.5.255'], correct: 2 },
-  { id: 'ipv4_22', topic: 'IPv4', subSkill: 'Gateway_Calculation', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو الـ Default Gateway الصحيح لجهاز في الشبكة 192.168.10.32/28 (علماً أن أول عنوان صالح في الشبكة هو الـ Gateway)؟', options: ['192.168.10.32', '192.168.10.33', '192.168.10.46', '192.168.10.47'], correct: 2 },
-  { id: 'ipv4_23', topic: 'IPv4', subSkill: 'Valid_IP_Address', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العناوين التالية هو عنوان صالح (Valid) لجهاز في شبكة 192.168.1.0/29؟', options: ['192.168.1.0', '192.168.1.7', '192.168.1.6', '192.168.1.8'], correct: 3 },
-  { id: 'ipv4_24', topic: 'IPv4', subSkill: 'Network_ID_Determination', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'ما هو عنوان الشبكة (Network ID) لعنوان IP 192.168.100.200 مع قناع 255.255.255.192؟', options: ['192.168.100.128', '192.168.100.192', '192.168.100.64', '192.168.100.0'], correct: 2 },
-  { id: 'ipv4_25', topic: 'IPv4', subSkill: 'Broadcast_Calculation', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'في الشبكة 192.168.10.0/28، ما هو عنوان البث (Broadcast Address) للشبكة الفرعية الثالثة؟', options: ['192.168.10.47', '192.168.10.31', '192.168.10.63', '192.168.10.255'], correct: 1 },
-  { id: 'ipv4_26', topic: 'IPv4', subSkill: 'Gateway_Usage', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'جهاز في الشبكة 10.10.10.0/24 يريد إرسال بيانات إلى جهاز في الشبكة 192.168.1.0/24. ماذا يجب أن يكون عنوان الـ Gateway في إعدادات الجهاز الأول؟', options: ['عنوان IP للراوتر المتصل بكلا الشبكتين', 'عنوان IP لجهاز الوجهة', '0.0.0.0', '255.255.255.255'], correct: 1 },
-  { id: 'ipv4_27', topic: 'IPv4', subSkill: 'Subnet_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'لديك الشبكة 192.168.1.0/24. تحتاج إلى تقسيمها إلى 4 شبكات فرعية متساوية. اكتب: 1) الـ Subnet Mask المناسب، 2) عدد المضيفين الصالحين في كل شبكة، 3) الـ Network ID لكل شبكة فرعية، 4) عنوان البث لكل شبكة فرعية.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) /26 = 255.255.255.192، 2) 62 مضيف، 3) 192.168.1.0, 192.168.1.64, 192.168.1.128, 192.168.1.192، 4) 192.168.1.63, 192.168.1.127, 192.168.1.191, 192.168.1.255' },
-  { id: 'ipv4_28', topic: 'IPv4', subSkill: 'VLSM_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'شركة لديها 3 أقسام: القسم الأول (60 جهاز)، القسم الثاني (30 جهاز)، القسم الثالث (15 جهاز). لديك الشبكة 192.168.1.0/24. صمم شبكة فرعية لكل قسم مع أقل هدر، واكتب الـ Subnet Mask والـ Network ID لكل قسم.', options: [], correct: 0, isWriting: true, expectedAnswer: 'القسم 1: /26 (62 مضيف) - 192.168.1.0/26، القسم 2: /27 (30 مضيف) - 192.168.1.64/27، القسم 3: /28 (14 مضيف) - 192.168.1.96/28' },
-  { id: 'ipv4_29', topic: 'IPv4', subSkill: 'Troubleshooting', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'مهندس شبكات يقوم بتكوين جهاز في شبكة 192.168.1.0/24. قام بتعيين IP 192.168.1.100، Subnet Mask 255.255.255.0، و Gateway 192.168.1.1. بعد التكوين: يستطيع ping 192.168.1.1 لكن لا يستطيع ping 8.8.8.8. ما هو السبب الأكثر ترجيحاً، وكيف تحل المشكلة؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'السبب: مشكلة في التوجيه (Gateway لا يوجّه). الحل: التحقق من إعدادات التوجيه في الراوتر أو NAT أو إضافة Route Default.' },
-  { id: 'ipv4_30', topic: 'IPv4', subSkill: 'Comprehensive_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'لديك الشبكة 10.0.0.0/8 وتريد تقسيمها إلى شبكات فرعية، كل شبكة فرعية يجب أن تحتوي على 1000 مضيف صالح على الأقل. اكتب: 1) الـ Subnet Mask المناسب، 2) عدد الشبكات الفرعية، 3) عدد المضيفين الصالحين، 4) الـ Network ID للشبكة الفرعية رقم 10.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) /22 = 255.255.252.0، 2) 16384 شبكة فرعية، 3) 1022 مضيف، 4) 10.0.36.0' },
-  { id: 'ipv4_31', topic: 'IPv4', subSkill: 'Comprehensive_IPv4_Analysis', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'قام مهندس شبكات بتكوين جهاز بالإعدادات التالية:\nIP: 192.168.100.150\nSubnet Mask: 255.255.255.192\nGateway: 192.168.100.129\n\nأي من العبارات التالية صحيحة؟', options: ['الـ Gateway صحيح لأنه أول عنوان صالح في الشبكة', 'الـ Gateway غير صحيح لأنه يجب أن يكون 192.168.100.193', 'الـ Gateway صحيح لأنه يقع ضمن نطاق الشبكة 192.168.100.128-191', 'الـ Gateway غير صحيح لأنه لا يقع ضمن نطاق الشبكة 192.168.100.128-191'], correct: 4 },
-  { id: 'ipv4_32', topic: 'IPv4', subSkill: 'Static_vs_Dynamic_IP', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الفرق الأساسي بين الـ Static IP والـ Dynamic IP؟', options: ['الثابت يُعطى يدوياً ولا يتغير، الديناميكي يُعطى تلقائياً وقد يتغير', 'الثابت أسرع من الديناميكي', 'الديناميكي أكثر أماناً من الثابت', 'الثابت يُستخدم فقط في الخوادم، والديناميكي يُستخدم فقط في الأجهزة'], correct: 1 },
-  { id: 'ipv4_33', topic: 'IPv4', subSkill: 'Subnet_Analysis', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'جهازان في نفس الشبكة 192.168.10.0/27. الأول عنوانه 192.168.10.30 والثاني 192.168.10.45.\nماذا يمكن أن نستنتج؟', options: ['كلا الجهازين في نفس الشبكة الفرعية ويتواصلان مباشرة', 'الجهازان في شبكتين فرعيتين مختلفتين ويحتاجان راوتر للتواصل', 'العنوان 192.168.10.45 غير صالح في هذه الشبكة', 'يجب تغيير Subnet Mask إلى /24 ليتواصلا'], correct: 2 },
-  { id: 'ipv4_34', topic: 'IPv4', subSkill: 'APIPA_Understanding', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو نطاق عناوين APIPA (Automatic Private IP Addressing) التي يعينها الجهاز تلقائياً عند عدم وجود خادم DHCP؟', options: ['10.0.0.0 - 10.255.255.255', '172.16.0.0 - 172.31.255.255', '169.254.0.0 - 169.254.255.255', '192.168.0.0 - 192.168.255.255'], correct: 3 },
-  { id: 'ipv4_35', topic: 'IPv4', subSkill: 'Gateway_Troubleshooting', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'جهاز في الشبكة 10.10.10.0/24، Gateway 10.10.10.1.\nيستطيع الجهاز ping 10.10.10.1 لكن لا يستطيع ping 8.8.8.8.\nما هو السبب الأكثر ترجيحاً؟', options: ['مشكلة في الـ Subnet Mask', 'مشكلة في عنوان IP للجهاز', 'مشكلة في التوجيه (NAT أو Default Route)', 'مشكلة في كابل الشبكة'], correct: 3 },
-  { id: 'ipv4_36', topic: 'IPv4', subSkill: 'IPv4_vs_IPv6_Loopback', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو عنوان Loopback في IPv4؟ وما هو في IPv6؟', options: ['IPv4: 127.0.0.1, IPv6: ::1', 'IPv4: 0.0.0.0, IPv6: ::', 'IPv4: 255.255.255.255, IPv6: FFFF::', 'IPv4: 127.0.0.0, IPv6: ::'], correct: 1 },
-  { id: 'ipv4_37', topic: 'IPv4', subSkill: 'Network_ID_Advanced', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'ما هو عنوان الشبكة (Network ID) للعنوان 172.16.50.75 مع قناع 255.255.255.248؟', options: ['172.16.50.72', '172.16.50.73', '172.16.50.75', '172.16.50.80'], correct: 1 },
-  { id: 'ipv4_38', topic: 'IPv4', subSkill: 'IP_Classification_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي من العناوين التالية هو عنوان عام (Public) صالح للتوجيه على الإنترنت؟', options: ['10.10.10.10', '172.16.10.10', '192.168.10.10', '203.0.113.10'], correct: 4 },
-  { id: 'ipv4_39', topic: 'IPv4', subSkill: 'Subnet_Mask_From_Hosts', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'شبكة تحتاج إلى 1000 مضيف صالح. ما هو الـ Subnet Mask المناسب؟', options: ['255.255.252.0', '255.255.254.0', '255.255.248.0', '255.255.255.0'], correct: 1 },
-  { id: 'ipv4_40', topic: 'IPv4', subSkill: 'Comprehensive_IPv4_Understanding', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العبارات التالية تصف بدقة الفرق بين الـ Public IP والـ Private IP في سياق شبكات المؤسسات؟', options: ['العناوين العامة تُستخدم داخل المؤسسة، والخاصة تُستخدم على الإنترنت', 'العناوين العامة تكون فريدة عالمياً، والخاصة تكون فريدة داخل الشبكة المحلية فقط', 'العناوين الخاصة أسرع من العامة في التوجيه', 'جميع العناوين الخاصة يمكن توجيهها على الإنترنت'], correct: 2 }
-];
-
-// =============================================================
-// 🔢 القسم 3: Subnetting - 40 سؤال
-// =============================================================
-
-const subnettingQuestions = [
-  { id: 'sub_1', topic: 'Subnetting', subSkill: 'Subnet_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Subnet Mask؟', options: ['عنوان جهاز معين', 'رقم يحدد الشبكة والمضيف', 'نوع من الكابلات', 'بروتوكول توجيه'], correct: 2 },
-  { id: 'sub_2', topic: 'Subnetting', subSkill: 'Subnet_Purpose', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي الفائدة الأساسية من الـ Subnetting؟', options: ['تقسيم شبكة كبيرة إلى شبكات أصغر', 'زيادة سرعة الإنترنت', 'تقليل عدد الأجهزة', 'حماية الشبكة'], correct: 1 },
-  { id: 'sub_3', topic: 'Subnetting', subSkill: 'CIDR_Notation', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ CIDR Notation؟', options: ['طريقة لكتابة IP بالثنائي', 'طريقة مختصرة لكتابة الـ Subnet Mask', 'نوع من الكابلات', 'بروتوكول توجيه'], correct: 2 },
-  { id: 'sub_4', topic: 'Subnetting', subSkill: 'Increment_Concept', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Increment في الـ Subnetting؟', options: ['عدد الشبكات الفرعية', 'عدد المضيفين في كل شبكة', 'الفرق بين عناوين الشبكة المتتالية', 'عنوان البث'], correct: 3 },
-  { id: 'sub_5', topic: 'Subnetting', subSkill: 'Subnet_Default_Mask', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Subnet Mask الافتراضي للفئة C؟', options: ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.255'], correct: 3 },
-  { id: 'sub_6', topic: 'Subnetting', subSkill: 'Subnet_Default_Mask', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Subnet Mask الافتراضي للفئة B؟', options: ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.255'], correct: 2 },
-  { id: 'sub_7', topic: 'Subnetting', subSkill: 'Subnet_Default_Mask', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Subnet Mask الافتراضي للفئة A؟', options: ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.255'], correct: 1 },
-  { id: 'sub_8', topic: 'Subnetting', subSkill: 'Broadcast_Concept', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو عنوان البث (Broadcast Address)؟', options: ['أول عنوان في الشبكة', 'آخر عنوان في الشبكة', 'عنوان الـ Gateway', 'عنوان الـ Loopback'], correct: 2 },
-  { id: 'sub_9', topic: 'Subnetting', subSkill: 'FLSM_vs_VLSM', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الفرق بين FLSM و VLSM؟', options: ['FLSM يستخدم أقنعة متساوية، VLSM يستخدم أقنعة مختلفة', 'FLSM يستخدم أقنعة مختلفة، VLSM يستخدم أقنعة متساوية', 'لا فرق', 'FLSM أسرع'], correct: 1 },
-  { id: 'sub_10', topic: 'Subnetting', subSkill: 'Subnet_Usage', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 1, question: 'متى نستخدم الـ Subnetting في الشبكات العملية؟', options: ['تنظيم الشبكة وتقليل الازدحام', 'زيادة سرعة الإنترنت', 'حماية الشبكة فقط', 'توصيل أجهزة جديدة'], correct: 1 },
-  // 30 سؤال إضافي لـ Subnetting (المجموع 40)
-  { id: 'sub_11', topic: 'Subnetting', subSkill: 'Subnet_Mask_CIDR', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'الـ Subnet Mask 255.255.255.240 يعادل في CIDR:', options: ['/26', '/27', '/28', '/29'], correct: 3 },
-  { id: 'sub_12', topic: 'Subnetting', subSkill: 'Host_Calculation', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'شبكة عنوانها 192.168.1.0/27، كم عدد المضيفين الصالحين في كل شبكة فرعية؟', options: ['30', '62', '126', '254'], correct: 1 },
-  { id: 'sub_13', topic: 'Subnetting', subSkill: 'Subnet_Count', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'شبكة عنوانها 192.168.1.0/26، كم عدد الشبكات الفرعية التي تم الحصول عليها من الفئة C الأصلية (/24)؟', options: ['2 شبكتان', '4 شبكات', '8 شبكات', '16 شبكة'], correct: 2 },
-  { id: 'sub_14', topic: 'Subnetting', subSkill: 'Network_ID_Determination', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'عنوان الشبكة (Network ID) لعنوان IP 192.168.5.35 مع قناع 255.255.255.224 هو:', options: ['192.168.5.0', '192.168.5.32', '192.168.5.35', '192.168.5.255'], correct: 2 },
-  { id: 'sub_15', topic: 'Subnetting', subSkill: 'Broadcast_Calculation', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'في الشبكة 192.168.10.0/28، ما هو عنوان البث للشبكة الفرعية الثالثة؟', options: ['192.168.10.47', '192.168.10.31', '192.168.10.63', '192.168.10.255'], correct: 1 },
-  { id: 'sub_16', topic: 'Subnetting', subSkill: 'Subnet_Mask_Selection', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'ما هو الـ Subnet Mask المناسب لشبكة تحتاج 30 مضيفاً صالحاً؟', options: ['/27', '/28', '/29', '/26'], correct: 1 },
-  { id: 'sub_17', topic: 'Subnetting', subSkill: 'Host_Calculation', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'ما هو عدد المضيفين الصالحين في شبكة /25؟', options: ['126', '254', '510', '1022'], correct: 1 },
-  { id: 'sub_18', topic: 'Subnetting', subSkill: 'Subnet_Mask_Calculation', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'ما هو الـ Subnet Mask للـ CIDR /29؟', options: ['255.255.255.128', '255.255.255.192', '255.255.255.224', '255.255.255.248'], correct: 4 },
-  { id: 'sub_19', topic: 'Subnetting', subSkill: 'Subnet_Design', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة لديها الشبكة 192.168.1.0/24 وتريد تقسيمها إلى 6 شبكات فرعية، مع أكبر عدد ممكن من المضيفين. ما هو الـ Subnet Mask المناسب؟', options: ['/27', '/28', '/29', '/26'], correct: 1 },
-  { id: 'sub_20', topic: 'Subnetting', subSkill: 'Subnet_Mask_Calculation', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'شركة لديها الشبكة 172.16.0.0/20. ما هو الـ Subnet Mask بالكتابة العشرية؟', options: ['255.255.0.0', '255.255.240.0', '255.255.248.0', '255.255.255.0'], correct: 2 },
-  { id: 'sub_21', topic: 'Subnetting', subSkill: 'Gateway_Calculation', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو الـ Default Gateway الصحيح لجهاز في الشبكة 192.168.10.32/28 (علماً أن أول عنوان صالح في الشبكة هو الـ Gateway)؟', options: ['192.168.10.32', '192.168.10.33', '192.168.10.46', '192.168.10.47'], correct: 2 },
-  { id: 'sub_22', topic: 'Subnetting', subSkill: 'Valid_IP_Address', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العناوين التالية هو عنوان صالح لجهاز في شبكة 192.168.1.0/29؟', options: ['192.168.1.0', '192.168.1.7', '192.168.1.6', '192.168.1.8'], correct: 3 },
-  { id: 'sub_23', topic: 'Subnetting', subSkill: 'Subnet_Mask_Host_Calculation', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'لديك الشبكة: 10.0.0.0/22. ما هو الـ Subnet Mask العشري، وكم عدد المضيفين الصالحين؟', options: ['255.255.252.0، 1022 مضيف', '255.255.254.0، 510 مضيف', '255.255.255.0، 254 مضيف', '255.255.248.0، 2046 مضيف'], correct: 1 },
-  { id: 'sub_24', topic: 'Subnetting', subSkill: 'Network_ID_Determination', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'ما هو عنوان الشبكة (Network ID) لعنوان IP 192.168.100.200 مع قناع 255.255.255.192؟', options: ['192.168.100.128', '192.168.100.192', '192.168.100.64', '192.168.100.0'], correct: 2 },
-  { id: 'sub_25', topic: 'Subnetting', subSkill: 'Increment_Calculation', cognitiveLevel: 'analyzing', errorPattern: 'calculation', difficulty: 3, question: 'ما هو الـ Increment في شبكة /22؟', options: ['1', '2', '4', '8'], correct: 3 },
-  { id: 'sub_26', topic: 'Subnetting', subSkill: 'Comprehensive_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'لديك الشبكة 172.16.0.0/16. صمم شبكة فرعية لـ 1000 مضيف صالح. اكتب: 1) الـ Subnet Mask الجديد، 2) الـ Network ID الأول، 3) عنوان البث لهذه الشبكة.', options: [], correct: 0, isWriting: true, expectedAnswer: '/22 = 255.255.252.0، 172.16.0.0، 172.16.3.255' },
-  { id: 'sub_27', topic: 'Subnetting', subSkill: 'VLSM_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'شركة لديها 4 أقسام: (100، 50، 25، 10) جهاز. لديك الشبكة 192.168.1.0/24. صمم شبكة فرعية لكل قسم، واكتب الـ Network ID و Broadcast Address وعدد المضيفين الصالحين لكل شبكة.', options: [], correct: 0, isWriting: true, expectedAnswer: 'القسم 1: /25 (126 مضيف) - 192.168.1.0/25، البث 192.168.1.127\nالقسم 2: /26 (62 مضيف) - 192.168.1.128/26، البث 192.168.1.191\nالقسم 3: /27 (30 مضيف) - 192.168.1.192/27، البث 192.168.1.223\nالقسم 4: /28 (14 مضيف) - 192.168.1.224/28، البث 192.168.1.239' },
-  { id: 'sub_28', topic: 'Subnetting', subSkill: 'Subnet_Optimization', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'لديك الشبكة 10.0.0.0/8. تريد تقسيمها إلى 200 شبكة فرعية، كل شبكة تحتوي على 50000 مضيف على الأقل. اكتب: 1) عدد البتات المستعارة، 2) الـ Subnet Mask الجديد، 3) عدد الشبكات الفعلية، 4) عدد المضيفين في كل شبكة.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) 8 بتات، 2) /16 = 255.255.0.0، 3) 256 شبكة، 4) 65534 مضيف' },
-  { id: 'sub_29', topic: 'Subnetting', subSkill: 'Subnet_Troubleshooting', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'جهاز في شبكة 192.168.10.0/27 عنوانه 192.168.10.30 و Gateway 192.168.10.1. الجهاز لا يستطيع الوصول إلى الإنترنت. ما هي المشكلة المحتملة؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'Gateway 192.168.10.1 خارج نطاق الشبكة (0-31) لأن /27 Increment = 32. يجب أن يكون Gateway 192.168.10.1 غير صالح.' },
-  { id: 'sub_30', topic: 'Subnetting', subSkill: 'Subnet_Comprehensive', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم شبكة متكاملة لشركة بها 5 أقسام بأحجام مختلفة (200، 100، 50، 25، 10) جهاز، مع الحفاظ على أقل هدر للعناوين. اذكر جميع التفاصيل.', options: [], correct: 0, isWriting: true, expectedAnswer: 'استخدام VLSM:\nالقسم 1 (/24): 200 جهاز\nالقسم 2 (/25): 100 جهاز\nالقسم 3 (/26): 50 جهاز\nالقسم 4 (/27): 25 جهاز\nالقسم 5 (/28): 10 جهاز' },
-  // 10 أسئلة إضافية
-  { id: 'sub_31', topic: 'Subnetting', subSkill: 'Subnet_Definition_Advanced', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الـ Subnetting؟', options: ['تقسيم شبكة كبيرة إلى شبكات أصغر', 'دمج شبكات صغيرة في شبكة كبيرة', 'تغيير عنوان IP', 'حماية الشبكة'], correct: 1 },
-  { id: 'sub_32', topic: 'Subnetting', subSkill: 'CIDR_Advanced', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما معنى CIDR /24؟', options: ['24 بت للشبكة، 8 بت للمضيف', '8 بت للشبكة، 24 بت للمضيف', '32 بت للشبكة', '16 بت للشبكة'], correct: 1 },
-  { id: 'sub_33', topic: 'Subnetting', subSkill: 'Increment_Advanced', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'في شبكة /28، الـ Increment هو:', options: ['8', '12', '14', '16'], correct: 4 },
-  { id: 'sub_34', topic: 'Subnetting', subSkill: 'Host_Calculation_Advanced', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'شبكة /30 تحتوي على كم مضيفاً صالحاً؟', options: ['2', '4', '6', '8'], correct: 1 },
-  { id: 'sub_35', topic: 'Subnetting', subSkill: 'Subnet_Count_Advanced', cognitiveLevel: 'understanding', errorPattern: 'calculation', difficulty: 2, question: 'من شبكة /24، كم شبكة /28 يمكن الحصول عليها؟', options: ['8', '12', '14', '16'], correct: 4 },
-  { id: 'sub_36', topic: 'Subnetting', subSkill: 'FLSM_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو FLSM؟', options: ['تقسيم الشبكة بأقنعة متساوية', 'تقسيم الشبكة بأقنعة مختلفة', 'دمج الشبكات', 'توجيه الشبكات'], correct: 1 },
-  { id: 'sub_37', topic: 'Subnetting', subSkill: 'VLSM_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو VLSM؟', options: ['تقسيم الشبكة بأقنعة مختلفة حسب الحاجة', 'تقسيم الشبكة بأقنعة متساوية', 'دمج الشبكات', 'توجيه الشبكات'], correct: 1 },
-  { id: 'sub_38', topic: 'Subnetting', subSkill: 'Network_ID_Determination_Advanced', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'ما هو Network ID للعنوان 10.10.10.15/28؟', options: ['10.10.10.0', '10.10.10.8', '10.10.10.15', '10.10.10.16'], correct: 2 },
-  { id: 'sub_39', topic: 'Subnetting', subSkill: 'Broadcast_Advanced', cognitiveLevel: 'applying', errorPattern: 'calculation', difficulty: 2, question: 'ما هو Broadcast Address للعنوان 192.168.1.100/26؟', options: ['192.168.1.63', '192.168.1.127', '192.168.1.191', '192.168.1.255'], correct: 2 },
-  { id: 'sub_40', topic: 'Subnetting', subSkill: 'Subnet_Comprehensive_Understanding', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العبارات التالية تصف بدقة فائدة الـ Subnetting؟', options: ['تحسين أداء الشبكة وتقليل الازدحام', 'زيادة سرعة الإنترنت فقط', 'حماية الشبكة فقط', 'توصيل الأجهزة فقط'], correct: 1 }
-];
-
-// =============================================================
-// 🛜 القسم 4: IPv6 - 36 سؤال
-// =============================================================
-
-const ipv6Questions = [
-  { id: 'ipv6_1', topic: 'IPv6', subSkill: 'IPv6_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'كم عدد البتات في عنوان IPv6؟', options: ['32 بت', '64 بت', '128 بت', '256 بت'], correct: 3 },
-  { id: 'ipv6_2', topic: 'IPv6', subSkill: 'IPv6_Structure', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'عنوان IPv6 يتكون من كم مجموعة (Hextet)؟', options: ['4', '6', '8', '10'], correct: 3 },
-  { id: 'ipv6_3', topic: 'IPv6', subSkill: 'IPv6_vs_IPv4', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الفرق الأساسي بين IPv4 و IPv6 من حيث حجم العنوان؟', options: ['IPv4 32 بت، IPv6 64 بت', 'IPv4 32 بت، IPv6 128 بت', 'IPv4 64 بت، IPv6 128 بت', 'IPv4 16 بت، IPv6 64 بت'], correct: 2 },
-  { id: 'ipv6_4', topic: 'IPv6', subSkill: 'IPv6_Types', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي أنواع العناوين الأساسية في IPv6؟', options: ['Unicast, Broadcast, Anycast', 'Unicast, Multicast, Anycast', 'Unicast, Multicast, Broadcast', 'Unicast فقط'], correct: 2 },
-  { id: 'ipv6_5', topic: 'IPv6', subSkill: 'IPv6_Link_Local', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الـ Link-Local Address في IPv6 يبدأ بـ:', options: ['2001::', 'FE80::', 'FF00::', '::1'], correct: 2 },
-  { id: 'ipv6_6', topic: 'IPv6', subSkill: 'IPv6_Loopback', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الـ Loopback Address في IPv6 هو:', options: ['127.0.0.1', '::1', 'FE80::1', '2001::1'], correct: 2 },
-  { id: 'ipv6_7', topic: 'IPv6', subSkill: 'IPv6_Broadcast_Removed', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'في IPv6، تم إلغاء نوع الإرسال:', options: ['Unicast', 'Multicast', 'Broadcast', 'Anycast'], correct: 3 },
-  { id: 'ipv6_8', topic: 'IPv6', subSkill: 'IPv6_Global_Unicast', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الـ Global Unicast Address (العنوان العام) في IPv6 يبدأ بـ:', options: ['FE80::', '2001::', 'FC00::', 'FF00::'], correct: 2 },
-  { id: 'ipv6_9', topic: 'IPv6', subSkill: 'IPv6_Unique_Local', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'الـ Unique Local Address (مشابه للـ Private في IPv4) في IPv6 يبدأ بـ:', options: ['FE80::', 'FC00::', '2001::', 'FF00::'], correct: 2 },
-  { id: 'ipv6_10', topic: 'IPv6', subSkill: 'IPv6_Auto_Configuration', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي ميزة IPv6 مقارنة بـ IPv4؟', options: ['عدد عناوين أكبر', 'أمان مدمج (IPsec)', 'تكوين تلقائي (SLAAC)', 'جميع ما ذكر'], correct: 4 },
-  { id: 'ipv6_11', topic: 'IPv6', subSkill: 'IPv6_Shortening', cognitiveLevel: 'applying', errorPattern: 'application', difficulty: 2, question: 'اختصار عنوان IPv6 التالي: 2001:0db8:0000:0000:0000:0000:1428:57ab هو:', options: ['2001:db8::1428:57ab', '2001:db8:::1428:57ab', '2001:db8:0:0:0:0:1428:57ab', '2001:db8::1428:57ab::'], correct: 1 },
-  { id: 'ipv6_12', topic: 'IPv6', subSkill: 'IPv6_Shortening_Rules', cognitiveLevel: 'understanding', errorPattern: 'application', difficulty: 2, question: 'عند كتابة عنوان IPv6 مختصر، أي من القواعد التالية صحيحة؟', options: ['يمكن حذف الأصفار البادئة من كل مقطع', 'يمكن حذف الأصفار المتتالية مرة واحدة فقط باستخدام ::', 'يمكن حذف كل الأصفار بدون قيود', 'لا يمكن حذف أي أصفار'], correct: 2 },
-  { id: 'ipv6_13', topic: 'IPv6', subSkill: 'IPv6_Shortening_Advanced', cognitiveLevel: 'applying', errorPattern: 'application', difficulty: 2, question: 'ما هو عنوان IPv6 المضغوط الصحيح للعنوان: 2001:0db8:0000:0000:0001:0000:0000:0000؟', options: ['2001:db8::1:0:0:0', '2001:db8:0:0:1::', '2001:db8:::1::', '2001:db8::1:::'], correct: 2 },
-  { id: 'ipv6_14', topic: 'IPv6', subSkill: 'IPv6_Types_Comparison', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما الفرق بين الـ Link-Local والـ Unique Local في IPv6؟', options: ['Link-Local يستخدم داخل الشبكة المحلية فقط، Unique Local يستخدم داخل المؤسسة', 'Link-Local عالمي، Unique Local محلي', 'لا فرق بينهما', 'Link-Local أسرع من Unique Local'], correct: 1 },
-  { id: 'ipv6_15', topic: 'IPv6', subSkill: 'Solicited_Node_Multicast', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الـ Solicited-Node Multicast Address في IPv6 يستخدم لـ:', options: ['إرسال البيانات إلى جميع الأجهزة', 'استبدال الـ ARP في IPv4 (للعثور على عنوان MAC)', 'توجيه الحزم خارج الشبكة', 'تعيين عنوان خاص'], correct: 2 },
-  { id: 'ipv6_16', topic: 'IPv6', subSkill: 'IPv6_vs_IPv4_Header', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو حجم رأس (Header) IPv6 مقارنة بـ IPv4؟', options: ['IPv6 أكبر (40 بايت)', 'IPv4 أكبر (40 بايت)', 'نفس الحجم', 'IPv6 أصغر (20 بايت)'], correct: 1 },
-  { id: 'ipv6_17', topic: 'IPv6', subSkill: 'IPv6_Design', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة تريد الانتقال من IPv4 إلى IPv6 مع الاحتفاظ بالتوافق مع الأنظمة القديمة. ما هو الحل المناسب؟', options: ['Dual Stack', 'NAT64', '6to4', 'ISATAP'], correct: 1 },
-  { id: 'ipv6_18', topic: 'IPv6', subSkill: 'IPv6_Address_Assignment', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي آلية التكوين التلقائي في IPv6 التي لا تحتاج إلى خادم؟', options: ['DHCPv6', 'SLAAC', 'NAT64', '6to4'], correct: 2 },
-  { id: 'ipv6_19', topic: 'IPv6', subSkill: 'IPv6_Subnetting', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'في IPv6، عادةً ما يتم تخصيص أي جزء من العنوان لشبكة فرعية (Subnet) في شبكة /64؟', options: ['أول 16 بت', 'أول 32 بت', 'أول 48 بت', 'أول 64 بت'], correct: 3 },
-  { id: 'ipv6_20', topic: 'IPv6', subSkill: 'IPv6_Anycast', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو استخدام الـ Anycast في IPv6؟', options: ['إرسال البيانات إلى أقرب جهاز في مجموعة', 'إرسال البيانات إلى جميع الأجهزة', 'إرسال البيانات إلى جهاز واحد محدد', 'إرسال البيانات إلى مجموعة محددة'], correct: 1 },
-  { id: 'ipv6_21', topic: 'IPv6', subSkill: 'IPv6_Multicast_Scope', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو نطاق الـ Multicast في IPv6 عندما يبدأ العنوان بـ FF02::؟', options: ['نطاق عالمي (Global)', 'نطاق محلي (Link-Local)', 'نطاق المؤسسة (Site-Local)', 'نطاق الواجهة (Interface-Local)'], correct: 2 },
-  { id: 'ipv6_22', topic: 'IPv6', subSkill: 'IPv6_Design_Advanced', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'لديك شبكة IPv6 تريد تصميمها لـ 1000 شبكة فرعية، كل شبكة تحتوي على 2000 جهاز. اكتب: 1) البادئة المناسبة، 2) عدد الشبكات الفرعية، 3) عدد الأجهزة في كل شبكة، 4) مثال لعنوان شبكة فرعية.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) /48، 2) 65536 شبكة فرعية (/48 إلى /64)، 3) 2^64 جهاز، 4) 2001:db8:1::/64' },
-  { id: 'ipv6_23', topic: 'IPv6', subSkill: 'IPv6_Troubleshooting', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'جهاز في شبكة IPv6 لا يستطيع الحصول على عنوان تلقائياً. ما هي الخطوات التي تتخذها لتشخيص المشكلة وحلها؟', options: [], correct: 0, isWriting: true, expectedAnswer: '1) التحقق من وجود راوتر يرسل RA، 2) التحقق من تمكين IPv6، 3) التحقق من وجود خادم DHCPv6 إذا لزم الأمر.' },
-  { id: 'ipv6_24', topic: 'IPv6', subSkill: 'IPv6_vs_IPv4_Transition', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'شركة تريد الانتقال من IPv4 إلى IPv6 مع الحفاظ على التواصل بين الأنظمة القديمة والجديدة. صمم خطة انتقالية واذكر: 1) الآليات المستخدمة، 2) الترتيب الزمني، 3) المخاطر المحتملة.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) Dual Stack أولاً، ثم NAT64، 2) البدء بالشبكات الداخلية ثم الخارجية، 3) مشاكل التوافق والتكلفة.' },
-  { id: 'ipv6_25', topic: 'IPv6', subSkill: 'IPv6_Security', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي نقاط الضعف الأمنية في IPv6 مقارنة بـ IPv4، وكيف يمكن التغلب عليها؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'نقاط الضعف: هجمات الـ Neighbor Discovery، توزيع العناوين. الحل: استخدام SEND، تفعيل التشفير.' },
-  { id: 'ipv6_26', topic: 'IPv6', subSkill: 'IPv6_Comprehensive', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم شبكة IPv6 متكاملة لشركة بها 4 أقسام، كل قسم يحتاج إلى شبكة فرعية منفصلة مع إمكانية التوسع المستقبلي. اذكر جميع التفاصيل.', options: [], correct: 0, isWriting: true, expectedAnswer: 'بادئة /48، 4 شبكات /64، مع تخصيص نطاقات احتياطية للتوسع.' },
-  { id: 'ipv6_27', topic: 'IPv6', subSkill: 'IPv6_Advanced_Concept', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو الفرق بين EUI-64 و SLAAC في IPv6؟', options: ['EUI-64 يولد عنوان MAC من IP، SLAAC يولد IP من MAC', 'كلاهما نفس الشيء', 'EUI-64 يستخدم في IPv4', 'SLAAC هو بروتوكول توجيه'], correct: 1 },
-  { id: 'ipv6_28', topic: 'IPv6', subSkill: 'IPv6_Neighbor_Discovery', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة بروتوكول Neighbor Discovery (ND) في IPv6؟', options: ['استبدال ARP', 'توزيع العناوين', 'توجيه الحزم', 'تشفير البيانات'], correct: 1 },
-  { id: 'ipv6_29', topic: 'IPv6', subSkill: 'IPv6_NDP', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي رسائل NDP التي تُستخدم لاكتشاف العناوين المكررة (DAD)؟', options: ['NS و NA', 'RS و RA', 'Router Solicitation', 'Neighbor Advertisement'], correct: 1 },
-  { id: 'ipv6_30', topic: 'IPv6', subSkill: 'IPv6_RA_RS', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي رسائل RA و RS في IPv6؟', options: ['تستخدم لاكتشاف الراوترات', 'تستخدم لاكتشاف العناوين المكررة', 'تستخدم لتوزيع عناوين IPv6', 'تستخدم للتوجيه'], correct: 1 },
-  { id: 'ipv6_31', topic: 'IPv6', subSkill: 'IPv6_Extension_Headers', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي ميزة Extension Headers في IPv6؟', options: ['إضافة مرونة في التوسع', 'زيادة سرعة المعالجة', 'تحسين الأمان', 'تقليل حجم الرأس'], correct: 1 },
-  { id: 'ipv6_32', topic: 'IPv6', subSkill: 'IPv6_Jumbograms', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو Jumbogram في IPv6؟', options: ['حزمة أكبر من 65535 بايت', 'حزمة أصغر من 128 بايت', 'نوع من عناوين IPv6', 'بروتوكول توجيه'], correct: 1 },
-  { id: 'ipv6_33', topic: 'IPv6', subSkill: 'IPv6_Flow_Label', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة Flow Label في IPv6؟', options: ['تمييز تدفقات البيانات', 'تحديد نوع الخدمة', 'توجيه الحزم', 'تشفير البيانات'], correct: 1 },
-  { id: 'ipv6_34', topic: 'IPv6', subSkill: 'IPv6_Traffic_Class', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة Traffic Class في IPv6؟', options: ['تحديد أولوية البيانات', 'تحديد نوع الخدمة', 'توجيه الحزم', 'تحديد طول الحزمة'], correct: 1 },
-  { id: 'ipv6_35', topic: 'IPv6', subSkill: 'IPv6_Hop_Limit', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة Hop Limit في IPv6؟', options: ['منع الحزم من التكرار في الشبكة', 'تحديد مسار الحزمة', 'تحديد طول الحزمة', 'تشفير البيانات'], correct: 1 },
-  { id: 'ipv6_36', topic: 'IPv6', subSkill: 'IPv6_Comprehensive_Understanding', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العبارات التالية تصف بدقة مزايا IPv6 مقارنة بـ IPv4؟', options: ['عدد عناوين أكبر، أمان مدمج، تكوين تلقائي، رأس مرن', 'عدد عناوين أكبر فقط', 'أمان مدمج فقط', 'تكوين تلقائي فقط'], correct: 1 }
-];
-
-// =============================================================
-// 📡 القسم 5: OSI Model - 36 سؤال
-// =============================================================
-
-const osiQuestions = [
-  { id: 'osi_1', topic: 'OSI Model', subSkill: 'OSI_Layers_Count', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'كم عدد طبقات نموذج OSI؟', options: ['4 طبقات', '5 طبقات', '7 طبقات', '9 طبقات'], correct: 3 },
-  { id: 'osi_2', topic: 'OSI Model', subSkill: 'OSI_Layers_Order', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي الطبقة الأولى (الأدنى) في نموذج OSI؟', options: ['التطبيق', 'الشبكة', 'الفيزيائية', 'النقل'], correct: 3 },
-  { id: 'osi_3', topic: 'OSI Model', subSkill: 'OSI_Layers_Order', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي الطبقة السابعة (الأعلى) في نموذج OSI؟', options: ['الفيزيائية', 'التطبيق', 'ربط البيانات', 'الجلسة'], correct: 2 },
-  { id: 'osi_4', topic: 'OSI Model', subSkill: 'OSI_Layers_Order', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي من التالي هو الترتيب الصحيح لطبقات OSI من الأعلى إلى الأسفل؟', options: ['Physical, Data Link, Network, Transport, Session, Presentation, Application', 'Application, Presentation, Session, Transport, Network, Data Link, Physical', 'Application, Transport, Network, Data Link, Physical, Session, Presentation', 'Network, Data Link, Physical, Application, Presentation, Session, Transport'], correct: 2 },
-  { id: 'osi_5', topic: 'OSI Model', subSkill: 'OSI_Functions', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي طبقة في OSI مسؤولة عن تشفير وضغط البيانات؟', options: ['التطبيق', 'العرض', 'الجلسة', 'النقل'], correct: 2 },
-  { id: 'osi_6', topic: 'OSI Model', subSkill: 'OSI_Functions', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي طبقة في OSI مسؤولة عن إنشاء وإدارة وإنهاء جلسات الاتصال بين التطبيقات؟', options: ['التطبيق', 'العرض', 'الجلسة', 'النقل'], correct: 3 },
-  { id: 'osi_7', topic: 'OSI Model', subSkill: 'OSI_Functions', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي طبقة في OSI مسؤولة عن تقسيم البيانات إلى قطع (Segments) وإعادة تجميعها؟', options: ['التطبيق', 'الشبكة', 'النقل', 'ربط البيانات'], correct: 3 },
-  { id: 'osi_8', topic: 'OSI Model', subSkill: 'OSI_Functions', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي طبقة في OSI مسؤولة عن إضافة عنوان IP المصدر والوجهة؟', options: ['النقل', 'الشبكة', 'ربط البيانات', 'الفيزيائية'], correct: 2 },
-  { id: 'osi_9', topic: 'OSI Model', subSkill: 'OSI_Functions', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي طبقة في OSI مسؤولة عن إضافة عنوان MAC المصدر والوجهة؟', options: ['النقل', 'الشبكة', 'ربط البيانات', 'الفيزيائية'], correct: 3 },
-  { id: 'osi_10', topic: 'OSI Model', subSkill: 'OSI_Functions', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'أي طبقة في OSI مسؤولة عن تحويل البيانات إلى إشارات كهربائية أو ضوئية لنقلها عبر الكابل؟', options: ['النقل', 'الشبكة', 'ربط البيانات', 'الفيزيائية'], correct: 4 },
-  { id: 'osi_11', topic: 'OSI Model', subSkill: 'PDU_Transport', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'وحدة البيانات (PDU) في طبقة النقل (Transport) تسمى:', options: ['Bits', 'Frames', 'Packets', 'Segments'], correct: 4 },
-  { id: 'osi_12', topic: 'OSI Model', subSkill: 'PDU_Network', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'وحدة البيانات (PDU) في طبقة الشبكة (Network) تسمى:', options: ['Bits', 'Frames', 'Packets', 'Segments'], correct: 3 },
-  { id: 'osi_13', topic: 'OSI Model', subSkill: 'PDU_DataLink', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'وحدة البيانات (PDU) في طبقة ربط البيانات (Data Link) تسمى:', options: ['Bits', 'Frames', 'Packets', 'Segments'], correct: 2 },
-  { id: 'osi_14', topic: 'OSI Model', subSkill: 'PDU_Physical', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'وحدة البيانات (PDU) في الطبقة الفيزيائية (Physical) تسمى:', options: ['Bits', 'Frames', 'Packets', 'Segments'], correct: 1 },
-  { id: 'osi_15', topic: 'OSI Model', subSkill: 'OSI_Functions_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة طبقة الجلسة (Session Layer)؟', options: ['إدارة الجلسات بين التطبيقات', 'تجزئة البيانات', 'توجيه الحزم', 'تشفير البيانات'], correct: 1 },
-  { id: 'osi_16', topic: 'OSI Model', subSkill: 'OSI_Functions_Advanced', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة طبقة العرض (Presentation Layer)؟', options: ['تنسيق وترميز البيانات', 'توجيه الحزم', 'تجزئة البيانات', 'إدارة الجلسات'], correct: 1 },
-  { id: 'osi_17', topic: 'OSI Model', subSkill: 'OSI_Protocols', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'بروتوكول DHCP يعمل في أي طبقة من طبقات OSI؟', options: ['الفيزيائية', 'ربط البيانات', 'التطبيق', 'الشبكة'], correct: 3 },
-  { id: 'osi_18', topic: 'OSI Model', subSkill: 'OSI_Protocols', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'بروتوكول DNS يعمل في أي طبقة من طبقات OSI؟', options: ['الفيزيائية', 'ربط البيانات', 'التطبيق', 'النقل'], correct: 3 },
-  { id: 'osi_19', topic: 'OSI Model', subSkill: 'OSI_Protocols', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'أي من البروتوكولات التالية يعمل في طبقة التطبيق (Application Layer) في OSI؟', options: ['TCP', 'IP', 'HTTP', 'Ethernet'], correct: 3 },
-  { id: 'osi_20', topic: 'OSI Model', subSkill: 'OSI_Protocols', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'أي من البروتوكولات التالية يعمل في طبقة النقل (Transport Layer) في OSI؟', options: ['HTTP', 'TCP و UDP', 'IP', 'ARP'], correct: 2 },
-  { id: 'osi_21', topic: 'OSI Model', subSkill: 'OSI_Protocols', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'أي من البروتوكولات التالية يعمل في طبقة الشبكة (Network Layer) في OSI؟', options: ['TCP', 'UDP', 'IP', 'HTTP'], correct: 3 },
-  { id: 'osi_22', topic: 'OSI Model', subSkill: 'OSI_Troubleshooting', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'جهاز لا يستطيع الاتصال بالإنترنت، وأظهر فحص الـ ping أن الجهاز يستطيع ping 127.0.0.1 لكن لا يستطيع ping Gateway. في أي طبقة من OSI تكمن المشكلة؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'المشكلة في الطبقة 2 (Data Link) أو الطبقة 1 (Physical)، لأن الـ Gateway غير قابل للوصول.' },
-  { id: 'osi_23', topic: 'OSI Model', subSkill: 'OSI_Comparison', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'قارن بين نموذج OSI ونموذج TCP/IP من حيث: 1) عدد الطبقات، 2) أسماء الطبقات، 3) التشابه والاختلاف.', options: [], correct: 0, isWriting: true, expectedAnswer: 'OSI: 7 طبقات، TCP/IP: 4 طبقات. التشابه: كلاهما نموذج طبقي. الاختلاف: OSI نظري، TCP/IP عملي.' },
-  { id: 'osi_24', topic: 'OSI Model', subSkill: 'OSI_Security', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي الطبقات المسؤولة عن الأمان في نموذج OSI؟ وكيف يتم تطبيق الأمان في كل طبقة؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'طبقة العرض (Presentation): التشفير. طبقة الشبكة: IPSec. طبقة التطبيق: HTTPS, SSH.' },
-  { id: 'osi_25', topic: 'OSI Model', subSkill: 'OSI_Comprehensive', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم سيناريو اتصال من متصفح إلى خادم ويب وحدد كل طبقة OSI ودورها في هذا الاتصال.', options: [], correct: 0, isWriting: true, expectedAnswer: 'التطبيق: HTTP، العرض: تشفير، الجلسة: إنشاء جلسة، النقل: TCP، الشبكة: IP، ربط البيانات: MAC، الفيزيائية: إشارات.' },
-  { id: 'osi_26', topic: 'OSI Model', subSkill: 'OSI_Advanced', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'كيف يمكن استخدام نموذج OSI في استكشاف أخطاء الشبكة؟ أعط مثالاً عملياً.', options: [], correct: 0, isWriting: true, expectedAnswer: 'التشخيص من الطبقة 1 إلى 7، مثال: مشكلة في الكابل → طبقة 1، مشكلة في التوجيه → طبقة 3.' },
-  { id: 'osi_27', topic: 'OSI Model', subSkill: 'OSI_Encapsulation', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الترتيب الصحيح لعملية التغليف (Encapsulation) في نموذج OSI من الأعلى إلى الأسفل؟', options: ['Data → Segment → Packet → Frame → Bits', 'Bits → Frame → Packet → Segment → Data', 'Data → Packet → Segment → Frame → Bits', 'Segment → Data → Packet → Frame → Bits'], correct: 1 },
-  { id: 'osi_28', topic: 'OSI Model', subSkill: 'OSI_Deencapsulation', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الترتيب الصحيح لعملية إزالة التغليف (De-encapsulation) في نموذج OSI من الأسفل إلى الأعلى؟', options: ['Bits → Frame → Packet → Segment → Data', 'Data → Segment → Packet → Frame → Bits', 'Bits → Packet → Frame → Segment → Data', 'Frame → Bits → Packet → Segment → Data'], correct: 1 },
-  { id: 'osi_29', topic: 'OSI Model', subSkill: 'OSI_Switch_Layer', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طبقة من طبقات OSI يعمل الـ Switch؟', options: ['الطبقة الأولى', 'الطبقة الثانية', 'الطبقة الثالثة', 'الطبقة الرابعة'], correct: 2 },
-  { id: 'osi_30', topic: 'OSI Model', subSkill: 'OSI_Router_Layer', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طبقة من طبقات OSI يعمل الـ Router؟', options: ['الطبقة الأولى', 'الطبقة الثانية', 'الطبقة الثالثة', 'الطبقة الرابعة'], correct: 3 },
-  { id: 'osi_31', topic: 'OSI Model', subSkill: 'OSI_Hub_Layer', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طبقة من طبقات OSI يعمل الـ Hub؟', options: ['الطبقة الأولى', 'الطبقة الثانية', 'الطبقة الثالثة', 'الطبقة الرابعة'], correct: 1 },
-  { id: 'osi_32', topic: 'OSI Model', subSkill: 'OSI_Application_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة التطبيق في OSI؟', options: ['TCP', 'UDP', 'FTP', 'IP'], correct: 3 },
-  { id: 'osi_33', topic: 'OSI Model', subSkill: 'OSI_Transport_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة النقل في OSI؟', options: ['FTP', 'HTTP', 'TCP', 'IP'], correct: 3 },
-  { id: 'osi_34', topic: 'OSI Model', subSkill: 'OSI_Network_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة الشبكة في OSI؟', options: ['TCP', 'UDP', 'IP', 'HTTP'], correct: 3 },
-  { id: 'osi_35', topic: 'OSI Model', subSkill: 'OSI_DataLink_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة ربط البيانات في OSI؟', options: ['IP', 'TCP', 'Ethernet', 'HTTP'], correct: 3 },
-  { id: 'osi_36', topic: 'OSI Model', subSkill: 'OSI_Physical_Media', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من الوسائط التالية تعمل في الطبقة الفيزيائية في OSI؟', options: ['كابل UTP', 'عنوان IP', 'بروتوكول TCP', 'منفذ HTTP'], correct: 1 }
-];
-
-// =============================================================
-// 💻 القسم 6: أجهزة الشبكات - 36 سؤال
-// =============================================================
-
-const devicesQuestions = [
-  { id: 'dev_1', topic: 'Network Devices', subSkill: 'Switch_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Switch؟', options: ['جهاز يربط أجهزة في شبكة محلية', 'جهاز يربط شبكات مختلفة', 'جهاز يعيد الإشارة', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_2', topic: 'Network Devices', subSkill: 'Router_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Router؟', options: ['جهاز يربط أجهزة في شبكة محلية', 'جهاز يربط شبكات مختلفة', 'جهاز يعيد الإشارة', 'جهاز أمان'], correct: 2 },
-  { id: 'dev_3', topic: 'Network Devices', subSkill: 'Hub_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Hub؟', options: ['جهاز غير ذكي يعيد بث الإشارة إلى جميع المنافذ', 'جهاز ذكي يرسل البيانات إلى جهاز محدد', 'جهاز يربط شبكتين مختلفتين', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_4', topic: 'Network Devices', subSkill: 'Bridge_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Bridge؟', options: ['جهاز يربط شبكتين محليتين متشابهتين', 'جهاز يربط شبكات مختلفة', 'جهاز غير ذكي', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_5', topic: 'Network Devices', subSkill: 'Gateway_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Gateway؟', options: ['جهاز يربط شبكتين مختلفتين في البروتوكولات', 'جهاز يربط أجهزة في شبكة محلية', 'جهاز يعيد الإشارة', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_6', topic: 'Network Devices', subSkill: 'Access_Point_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Access Point (AP)؟', options: ['جهاز يوفر اتصالاً لاسلكياً للأجهزة', 'جهاز يربط شبكات مختلفة', 'جهاز غير ذكي', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_7', topic: 'Network Devices', subSkill: 'Firewall_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Firewall؟', options: ['جهاز أمان يمنع حركة البيانات غير المصرح بها', 'جهاز يربط شبكات مختلفة', 'جهاز يوفر اتصالاً لاسلكياً', 'جهاز غير ذكي'], correct: 1 },
-  { id: 'dev_8', topic: 'Network Devices', subSkill: 'Modem_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Modem؟', options: ['جهاز يحول الإشارات الرقمية إلى تناظرية والعكس', 'جهاز يربط شبكات مختلفة', 'جهاز يوفر اتصالاً لاسلكياً', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_9', topic: 'Network Devices', subSkill: 'Repeater_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الـ Repeater؟', options: ['جهاز يعيد إرسال الإشارة لتوسيع المسافة', 'جهاز يربط شبكات مختلفة', 'جهاز يوفر اتصالاً لاسلكياً', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_10', topic: 'Network Devices', subSkill: 'NIC_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي بطاقة الشبكة (NIC)؟', options: ['بطاقة تسمح للجهاز بالاتصال بالشبكة', 'جهاز يربط شبكات مختلفة', 'جهاز يوفر اتصالاً لاسلكياً', 'جهاز أمان'], correct: 1 },
-  { id: 'dev_11', topic: 'Network Devices', subSkill: 'Switch_vs_Hub', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'الفرق بين الـ Switch والـ Hub هو أن الـ Switch:', options: ['يرسل البيانات إلى جهاز واحد محدد بناءً على MAC، والـ Hub يرسل إلى جميع الأجهزة', 'أبطأ من الـ Hub', 'يعمل في الطبقة الثالثة', 'لا يحتاج إلى عناوين'], correct: 1 },
-  { id: 'dev_12', topic: 'Network Devices', subSkill: 'Collision_Domain', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي جهاز يستخدم لفصل مجال التصادم (Collision Domain) على كل منفذ؟', options: ['الـ Hub', 'الـ Switch', 'الـ Repeater', 'المودم'], correct: 2 },
-  { id: 'dev_13', topic: 'Network Devices', subSkill: 'Broadcast_Domain', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي جهاز يستخدم لفصل مجال البث (Broadcast Domain)؟', options: ['الـ Hub', 'الـ Switch', 'الـ Router', 'الـ Bridge'], correct: 3 },
-  { id: 'dev_14', topic: 'Network Devices', subSkill: 'Device_Layers', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طبقة من طبقات OSI يعمل الـ Router؟', options: ['الطبقة الأولى', 'الطبقة الثانية', 'الطبقة الثالثة', 'الطبقة الرابعة'], correct: 3 },
-  { id: 'dev_15', topic: 'Network Devices', subSkill: 'Device_Layers', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طبقة من طبقات OSI يعمل الـ Switch؟', options: ['الطبقة الأولى', 'الطبقة الثانية', 'الطبقة الثالثة', 'الطبقة الرابعة'], correct: 2 },
-  { id: 'dev_16', topic: 'Network Devices', subSkill: 'Device_Layers', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'في أي طبقة من طبقات OSI يعمل الـ Hub؟', options: ['الطبقة الأولى', 'الطبقة الثانية', 'الطبقة الثالثة', 'الطبقة الرابعة'], correct: 1 },
-  { id: 'dev_17', topic: 'Network Devices', subSkill: 'Device_Selection', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة تريد ربط 4 أقسام في نفس المبنى مع إمكانية التحكم في حركة البيانات بينها. ما هو الجهاز المناسب؟', options: ['Switch', 'Router', 'Hub', 'Bridge'], correct: 2 },
-  { id: 'dev_18', topic: 'Network Devices', subSkill: 'Device_Selection', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة تريد توسيع شبكة لاسلكية في مكتب كبير. ما هو الجهاز المناسب؟', options: ['Switch', 'Router', 'Access Point', 'Hub'], correct: 3 },
-  { id: 'dev_19', topic: 'Network Devices', subSkill: 'Device_Selection', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة تريد حماية شبكتها من الهجمات الخارجية. ما هو الجهاز المناسب؟', options: ['Switch', 'Router', 'Firewall', 'Access Point'], correct: 3 },
-  { id: 'dev_20', topic: 'Network Devices', subSkill: 'Device_Comparison', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو الفرق بين الـ Router والـ Gateway؟', options: ['الـ Router يربط شبكات متشابهة، الـ Gateway يربط شبكات مختلفة في البروتوكولات', 'كلاهما نفس الشيء', 'الـ Gateway أسرع من الـ Router', 'الـ Router يعمل في الطبقة الثانية'], correct: 1 },
-  { id: 'dev_21', topic: 'Network Devices', subSkill: 'Device_Troubleshooting', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'جهاز لا يستطيع الاتصال بالشبكة، وجميع الأجهزة الأخرى تعمل. ما هو الجهاز الأكثر ترجيحاً للاشتباه به؟', options: ['السويتش', 'الراوتر', 'بطاقة الشبكة (NIC)', 'الـ Hub'], correct: 3 },
-  { id: 'dev_22', topic: 'Network Devices', subSkill: 'Network_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم شبكة لشركة بها 50 موظفاً في 3 أقسام، مع اتصال بالإنترنت وأمان. اذكر الأجهزة المستخدمة وموقعها في الشبكة.', options: [], correct: 0, isWriting: true, expectedAnswer: 'Switch (توزيع)، Router (اتصال بالإنترنت)، Firewall (أمان)، Access Point (لاسلكي).' },
-  { id: 'dev_23', topic: 'Network Devices', subSkill: 'Device_Troubleshooting_Advanced', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'شبكة LAN بطيئة جداً. ما هي الأجهزة التي قد تكون سبب المشكلة وكيف تتحقق منها؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'قد يكون Hub (تصادم)، Switch قديم، أو NIC تالفة. التحقق: اختبار السرعة، مراقبة حركة البيانات.' },
-  { id: 'dev_24', topic: 'Network Devices', subSkill: 'Device_Security', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'كيف يمكن استخدام الأجهزة لتحسين أمان الشبكة؟ اذكر 3 أجهزة ودورها في الأمان.', options: [], correct: 0, isWriting: true, expectedAnswer: 'Firewall: منع الهجمات، Switch: VLANs لعزل الأقسام، Router: ACLs للتحكم في الوصول.' },
-  { id: 'dev_25', topic: 'Network Devices', subSkill: 'Device_Comparison_Advanced', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'قارن بين الـ Switch والـ Router من حيث: 1) الطبقة التي يعملان فيها، 2) الوظيفة، 3) استخدامات كل منهما.', options: [], correct: 0, isWriting: true, expectedAnswer: 'Switch: طبقة 2، يربط الأجهزة في نفس الشبكة. Router: طبقة 3، يربط شبكات مختلفة.' },
-  { id: 'dev_26', topic: 'Network Devices', subSkill: 'Device_Comprehensive', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم شبكة متكاملة لشركة متوسطة الحجم، واذكر جميع الأجهزة المستخدمة مع دور كل جهاز.', options: [], correct: 0, isWriting: true, expectedAnswer: 'Switch Core، Switch Distribution، Router، Firewall، Access Points، Servers.' },
-  { id: 'dev_27', topic: 'Network Devices', subSkill: 'Device_Intelligent', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من الأجهزة التالية يعتبر "جهازاً ذكياً" يمكن برمجته لتوجيه الحزم بناءً على عناوين IP؟', options: ['السويتش', 'الراوتر', 'الـ Hub', 'الـ Bridge'], correct: 2 },
-  { id: 'dev_28', topic: 'Network Devices', subSkill: 'Device_Unintelligent', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من الأجهزة التالية يعتبر "جهازاً غير ذكي" ولا يقرأ عناوين MAC أو IP؟', options: ['السويتش', 'الراوتر', 'الـ Hub', 'الـ Bridge'], correct: 3 },
-  { id: 'dev_29', topic: 'Network Devices', subSkill: 'Home_Router', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي جهاز يجمع بين وظائف الراوتر، السويتش، ونقطة الوصول اللاسلكية في جهاز واحد؟', options: ['المودم', 'الراوتر المنزلي', 'الـ Hub', 'الـ Bridge'], correct: 2 },
-  { id: 'dev_30', topic: 'Network Devices', subSkill: 'Passive_Device', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من الأجهزة التالية يعتبر "جهازاً سلبياً" ولا يحتاج إلى طاقة كهربائية للعمل؟', options: ['السويتش', 'الراوتر', 'لوحة التوصيل (Patch Panel)', 'الـ Hub'], correct: 3 },
-  { id: 'dev_31', topic: 'Network Devices', subSkill: 'Protocol_Converter', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي جهاز يستخدم لتحويل بروتوكول من نوع إلى آخر؟', options: ['الراوتر', 'الـ Gateway', 'الـ Bridge', 'السويتش'], correct: 2 },
-  { id: 'dev_32', topic: 'Network Devices', subSkill: 'Multilayer_Switch', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الـ Multilayer Switch؟', options: ['سويتش يعمل في الطبقتين 2 و 3', 'سويتش يعمل في الطبقة 1 فقط', 'سويتش يعمل في الطبقة 4', 'سويتش لاسلكي'], correct: 1 },
-  { id: 'dev_33', topic: 'Network Devices', subSkill: 'Device_Selection_Scenario', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة لديها 5 أجهزة كمبيوتر تريد ربطها معاً في شبكة محلية. ما هو الجهاز المناسب مع أقل تكلفة؟', options: ['سويتش', 'راوتر', 'هاب', 'جسر'], correct: 3 },
-  { id: 'dev_34', topic: 'Network Devices', subSkill: 'Device_Selection_Scenario_2', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة تريد ربط فرعين في مدينتين مختلفتين. ما هو الجهاز المناسب؟', options: ['سويتش', 'راوتر', 'هاب', 'جسر'], correct: 2 },
-  { id: 'dev_35', topic: 'Network Devices', subSkill: 'Device_Comparison_2', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الفرق بين الـ Bridge والـ Switch؟', options: ['Bridge يربط شبكتين، Switch يربط عدة أجهزة', 'كلاهما نفس الشيء', 'Switch أبطأ من Bridge', 'Bridge يعمل في الطبقة 3'], correct: 1 },
-  { id: 'dev_36', topic: 'Network Devices', subSkill: 'Device_Comprehensive_2', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العبارات التالية تصف بدقة استخدامات الـ Switch في الشبكات الحديثة؟', options: ['يستخدم لتوصيل الأجهزة في نفس الشبكة مع إمكانية التحكم في حركة البيانات', 'يستخدم فقط في الشبكات الصغيرة', 'لا يمكن استخدامه مع الـ Router', 'يعمل فقط في الطبقة الفيزيائية'], correct: 1 }
-];
-
-// =============================================================
-// 📧 القسم 7: بروتوكولات البريد الإلكتروني - 30 سؤال
-// =============================================================
-
-const emailQuestions = [
-  { id: 'email_1', topic: 'Email Protocols', subSkill: 'SMTP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول SMTP؟', options: ['بروتوكول لإرسال البريد الإلكتروني', 'بروتوكول لاستلام البريد الإلكتروني', 'بروتوكول لتصفح الويب', 'بروتوكول لنقل الملفات'], correct: 1 },
-  { id: 'email_2', topic: 'Email Protocols', subSkill: 'POP3_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول POP3؟', options: ['بروتوكول لإرسال البريد الإلكتروني', 'بروتوكول لاستلام البريد وتنزيله من الخادم', 'بروتوكول لتصفح الويب', 'بروتوكول لنقل الملفات'], correct: 2 },
-  { id: 'email_3', topic: 'Email Protocols', subSkill: 'IMAP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول IMAP؟', options: ['بروتوكول لإرسال البريد الإلكتروني', 'بروتوكول لاستلام البريد مع المزامنة على الخادم', 'بروتوكول لتصفح الويب', 'بروتوكول لنقل الملفات'], correct: 2 },
-  { id: 'email_4', topic: 'Email Protocols', subSkill: 'SMTP_Port', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو المنفذ الافتراضي لبروتوكول SMTP؟', options: ['25', '110', '143', '993'], correct: 1 },
-  { id: 'email_5', topic: 'Email Protocols', subSkill: 'POP3_Port', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو المنفذ الافتراضي لبروتوكول POP3؟', options: ['25', '110', '143', '993'], correct: 2 },
-  { id: 'email_6', topic: 'Email Protocols', subSkill: 'IMAP_Port', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو المنفذ الافتراضي لبروتوكول IMAP؟', options: ['25', '110', '143', '993'], correct: 3 },
-  { id: 'email_7', topic: 'Email Protocols', subSkill: 'POP3_vs_IMAP', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الفرق الأساسي بين POP3 و IMAP؟', options: ['POP3 يحذف البريد من الخادم بعد التنزيل، IMAP يبقي البريد على الخادم', 'IMAP يحذف البريد، POP3 يبقي البريد', 'كلاهما نفس الشيء', 'POP3 أسرع من IMAP'], correct: 1 },
-  { id: 'email_8', topic: 'Email Protocols', subSkill: 'SMTP_Function', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي وظيفة بروتوكول SMTP في البريد الإلكتروني؟', options: ['إرسال البريد من العميل إلى الخادم ومن خادم إلى خادم', 'استلام البريد من الخادم', 'مزامنة البريد عبر الأجهزة', 'تشفير البريد الإلكتروني'], correct: 1 },
-  { id: 'email_9', topic: 'Email Protocols', subSkill: 'Secure_Ports', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو المنفذ الآمن (SSL/TLS) لبروتوكول SMTP؟', options: ['25', '465', '587', '993'], correct: 2 },
-  { id: 'email_10', topic: 'Email Protocols', subSkill: 'Secure_Ports', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو المنفذ الآمن (SSL/TLS) لبروتوكول IMAP؟', options: ['110', '143', '993', '995'], correct: 3 },
-  { id: 'email_11', topic: 'Email Protocols', subSkill: 'Secure_Ports', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو المنفذ الآمن (SSL/TLS) لبروتوكول POP3؟', options: ['110', '143', '993', '995'], correct: 4 },
-  { id: 'email_12', topic: 'Email Protocols', subSkill: 'Protocol_Selection', cognitiveLevel: 'understanding', errorPattern: 'application', difficulty: 2, question: 'أي بروتوكول تختار للوصول إلى البريد من عدة أجهزة مع بقاء البريد على الخادم؟', options: ['SMTP', 'POP3', 'IMAP', 'HTTP'], correct: 3 },
-  { id: 'email_13', topic: 'Email Protocols', subSkill: 'Protocol_Comparison', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الفرق بين SMTP و POP3؟', options: ['SMTP للإرسال، POP3 للاستلام', 'SMTP للاستلام، POP3 للإرسال', 'كلاهما للإرسال', 'كلاهما للاستلام'], correct: 1 },
-  { id: 'email_14', topic: 'Email Protocols', subSkill: 'Email_Security', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي أهمية استخدام SSL/TLS في البريد الإلكتروني؟', options: ['تشفير البيانات ومنع التنصت', 'زيادة السرعة', 'توفير مساحة', 'تحسين التوافق'], correct: 1 },
-  { id: 'email_15', topic: 'Email Protocols', subSkill: 'Protocol_Scenario', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'شركة تريد أن يتمكن الموظفون من قراءة بريدهم من هواتفهم وأجهزتهم المكتبية مع بقاء البريد على الخادم. أي بروتوكول تختار؟', options: ['POP3', 'IMAP', 'SMTP', 'HTTP'], correct: 2 },
-  { id: 'email_16', topic: 'Email Protocols', subSkill: 'Protocol_Scenario_2', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'مستخدم يريد تحميل بريده إلى جهاز واحد وحذفه من الخادم لتوفير المساحة. أي بروتوكول تختار؟', options: ['POP3', 'IMAP', 'SMTP', 'HTTP'], correct: 1 },
-  { id: 'email_17', topic: 'Email Protocols', subSkill: 'Protocol_Flow', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو الترتيب الصحيح لبروتوكولات البريد الإلكتروني في عملية إرسال واستلام البريد؟', options: ['SMTP للإرسال، POP3/IMAP للاستلام', 'POP3 للإرسال، SMTP للاستلام', 'IMAP للإرسال، SMTP للاستلام', 'HTTP للإرسال، SMTP للاستلام'], correct: 1 },
-  { id: 'email_18', topic: 'Email Protocols', subSkill: 'Protocol_Security', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هو الفرق بين SMTP العادي و SMTP مع SSL/TLS؟', options: ['SSL/TLS يوفر تشفيراً للبيانات', 'SSL/TLS يزيد السرعة', 'لا فرق بينهما', 'SSL/TLS يستخدم منفذاً مختلفاً فقط'], correct: 1 },
-  { id: 'email_19', topic: 'Email Protocols', subSkill: 'Email_System_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'ما هي البروتوكولات المستخدمة في نظام البريد الإلكتروني المتكامل؟', options: ['SMTP للإرسال، POP3/IMAP للاستلام', 'HTTP فقط', 'FTP فقط', 'DNS فقط'], correct: 1 },
-  { id: 'email_20', topic: 'Email Protocols', subSkill: 'Email_Troubleshooting', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'مستخدم لا يستطيع إرسال البريد الإلكتروني لكنه يستطيع استلامه. ما هو السبب الأكثر ترجيحاً؟', options: ['مشكلة في إعدادات SMTP', 'مشكلة في إعدادات POP3', 'مشكلة في كابل الشبكة', 'مشكلة في المتصفح'], correct: 1 },
-  { id: 'email_21', topic: 'Email Protocols', subSkill: 'Email_System_Design_Advanced', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم نظام بريد إلكتروني لشركة بها 100 موظف، مع توضيح: 1) البروتوكولات المستخدمة، 2) المنافذ، 3) متطلبات الأمان.', options: [], correct: 0, isWriting: true, expectedAnswer: 'SMTP (25/465) للإرسال، IMAP (143/993) للاستلام، مع تشفير SSL/TLS.' },
-  { id: 'email_22', topic: 'Email Protocols', subSkill: 'Email_Troubleshooting_Advanced', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'مستخدم لا يستطيع إرسال البريد الإلكتروني لكنه يستطيع استلامه. ما هي الخطوات التي تتخذها لتشخيص المشكلة وحلها؟', options: [], correct: 0, isWriting: true, expectedAnswer: '1) التحقق من إعدادات SMTP، 2) التحقق من المنفذ، 3) التحقق من كلمة المرور، 4) التحقق من خادم SMTP.' },
-  { id: 'email_23', topic: 'Email Protocols', subSkill: 'Email_Security_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'كيف يمكن تأمين البريد الإلكتروني في مؤسسة؟ اذكر 3 طرق.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) استخدام SSL/TLS، 2) تفعيل المصادقة الثنائية، 3) استخدام تشفير البريد الإلكتروني.' },
-  { id: 'email_24', topic: 'Email Protocols', subSkill: 'Email_Comprehensive', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'قارن بين POP3 و IMAP من حيث: 1) طريقة التخزين، 2) المزامنة، 3) الاستخدام المناسب لكل منهما.', options: [], correct: 0, isWriting: true, expectedAnswer: 'POP3: تخزين محلي، لا مزامنة، مناسب لجهاز واحد. IMAP: تخزين على الخادم، مزامنة، مناسب لأجهزة متعددة.' },
-  { id: 'email_25', topic: 'Email Protocols', subSkill: 'Email_Protocols_Overview', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي البروتوكولات الثلاثة الرئيسية للبريد الإلكتروني؟', options: ['SMTP, POP3, IMAP', 'HTTP, FTP, SMTP', 'POP3, IMAP, FTP', 'SMTP, HTTP, IMAP'], correct: 1 },
-  { id: 'email_26', topic: 'Email Protocols', subSkill: 'SMTP_Details', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة SMTP في البريد الإلكتروني؟', options: ['إرسال البريد', 'استلام البريد', 'مزامنة البريد', 'تشفير البريد'], correct: 1 },
-  { id: 'email_27', topic: 'Email Protocols', subSkill: 'POP3_Details', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة POP3 في البريد الإلكتروني؟', options: ['استلام البريد وتنزيله', 'إرسال البريد', 'مزامنة البريد', 'تشفير البريد'], correct: 1 },
-  { id: 'email_28', topic: 'Email Protocols', subSkill: 'IMAP_Details', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي وظيفة IMAP في البريد الإلكتروني؟', options: ['استلام البريد مع المزامنة', 'إرسال البريد', 'تنزيل البريد وحذفه', 'تشفير البريد'], correct: 1 },
-  { id: 'email_29', topic: 'Email Protocols', subSkill: 'Ports_Overview', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي المنافذ الثلاثة الرئيسية للبريد الإلكتروني؟', options: ['25 (SMTP), 110 (POP3), 143 (IMAP)', '21 (FTP), 25 (SMTP), 80 (HTTP)', '110 (POP3), 143 (IMAP), 443 (HTTPS)', '25 (SMTP), 53 (DNS), 80 (HTTP)'], correct: 1 },
-  { id: 'email_30', topic: 'Email Protocols', subSkill: 'Secure_Ports_Overview', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي المنافذ الآمنة للبريد الإلكتروني؟', options: ['465 (SMTPS), 993 (IMAPS), 995 (POP3S)', '25 (SMTP), 110 (POP3), 143 (IMAP)', '443 (HTTPS), 80 (HTTP)', '53 (DNS), 67 (DHCP)'], correct: 1 }
-];
-
-// =============================================================
-// 🔗 القسم 8: TCP/IP - 32 سؤال
-// =============================================================
-
-const tcpipQuestions = [
-  { id: 'tcp_1', topic: 'TCP/IP', subSkill: 'TCPIP_Layers_Count', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'كم عدد طبقات نموذج TCP/IP؟', options: ['4 طبقات', '5 طبقات', '7 طبقات', '9 طبقات'], correct: 1 },
-  { id: 'tcp_2', topic: 'TCP/IP', subSkill: 'TCPIP_Layers_Names', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هي طبقات نموذج TCP/IP الأربعة؟', options: ['Application, Transport, Internet, Network Access', 'Application, Presentation, Session, Transport', 'Network, Transport, Session, Application', 'Physical, Data Link, Network, Transport'], correct: 1 },
-  { id: 'tcp_3', topic: 'TCP/IP', subSkill: 'TCPIP_vs_OSI', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الفرق بين نموذج TCP/IP ونموذج OSI من حيث عدد الطبقات؟', options: ['TCP/IP 4 طبقات، OSI 7 طبقات', 'TCP/IP 7 طبقات، OSI 4 طبقات', 'كلاهما 7 طبقات', 'كلاهما 4 طبقات'], correct: 1 },
-  { id: 'tcp_4', topic: 'TCP/IP', subSkill: 'TCP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول TCP؟', options: ['بروتوكول موجه للاتصال يضمن وصول البيانات', 'بروتوكول غير موجه للاتصال', 'بروتوكول توجيه', 'بروتوكول تصفح الويب'], correct: 1 },
-  { id: 'tcp_5', topic: 'TCP/IP', subSkill: 'UDP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول UDP؟', options: ['بروتوكول غير موجه للاتصال سريع', 'بروتوكول موجه للاتصال', 'بروتوكول توجيه', 'بروتوكول تصفح الويب'], correct: 1 },
-  { id: 'tcp_6', topic: 'TCP/IP', subSkill: 'TCP_vs_UDP', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو الفرق بين TCP و UDP؟', options: ['TCP موجه للاتصال، UDP غير موجه للاتصال', 'UDP موجه للاتصال، TCP غير موجه للاتصال', 'كلاهما موجه للاتصال', 'كلاهما غير موجه للاتصال'], correct: 1 },
-  { id: 'tcp_7', topic: 'TCP/IP', subSkill: 'IP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو دور بروتوكول IP في نموذج TCP/IP؟', options: ['توجيه الحزم بين الشبكات', 'تجزئة البيانات', 'تشفير البيانات', 'تصفح الويب'], correct: 1 },
-  { id: 'tcp_8', topic: 'TCP/IP', subSkill: 'HTTP_Definition', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 1, question: 'ما هو بروتوكول HTTP؟', options: ['بروتوكول نقل النص التشعبي', 'بروتوكول نقل الملفات', 'بروتوكول البريد الإلكتروني', 'بروتوكول التوجيه'], correct: 1 },
-  { id: 'tcp_9', topic: 'TCP/IP', subSkill: 'TCPIP_Layers_Mapping', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي طبقة في TCP/IP تعادل طبقة الشبكة (Network) في OSI؟', options: ['طبقة التطبيق', 'طبقة النقل', 'طبقة الإنترنت', 'طبقة الوصول إلى الشبكة'], correct: 3 },
-  { id: 'tcp_10', topic: 'TCP/IP', subSkill: 'TCPIP_Layers_Mapping', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'أي طبقة في TCP/IP تعادل طبقة النقل (Transport) في OSI؟', options: ['طبقة التطبيق', 'طبقة النقل', 'طبقة الإنترنت', 'طبقة الوصول إلى الشبكة'], correct: 2 },
-  { id: 'tcp_11', topic: 'TCP/IP', subSkill: 'TCPIP_Application_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة التطبيق في TCP/IP؟', options: ['TCP', 'UDP', 'HTTP', 'IP'], correct: 3 },
-  { id: 'tcp_12', topic: 'TCP/IP', subSkill: 'TCPIP_Transport_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة النقل في TCP/IP؟', options: ['HTTP', 'FTP', 'TCP و UDP', 'IP'], correct: 3 },
-  { id: 'tcp_13', topic: 'TCP/IP', subSkill: 'TCP_Three_Way_Handshake', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي خطوات إنشاء اتصال TCP (Three-Way Handshake)؟', options: ['SYN, SYN-ACK, ACK', 'SYN, ACK, SYN-ACK', 'ACK, SYN, SYN-ACK', 'SYN-ACK, SYN, ACK'], correct: 1 },
-  { id: 'tcp_14', topic: 'TCP/IP', subSkill: 'TCP_Flow_Control', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'كيف يتحكم TCP في تدفق البيانات لمنع إغراق جهاز الاستقبال؟', options: ['باستخدام النوافذ المنزلقة (Sliding Windows)', 'باستخدام التشفير', 'باستخدام الضغط', 'باستخدام التوجيه'], correct: 1 },
-  { id: 'tcp_15', topic: 'TCP/IP', subSkill: 'UDP_Usage', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'في أي تطبيقات يُفضل استخدام UDP بدلاً من TCP؟', options: ['البث المباشر والمكالمات الصوتية', 'نقل الملفات', 'البريد الإلكتروني', 'تصفح الويب'], correct: 1 },
-  { id: 'tcp_16', topic: 'TCP/IP', subSkill: 'TCPIP_vs_OSI_Advanced', cognitiveLevel: 'analyzing', errorPattern: 'reasoning', difficulty: 3, question: 'ما هي الطبقات التي تم دمجها في نموذج TCP/IP مقارنة بـ OSI؟', options: ['Presentation و Session في Application', 'Network و Transport في Internet', 'Data Link و Physical في Network Access', 'جميع ما ذكر'], correct: 4 },
-  { id: 'tcp_17', topic: 'TCP/IP', subSkill: 'TCPIP_Comprehensive', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'قارن بين نموذج OSI ونموذج TCP/IP من حيث: 1) عدد الطبقات، 2) أسماء الطبقات، 3) التشابه والاختلاف، 4) التطبيق العملي.', options: [], correct: 0, isWriting: true, expectedAnswer: 'OSI: 7 طبقات (نظري)، TCP/IP: 4 طبقات (عملي). التشابه: كلاهما نموذج طبقي. الاختلاف: OSI أكثر تفصيلاً، TCP/IP أكثر عملية.' },
-  { id: 'tcp_18', topic: 'TCP/IP', subSkill: 'TCPIP_Security', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'كيف يتم تطبيق الأمان في نموذج TCP/IP؟ اذكر طبقات الأمان والبروتوكولات المستخدمة.', options: [], correct: 0, isWriting: true, expectedAnswer: 'طبقة التطبيق: HTTPS، SSH، طبقة النقل: TLS/SSL، طبقة الإنترنت: IPSec.' },
-  { id: 'tcp_19', topic: 'TCP/IP', subSkill: 'TCPIP_Troubleshooting', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'كيف يمكن استخدام نموذج TCP/IP في استكشاف أخطاء الشبكة؟ أعط مثالاً عملياً.', options: [], correct: 0, isWriting: true, expectedAnswer: 'فحص طبقة التطبيق: هل يعمل HTTP؟ طبقة النقل: هل المنفذ مفتوح؟ طبقة الإنترنت: هل الـ IP صحيح؟' },
-  { id: 'tcp_20', topic: 'TCP/IP', subSkill: 'TCPIP_Design', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'صمم تطبيقاً يستخدم بروتوكول TCP ووضح لماذا اخترت TCP بدلاً من UDP.', options: [], correct: 0, isWriting: true, expectedAnswer: 'تطبيق نقل ملفات: يحتاج إلى موثوقية وترتيب البيانات، لذلك اخترت TCP.' },
-  { id: 'tcp_21', topic: 'TCP/IP', subSkill: 'TCPIP_Advanced', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'كيف يمكن تحسين أداء TCP/IP في الشبكات عالية السرعة؟ اذكر 3 طرق.', options: [], correct: 0, isWriting: true, expectedAnswer: '1) زيادة حجم النوافذ، 2) استخدام Selective Acknowledgment، 3) استخدام TCP Tuning.' },
-  { id: 'tcp_22', topic: 'TCP/IP', subSkill: 'TCPIP_Future', cognitiveLevel: 'creating', errorPattern: 'application', difficulty: 3, question: 'ما هي التحديات التي تواجه نموذج TCP/IP في المستقبل وكيف يمكن التغلب عليها؟', options: [], correct: 0, isWriting: true, expectedAnswer: 'التحديات: الأمان، الأداء، التوسع. الحلول: استخدام IPv6، تطوير بروتوكولات جديدة، تحسين التشفير.' },
-  { id: 'tcp_23', topic: 'TCP/IP', subSkill: 'TCPIP_Layers_Overview', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هي الطبقات الأربع في نموذج TCP/IP؟', options: ['Application, Transport, Internet, Network Access', 'Application, Presentation, Session, Transport', 'Network, Transport, Session, Application', 'Physical, Data Link, Network, Transport'], correct: 1 },
-  { id: 'tcp_24', topic: 'TCP/IP', subSkill: 'TCPIP_Protocols_Overview', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة التطبيق في TCP/IP؟', options: ['TCP', 'UDP', 'FTP', 'IP'], correct: 3 },
-  { id: 'tcp_25', topic: 'TCP/IP', subSkill: 'TCPIP_Transport_Protocols_2', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة النقل في TCP/IP؟', options: ['HTTP', 'FTP', 'TCP', 'IP'], correct: 3 },
-  { id: 'tcp_26', topic: 'TCP/IP', subSkill: 'TCPIP_Internet_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة الإنترنت في TCP/IP؟', options: ['TCP', 'UDP', 'IP', 'HTTP'], correct: 3 },
-  { id: 'tcp_27', topic: 'TCP/IP', subSkill: 'TCPIP_Network_Access_Protocols', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'أي من البروتوكولات التالية يعمل في طبقة الوصول إلى الشبكة في TCP/IP؟', options: ['IP', 'TCP', 'Ethernet', 'HTTP'], correct: 3 },
-  { id: 'tcp_28', topic: 'TCP/IP', subSkill: 'TCPIP_Encapsulation', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الترتيب الصحيح لعملية التغليف في TCP/IP من الأعلى إلى الأسفل؟', options: ['Data → Segment → Packet → Frame → Bits', 'Bits → Frame → Packet → Segment → Data', 'Data → Packet → Segment → Frame → Bits', 'Segment → Data → Packet → Frame → Bits'], correct: 1 },
-  { id: 'tcp_29', topic: 'TCP/IP', subSkill: 'TCPIP_Deencapsulation', cognitiveLevel: 'understanding', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو الترتيب الصحيح لعملية إزالة التغليف في TCP/IP من الأسفل إلى الأعلى؟', options: ['Bits → Frame → Packet → Segment → Data', 'Data → Segment → Packet → Frame → Bits', 'Bits → Packet → Frame → Segment → Data', 'Frame → Bits → Packet → Segment → Data'], correct: 1 },
-  { id: 'tcp_30', topic: 'TCP/IP', subSkill: 'TCPIP_Ports', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو المنفذ الافتراضي لبروتوكول HTTP؟', options: ['21', '25', '80', '443'], correct: 3 },
-  { id: 'tcp_31', topic: 'TCP/IP', subSkill: 'TCPIP_Ports_2', cognitiveLevel: 'remembering', errorPattern: 'conceptual', difficulty: 2, question: 'ما هو المنفذ الافتراضي لبروتوكول HTTPS؟', options: ['21', '25', '80', '443'], correct: 4 },
-  { id: 'tcp_32', topic: 'TCP/IP', subSkill: 'TCPIP_Comprehensive_Understanding', cognitiveLevel: 'evaluating', errorPattern: 'reasoning', difficulty: 3, question: 'أي من العبارات التالية تصف بدقة نموذج TCP/IP؟', options: ['نموذج عملي مكون من 4 طبقات يستخدم في الإنترنت', 'نموذج نظري مكون من 7 طبقات', 'نموذج يستخدم فقط في الشبكات المحلية', 'نموذج قديم لم يعد مستخدماً'], correct: 1 }
-];
-
-// =============================================================
-// 📤 دمج جميع الأسئلة
-// =============================================================
-
-const allQuestions = [
-  ...conceptsQuestions,
-  ...ipv4Questions,
-  ...subnettingQuestions,
-  ...ipv6Questions,
-  ...osiQuestions,
-  ...devicesQuestions,
-  ...emailQuestions,
-  ...tcpipQuestions
-];
-
-// =============================================================
-// 📊 تصنيف الأسئلة حسب الصعوبة
-// =============================================================
-
-export const basicsQuestions = {
-  easy: allQuestions.filter(q => q.difficulty === 1 && !q.isWriting),
-  medium: allQuestions.filter(q => q.difficulty === 2 && !q.isWriting),
-  hard: allQuestions.filter(q => q.difficulty === 3 || q.isWriting)
-};
-
-export const getAllBasicsQuestions = () => allQuestions;
-
-export const getQuestionsByLevel = (level) => {
-  if (level === 1) return basicsQuestions.easy;
-  if (level === 2) return basicsQuestions.medium;
-  if (level === 3) return basicsQuestions.hard;
-  return [];
-};
-
-// =============================================================
-// 🎯 ASSESSMENTS
-// =============================================================
-
-export const ASSESSMENTS = {
-  concepts: {
-    id: 'concepts',
-    name: '📘 المفاهيم العامة',
-    description: 'تقييم شامل لمفاهيم الشبكات الأساسية',
-    time: '10-12 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'Network Basics')
+// ============================================================
+// 🔷 الأسئلة (30 سؤالاً تغطي 8 محاور)
+// ============================================================
+const QUESTIONS = [
+  // =============================================================
+  // المحور 1: أساسيات المحاسبة (Accounting Basics) - 4 أسئلة
+  // =============================================================
+  {
+    id: 'acc_001',
+    question: 'ما هو التعريف الصحيح للمحاسبة المالية؟',
+    options: [
+      'تسجيل جميع المعاملات المالية فقط',
+      'عملية تحديد وقياس وتسجيل وإبلاغ المعلومات المالية للمنشأة',
+      'إدارة النقدية اليومية للشركة',
+      'تحليل الأسواق المالية فقط'
+    ],
+    correct: 2,
+    topic: 'Accounting Basics',
+    subSkill: 'acc_definition',
+    cognitiveLevel: 'understanding',
+    difficulty: 1,
+    errorPattern: 'conceptual',
+    explanation: 'المحاسبة المالية هي عملية تحديد وقياس وتسجيل وإبلاغ المعلومات المالية للمنشأة إلى الأطراف المعنية.',
+    irt: { a: 0.8, b: -2.0, c: 0.2 },
+    subSkills: ['acc_definition', 'acc_basics'],
+    diagnostic: {
+      errorPattern: 'acc_def_error',
+      rootCause: 'يخلط بين المحاسبة المالية وإدارة النقد أو التحليل المالي',
+      futureImpact: 'سيؤثر على فهمه لدور المحاسبة في المنشأة',
+      remediationVideoQuery: 'شرح تعريف المحاسبة المالية وأهميتها'
+    },
+    prerequisites: []
   },
-  ipv4: {
-    id: 'ipv4',
-    name: '🌍 IPv4',
-    description: 'تقييم متخصص في عناوين IPv4 وتصنيفها',
-    time: '8-10 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'IPv4')
+  {
+    id: 'acc_002',
+    question: 'أي من التالي يُعد مستخدماً خارجياً للمعلومات المحاسبية؟',
+    options: [
+      'مدير التسويق',
+      'المستثمرون والدائنون',
+      'مدير الإنتاج',
+      'رئيس قسم الموارد البشرية'
+    ],
+    correct: 2,
+    topic: 'Accounting Basics',
+    subSkill: 'acc_users',
+    cognitiveLevel: 'understanding',
+    difficulty: 1,
+    errorPattern: 'conceptual',
+    explanation: 'المستثمرون والدائنون هم مستخدمون خارجيون للمعلومات المحاسبية، بينما الإدارة الداخلية هي مستخدم داخلي.',
+    irt: { a: 0.9, b: -1.8, c: 0.2 },
+    subSkills: ['acc_users', 'acc_basics'],
+    diagnostic: {
+      errorPattern: 'acc_users_error',
+      rootCause: 'يخلط بين المستخدمين الداخليين والخارجيين للمعلومات المحاسبية',
+      futureImpact: 'سيؤثر على فهمه لأهداف التقارير المحاسبية',
+      remediationVideoQuery: 'مستخدمي المعلومات المحاسبية الداخليين والخارجيين'
+    },
+    prerequisites: ['acc_definition']
   },
-  subnetting: {
-    id: 'subnetting',
-    name: '🔢 Subnetting',
-    description: 'تقييم في تقسيم الشبكات الفرعية وحساباتها',
-    time: '10-12 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'Subnetting')
+  {
+    id: 'acc_003',
+    question: 'ما هي المعادلة المحاسبية الأساسية؟',
+    options: [
+      'الأصول = الخصوم + حقوق الملكية',
+      'الإيرادات - المصروفات = صافي الدخل',
+      'الأصول = الخصوم - حقوق الملكية',
+      'حقوق الملكية = الأصول + الخصوم'
+    ],
+    correct: 1,
+    topic: 'Accounting Basics',
+    subSkill: 'acc_equation',
+    cognitiveLevel: 'remembering',
+    difficulty: 1,
+    errorPattern: 'memorization',
+    explanation: 'المعادلة المحاسبية الأساسية هي: الأصول = الخصوم + حقوق الملكية.',
+    irt: { a: 0.7, b: -2.2, c: 0.25 },
+    subSkills: ['acc_equation', 'acc_basics'],
+    diagnostic: {
+      errorPattern: 'acc_equation_error',
+      rootCause: 'لا يحفظ المعادلة المحاسبية الأساسية أو يخلط بين طرفيها',
+      futureImpact: 'سيؤثر على فهمه لجميع القيود المحاسبية والميزانيات',
+      remediationVideoQuery: 'شرح المعادلة المحاسبية الأساسية'
+    },
+    prerequisites: ['acc_definition']
   },
-  ipv6: {
-    id: 'ipv6',
-    name: '🛜 IPv6',
-    description: 'تقييم في عناوين IPv6 وأنواعها',
-    time: '8-10 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'IPv6')
+  {
+    id: 'acc_004',
+    question: 'أي من التالي يمثل نظام القيد المزدوج؟',
+    options: [
+      'تسجيل كل معاملة في حساب واحد فقط',
+      'لكل معاملة تأثير متساوٍ في طرفي المعادلة المحاسبية',
+      'تسجيل المعاملات في دفتر اليومية فقط',
+      'استخدام حسابات منفصلة لكل عملية'
+    ],
+    correct: 2,
+    topic: 'Accounting Basics',
+    subSkill: 'acc_double_entry',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'نظام القيد المزدوج ينص على أن لكل معاملة تأثير متساوٍ في طرفي المعادلة المحاسبية (مدين ودائن).',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['acc_double_entry', 'acc_basics'],
+    diagnostic: {
+      errorPattern: 'double_entry_error',
+      rootCause: 'لا يفهم مبدأ القيد المزدوج أو يخلط بينه وبين أنظمة أخرى',
+      futureImpact: 'سيؤدي إلى أخطاء في تسجيل المعاملات المحاسبية',
+      remediationVideoQuery: 'شرح نظام القيد المزدوج في المحاسبة'
+    },
+    prerequisites: ['acc_equation']
   },
-  osi: {
-    id: 'osi',
-    name: '📡 OSI Model',
-    description: 'تقييم في طبقات OSI ووظائفها',
-    time: '8-10 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'OSI Model')
+
+  // =============================================================
+  // المحور 2: القيود اليومية (Journal Entries) - 4 أسئلة
+  // =============================================================
+  {
+    id: 'acc_005',
+    question: 'ما هو القيد الصحيح لشراء بضاعة نقداً بقيمة 5,000 دينار؟',
+    options: [
+      'من حـ/ البضاعة 5,000 إلى حـ/ النقدية 5,000',
+      'من حـ/ النقدية 5,000 إلى حـ/ البضاعة 5,000',
+      'من حـ/ المشتريات 5,000 إلى حـ/ النقدية 5,000',
+      'من حـ/ النقدية 5,000 إلى حـ/ المشتريات 5,000'
+    ],
+    correct: 3,
+    topic: 'Journal Entries',
+    subSkill: 'journal_purchases',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'application',
+    explanation: 'شراء بضاعة نقداً: من حـ/ المشتريات (مدين) إلى حـ/ النقدية (دائن).',
+    irt: { a: 1.2, b: -0.2, c: 0.15 },
+    subSkills: ['journal_purchases', 'journal_entries'],
+    diagnostic: {
+      errorPattern: 'purchase_journal_error',
+      rootCause: 'يخلط بين حساب المشتريات وحساب البضاعة أو يخطئ في تحديد الطرف الدائن والمدين',
+      futureImpact: 'سيؤثر على تسجيل جميع عمليات الشراء في المستقبل',
+      remediationVideoQuery: 'قيد شراء البضاعة نقداً في المحاسبة'
+    },
+    prerequisites: ['acc_double_entry']
   },
-  devices: {
-    id: 'devices',
-    name: '💻 أجهزة الشبكات',
-    description: 'تقييم في أجهزة الشبكات ووظائفها',
-    time: '8-10 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'Network Devices')
+  {
+    id: 'acc_006',
+    question: 'ما هو القيد الصحيح لبيع بضاعة بقيمة 3,000 دينار نقداً (بفرض أن البضاعة مسجلة في حساب المبيعات)؟',
+    options: [
+      'من حـ/ النقدية 3,000 إلى حـ/ المبيعات 3,000',
+      'من حـ/ المبيعات 3,000 إلى حـ/ النقدية 3,000',
+      'من حـ/ النقدية 3,000 إلى حـ/ البضاعة 3,000',
+      'من حـ/ البضاعة 3,000 إلى حـ/ النقدية 3,000'
+    ],
+    correct: 1,
+    topic: 'Journal Entries',
+    subSkill: 'journal_sales',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'application',
+    explanation: 'بيع بضاعة نقداً: من حـ/ النقدية (مدين) إلى حـ/ المبيعات (دائن).',
+    irt: { a: 1.2, b: -0.2, c: 0.15 },
+    subSkills: ['journal_sales', 'journal_entries'],
+    diagnostic: {
+      errorPattern: 'sales_journal_error',
+      rootCause: 'يخلط بين حساب المبيعات وحساب النقدية أو يخطئ في تحديد الطرف الدائن والمدين',
+      futureImpact: 'سيؤثر على تسجيل جميع عمليات البيع في المستقبل',
+      remediationVideoQuery: 'قيد بيع البضاعة نقداً في المحاسبة'
+    },
+    prerequisites: ['acc_double_entry']
   },
-  email: {
-    id: 'email',
-    name: '📧 بروتوكولات البريد الإلكتروني',
-    description: 'تقييم في بروتوكولات SMTP, POP3, IMAP',
-    time: '6-8 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'Email Protocols')
+  {
+    id: 'acc_007',
+    question: 'ما هو القيد الصحيح لدفع إيجار مكتب بقيمة 1,000 دينار نقداً؟',
+    options: [
+      'من حـ/ الإيجار 1,000 إلى حـ/ النقدية 1,000',
+      'من حـ/ النقدية 1,000 إلى حـ/ الإيجار 1,000',
+      'من حـ/ الإيجار 1,000 إلى حـ/ البنك 1,000',
+      'من حـ/ البنك 1,000 إلى حـ/ الإيجار 1,000'
+    ],
+    correct: 1,
+    topic: 'Journal Entries',
+    subSkill: 'journal_expenses',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'application',
+    explanation: 'دفع إيجار نقداً: من حـ/ الإيجار (مدين) إلى حـ/ النقدية (دائن).',
+    irt: { a: 1.1, b: -0.1, c: 0.15 },
+    subSkills: ['journal_expenses', 'journal_entries'],
+    diagnostic: {
+      errorPattern: 'expense_journal_error',
+      rootCause: 'يخلط بين حسابات المصروفات وطرق الدفع (نقداً أو بنك)',
+      futureImpact: 'سيؤثر على تسجيل المصروفات بشكل صحيح',
+      remediationVideoQuery: 'قيد دفع المصروفات في المحاسبة'
+    },
+    prerequisites: ['acc_double_entry']
   },
-  tcpip: {
-    id: 'tcpip',
-    name: '🔗 TCP/IP',
-    description: 'تقييم في نموذج TCP/IP وبروتوكولاته',
-    time: '8-10 دقائق',
-    getQuestions: () => allQuestions.filter(q => q.topic === 'TCP/IP')
+  {
+    id: 'acc_008',
+    question: 'ما هو القيد الصحيح لاستلام قرض من البنك بقيمة 10,000 دينار؟',
+    options: [
+      'من حـ/ النقدية 10,000 إلى حـ/ القروض 10,000',
+      'من حـ/ القروض 10,000 إلى حـ/ النقدية 10,000',
+      'من حـ/ النقدية 10,000 إلى حـ/ البنك 10,000',
+      'من حـ/ البنك 10,000 إلى حـ/ النقدية 10,000'
+    ],
+    correct: 1,
+    topic: 'Journal Entries',
+    subSkill: 'journal_loans',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'application',
+    explanation: 'استلام قرض: من حـ/ النقدية (مدين) إلى حـ/ القروض (دائن).',
+    irt: { a: 1.1, b: -0.1, c: 0.15 },
+    subSkills: ['journal_loans', 'journal_entries'],
+    diagnostic: {
+      errorPattern: 'loan_journal_error',
+      rootCause: 'يخطئ في تحديد الطرف الدائن والمدين عند تسجيل القروض',
+      futureImpact: 'سيؤثر على تسجيل الالتزامات المالية بشكل صحيح',
+      remediationVideoQuery: 'قيد استلام قرض من البنك'
+    },
+    prerequisites: ['acc_double_entry']
   },
-  full: {
-    id: 'full',
-    name: '📊 التقييم الشامل',
-    description: 'جميع أسئلة الشبكات في تقييم واحد متكامل',
-    time: '60-90 دقيقة',
-    getQuestions: () => allQuestions
+
+  // =============================================================
+  // المحور 3: الميزانية العمومية (Balance Sheet) - 4 أسئلة
+  // =============================================================
+  {
+    id: 'acc_009',
+    question: 'أي من التالي يُصنف كأصل متداول؟',
+    options: [
+      'المباني',
+      'المعدات الثقيلة',
+      'المخزون من البضاعة',
+      'براءات الاختراع'
+    ],
+    correct: 3,
+    topic: 'Balance Sheet',
+    subSkill: 'balance_current_assets',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'المخزون من البضاعة هو أصل متداول، بينما المباني والمعدات أصول ثابتة، وبراءات الاختراع أصول غير ملموسة.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['balance_current_assets', 'balance_sheet'],
+    diagnostic: {
+      errorPattern: 'current_assets_error',
+      rootCause: 'يخلط بين الأصول المتداولة والثابتة وغير الملموسة',
+      futureImpact: 'سيؤثر على تصنيف الأصول في الميزانية العمومية',
+      remediationVideoQuery: 'تصنيف الأصول المتداولة والثابتة'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_010',
+    question: 'أي من التالي يُصنف كخصم متداول؟',
+    options: [
+      'القروض طويلة الأجل',
+      'الدائنون (الموردون)',
+      'رأس المال',
+      'الأرباح المحتجزة'
+    ],
+    correct: 2,
+    topic: 'Balance Sheet',
+    subSkill: 'balance_current_liabilities',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'الدائنون (الموردون) هم خصم متداول، بينما القروض طويلة الأجل خصم غير متداول، ورأس المال والأرباح المحتجزة ضمن حقوق الملكية.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['balance_current_liabilities', 'balance_sheet'],
+    diagnostic: {
+      errorPattern: 'current_liabilities_error',
+      rootCause: 'يخلط بين الخصوم المتداولة وغير المتداولة وحقوق الملكية',
+      futureImpact: 'سيؤثر على تصنيف الخصوم في الميزانية العمومية',
+      remediationVideoQuery: 'تصنيف الخصوم المتداولة وغير المتداولة'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_011',
+    question: 'إذا كانت الأصول = 100,000 دينار والخصوم = 60,000 دينار، فما هي حقوق الملكية؟',
+    options: ['40,000', '60,000', '100,000', '160,000'],
+    correct: 1,
+    topic: 'Balance Sheet',
+    subSkill: 'balance_equity',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'calculation',
+    explanation: 'حقوق الملكية = الأصول - الخصوم = 100,000 - 60,000 = 40,000 دينار.',
+    irt: { a: 1.3, b: 0.0, c: 0.15 },
+    subSkills: ['balance_equity', 'balance_sheet'],
+    diagnostic: {
+      errorPattern: 'equity_calculation_error',
+      rootCause: 'يخطئ في تطبيق معادلة حقوق الملكية (الأصول - الخصوم)',
+      futureImpact: 'سيؤثر على فهمه لعلاقة الميزانية العمومية',
+      remediationVideoQuery: 'حساب حقوق الملكية من الأصول والخصوم'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_012',
+    question: 'أي من التالي يُعتبر التزاماً (خصماً) على المنشأة؟',
+    options: [
+      'المباني المملوكة للشركة',
+      'الديون المستحقة للموردين',
+      'رأس المال المدفوع من المالك',
+      'الأرباح المحتجزة'
+    ],
+    correct: 2,
+    topic: 'Balance Sheet',
+    subSkill: 'balance_liabilities',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'الديون المستحقة للموردين هي التزام (خصم) على المنشأة، بينما المباني أصل، ورأس المال والأرباح المحتجزة ضمن حقوق الملكية.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['balance_liabilities', 'balance_sheet'],
+    diagnostic: {
+      errorPattern: 'liability_identification_error',
+      rootCause: 'يخلط بين الأصول والخصوم وحقوق الملكية',
+      futureImpact: 'سيؤثر على تصنيف العناصر في الميزانية العمومية',
+      remediationVideoQuery: 'الفرق بين الأصول والخصوم وحقوق الملكية'
+    },
+    prerequisites: ['acc_equation']
+  },
+
+  // =============================================================
+  // المحور 4: قائمة الدخل (Income Statement) - 4 أسئلة
+  // =============================================================
+  {
+    id: 'acc_013',
+    question: 'ما هو صافي الدخل إذا كانت الإيرادات = 50,000 دينار والمصروفات = 35,000 دينار؟',
+    options: ['15,000', '25,000', '50,000', '85,000'],
+    correct: 1,
+    topic: 'Income Statement',
+    subSkill: 'income_net',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'calculation',
+    explanation: 'صافي الدخل = الإيرادات - المصروفات = 50,000 - 35,000 = 15,000 دينار.',
+    irt: { a: 1.2, b: -0.2, c: 0.15 },
+    subSkills: ['income_net', 'income_statement'],
+    diagnostic: {
+      errorPattern: 'net_income_calculation_error',
+      rootCause: 'يخطئ في حساب صافي الدخل (الإيرادات - المصروفات)',
+      futureImpact: 'سيؤثر على فهمه لقائمة الدخل ونتائج الأعمال',
+      remediationVideoQuery: 'حساب صافي الدخل في قائمة الدخل'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_014',
+    question: 'أي من التالي يُصنف كمصروف تشغيلي؟',
+    options: [
+      'إيرادات المبيعات',
+      'رواتب الموظفين',
+      'أرباح بيع أصول ثابتة',
+      'الإيرادات من الاستثمارات'
+    ],
+    correct: 2,
+    topic: 'Income Statement',
+    subSkill: 'income_operating_expenses',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'رواتب الموظفين هي مصروف تشغيلي، بينما إيرادات المبيعات إيرادات، وأرباح بيع الأصول وإيرادات الاستثمارات هي إيرادات غير تشغيلية.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['income_operating_expenses', 'income_statement'],
+    diagnostic: {
+      errorPattern: 'operating_expenses_error',
+      rootCause: 'يخلط بين المصروفات التشغيلية والإيرادات أو المصروفات غير التشغيلية',
+      futureImpact: 'سيؤثر على تصنيف العناصر في قائمة الدخل',
+      remediationVideoQuery: 'تصنيف المصروفات التشغيلية وغير التشغيلية'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_015',
+    question: 'ما هو الفرق بين صافي الدخل وصافي الخسارة؟',
+    options: [
+      'صافي الدخل عندما الإيرادات > المصروفات، وصافي الخسارة عندما المصروفات > الإيرادات',
+      'صافي الخسارة عندما الإيرادات > المصروفات، وصافي الدخل عندما المصروفات > الإيرادات',
+      'كلاهما نفس الشيء',
+      'صافي الدخل يُستخدم في الميزانية فقط'
+    ],
+    correct: 1,
+    topic: 'Income Statement',
+    subSkill: 'income_profit_loss',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'صافي الدخل يحدث عندما تكون الإيرادات أكبر من المصروفات، بينما صافي الخسارة يحدث عندما تكون المصروفات أكبر من الإيرادات.',
+    irt: { a: 1.0, b: -0.3, c: 0.15 },
+    subSkills: ['income_profit_loss', 'income_statement'],
+    diagnostic: {
+      errorPattern: 'profit_loss_confusion',
+      rootCause: 'يخلط بين مفهوم صافي الدخل وصافي الخسارة',
+      futureImpact: 'سيؤثر على فهمه لنتائج الأعمال',
+      remediationVideoQuery: 'الفرق بين صافي الدخل وصافي الخسارة'
+    },
+    prerequisites: ['income_net']
+  },
+  {
+    id: 'acc_016',
+    question: 'أي من التالي لا يُظهر في قائمة الدخل؟',
+    options: [
+      'الإيرادات',
+      'المصروفات',
+      'الأصول',
+      'صافي الدخل'
+    ],
+    correct: 3,
+    topic: 'Income Statement',
+    subSkill: 'income_statement_content',
+    cognitiveLevel: 'remembering',
+    difficulty: 1,
+    errorPattern: 'memorization',
+    explanation: 'الأصول لا تظهر في قائمة الدخل، بل تظهر في الميزانية العمومية.',
+    irt: { a: 0.8, b: -1.8, c: 0.2 },
+    subSkills: ['income_statement_content', 'income_statement'],
+    diagnostic: {
+      errorPattern: 'income_content_error',
+      rootCause: 'يخلط بين محتويات قائمة الدخل والميزانية العمومية',
+      futureImpact: 'سيؤثر على فهمه للقوائم المالية المختلفة',
+      remediationVideoQuery: 'محتويات قائمة الدخل والميزانية العمومية'
+    },
+    prerequisites: ['acc_equation']
+  },
+
+  // =============================================================
+  // المحور 5: الأصول والخصوم (Assets & Liabilities) - 4 أسئلة
+  // =============================================================
+  {
+    id: 'acc_017',
+    question: 'أي من التالي يُصنف كأصل غير ملموس؟',
+    options: [
+      'المباني',
+      'الأراضي',
+      'براءات الاختراع',
+      'المعدات'
+    ],
+    correct: 3,
+    topic: 'Assets & Liabilities',
+    subSkill: 'assets_intangible',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'براءات الاختراع هي أصل غير ملموس، بينما المباني والأراضي والمعدات أصول ملموسة (ثابتة).',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['assets_intangible', 'assets_liabilities'],
+    diagnostic: {
+      errorPattern: 'intangible_assets_error',
+      rootCause: 'يخلط بين الأصول الملموسة وغير الملموسة',
+      futureImpact: 'سيؤثر على تصنيف الأصول في القوائم المالية',
+      remediationVideoQuery: 'الفرق بين الأصول الملموسة وغير الملموسة'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_018',
+    question: 'ما هو الفرق بين الأصول المتداولة والأصول الثابتة؟',
+    options: [
+      'الأصول المتداولة تُستخدم في العمليات اليومية، والأصول الثابتة تُستخدم لفترة طويلة',
+      'الأصول الثابتة تُستخدم في العمليات اليومية، والأصول المتداولة تُستخدم لفترة طويلة',
+      'الأصول المتداولة هي النقدية فقط',
+      'الأصول الثابتة هي المخزون فقط'
+    ],
+    correct: 1,
+    topic: 'Assets & Liabilities',
+    subSkill: 'assets_current_vs_fixed',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'الأصول المتداولة تُستخدم في العمليات اليومية (مثل المخزون والنقدية)، بينما الأصول الثابتة تُستخدم لفترة طويلة (مثل المباني والمعدات).',
+    irt: { a: 1.1, b: -0.3, c: 0.15 },
+    subSkills: ['assets_current_vs_fixed', 'assets_liabilities'],
+    diagnostic: {
+      errorPattern: 'current_fixed_assets_error',
+      rootCause: 'يخلط بين مفهوم الأصول المتداولة والثابتة',
+      futureImpact: 'سيؤثر على تصنيف الأصول في الميزانية العمومية',
+      remediationVideoQuery: 'الفرق بين الأصول المتداولة والثابتة'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_019',
+    question: 'أي من التالي يُعتبر خصماً غير متداول؟',
+    options: [
+      'الدائنون (الموردون)',
+      'الأوراق التجارية المستحقة',
+      'قرض بنكي طويل الأجل',
+      'الرواتب المستحقة'
+    ],
+    correct: 3,
+    topic: 'Assets & Liabilities',
+    subSkill: 'liabilities_non_current',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'القرض البنكي طويل الأجل هو خصم غير متداول، بينما الباقي خصوم متداولة.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['liabilities_non_current', 'assets_liabilities'],
+    diagnostic: {
+      errorPattern: 'non_current_liabilities_error',
+      rootCause: 'يخلط بين الخصوم المتداولة وغير المتداولة',
+      futureImpact: 'سيؤثر على تصنيف الخصوم في الميزانية العمومية',
+      remediationVideoQuery: 'الفرق بين الخصوم المتداولة وغير المتداولة'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_020',
+    question: 'إذا كانت الخصوم = 40,000 دينار وحقوق الملكية = 30,000 دينار، فما هي الأصول؟',
+    options: ['70,000', '10,000', '40,000', '30,000'],
+    correct: 1,
+    topic: 'Assets & Liabilities',
+    subSkill: 'assets_calculation',
+    cognitiveLevel: 'applying',
+    difficulty: 2,
+    errorPattern: 'calculation',
+    explanation: 'الأصول = الخصوم + حقوق الملكية = 40,000 + 30,000 = 70,000 دينار.',
+    irt: { a: 1.3, b: 0.0, c: 0.15 },
+    subSkills: ['assets_calculation', 'assets_liabilities'],
+    diagnostic: {
+      errorPattern: 'assets_calculation_error',
+      rootCause: 'يخطئ في تطبيق معادلة الأصول (الخصوم + حقوق الملكية)',
+      futureImpact: 'سيؤثر على فهمه للمعادلة المحاسبية',
+      remediationVideoQuery: 'حساب الأصول من الخصوم وحقوق الملكية'
+    },
+    prerequisites: ['acc_equation']
+  },
+
+  // =============================================================
+  // المحور 6: حقوق الملكية (Equity) - 3 أسئلة
+  // =============================================================
+  {
+    id: 'acc_021',
+    question: 'ما هي مكونات حقوق الملكية في شركة مساهمة؟',
+    options: [
+      'رأس المال المدفوع والأرباح المحتجزة',
+      'النقدية والمخزون',
+      'الخصوم المتداولة وغير المتداولة',
+      'الإيرادات والمصروفات'
+    ],
+    correct: 1,
+    topic: 'Equity',
+    subSkill: 'equity_components',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'حقوق الملكية في شركة مساهمة تتكون من رأس المال المدفوع والأرباح المحتجزة.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['equity_components', 'equity'],
+    diagnostic: {
+      errorPattern: 'equity_components_error',
+      rootCause: 'يخلط بين مكونات حقوق الملكية والعناصر الأخرى في الميزانية',
+      futureImpact: 'سيؤثر على فهمه لهيكل حقوق الملكية',
+      remediationVideoQuery: 'مكونات حقوق الملكية في الشركات'
+    },
+    prerequisites: ['acc_equation']
+  },
+  {
+    id: 'acc_022',
+    question: 'ما هو تأثير تحقيق أرباح على حقوق الملكية؟',
+    options: [
+      'زيادة حقوق الملكية',
+      'نقصان حقوق الملكية',
+      'لا تأثير',
+      'تأثير غير مؤكد'
+    ],
+    correct: 1,
+    topic: 'Equity',
+    subSkill: 'equity_effect',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'تحقيق الأرباح يزيد من حقوق الملكية (من خلال زيادة الأرباح المحتجزة).',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['equity_effect', 'equity'],
+    diagnostic: {
+      errorPattern: 'equity_profit_effect_error',
+      rootCause: 'لا يفهم العلاقة بين الأرباح وحقوق الملكية',
+      futureImpact: 'سيؤثر على فهمه لعلاقة قائمة الدخل بالميزانية العمومية',
+      remediationVideoQuery: 'تأثير الأرباح والخسائر على حقوق الملكية'
+    },
+    prerequisites: ['equity_components']
+  },
+  {
+    id: 'acc_023',
+    question: 'ما هو الفرق بين رأس المال المدفوع ورأس المال المصرح به؟',
+    options: [
+      'رأس المال المدفوع هو ما دفعه المساهمون فعلاً، والمصرح به هو الحد الأقصى المسموح به',
+      'رأس المال المصرح به هو ما دفعه المساهمون فعلاً، والمدفوع هو الحد الأقصى',
+      'كلاهما نفس الشيء',
+      'رأس المال المدفوع يُستخدم في قائمة الدخل'
+    ],
+    correct: 1,
+    topic: 'Equity',
+    subSkill: 'equity_paid_vs_authorized',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'رأس المال المصرح به هو الحد الأقصى الذي تسمح به الشركة، بينما المدفوع هو ما دفعه المساهمون فعلاً.',
+    irt: { a: 1.1, b: -0.3, c: 0.15 },
+    subSkills: ['equity_paid_vs_authorized', 'equity'],
+    diagnostic: {
+      errorPattern: 'paid_authorized_error',
+      rootCause: 'يخلط بين مفهوم رأس المال المدفوع والمصرح به',
+      futureImpact: 'سيؤثر على فهمه لهيكل رأس المال',
+      remediationVideoQuery: 'الفرق بين رأس المال المدفوع والمصرح به'
+    },
+    prerequisites: ['equity_components']
+  },
+
+  // =============================================================
+  // المحور 7: تحليل القوائم المالية (Financial Analysis) - 3 أسئلة
+  // =============================================================
+  {
+    id: 'acc_024',
+    question: 'ما هو مؤشر السيولة المتداولة (Current Ratio)؟',
+    options: [
+      'الأصول المتداولة / الخصوم المتداولة',
+      'الأصول الثابتة / الخصوم المتداولة',
+      'الأصول المتداولة - الخصوم المتداولة',
+      'الخصوم المتداولة / الأصول المتداولة'
+    ],
+    correct: 1,
+    topic: 'Financial Analysis',
+    subSkill: 'analysis_current_ratio',
+    cognitiveLevel: 'remembering',
+    difficulty: 2,
+    errorPattern: 'memorization',
+    explanation: 'نسبة السيولة المتداولة = الأصول المتداولة ÷ الخصوم المتداولة.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['analysis_current_ratio', 'financial_analysis'],
+    diagnostic: {
+      errorPattern: 'current_ratio_error',
+      rootCause: 'يخلط بين نسبة السيولة المتداولة والسرعة، أو يخطئ في الصيغة',
+      futureImpact: 'سيؤثر على تقييم سيولة المنشأة',
+      remediationVideoQuery: 'حساب نسبة السيولة المتداولة'
+    },
+    prerequisites: ['balance_current_assets', 'balance_current_liabilities']
+  },
+  {
+    id: 'acc_025',
+    question: 'إذا كان صافي الدخل = 20,000 دينار وإجمالي الأصول = 200,000 دينار، فما هو العائد على الأصول (ROA)؟',
+    options: ['10%', '20%', '5%', '15%'],
+    correct: 1,
+    topic: 'Financial Analysis',
+    subSkill: 'analysis_roa',
+    cognitiveLevel: 'applying',
+    difficulty: 3,
+    errorPattern: 'calculation',
+    explanation: 'العائد على الأصول = صافي الدخل ÷ إجمالي الأصول = 20,000 ÷ 200,000 = 0.10 = 10%.',
+    irt: { a: 1.5, b: 0.5, c: 0.1 },
+    subSkills: ['analysis_roa', 'financial_analysis'],
+    diagnostic: {
+      errorPattern: 'roa_calculation_error',
+      rootCause: 'يخطئ في حساب العائد على الأصول (صافي الدخل ÷ إجمالي الأصول)',
+      futureImpact: 'سيؤثر على تقييم كفاءة استخدام الأصول',
+      remediationVideoQuery: 'حساب العائد على الأصول ROA'
+    },
+    prerequisites: ['income_net']
+  },
+  {
+    id: 'acc_026',
+    question: 'ما هو مؤشر الربحية الإجمالية (Gross Profit Margin)؟',
+    options: [
+      'الإيرادات - تكلفة البضاعة المباعة',
+      '(الإيرادات - تكلفة البضاعة المباعة) / الإيرادات',
+      'الإيرادات / تكلفة البضاعة المباعة',
+      'صافي الدخل / الإيرادات'
+    ],
+    correct: 2,
+    topic: 'Financial Analysis',
+    subSkill: 'analysis_gross_margin',
+    cognitiveLevel: 'remembering',
+    difficulty: 2,
+    errorPattern: 'memorization',
+    explanation: 'هامش الربح الإجمالي = (الإيرادات - تكلفة البضاعة المباعة) ÷ الإيرادات.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['analysis_gross_margin', 'financial_analysis'],
+    diagnostic: {
+      errorPattern: 'gross_margin_error',
+      rootCause: 'يخلط بين هامش الربح الإجمالي وصافي الربح، أو يخطئ في الصيغة',
+      futureImpact: 'سيؤثر على تحليل ربحية العمليات الأساسية',
+      remediationVideoQuery: 'حساب هامش الربح الإجمالي'
+    },
+    prerequisites: ['income_net']
+  },
+
+  // =============================================================
+  // المحور 8: مبادئ المحاسبة (Accounting Principles) - 4 أسئلة
+  // =============================================================
+  {
+    id: 'acc_027',
+    question: 'ما هو مبدأ مقابلة الإيرادات بالمصروفات (Matching Principle)؟',
+    options: [
+      'يجب أن تُسجل الإيرادات عند استلام النقد فقط',
+      'يجب أن تُقابل المصروفات بالإيرادات التي ساعدت في تحقيقها في نفس الفترة',
+      'يجب أن تُسجل المصروفات عند دفعها فقط',
+      'الإيرادات والمصروفات تُسجل عند حدوثها فقط'
+    ],
+    correct: 2,
+    topic: 'Accounting Principles',
+    subSkill: 'principles_matching',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'مبدأ مقابلة الإيرادات بالمصروفات ينص على أنه يجب أن تُقابل المصروفات بالإيرادات التي ساعدت في تحقيقها في نفس الفترة.',
+    irt: { a: 1.1, b: -0.3, c: 0.15 },
+    subSkills: ['principles_matching', 'accounting_principles'],
+    diagnostic: {
+      errorPattern: 'matching_principle_error',
+      rootCause: 'لا يفهم مبدأ مقابلة الإيرادات بالمصروفات',
+      futureImpact: 'سيؤثر على تحديد فترة الاعتراف بالمصروفات',
+      remediationVideoQuery: 'شرح مبدأ مقابلة الإيرادات بالمصروفات'
+    },
+    prerequisites: ['acc_definition']
+  },
+  {
+    id: 'acc_028',
+    question: 'ما هو مبدأ الاستمرارية (Going Concern Principle)؟',
+    options: [
+      'يفترض أن المنشأة ستستمر في العمل في المستقبل المنظور',
+      'يفترض أن المنشأة ستتوقف عن العمل قريباً',
+      'يقول بأن المنشأة يجب أن تُقيم أصولها بالقيمة السوقية',
+      'يقول بأن المنشأة يجب أن تُقيم أصولها بالتكلفة التاريخية'
+    ],
+    correct: 1,
+    topic: 'Accounting Principles',
+    subSkill: 'principles_going_concern',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'مبدأ الاستمرارية يفترض أن المنشأة ستستمر في العمل في المستقبل المنظور، مما يبرر استخدام التكلفة التاريخية للأصول.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['principles_going_concern', 'accounting_principles'],
+    diagnostic: {
+      errorPattern: 'going_concern_error',
+      rootCause: 'لا يفهم مبدأ الاستمرارية أو يخلط بينه وبين مبادئ أخرى',
+      futureImpact: 'سيؤثر على فهمه لأساس تقييم الأصول',
+      remediationVideoQuery: 'شرح مبدأ الاستمرارية في المحاسبة'
+    },
+    prerequisites: ['acc_definition']
+  },
+  {
+    id: 'acc_029',
+    question: 'ما هو مبدأ التكلفة التاريخية (Historical Cost Principle)؟',
+    options: [
+      'يجب تسجيل الأصول بتكلفتها الأصلية عند الشراء',
+      'يجب تسجيل الأصول بالقيمة السوقية الحالية',
+      'يجب تحديث قيمة الأصول سنوياً',
+      'يجب تسجيل الأصول بالقيمة التي يمكن بيعها بها'
+    ],
+    correct: 1,
+    topic: 'Accounting Principles',
+    subSkill: 'principles_historical_cost',
+    cognitiveLevel: 'remembering',
+    difficulty: 2,
+    errorPattern: 'memorization',
+    explanation: 'مبدأ التكلفة التاريخية ينص على أنه يجب تسجيل الأصول بتكلفتها الأصلية عند الشراء، وليس بالقيمة السوقية.',
+    irt: { a: 1.0, b: -0.5, c: 0.15 },
+    subSkills: ['principles_historical_cost', 'accounting_principles'],
+    diagnostic: {
+      errorPattern: 'historical_cost_error',
+      rootCause: 'يخلط بين التكلفة التاريخية والقيمة السوقية أو إعادة التقييم',
+      futureImpact: 'سيؤثر على فهمه لتقييم الأصول',
+      remediationVideoQuery: 'شرح مبدأ التكلفة التاريخية'
+    },
+    prerequisites: ['acc_definition']
+  },
+  {
+    id: 'acc_030',
+    question: 'ما هو مبدأ الحيطة والحذر (Conservatism Principle)؟',
+    options: [
+      'يجب الاعتراف بالإيرادات المحتملة قبل تحقيقها',
+      'يجب الاعتراف بالخسائر المحتملة فوراً، والإيرادات عند تحقيقها فقط',
+      'يجب الاعتراف بجميع الإيرادات والمصروفات عند حدوثها',
+      'يجب عدم الاعتراف بأي خسائر محتملة'
+    ],
+    correct: 2,
+    topic: 'Accounting Principles',
+    subSkill: 'principles_conservatism',
+    cognitiveLevel: 'understanding',
+    difficulty: 2,
+    errorPattern: 'conceptual',
+    explanation: 'مبدأ الحيطة والحذر ينص على الاعتراف بالخسائر المحتملة فوراً، بينما لا يتم الاعتراف بالإيرادات إلا عند تحقيقها فعلياً.',
+    irt: { a: 1.1, b: -0.3, c: 0.15 },
+    subSkills: ['principles_conservatism', 'accounting_principles'],
+    diagnostic: {
+      errorPattern: 'conservatism_error',
+      rootCause: 'يخلط بين مبدأ الحيطة والحذر ومبادئ أخرى مثل الاستحقاق',
+      futureImpact: 'سيؤثر على فهمه لكيفية معالجة عدم اليقين في المحاسبة',
+      remediationVideoQuery: 'شرح مبدأ الحيطة والحذر في المحاسبة'
+    },
+    prerequisites: ['acc_definition']
   }
-};
+];
 
-export const getAssessmentQuestions = (assessmentId) => {
-  const assessment = ASSESSMENTS[assessmentId];
-  if (!assessment) {
-    console.warn('Assessment not found:', assessmentId);
-    return [];
-  }
-  try {
-    return assessment.getQuestions();
-  } catch (error) {
-    console.error('Error loading assessment:', error);
-    return [];
-  }
-};
-
-export const getAssessmentName = (assessmentId) => {
-  const assessment = ASSESSMENTS[assessmentId];
-  return assessment ? assessment.name : assessmentId;
-};
-
-export const getAssessmentMeta = (assessmentId) => {
-  const assessment = ASSESSMENTS[assessmentId];
-  return assessment ? { description: assessment.description, time: assessment.time } : null;
-};
-
-export const getAllAssessments = () => {
-  return Object.values(ASSESSMENTS);
-};
+export default QUESTIONS;
