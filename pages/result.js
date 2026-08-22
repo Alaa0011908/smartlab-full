@@ -53,6 +53,9 @@ const styles = {
     margin: "0 auto",
     padding: "30px 20px 60px",
   },
+  printHeader: {
+    display: "none", // Hidden by default, shown only in print
+  },
   loadingContainer: {
     textAlign: "center",
     padding: "100px 0",
@@ -1552,6 +1555,18 @@ export default function Result() {
             .card { padding: 16px !important; }
             .tab-btn { font-size: 11px !important; padding: 6px 10px !important; }
           }
+          @media print {
+            body { background-color: white !important; }
+            nav { display: none !important; }
+            .tabs-container { display: none !important; }
+            .export-btn { display: none !important; }
+            .back-links { display: none !important; }
+            .hero-card { box-shadow: none !important; border: 1px solid #eee; break-inside: avoid; }
+            .card { box-shadow: none !important; border: 1px solid #eee; break-inside: avoid; page-break-inside: avoid; }
+            .print-header { display: block !important; text-align: center; margin-bottom: 20px; }
+            .print-header h1 { font-size: 24px; color: #0D1E3B; margin: 0; }
+            .print-header p { color: #5b6b7b; margin: 4px 0 0; }
+          }
         `}</style>
       </Head>
 
@@ -1559,6 +1574,25 @@ export default function Result() {
         <Navbar />
         <main style={styles.main}>
           
+          <div className="print-header" style={styles.printHeader}>
+            <h1>SmartLab AI - تقرير الأداء الذكي</h1>
+            <p>تم الإنشاء تلقائياً بواسطة محرك الذكاء | {new Date().toLocaleDateString('ar-SA')}</p>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+            <button 
+              className="export-btn"
+              onClick={() => window.print()}
+              style={{
+                backgroundColor: COLORS.navy, color: COLORS.white, border: 'none',
+                padding: '8px 16px', borderRadius: 8, fontWeight: 600, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 8
+              }}
+            >
+              <span>📄</span> تصدير تقرير PDF
+            </button>
+          </div>
+
           {/* ===== البطاقة الرئيسية ===== */}
           <div style={styles.heroCard} className="hero-card">
             <div style={styles.heroCardGradient} />
@@ -1632,7 +1666,7 @@ export default function Result() {
           {renderTabContent()}
 
           {/* ===== روابط إضافية ===== */}
-          <div style={{ textAlign: "center", marginTop: 20 }}>
+          <div className="back-links" style={{ textAlign: "center", marginTop: 20 }}>
             <Link href="/assessment/categories" style={styles.backLink}>
               ← العودة إلى التقييمات
             </Link>
