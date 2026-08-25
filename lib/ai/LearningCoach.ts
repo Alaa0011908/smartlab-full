@@ -103,7 +103,7 @@ export class LearningCoach {
 
     // If AI is not consented, fall back to deterministic
     if (!canUseAI) {
-      return this.deterministicFallback(recommendation, coachingStyle, false);
+      return this.deterministicFallback(recommendation, coachingStyle, true);
     }
 
     // Prepare evidence payload — only consented data

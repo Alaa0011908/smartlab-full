@@ -346,6 +346,23 @@ export default function Login() {
               إنشاء حساب جديد
             </Link>
           </p>
+
+          {/* SfeerTech Demo Fast Track */}
+          <div style={{ marginTop: 24, paddingTop: 24, borderTop: `1px solid ${COLORS.border}`, textAlign: 'center' }}>
+            <button
+              onClick={() => {
+                localStorage.setItem('smartlab_user', JSON.stringify({ email: 'alex@sfeertech.demo', id: 'demo_alex_001', name: 'Alex' }));
+                router.push('/dashboard');
+              }}
+              style={{
+                backgroundColor: COLORS.navy, color: COLORS.white, border: 'none',
+                padding: '12px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14,
+                cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8
+              }}
+            >
+              <span>🚀</span> Load SfeerTech Demo
+            </button>
+          </div>
         </div>
       </div>
     </>
