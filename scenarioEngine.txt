@@ -1,0 +1,547 @@
+// lib/scenarioEngine.js
+// ============================================================
+// SmartLab AI Scenario Engine v2.0
+// Fully AI-powered Client Simulator with 5-stage workflow
+// Uses Deepseek LLM for real responses, evaluation & guidance
+// ============================================================
+
+const STAGE_NAMES = {
+  1: 'تحديد الاحتياجات',
+  2: 'التفاوض على السعر',
+  3: 'أسئلة التسليم',
+  4: 'تنفيذ التصميم ورفع المشروع',
+  5: 'التسليم النهائي'
+};
+
+const MANDATORY_QUESTIONS_STAGE1 = [
+  { id: 'devices', label: 'كم عدد الأجهزة؟', keywords: ['عدد الاجهزه', 'عدد الاجهزة', 'كم جهاز', 'الاجهزه', 'devices', 'كم عدد', 'عدد نقاط', 'كم ap', 'عدد ap'] },
+  { id: 'internet', label: 'ما نوع الإنترنت المتاح؟', keywords: ['انترنت', 'internet', 'نوع الاتصال', 'مزود الخدمه', 'مزود الخدمة', 'سرعه الانترنت', 'اتصال بالانترنت'] },
+  { id: 'guest_vlan', label: 'هل تحتاج شبكة منفصلة للضيوف؟', keywords: ['ضيوف', 'guest', 'شبكه للضيوف', 'منفصل للضيوف', 'شبكة ضيوف', 'vlan ضيف', 'ضيف'] },
+  { id: 'budget', label: 'ما الميزانية التقريبية؟', keywords: ['ميزانيه', 'ميزانية', 'سعر', 'تكلفه', 'تكلفة', 'budget', 'بكم', 'كم يكلف', 'المبلغ', 'الدفع'] },
+  { id: 'space', label: 'كم مساحة المكان أو عدد الطوابق؟', keywords: ['مساحه', 'مساحة', 'طابق', 'طوابق', 'عدد الطوابق', 'متر مربع', 'مساحة المكان', 'حجم المكان', 'area', 'space'] }
+];
+
+const DELIVERY_QUESTIONS_STAGE3 = [
+  { id: 'delivery_time', label: 'متى سيكون التسليم؟', keywords: ['متى', 'توقيت', 'تاريخ', 'التسليم', 'المده', 'المدة', 'يوم', 'اسبوع', 'أسبوع', 'delivery'] },
+  { id: 'free_changes', label: 'كم مدة التعديلات المجانية؟', keywords: ['تعديلات مجانيه', 'تعديلات مجانية', 'عدد التعديلات', 'مدة المجانيه', 'ضمان', 'صيانه', 'صيانة', 'الدعم الفني', 'support'] },
+  { id: 'allowed_changes', label: 'ما التعديلات المسموحة بعد التسليم؟', keywords: ['التعديلات', 'مسموح', 'مسموحة', 'ما بعد', 'بعد التسليم', 'شامل', 'يشمل', 'المضمنة'] }
+];
+
+const SCENARIOS = {
+  cafe: {
+    name: 'مقهى كوفي شوب',
+    client: 'أبو أحمد',
+    role: 'صاحب المقهى',
+    personality: 'رجل أعمال متوسطي العمر، يُهتم بالميزانية جداً، صبور لكنه متردد في اتخاذ القرارات. يتحدث لغة عربية بسيطة مع بعض العامية الخليفة. أحياناً يسأل خصم على السعر.',
+    background: 'أبقى مقهى في شارع رئيسي. أستقبل حوالي 50-70 زبون يومياً. لدي كاشير واحد، مكاتب إدارية صغيرة، وصالة جلوس داخلية وخارجية. ميزانيتي محدودة وأبحث عن أفضل قيمة مقابل المال.',
+    sampleAnswers: {
+      devices: 'أنا توقعت أنا بحاجة لـ 3 أو 4 نقاط وصول على الأقل، بجانب راوتر وسويتش 16 منفذ. ما رأيك؟',
+      internet: 'عندي اتصال DSL من STC بسرعة 100 ميجا. سؤالي: هذا يكفي ولا أحتاج ترقية؟',
+      guest_vlan: 'إيه نعم طبعاً! زبائن المقهى ما لهم يدخلون شبكة الكاشير أو المكاتب. هذي خدمة زبائن أساسية.',
+      budget: 'توقعاتي المالية من 1500 إلى 2500 ريال. أقدر أدفع أكثر لو التجهيزات جودة عالية.',
+      space: 'المقهى في طابق واحد، مساحته تقريباً 180 متر مربع. عندي فناء خارجي صغير بجانب المقهى أحتاج تغطيته.'
+    }
+  },
+  hospital: {
+    name: 'مركز طبي',
+    client: 'د. خالد',
+    role: 'مدير المركز الطبي',
+    personality: 'شخص محترف ودقيق للغاية، يتحدث لغة عربية فصحى محترفة. أهم شيء عنده هو الأمان وسرعة البيانات. يناقش التفاصيل التقنية بعمق.',
+    background: 'أنا مدير مركز طبي متكامل به عيادات خارجية، مختبر، ووحدة رعاية نهارية. لدينا نظام HIS و PACS. الأمان وسرعة الوصول للصور الطبية أولوية قصوى.',
+    sampleAnswers: {
+      devices: 'المركز يحتاج 25 جهاز كمبيوتر، 5 طابعات طبية، 3 أجهزة أشعة رقمية، ونقاط وصول لتغطية جميع الأقسام. ما التقدير المناسب؟',
+      internet: 'لدينا خط ألياف بصرية بسرعة 1 جيجا مع خط احتياطي. هذا كافٍ أم نحتاج أكثر؟',
+      guest_vlan: 'طبعاً شبكة مرضى وزوار يجب أن تكون معزولة تماماً عن الشبكة الطبية. هذا غير قابل للنقاش.',
+      budget: 'ميزانيتنا للشبكة تبدأ من 8000 ريال فما فوق، مع الدعم السنوي. الجودة أهم من السعر.',
+      space: 'المركز يمتد على طابقين، كل طابق مساحة 300 متر مربع، مع أقسام مختلفة (عيادات، مختبر، إدارة، استقبال).'
+    }
+  },
+  office: {
+    name: 'شركة ناشئة',
+    client: 'أ. سارة',
+    role: 'مسؤولة التقنية',
+    personality: 'شابة ملمة بالتقنية، تتحدث بطلاقة وتفهم المصطلحات. سريعة البديهة، تحب الأسئلة المتقدمة والمبتكرة.',
+    background: 'شركة ناشئة في مجال التكنولوجيا بها 80 موظف تقريباً ينمو بسرعة. نحتاج VPN آمن للعمل عن بعد، VLANs للإدارات المختلفة، وبيئة قابلة للتوسع السريع.',
+    sampleAnswers: {
+      devices: 'الآن لدينا 80 موظفاً، كل واحد جهاز لابتوب، بالإضافة إلى 6 طابعات و 12 نقطة وصول. التقدير للشطر التالي؟',
+      internet: 'خط ألياف 1Gbps دائم، مع خط ثانوي كاحتياطي. هل تحتاج أي شيء إضافي؟',
+      guest_vlan: 'نعم، شبكة زوار في منطقة الاستقبال، مع شبكة IoT للمباني الذكية معزولة عن شبكة الموظفين.',
+      budget: 'ميزانية سنة أولى 10,000 إلى 15,000 ريال، مع قابلية التوسع كل سنة.',
+      space: 'مقرنا الحالي طابق واحد مساحته 400 متر مربع، لكننا نخطط للانتقال لمبنى بثلاثة طوابق قريباً.'
+    }
+  }
+};
+
+export class ScenarioEngine {
+    constructor(scenarioId, history = [], userLevel = 'beginner', conversationStage = 1, stageData = {}) {
+        this.scenarioId = scenarioId;
+        this.history = history;
+        this.userLevel = userLevel;
+        this.scenario = SCENARIOS[scenarioId] || SCENARIOS.cafe;
+        this.stage = conversationStage || 1;
+        this.stageData = stageData || this.initializeStageData();
+    }
+
+    initializeStageData() {
+        return {
+            stage1: { answeredQuestionIds: new Set(), budgetAnswer: null },
+            stage2: { negotiationStarted: false, agreed: false, proposedPrice: null, round: 0 },
+            stage3: { answeredQuestionIds: new Set() },
+            stage4: { fileUploaded: false, fileName: null },
+            stage5: { completed: false }
+        };
+    }
+
+    normalizeArabic(text) {
+        if (!text) return '';
+        return text
+            .toLowerCase()
+            .replace(/[إأآا]/g, 'ا')
+            .replace(/ة/g, 'ه')
+            .replace(/ى/g, 'ي')
+            .replace(/[ًٌٍَُِّْ]/g, '')
+            .replace(/[^\w\s\u0600-\u06FF]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    detectStage1Questions(message) {
+        const norm = this.normalizeArabic(message);
+        const detected = [];
+        MANDATORY_QUESTIONS_STAGE1.forEach(q => {
+            if (q.keywords.some(kw => norm.includes(this.normalizeArabic(kw)))) {
+                detected.push(q.id);
+            }
+        });
+        return detected;
+    }
+
+    detectStage3Questions(message) {
+        const norm = this.normalizeArabic(message);
+        const detected = [];
+        DELIVERY_QUESTIONS_STAGE3.forEach(q => {
+            if (q.keywords.some(kw => norm.includes(this.normalizeArabic(kw)))) {
+                detected.push(q.id);
+            }
+        });
+        return detected;
+    }
+
+    hasAllStage1Answered() {
+        return MANDATORY_QUESTIONS_STAGE1.every(q => this.stageData.stage1.answeredQuestionIds.has(q.id));
+    }
+
+    hasAllStage3Answered() {
+        return DELIVERY_QUESTIONS_STAGE3.every(q => this.stageData.stage3.answeredQuestionIds.has(q.id));
+    }
+
+    getRemainingStage1Questions() {
+        return MANDATORY_QUESTIONS_STAGE1.filter(q => !this.stageData.stage1.answeredQuestionIds.has(q.id));
+    }
+
+    getRemainingStage3Questions() {
+        return DELIVERY_QUESTIONS_STAGE3.filter(q => !this.stageData.stage3.answeredQuestionIds.has(q.id));
+    }
+
+    // ── LLM Deepseek integration ─────────────────────────────────
+    async callLLM(systemPrompt, userPrompt, { temperature = 0.75, expectJSON = false } = {}) {
+        // 🔥 استخدام المفتاح من البيئة
+        const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY || '';
+        const useMock = !apiKey;
+
+        // 🔥 في حالة وجود المفتاح، استخدمه
+        if (!useMock) {
+            console.log('[ScenarioEngine] Using DeepSeek API with key:', apiKey.substring(0, 10) + '...');
+        } else {
+            console.log('[ScenarioEngine] Using Mock fallback mode');
+        }
+
+        if (useMock) {
+            return this.fallbackMockResponse(systemPrompt, userPrompt, expectJSON);
+        }
+
+        const messages = [
+            { role: 'system', content: systemPrompt },
+            ...this.getRecentHistoryForLLM(8),
+            { role: 'user', content: userPrompt }
+        ];
+
+        try {
+            const endpoint = 'https://api.deepseek.com/v1/chat/completions';
+
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages,
+                    temperature,
+                    max_tokens: 900,
+                    response_format: expectJSON ? { type: 'json_object' } : undefined
+                })
+            });
+
+            if (!resp.ok) {
+                const errorText = await resp.text();
+                console.error('[ScenarioEngine] LLM API Error:', resp.status, errorText);
+                throw new Error(`LLM HTTP ${resp.status}: ${errorText}`);
+            }
+            const data = await resp.json();
+            const content = data.choices?.[0]?.message?.content || '';
+            console.log('[ScenarioEngine] LLM Response received, length:', content.length);
+            return {
+                content: content,
+                usedFallback: false,
+                provider: 'Deepseek'
+            };
+        } catch (err) {
+            console.warn('[ScenarioEngine] LLM failed, using mock fallback:', err.message);
+            return this.fallbackMockResponse(systemPrompt, userPrompt, expectJSON);
+        }
+    }
+
+    getRecentHistoryForLLM(count = 8) {
+        const recent = this.history.slice(-count);
+        return recent.map(m => ({
+            role: m.role === 'user' ? 'user' : 'assistant',
+            content: m.content || m.text || ''
+        }));
+    }
+
+    fallbackMockResponse(systemPrompt, userPrompt, expectJSON) {
+        const stage = this.stage;
+        let text = '';
+
+        if (stage === 1) {
+            const remaining = this.getRemainingStage1Questions();
+            if (remaining.length > 0) {
+                const q = remaining[0];
+                const sample = this.scenario.sampleAnswers[q.id] || `بالنسبة لسؤالك عن "${q.label}"، هذه تفاصيلي...`;
+                const remainingLabels = remaining.slice(1).map(r => r.label);
+                text = `سؤال ممتاز! هذا يساعدنا كثيراً في تحديد المتطلبات. 👍\n\n${sample}\n\n💡 تلميح: مازلت تحتاج تسألني عن: ${remainingLabels.length > 0 ? remainingLabels.join('، ') : 'لا شيء، أحسنت!'}`;
+                if (remainingLabels.length === 0) {
+                    text = '✅ أحسنت! لقد أجبت على جميع الأسئلة الإلزامية. الآن سأنتقل معك للمرحلة التالية — التفاوض على السعر والتكلفة. تفضل وقدم عرض السعر الخاص بك.';
+                }
+            } else {
+                text = '✅ أحسنت! لقد أجبت على جميع الأسئلة الإلزامية. الآن سأنتقل معك للمرحلة التالية — التفاوض على السعر والتكلفة. تفضل وقدم عرض السعر الخاص بك.';
+            }
+        } else if (stage === 2) {
+            if (this.stageData.stage2.round < 1) {
+                text = '🤔 دعني أفكر في السعر الذي عرضته. كلامك منطقي إلى حد ما، لكن حاول أن تشرح لماذا هذا السعر مناسب وكيف سيعود عليّ بفائدة. أنا أريد قيمة مقابل أموالي!';
+            } else {
+                text = 'كلامك مقنع يا باش مهندس. اتفقنا على السعر. 👍\n\nالآن قبل أن ننتهي، عندي ثلاثة أسئلة بسيطة عن التسليم والدعم بعد التسليم. تفضل أبدأ بالسؤال الأول.';
+            }
+        } else if (stage === 3) {
+            const remaining = this.getRemainingStage3Questions();
+            if (remaining.length > 0) {
+                const q = remaining[0];
+                text = `إجابة واضحة! الآن السؤال التالي: "${q.label}" — ما رأيك؟`;
+            } else {
+                text = '✅ ممتاز! لقد أجبت على جميع أسئلة التسليم. والآن حان وقت التنفيذ: أرفق لي ملف تصميم الشبكة (ملف Packet Tracer) وأنا أراجعه معك فوراً.';
+            }
+        } else if (stage === 4) {
+            text = '✅ تم استلام ملف المشروع بنجاح! شكراً جزيلاً على الجهد المبذول. سأنتقل الآن إلى التسليم النهائي.';
+        } else {
+            text = 'تم تسليم المشروع بنجاح! 🎉 أشكرك يا باش مهندس على التصميم الاحترافي والمتابعة الممتازة. بالتوفيق في مشاريعك القادمة، ونتطلع للتعاون مستقبلاً.';
+        }
+
+        if (expectJSON) {
+            let stageChange = null;
+            if (stage === 1 && this.hasAllStage1Answered()) stageChange = 2;
+            else if (stage === 2 && this.stageData.stage2.round >= 1) stageChange = 3;
+            else if (stage === 3 && this.hasAllStage3Answered()) stageChange = 4;
+            else if (stage === 4 && this.stageData.stage4.fileUploaded) stageChange = 5;
+
+            return {
+                content: JSON.stringify({
+                    reply: text,
+                    stageChange: stageChange,
+                    stageFeedback: { 
+                        score: 0.7, 
+                        type: 'positive', 
+                        note: 'سير جيد',
+                        points: ['استمر في التفاعل']
+                    },
+                    aiMeta: { usedFallback: true, provider: 'Mock' }
+                }),
+                usedFallback: true,
+                provider: 'Mock'
+            };
+        }
+
+        return { content: text, usedFallback: true, provider: 'Mock' };
+    }
+
+    // ── Stage-specific AI system prompts ─────────────────────────
+    buildSystemPromptForStage(stage) {
+        const scenario = this.scenario;
+        const basePersona = `أنت ${scenario.client}، ${scenario.role}. ${scenario.personality}\nخلفيتك: ${scenario.background}\n\nالقواعد الهامة:\n1. تجيب باللغة العربية الفصحى المبسطة مع طابع شخصيتك.\n2. لا تكشف للمستخدم أنك نموذج ذكاء اصطناعي.\n3. أبدِ ردود واقعية تتناسب مع شخصيتك ومشروعك.\n4. لا تعطي إجابات نموذجية، كن إنسانياً في التفاعل.`;
+
+        switch (stage) {
+            case 1:
+                return `${basePersona}\n\n== المرحلة 1: تحديد الاحتياجات ==\nمهمتك في هذه المرحلة:\n- المستخدم (المهندس) يجب أن يسألك 5 أسئلة إلزامية بالترتيب أو غيره:\n  1. كم عدد الأجهزة؟\n  2. ما نوع الإنترنت المتاح؟\n  3. هل تحتاج شبكة منفصلة للضيوف؟\n  4. ما الميزانية التقريبية؟\n  5. كم مساحة المكان أو عدد الطوابق؟\n\nتقييم أسئلة المستخدم:\n- إذا سأل أحد الأسئلة الخمسة: أجب عليه بتفاصيل واقعية من شخصيتك، ثم أضف عبارة تشجيعية مثل "سؤال ممتاز! هذا يساعدنا على تحديد X".\n- إذا سأل عن شيء غير مهم الآن (مثل تفاصيل دقيقة قبل فهم الاحتياجات): قل له بهدوء "هذا مهم لاحقاً، لكن الآن الأهم أن تسألني عن X" مع ذكر أحد الأسئلة المتبقية.\n- إذا طرح سؤالاً ذكياً خارج القائمة لكنه ذو صلة: أجب عليه وقل "نقطة ذكية! هذا سيساعدنا أيضاً".\n- لا تنتقل للمرحلة التالية إلا بعد إجابتك على جميع الأسئلة الخمسة الإلزامية.\n\nعند إكمال الأسئلة الخمسة: أخبره أن جميع الاحتياجات أصبحت واضحة، واطلب منه تقديم عرض سعر تفصيلي للبدء بالتفاوض.`;
+
+            case 2:
+                return `${basePersona}\n\n== المرحلة 2: التفاوض على السعر ==\n\nميزانية العميل المذكورة في المرحلة السابقة: ${this.stageData.stage1.budgetAnswer || 'غير محدد بعد (احسبه في حدود المعتاد)'}\n\nمهمتك في هذه المرحلة:\n- أنت عميل يبحث عن أفضل سعر. عندما يقدم لك المستخدم السعر:\n  • أبدِ تحفظاً معقولاً في الجولة الأولى (حتى لو السعر جيد).\n  • اطلب تبريراً منطقياً للمبلغ: "لماذا السعر بهذا المستوى؟ ما الفائدة التي سأحصل عليها؟".\n  • إذا قدم حجة ضعيفة (مجرد "هذا هو السعر" بدون مبرر): أجب "حاول أن تشرح لماذا هذا السعر مناسب" وانتظر المزيد من التفاصيل.\n  • إذا كانت الحجج قوية ومبررة بشكل جيد (ذكر جودة الأجهزة، الضمان، الدعم، خطة الصيانة): وافق عليه بخلاصة "كلامك مقنع، اتفقنا" مع إبداء ارتياحك.\n\nبعد الاتفاق على السعر: أخبره أنك موافق، ثم انتقل للمرحلة التالية واطلب منه الإجابة على ثلاثة أسئلة بسيطة عن التسليم.`;
+
+            case 3:
+                return `${basePersona}\n\n== المرحلة 3: أسئلة التسليم ==\n\nمهمتك في هذه المرحلة: تسأل المستخدم (المهندس) ثلاثة أسئلة حول التسليم ولا تكتفي بدون إجابة واضحة لكل واحد:\n  1. متى سيكون التسليم؟\n  2. كم مدة التعديلات المجانية؟\n  3. ما التعديلات المسموحة بعد التسليم؟\n\n- اسأل السؤال الأول أولاً، وبعد إجابته اسأل الثاني، وبعد إجابته الثالث.\n- تأكد من أن إجابات المستخدم واضحة وغير مبهمة.\n- بعد الإجابة على الثلاثة: أخبره أن كل شيء واضح الآن، واطلب منه رفع ملف تصميم الشبكة (Packet Tracer .pkt أو .pka) للموافقة النهائية.`;
+
+            case 4:
+                return `${basePersona}\n\n== المرحلة 4: تنفيذ التصميم ورفع المشروع ==\n\nالمهم في هذه المرحلة:\n- المستخدم سيقوم برفع ملف تصميم الشبكة (.pkt / .pka).\n- عند الإشارة إلى رفع الملف: وثّق استقباله بلهجة مشجعة ومختصرة مثل "✅ تم استلام ملف المشروع بنجاح! شكراً على الجهد المبذول."\n- بعد التأكيد على استلام الملف: أخبره أنك ستبدأ مراجعة سريعة وتنتقل معه إلى التسليم النهائي في دقائق.\n- لا تنتقل للمرحلة 5 إلا بعد تأكيدك استلام الملف بنجاح.`;
+
+            case 5:
+                return `${basePersona}\n\n== المرحلة 5: التسليم النهائي ==\n\nمهمتك الأخيرة:\n- أرسل رسالة ختامية تبدأ بـ "تم تسليم المشروع بنجاح! 🎉".\n- اشكر المهندس على التصميم واحترافيته.\n- اذكر بإيجاز ما تم إنجازه من أعمال.\n- أغلق الصفقة بإيجابية وتمنى له التوفيق.`;
+
+            default:
+                return basePersona;
+        }
+    }
+
+    // ── Main AI-powered conversation entry point ─────────────────
+    async analyzeAndRespond(message, { fileUploaded = false, fileName = null } = {}) {
+        const prevStage = this.stage;
+        let stageChanged = false;
+        let evaluation = { type: 'neutral', score: 0.5, points: [], note: '' };
+
+        // Stage state updates (pre-LLM)
+        if (this.stage === 1) {
+            const detected = this.detectStage1Questions(message);
+            detected.forEach(id => this.stageData.stage1.answeredQuestionIds.add(id));
+            if (detected.includes('budget')) {
+                const match = message.match(/(\d{3,})/);
+                if (match) {
+                    this.stageData.stage1.budgetAnswer = parseInt(match[1], 10);
+                }
+            }
+        }
+
+        if (this.stage === 3) {
+            const detected = this.detectStage3Questions(message);
+            detected.forEach(id => this.stageData.stage3.answeredQuestionIds.add(id));
+        }
+
+        if (this.stage === 4 && fileUploaded) {
+            this.stageData.stage4.fileUploaded = true;
+            this.stageData.stage4.fileName = fileName || 'ملف مشروع';
+        }
+
+        // Build prompts and call LLM
+        const systemPrompt = this.buildSystemPromptForStage(this.stage);
+        const stageHint = this.buildUserContextHint();
+        const userPrompt = stageHint
+            ? `${stageHint}\n\nرسالة المستخدم: "${message}"${fileUploaded ? `\n\n[الملف المرفق: ${fileName || 'Packet Tracer file'} - تم الاستلام بنجاح من قبل النظام]` : ''}`
+            : `رسالة المستخدم: "${message}"${fileUploaded ? `\n\n[تم استلام الملف: ${fileName || 'Packet Tracer file'}]` : ''}`;
+
+        const evalPrompt = `${systemPrompt}\n\n[ سياق المرحلة الحالية: المرحلة ${this.stage} - ${STAGE_NAMES[this.stage]} ]\n${stageHint || ''}\n\nتحليل: قم بتقييم رسالة المستخدم التالية في سياق المرحلة أعلاه.\n\nرسالة المستخدم: "${message}"\n${fileUploaded ? 'الملف المرفق: تم استلام ملف تصميم.' : ''}\n\nأرجع JSON فقط بالهيكل التالي:\n{\n  "reply": "ردك على رسالة المستخدم هنا بناءً على شخصيتك وقواعد المرحلة",\n  "stageChange": null أو رقم المرحلة التالية (1-5) إذا وجدت أن المستخدم أنهى هذه المرحلة بنجاح، وإلا فاتركه null,\n  "stageFeedback": {\n    "score": رقم بين 0 و 1,\n    "type": "excellent" أو "good_incomplete" أو "incorrect" أو "positive" أو "neutral",\n    "note": "ملاحظة تقويمية قصيرة واحدة تشرح الدرجة",\n    "points": ["نقطة قوة واحدة", "نقطة تحتاج تحسين واحدة"]\n  },\n  "aiMeta": {\n    "mandatoryAnswered": ["المتطلبات التي أجاب عليها المستخدم في هذه المرحلة بالمعرفات فقط"],\n    "remainingNeeded": ["ما زال المستخدم بحاجة لتحقيقه قبل الانتقال للمرحلة التالية"]\n  }\n}\nأرجع JSON صالح فقط بدون أي نص إضافي.`;
+
+        // Call LLM with JSON expectation
+        const llmResult = await this.callLLM(
+            evalPrompt,
+            userPrompt,
+            { temperature: 0.7, expectJSON: true }
+        );
+
+        let parsed = this.safeParseLLMJSON(llmResult.content, llmResult.usedFallback);
+
+        if (!parsed.reply && !llmResult.usedFallback) {
+            // Retry without JSON mode
+            const simpleResult = await this.callLLM(systemPrompt, userPrompt, { temperature: 0.7, expectJSON: false });
+            parsed = {
+                reply: simpleResult.content || llmResult.content,
+                stageChange: null,
+                stageFeedback: { score: 0.55, type: 'neutral', note: 'رد عادي', points: ['استمر في التفاعل'] },
+                aiMeta: {}
+            };
+        }
+
+        // Process stageChange recommendation with guardrails
+        let newStage = parsed.stageChange;
+
+        // Guardrails: only transition if our rule-based conditions agree
+        if (this.stage === 1 && !this.hasAllStage1Answered()) newStage = null;
+        if (this.stage === 3 && !this.hasAllStage3Answered()) newStage = null;
+        if (this.stage === 4 && !this.stageData.stage4.fileUploaded) newStage = null;
+        if (this.stage === 5) newStage = null;
+
+        // Auto-advance if conditions met but LLM didn't suggest
+        if (this.stage === 1 && this.hasAllStage1Answered() && !newStage) {
+            // Let LLM handle it, but if not, we'll handle in next round
+        }
+        if (this.stage === 3 && this.hasAllStage3Answered() && !newStage) {
+            // same
+        }
+        if (this.stage === 4 && this.stageData.stage4.fileUploaded && !newStage) {
+            newStage = 5;
+        }
+
+        if (newStage && newStage !== this.stage && newStage >= 1 && newStage <= 5) {
+            this.stage = newStage;
+            stageChanged = true;
+        }
+
+        // Stage 2 round increments (for mock fallback)
+        if (prevStage === 2 && this.stage === 2) {
+            this.stageData.stage2.round++;
+            if (this.stageData.stage2.round >= 2) {
+                this.stage = 3;
+                stageChanged = true;
+            }
+        }
+
+        evaluation = {
+            score: parsed.stageFeedback?.score ?? 0.55,
+            type: parsed.stageFeedback?.type ?? 'neutral',
+            note: parsed.stageFeedback?.note ?? '',
+            points: parsed.stageFeedback?.points ?? []
+        };
+
+        // Build suggestions
+        const suggestions = this.buildSuggestions();
+
+        return {
+            text: parsed.reply || '',
+            feedback: evaluation,
+            score: evaluation.score,
+            suggestions,
+            stage: this.stage,
+            stageName: STAGE_NAMES[this.stage],
+            stageChanged,
+            previousStage: prevStage,
+            stageDataSnapshot: this.serializeStageData(),
+            meta: {
+                provider: llmResult.provider,
+                usedFallback: llmResult.usedFallback,
+                aiMeta: parsed.aiMeta || {}
+            }
+        };
+    }
+
+    buildUserContextHint() {
+        switch (this.stage) {
+            case 1: {
+                const answered = MANDATORY_QUESTIONS_STAGE1.filter(q => this.stageData.stage1.answeredQuestionIds.has(q.id)).map(q => q.label);
+                const remaining = this.getRemainingStage1Questions().map(q => q.label);
+                return `[مرحلة تحديد الاحتياجات - حالة المستخدم]\nالأسئلة التي سألها المهندس وأجبت عليها بالفعل: ${answered.length ? answered.join('، ') : '(لا شيء بعد)'}\nالأسئلة الإلزامية المتبقية التي يجب أن يسألها المهندس قبل الانتقال: ${remaining.length ? remaining.join('، ') : '(تم الكل - يمكن الانتقال للمرحلة التالية عند الاقتناع)'}\n${this.stageData.stage1.budgetAnswer ? `الميزانية التي ذكرتُها: ${this.stageData.stage1.budgetAnswer} ريال` : ''}`;
+            }
+            case 2:
+                return `[مرحلة التفاوض على السعر]\nالميزانية المتوقعة: ${this.stageData.stage1.budgetAnswer ? this.stageData.stage1.budgetAnswer + ' ريال' : 'غير مذكور صراحةً'}\nعدد جولات التفاوض حتى الآن: ${this.stageData.stage2.round}\n${this.stageData.stage2.agreed ? 'الاتفاق تم مسبقاً.' : 'لا يوجد اتفاق بعد.'}`;
+            case 3: {
+                const answered = DELIVERY_QUESTIONS_STAGE3.filter(q => this.stageData.stage3.answeredQuestionIds.has(q.id)).map(q => q.label);
+                const remaining = this.getRemainingStage3Questions().map(q => q.label);
+                return `[مرحلة أسئلة التسليم]\nالأسئلة التي أجاب عليها المهندس بالفعل: ${answered.length ? answered.join('، ') : '(لا شيء بعد)'}\nالأسئلة المتبقية التي يجب أن تجيب عليها قبل الانتقال: ${remaining.length ? remaining.join('، ') : '(تم الكل)'}`;
+            }
+            case 4:
+                return `[مرحلة تنفيذ التصميم ورفع المشروع]\nهل تم رفع الملف؟ ${this.stageData.stage4.fileUploaded ? 'نعم - ' + this.stageData.stage4.fileName : 'لا - ينتظر رفع ملف .pkt أو .pka'}`;
+            case 5:
+                return `[المرحلة النهائية - التسليم]`;
+            default:
+                return '';
+        }
+    }
+
+    buildSuggestions() {
+        switch (this.stage) {
+            case 1: {
+                const remaining = this.getRemainingStage1Questions();
+                return remaining.slice(0, 3).map(q => `اسأل العميل عن: ${q.label}`);
+            }
+            case 2:
+                return ['ابِتْر السعر مع ذكر تفاصيل التجهيزات', 'أذكر الضمان والدعم السنوي', 'وضح الفوائد العملية التي سيعود بها المشروع'];
+            case 3: {
+                const remaining = this.getRemainingStage3Questions();
+                return remaining.map(q => `أجب على: ${q.label}`);
+            }
+            case 4:
+                return ['أرفق ملف Packet Tracer (.pkt/.pka)', 'اطمئن أن جميع الأجهزة متصلة بشكل صحيح', 'أضف تعليقات داخل الملف شرحاً للتصميم'];
+            case 5:
+                return ['أعد النظر في التصميم قبل الإغلاق', 'اطلب ملاحظات إضافية إن وجدت', 'أغلق الصفقة بإيجابية'];
+            default:
+                return [];
+        }
+    }
+
+    safeParseLLMJSON(content, usedFallback) {
+        try {
+            const trimmed = (content || '').trim();
+            const firstBrace = trimmed.indexOf('{');
+            const lastBrace = trimmed.lastIndexOf('}');
+            if (firstBrace >= 0 && lastBrace > firstBrace) {
+                const json = trimmed.substring(firstBrace, lastBrace + 1);
+                const parsed = JSON.parse(json);
+                return {
+                    reply: parsed.reply || content,
+                    stageChange: parsed.stageChange ?? null,
+                    stageFeedback: parsed.stageFeedback || { score: 0.5, type: 'neutral', note: '', points: [] },
+                    aiMeta: parsed.aiMeta || {}
+                };
+            }
+            throw new Error('No JSON found');
+        } catch {
+            if (usedFallback) {
+                return {
+                    reply: content || '',
+                    stageChange: this.stage < 5 ? this.computeFallbackStageChange() : null,
+                    stageFeedback: { score: 0.6, type: 'neutral', note: 'رد تلقائي - وضع تجريبي', points: ['استمر في التفاعل'] },
+                    aiMeta: { usedFallback: true }
+                };
+            }
+            return {
+                reply: content || '',
+                stageChange: null,
+                stageFeedback: { score: 0.5, type: 'neutral', note: 'تعذر تحليل النتيجة', points: ['أعد المحاولة'] },
+                aiMeta: {}
+            };
+        }
+    }
+
+    computeFallbackStageChange() {
+        if (this.stage === 1 && this.hasAllStage1Answered()) return 2;
+        if (this.stage === 2 && this.stageData.stage2.round >= 1) return 3;
+        if (this.stage === 3 && this.hasAllStage3Answered()) return 4;
+        if (this.stage === 4 && this.stageData.stage4.fileUploaded) return 5;
+        return null;
+    }
+
+    serializeStageData() {
+        return {
+            stage1: { ...this.stageData.stage1, answeredQuestionIds: [...this.stageData.stage1.answeredQuestionIds] },
+            stage2: { ...this.stageData.stage2 },
+            stage3: { ...this.stageData.stage3, answeredQuestionIds: [...this.stageData.stage3.answeredQuestionIds] },
+            stage4: { ...this.stageData.stage4 },
+            stage5: { ...this.stageData.stage5 }
+        };
+    }
+
+    static hydrateStageData(snapshot) {
+        if (!snapshot) return {};
+        const s = snapshot;
+        return {
+            stage1: {
+                answeredQuestionIds: new Set(s.stage1?.answeredQuestionIds || []),
+                budgetAnswer: s.stage1?.budgetAnswer ?? null
+            },
+            stage2: {
+                negotiationStarted: s.stage2?.negotiationStarted ?? false,
+                agreed: s.stage2?.agreed ?? false,
+                proposedPrice: s.stage2?.proposedPrice ?? null,
+                round: s.stage2?.round ?? 0
+            },
+            stage3: {
+                answeredQuestionIds: new Set(s.stage3?.answeredQuestionIds || [])
+            },
+            stage4: {
+                fileUploaded: s.stage4?.fileUploaded ?? false,
+                fileName: s.stage4?.fileName ?? null
+            },
+            stage5: {
+                completed: s.stage5?.completed ?? false
+            }
+        };
+    }
+}
+
+export { STAGE_NAMES, MANDATORY_QUESTIONS_STAGE1, DELIVERY_QUESTIONS_STAGE3, SCENARIOS };

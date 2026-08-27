@@ -1,96 +1,58 @@
 // data/questions/basics.js
 // ============================================================
-// 📚 بنك الأسئلة - SmartLab (نسخة هندسة الشبكات للتجربة)
-// المصمم: خبير شبكات - Network Engineer
-// عدد الأسئلة: 32 سؤالاً (4 محاور رئيسية)
+// بنك الأسئلة - SmartLab (نسخة هندسة الشبكات)
+// عدد الأسئلة: 126 سؤالاً (8 محاور رئيسية)
 // ============================================================
 
 export function getAllBasicsQuestions() {
   return QUESTIONS;
 }
 
-// ===== تعيين المحاور للأسئلة =====
 const TOPIC_TO_CATEGORY = {
-  'Fundamentals': 'fundamentals',
-  'Switching': 'switching',
-  'Routing': 'routing',
-  'Troubleshooting': 'troubleshooting',
+  'general-concepts': 'general-concepts',
+  'ipv4': 'ipv4',
+  'subnetting': 'subnetting',
+  'ipv6': 'ipv6',
+  'osi-model': 'osi-model',
+  'network-devices': 'network-devices',
+  'email-protocols': 'email-protocols',
+  'tcp-ip': 'tcp-ip',
 };
 
-// ===== الحصول على الأسئلة حسب المحور والوضع =====
 export function getAssessmentQuestions(assessmentId, mode = 'full') {
   let filtered = [];
-  
-  // فلترة حسب المحور
   if (assessmentId === 'full') {
     filtered = [...QUESTIONS];
   } else {
-    filtered = QUESTIONS.filter(q => {
-      const category = TOPIC_TO_CATEGORY[q.topic];
-      return category === assessmentId;
-    });
+    filtered = QUESTIONS.filter(q => TOPIC_TO_CATEGORY[q.topic] === assessmentId);
   }
-  
-  // إذا لم توجد أسئلة، أرجع كل الأسئلة
-  if (filtered.length === 0) {
-    filtered = [...QUESTIONS];
-  }
-  
-  // تحديد عدد الأسئلة حسب الوضع
+  if (filtered.length === 0) filtered = [...QUESTIONS];
   if (mode === 'quick') {
-    // التقييم السريع: 5 أسئلة من كل محور أو 10 إجمالي
-    const quickCount = assessmentId === 'full' ? 10 : Math.min(5, filtered.length);
-    return shuffleArray(filtered).slice(0, quickCount);
+    const quick = filtered.filter(q => q.isQuick);
+    return shuffleArray(quick).slice(0, assessmentId === 'full' ? 20 : 12);
   }
-  
-  // التقييم الشامل: كل الأسئلة
-  return filtered;
+  return filtered.filter(q => !q.isQuick);
 }
 
-// ===== الحصول على معلومات المحور =====
 export function getAssessmentInfo(assessmentId) {
   const info = {
-    fundamentals: {
-      name: 'أساسيات الشبكات',
-      icon: '📡',
-      description: 'OSI Model, TCP/IP, MAC/IP, ARP, DNS, DHCP',
-      topics: ['OSI Layers', 'TCP vs UDP', 'DNS', 'DHCP', 'ARP'],
-    },
-    switching: {
-      name: 'التبديل (Switching)',
-      icon: '🔀',
-      description: 'VLAN, STP, Trunk, Access Ports, MAC Learning',
-      topics: ['VLANs', 'STP', '802.1Q', 'Trunking', 'MAC Table'],
-    },
-    routing: {
-      name: 'التوجيه (Routing)',
-      icon: '🌐',
-      description: 'Subnetting, CIDR, Static Routes, Default Gateway',
-      topics: ['Subnetting', 'CIDR', 'Static Routes', 'Default Route', 'Admin Distance'],
-    },
-    troubleshooting: {
-      name: 'استكشاف الأخطاء',
-      icon: '🔧',
-      description: 'Ping, Traceroute, DNS Issues, APIPA, Methodology',
-      topics: ['Ping', 'Traceroute', 'DNS Troubleshooting', 'APIPA', 'Bottom-Up'],
-    },
-    full: {
-      name: 'التقييم الشامل',
-      icon: '🏆',
-      description: 'جميع المحاور',
-      topics: ['أساسيات', 'تبديل', 'توجيه', 'استكشاف أخطاء'],
-    },
+    'general-concepts': { name: 'المفاهيم العامة للشبكات', icon: '📡', description: 'أساسيات الشبكات، أنواع الشبكات، نماذج الشبكات', topics: ['تعريف الشبكات', 'أنواع الشبكات', 'VPN', 'P2P', 'Client-Server'] },
+    'ipv4': { name: 'IPv4', icon: '🌐', description: 'عناوين IPv4، الفئات، الأقنعة، NAT', topics: ['بنية IPv4', 'الفئات', 'العناوين الخاصة', 'Subnet Mask', 'NAT'] },
+    'subnetting': { name: 'Subnetting', icon: '🔢', description: 'تقسيم الشبكات، CIDR، VLSM', topics: ['Subnetting', 'CIDR', 'VLSM', 'حساب الشبكات', 'Wildcard Mask'] },
+    'ipv6': { name: 'IPv6', icon: '🌍', description: 'عناوين IPv6، الأنواع، الانتقال', topics: ['بنية IPv6', 'أنواع العناوين', 'SLAAC', 'Dual Stack', 'NDP'] },
+    'osi-model': { name: 'نموذج OSI', icon: '📚', description: 'طبقات OSI السبع، البروتوكولات، PDUs', topics: ['الطبقات السبع', 'البروتوكولات', 'PDUs', 'Encapsulation'] },
+    'network-devices': { name: 'أجهزة الشبكات', icon: '🔧', description: 'الراوتر، السويتش، Firewall، أجهزة أخرى', topics: ['Router', 'Switch', 'Firewall', 'Access Point', 'VLAN'] },
+    'email-protocols': { name: 'بروتوكولات البريد الإلكتروني', icon: '📧', description: 'SMTP, POP3, IMAP, التشفير', topics: ['SMTP', 'POP3', 'IMAP', 'SMTPS', 'IMAPS'] },
+    'tcp-ip': { name: 'TCP/IP', icon: '🔗', description: 'نموذج TCP/IP، البروتوكولات، المنافذ', topics: ['TCP', 'UDP', 'Three-Way Handshake', 'Ports', 'DHCP'] },
+    'full': { name: 'التقييم الشامل', icon: '🏆', description: 'جميع المحاور', topics: ['المفاهيم العامة', 'IPv4', 'Subnetting', 'IPv6', 'OSI', 'أجهزة الشبكات', 'البريد', 'TCP/IP'] },
   };
-  
   return info[assessmentId] || { name: 'التقييم الشامل', icon: '📝', description: '', topics: [] };
 }
 
 export function getAssessmentName(assessmentId) {
-  const info = getAssessmentInfo(assessmentId);
-  return info.name;
+  return getAssessmentInfo(assessmentId).name;
 }
 
-// ===== خلط المصفوفة بشكل عشوائي =====
 function shuffleArray(array) {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -100,855 +62,4163 @@ function shuffleArray(array) {
   return shuffled;
 }
 
-// ============================================================
-// 🔷 الأسئلة (32 سؤالاً تغطي 4 محاور: Fundamentals, Switching, Routing, Troubleshooting)
-// ============================================================
 const QUESTIONS = [
-  // =============================================================
-  // Fundamentals (OSI, TCP/IP, MAC/IP, ARP, DNS, DHCP)
-  // =============================================================
   {
-    id: 'net_001',
-    question: 'أي طبقة في نموذج OSI مسؤولة عن العنونة المنطقية وتوجيه الحزم؟',
-    options: [
-      'طبقة ربط البيانات (Data Link)',
-      'طبقة الشبكة (Network)',
-      'طبقة النقل (Transport)',
-      'الطبقة المادية (Physical)'
+    "id": "gc_001",
+    "question": "ما هو تعريف الشبكة (Network)؟",
+    "options": [
+      "مجموعة من الأجهزة المتصلة ببعضها البعض لتبادل البيانات والموارد",
+      "جهاز واحد يقوم بمعالجة البيانات",
+      "برنامج يستخدم للاتصال بالإنترنت",
+      "نظام تشغيل خاص بالخوادم"
     ],
-    correct: 1,
-    topic: 'Fundamentals',
-    subSkill: 'osi_l3',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'conceptual',
-    explanation: 'طبقة الشبكة (الطبقة الثالثة) هي المسؤولة عن العنونة المنطقية (IP) وتوجيه الحزم.',
-    irt: { a: 0.8, b: -2.0, c: 0.2 },
-    subSkills: ['osi_model', 'net_fund'],
-    diagnostic: {
-      errorPattern: 'misc_l2_l3',
-      rootCause: 'يخلط بين طبقة ربط البيانات (MAC) وطبقة الشبكة (IP)',
-      futureImpact: 'سيواجه صعوبة في فهم التوجيه (Routing)',
-      remediationVideoQuery: 'الفرق بين الطبقة الثانية والثالثة في OSI'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو تعريف الشبكة (Network)؟",
+    "irt": {
+      "a": 1.0204530001678327,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_002',
-    question: 'في نموذج TCP/IP، أي بروتوكول يضمن تسليم البيانات بشكل موثوق وخالٍ من الأخطاء؟',
-    options: [
-      'UDP',
-      'IP',
-      'TCP',
-      'ICMP'
+    "id": "gc_002",
+    "question": "أي من التالي يعتبر نوعاً من أنواع الشبكات حسب المساحة الجغرافية؟",
+    "options": [
+      "LAN",
+      "VPN",
+      "P2P",
+      "Client-Server"
     ],
-    correct: 2,
-    topic: 'Fundamentals',
-    subSkill: 'tcp_reliability',
-    cognitiveLevel: 'understanding',
-    difficulty: 1,
-    errorPattern: 'conceptual',
-    explanation: 'بروتوكول TCP يعتمد على نظام الإشعارات (Acknowledgments) لضمان تسليم البيانات بدقة.',
-    irt: { a: 0.9, b: -1.5, c: 0.2 },
-    subSkills: ['tcpip_model', 'net_fund'],
-    diagnostic: {
-      errorPattern: 'misc_tcp_udp',
-      rootCause: 'عدم التمييز بين البروتوكولات الموثوقة (Connection-oriented) وغير الموثوقة (Connectionless)',
-      futureImpact: 'أخطاء في اختيار البروتوكول المناسب للتطبيقات',
-      remediationVideoQuery: 'مقارنة بين TCP و UDP'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يعتبر نوعاً من أنواع الشبكات حسب المساحة الجغرافية؟",
+    "irt": {
+      "a": 1.213229161831494,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: ['net_fund']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_003',
-    question: 'ما هو البروتوكول المسؤول عن ترجمة أسماء النطاقات (Domain Names) إلى عناوين IP؟',
-    options: [
-      'DHCP',
-      'ARP',
-      'DNS',
-      'NAT'
+    "id": "gc_003",
+    "question": "ما هو النموذج الذي يعتمد على خادم مركزي يقدم الخدمات للأجهزة الأخرى؟",
+    "options": [
+      "Peer-to-Peer (P2P)",
+      "Client-Server",
+      "VPN",
+      "Mesh"
     ],
-    correct: 2,
-    topic: 'Fundamentals',
-    subSkill: 'dns',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'memorization',
-    explanation: 'نظام أسماء النطاقات (DNS) يعمل كدليل هاتف للإنترنت لتحويل الأسماء إلى أرقام IP.',
-    irt: { a: 1.0, b: -1.8, c: 0.15 },
-    subSkills: ['dns', 'net_fund'],
-    diagnostic: {
-      errorPattern: 'misc_dns_dhcp',
-      rootCause: 'يخلط بين خدمات توزيع الـ IP (DHCP) وخدمات تحليل الأسماء (DNS)',
-      futureImpact: 'صعوبة في استكشاف أخطاء التصفح',
-      remediationVideoQuery: 'شرح كيف يعمل الـ DNS'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو النموذج الذي يعتمد على خادم مركزي يقدم الخدمات للأجهزة الأخرى؟",
+    "irt": {
+      "a": 1.1338587822471788,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_004',
-    question: 'جهاز يحتاج لمعرفة عنوان MAC المقابل لعنوان IP معين على نفس الشبكة المحلية، أي بروتوكول يستخدم؟',
-    options: [
-      'RARP',
-      'ARP',
-      'ICMP',
-      'IGMP'
+    "id": "gc_004",
+    "question": "ما هي الشبكة التي تغطي مدينة كاملة؟",
+    "options": [
+      "LAN",
+      "MAN",
+      "WAN",
+      "PAN"
     ],
-    correct: 1,
-    topic: 'Fundamentals',
-    subSkill: 'arp',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'conceptual',
-    explanation: 'بروتوكول Address Resolution Protocol (ARP) يستخدم لاكتشاف عنوان الطبقة الثانية (MAC) المرتبط بعنوان الطبقة الثالثة (IP).',
-    irt: { a: 1.1, b: -0.5, c: 0.2 },
-    subSkills: ['arp', 'mac_addressing'],
-    diagnostic: {
-      errorPattern: 'misc_arp_rarp',
-      rootCause: 'عدم فهم آلية ربط العناوين المنطقية بالمادية',
-      futureImpact: 'فهم خاطئ لآلية عمل الـ Switch',
-      remediationVideoQuery: 'كيف يعمل بروتوكول ARP في الشبكات'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هي الشبكة التي تغطي مدينة كاملة؟",
+    "irt": {
+      "a": 1.2277241953113958,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: ['osi_l3']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_005',
-    question: 'تتكون عناوين IPv4 من كم بت؟',
-    options: [
-      '16 بت',
-      '32 بت',
-      '64 بت',
-      '128 بت'
+    "id": "gc_005",
+    "question": "أي من التالي يمثل شبكة مخصصة (VPN)؟",
+    "options": [
+      "شبكة داخلية في شركة",
+      "شبكة آمنة تعمل عبر الإنترنت",
+      "شبكة لاسلكية في منزل",
+      "شبكة بين حاسوبين فقط"
     ],
-    correct: 1,
-    topic: 'Fundamentals',
-    subSkill: 'ipv4_length',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'memorization',
-    explanation: 'عنوان IPv4 يتكون من 32 بت مقسمة إلى 4 مقاطع (Octets).',
-    irt: { a: 0.8, b: -2.5, c: 0.2 },
-    subSkills: ['ipv4_fund'],
-    diagnostic: {
-      errorPattern: 'misc_ipv4_ipv6',
-      rootCause: 'يخلط بين طول عنوان IPv4 و IPv6 أو MAC',
-      futureImpact: 'أخطاء أساسية في حساب الشبكات الفرعية',
-      remediationVideoQuery: 'بنية عنوان IPv4'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يمثل شبكة مخصصة (VPN)؟",
+    "irt": {
+      "a": 1.0847240794662192,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_006',
-    question: 'أي خدمة توزع عناوين IP بشكل ديناميكي للأجهزة في الشبكة؟',
-    options: [
-      'DNS',
-      'NAT',
-      'DHCP',
-      'WINS'
+    "id": "gc_006",
+    "question": "في نموذج P2P، كيف تتعامل الأجهزة مع بعضها؟",
+    "options": [
+      "يوجد خادم مركزي",
+      "جميع الأجهزة متساوية وتشارك الموارد",
+      "جهاز واحد يتحكم بالباقي",
+      "لا يمكن مشاركة الموارد"
     ],
-    correct: 2,
-    topic: 'Fundamentals',
-    subSkill: 'dhcp',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'memorization',
-    explanation: 'بروتوكول DHCP يخصص العناوين الديناميكية (Dynamic Host Configuration Protocol).',
-    irt: { a: 0.9, b: -2.0, c: 0.1 },
-    subSkills: ['dhcp'],
-    diagnostic: {
-      errorPattern: 'misc_dns_dhcp',
-      rootCause: 'خلط بين الخدمات الأساسية (DNS vs DHCP)',
-      futureImpact: 'فشل في تشخيص مشاكل عدم الاتصال',
-      remediationVideoQuery: 'شرح بروتوكول DHCP'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: في نموذج P2P، كيف تتعامل الأجهزة مع بعضها؟",
+    "irt": {
+      "a": 1.2228109671145813,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_007',
-    question: 'ما هي الطبقة الموازية لطبقتي (Session و Presentation و Application) من الـ OSI في نموذج TCP/IP؟',
-    options: [
-      'Network Access',
-      'Internet',
-      'Transport',
-      'Application'
+    "id": "gc_007",
+    "question": "ما هي الشبكة التي تغطي مساحة كبيرة مثل دول أو قارات؟",
+    "options": [
+      "LAN",
+      "MAN",
+      "WAN",
+      "PAN"
     ],
-    correct: 3,
-    topic: 'Fundamentals',
-    subSkill: 'tcpip_model',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'conceptual',
-    explanation: 'في نموذج TCP/IP المحدث، تدمج الثلاث طبقات العليا من نموذج OSI في طبقة واحدة تسمى Application.',
-    irt: { a: 1.0, b: -0.2, c: 0.2 },
-    subSkills: ['tcpip_model', 'osi_model'],
-    diagnostic: {
-      errorPattern: 'misc_osi_tcpip',
-      rootCause: 'صعوبة في مطابقة الطبقات بين النموذجين',
-      futureImpact: 'ارتباك عند قراءة وثائق البروتوكولات المختلفة',
-      remediationVideoQuery: 'مقارنة بين OSI و TCP/IP'
+    "correct": 2,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هي الشبكة التي تغطي مساحة كبيرة مثل دول أو قارات؟",
+    "irt": {
+      "a": 1.0639157445501546,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: ['osi_model']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_008',
-    question: 'ما هو عنوان الـ MAC الذي يستخدم كـ Broadcast للشبكة المحلية؟',
-    options: [
-      '00:00:00:00:00:00',
-      'FF:FF:FF:FF:FF:FF',
-      '255.255.255.255',
-      '01:00:5E:00:00:00'
+    "id": "gc_008",
+    "question": "أي من التالي يعتبر من مزايا شبكات Client-Server؟",
+    "options": [
+      "سهولة الإدارة المركزية",
+      "لا يحتاج خادم",
+      "جميع الأجهزة متساوية",
+      "تنفيذ بسيط"
     ],
-    correct: 1,
-    topic: 'Fundamentals',
-    subSkill: 'mac_addressing',
-    cognitiveLevel: 'remembering',
-    difficulty: 2,
-    errorPattern: 'memorization',
-    explanation: 'عنوان البث (Broadcast) للـ MAC يتكون من FFs (جميع البتات 1).',
-    irt: { a: 1.2, b: 0.5, c: 0.2 },
-    subSkills: ['mac_addressing', 'ethernet'],
-    diagnostic: {
-      errorPattern: 'misc_mac_ip_bcast',
-      rootCause: 'يخلط بين الـ Broadcast للـ IP والـ MAC',
-      futureImpact: 'أخطاء في فهم رسائل اكتشاف الشبكة (ARP Request)',
-      remediationVideoQuery: 'أنواع رسائل البث في الشبكات'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يعتبر من مزايا شبكات Client-Server؟",
+    "irt": {
+      "a": 1.0333484619204822,
+      "b": -3,
+      "c": 0.2
     },
-    prerequisites: ['mac_addressing']
-  },
-
-  // =============================================================
-  // Switching (VLAN, Trunk, STP)
-  // =============================================================
-  {
-    id: 'net_009',
-    question: 'ما هو الغرض الأساسي من استخدام شبكات الـ VLAN؟',
-    options: [
-      'زيادة سرعة الإنترنت',
-      'عزل مجالات البث (Broadcast Domains) منطقياً',
-      'تشفير البيانات بين الأجهزة',
-      'ربط شبكتين مختلفتين عبر الإنترنت'
+    "subSkills": [
+      "net_fund"
     ],
-    correct: 1,
-    topic: 'Switching',
-    subSkill: 'vlan_concept',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'conceptual',
-    explanation: 'تُستخدم الـ VLAN لتقسيم السويتش الواحد إلى عدة شبكات وهمية معزولة (Broadcast Domains).',
-    irt: { a: 1.1, b: 0.0, c: 0.2 },
-    subSkills: ['vlan', 'switching'],
-    diagnostic: {
-      errorPattern: 'misc_vlan_vpn',
-      rootCause: 'يخلط بين مفهوم الشبكة الافتراضية (VLAN) والشبكة الخاصة الافتراضية (VPN)',
-      futureImpact: 'تصميم غير آمن أو غير فعال للشبكات المحلية',
-      remediationVideoQuery: 'ما هي الـ VLAN ولماذا نستخدمها'
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
     },
-    prerequisites: ['osi_model']
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_010',
-    question: 'أي بروتوكول يمنع حدوث حلقات (Loops) في شبكات الطبقة الثانية (Layer 2)؟',
-    options: [
-      'VTP',
-      'STP',
-      'OSPF',
-      'ARP'
+    "id": "gc_009",
+    "question": "ما هو الفرق الرئيسي بين شبكات LAN و WAN من حيث سرعة النقل؟",
+    "options": [
+      "LAN أسرع من WAN",
+      "WAN أسرع من LAN",
+      "السرعة متساوية",
+      "لا يمكن المقارنة"
     ],
-    correct: 1,
-    topic: 'Switching',
-    subSkill: 'stp_concept',
-    cognitiveLevel: 'remembering',
-    difficulty: 2,
-    errorPattern: 'memorization',
-    explanation: 'بروتوكول الشجرة الممتدة (Spanning Tree Protocol - STP) يمنع الحلقات بإغلاق المسارات الاحتياطية منطقياً.',
-    irt: { a: 1.0, b: 0.5, c: 0.2 },
-    subSkills: ['stp', 'switching'],
-    diagnostic: {
-      errorPattern: 'misc_stp_vtp',
-      rootCause: 'عدم معرفة وظيفة بروتوكول STP الحيوية في الشبكات',
-      futureImpact: 'احتمال التسبب في عواصف البث (Broadcast Storms) عند تصميم الشبكة',
-      remediationVideoQuery: 'كيف يمنع بروتوكول STP حلقات الشبكة'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو الفرق الرئيسي بين شبكات LAN و WAN من حيث سرعة النقل؟",
+    "irt": {
+      "a": 1.084589697814311,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: ['vlan']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_011',
-    question: 'ما هو المعيار (Standard) المستخدم لتحديد الوسم (Tagging) لمنفذ الـ Trunk في شبكات الـ VLAN؟',
-    options: [
-      'IEEE 802.11',
-      'IEEE 802.3',
-      'IEEE 802.1Q',
-      'IEEE 802.1X'
+    "id": "gc_010",
+    "question": "أي من التالي يمثل استخداماً مناسباً لشبكة VPN؟",
+    "options": [
+      "مشاركة الملفات في مكتب صغير",
+      "الاتصال الآمن بشركة من المنزل",
+      "إنشاء شبكة داخلية في مدرسة",
+      "توصيل طابعة بحاسوب"
     ],
-    correct: 2,
-    topic: 'Switching',
-    subSkill: 'vlan_tagging',
-    cognitiveLevel: 'remembering',
-    difficulty: 3,
-    errorPattern: 'memorization',
-    explanation: 'المعيار 802.1Q (أو dot1q) هو بروتوكول الوسم القياسي للـ VLAN عبر منافذ الـ Trunk.',
-    irt: { a: 1.2, b: 1.0, c: 0.2 },
-    subSkills: ['vlan', 'trunking'],
-    diagnostic: {
-      errorPattern: 'misc_ieee_standards',
-      rootCause: 'لا يحفظ معايير IEEE للشبكات بدقة',
-      futureImpact: 'صعوبة في إعداد السويتشات بين شركات مصنعة مختلفة',
-      remediationVideoQuery: 'شرح مفهوم 802.1Q Trunking'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يمثل استخداماً مناسباً لشبكة VPN؟",
+    "irt": {
+      "a": 1.1222940409557816,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: ['vlan']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_012',
-    question: 'في سويتشات سيسكو، كيف يمر الترافيك الخاص بالـ Native VLAN عبر رابط الـ Trunk؟',
-    options: [
-      'موسوماً بـ Tag رقم 1',
-      'مشفراً',
-      'يُمنع مروره',
-      'بدون وسم (Untagged)'
+    "id": "gc_011",
+    "question": "ما هو عدد الأجهزة الذي يمكن أن تعمل في شبكة P2P بشكل فعال؟",
+    "options": [
+      "عدد غير محدود",
+      "من 2 إلى 10 أجهزة تقريباً",
+      "من 100 إلى 500 جهاز",
+      "تعتمد على المساحة فقط"
     ],
-    correct: 3,
-    topic: 'Switching',
-    subSkill: 'native_vlan',
-    cognitiveLevel: 'understanding',
-    difficulty: 3,
-    errorPattern: 'conceptual',
-    explanation: 'الـ Native VLAN هي شبكة تُمرّر إطاراتها (Frames) بدون أي וسم (Untagged) عبر رابط الـ Trunk.',
-    irt: { a: 1.1, b: 1.2, c: 0.15 },
-    subSkills: ['vlan', 'trunking'],
-    diagnostic: {
-      errorPattern: 'misc_native_vlan',
-      rootCause: 'سوء فهم لآلية عمل الـ Native VLAN وأهميتها',
-      futureImpact: 'أخطاء عدم تطابق (VLAN Mismatch) وثغرات أمنية',
-      remediationVideoQuery: 'ما هي الـ Native VLAN وكيف تعمل؟'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عدد الأجهزة الذي يمكن أن تعمل في شبكة P2P بشكل فعال؟",
+    "irt": {
+      "a": 1.0648319991987891,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: ['vlan_tagging']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_013',
-    question: 'إذا كان منفذ السويتش متصلاً بجهاز حاسب آلي للمستخدم العادي، فيجب أن يُعد هذا المنفذ في وضع:',
-    options: [
-      'Trunk Mode',
-      'Access Mode',
-      'Dynamic Auto',
-      'Dynamic Desirable'
+    "id": "gc_012",
+    "question": "أي من التالي ليس من مكونات الشبكة الأساسية؟",
+    "options": [
+      "الأجهزة (Hosts)",
+      "وسائط النقل (Media)",
+      "نظام التشغيل (OS)",
+      "البروتوكولات (Protocols)"
     ],
-    correct: 1,
-    topic: 'Switching',
-    subSkill: 'access_ports',
-    cognitiveLevel: 'understanding',
-    difficulty: 1,
-    errorPattern: 'conceptual',
-    explanation: 'منافذ الأجهزة النهائية (PCs, Printers) يجب أن تكون Access وتتبع لـ VLAN واحدة فقط.',
-    irt: { a: 1.0, b: -1.0, c: 0.2 },
-    subSkills: ['vlan', 'switching'],
-    diagnostic: {
-      errorPattern: 'misc_access_trunk',
-      rootCause: 'يخلط بين متى يستخدم Access ومتى يستخدم Trunk',
-      futureImpact: 'أجهزة المستخدمين قد لا تتصل بالشبكة أبداً',
-      remediationVideoQuery: 'الفرق بين Access Port و Trunk Port'
+    "correct": 2,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي ليس من مكونات الشبكة الأساسية؟",
+    "irt": {
+      "a": 1.1820395505570196,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: ['vlan']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_014',
-    question: 'ما هي الحالة التي يمر بها المنفذ في بروتوكول STP حيث يتعلم عناوين الـ MAC ولا يُرسل بيانات بعد؟',
-    options: [
-      'Blocking',
-      'Listening',
-      'Learning',
-      'Forwarding'
+    "id": "gc_013",
+    "question": "في نموذج Client-Server، ما هو الجهاز الذي يطلب الخدمات؟",
+    "options": [
+      "Server",
+      "Client",
+      "Router",
+      "Switch"
     ],
-    correct: 2,
-    topic: 'Switching',
-    subSkill: 'stp_states',
-    cognitiveLevel: 'understanding',
-    difficulty: 3,
-    errorPattern: 'conceptual',
-    explanation: 'في حالة Learning، يتعلم السويتش عناوين الماك ليملأ جدول الـ MAC لكنه لا يمرر بيانات فعلية للمستخدمين.',
-    irt: { a: 1.3, b: 1.5, c: 0.15 },
-    subSkills: ['stp', 'switching'],
-    diagnostic: {
-      errorPattern: 'misc_stp_states',
-      rootCause: 'عدم التمييز بين حالات منفذ STP (Listening vs Learning)',
-      futureImpact: 'صعوبة في تشخيص بطء اتصال المنافذ عند التشغيل',
-      remediationVideoQuery: 'حالات منافذ STP المختلفة'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: في نموذج Client-Server، ما هو الجهاز الذي يطلب الخدمات؟",
+    "irt": {
+      "a": 1.0283072365635992,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: ['stp_concept']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_015',
-    question: 'كيف يتخذ السويتش قرار إعادة التوجيه (Forwarding) لإطار (Frame) وارد؟',
-    options: [
-      'عن طريق فحص عنوان الـ IP الوجهة',
-      'عن طريق فحص عنوان الـ MAC المَصدر',
-      'عن طريق فحص عنوان الـ MAC الوجهة ومطابقته بجدول الـ MAC',
-      'عن طريق إرساله دائماً لجميع المنافذ (Flooding)'
+    "id": "gc_014",
+    "question": "ما هو الفرق بين شبكة LAN والشبكة اللاسلكية WLAN؟",
+    "options": [
+      "LAN سلكية و WLAN لاسلكية",
+      "LAN لاسلكية و WLAN سلكية",
+      "لا فرق بينهما",
+      "WLAN تغطي مساحة أكبر"
     ],
-    correct: 2,
-    topic: 'Switching',
-    subSkill: 'mac_learning',
-    cognitiveLevel: 'understanding',
-    difficulty: 1,
-    errorPattern: 'conceptual',
-    explanation: 'السويتش يفحص الـ Destination MAC ويبحث عنه في جدول العناوين لديه لمعرفة أي منفذ يرسل الإطار منه.',
-    irt: { a: 1.0, b: -1.2, c: 0.2 },
-    subSkills: ['switching', 'mac_addressing'],
-    diagnostic: {
-      errorPattern: 'misc_switch_routing',
-      rootCause: 'يخلط بين آلية عمل السويتش (MAC) والراوتر (IP)',
-      futureImpact: 'عدم القدرة على تتبع تدفق البيانات (Traffic Flow) في الشبكة',
-      remediationVideoQuery: 'كيف يبني السويتش جدول عناوين MAC'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو الفرق بين شبكة LAN والشبكة اللاسلكية WLAN؟",
+    "irt": {
+      "a": 1.0945807275976172,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_016',
-    question: 'ماذا يفعل السويتش إذا استلم إطاراً (Frame) عنوان الوجهة فيه غير موجود في جدول عناوين الـ MAC الخاص به؟',
-    options: [
-      'يقوم بحذف الإطار (Drop)',
-      'يرسله للراوتر الافتراضي (Default Gateway)',
-      'يبثه من جميع المنافذ باستثناء المنفذ الذي ورد منه (Unknown Unicast Flooding)',
-      'يرسل رسالة خطأ للمرسل'
+    "id": "gc_015",
+    "question": "أي من التالي يعتبر مثالاً على شبكة WAN؟",
+    "options": [
+      "شبكة في مبنى شركة",
+      "الإنترنت",
+      "شبكة في مدرسة",
+      "شبكة في منزل"
     ],
-    correct: 2,
-    topic: 'Switching',
-    subSkill: 'unknown_unicast',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'conceptual',
-    explanation: 'يقوم السويتش بعمل Flooding للإطار المجهول لجميع المنافذ عدا منفذ الاستلام ليضمن وصوله.',
-    irt: { a: 1.1, b: 0.2, c: 0.2 },
-    subSkills: ['switching'],
-    diagnostic: {
-      errorPattern: 'misc_switch_drop',
-      rootCause: 'يظن أن السويتش يتجاهل الحزم التي لا يعرفها كما يفعل الراوتر',
-      futureImpact: 'سوء فهم لسلوك الشبكة في حال عدم اكتمال جدول الـ MAC',
-      remediationVideoQuery: 'ما هو الـ Unknown Unicast Flooding'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يعتبر مثالاً على شبكة WAN؟",
+    "irt": {
+      "a": 1.2333345017705857,
+      "b": -1.5,
+      "c": 0.2
     },
-    prerequisites: ['mac_learning']
-  },
-
-  // =============================================================
-  // Routing (Static, Default Gateway, Subnetting)
-  // =============================================================
-  {
-    id: 'net_017',
-    question: 'تم تكوين شبكة بالعنوان 192.168.1.0 والقناع 255.255.255.0، ما هو قناع الشبكة المعادل بصيغة CIDR؟',
-    options: [
-      '/16',
-      '/24',
-      '/28',
-      '/32'
+    "subSkills": [
+      "net_fund"
     ],
-    correct: 1,
-    topic: 'Subnetting',
-    subSkill: 'cidr_basics',
-    cognitiveLevel: 'applying',
-    difficulty: 2,
-    errorPattern: 'procedural',
-    explanation: 'القناع 255.255.255.0 يحتوي على 24 بت قيمتها "1" (8+8+8)، لذا يرمز له بـ /24.',
-    irt: { a: 1.0, b: -0.5, c: 0.1 },
-    subSkills: ['subnetting', 'ipv4_fund'],
-    diagnostic: {
-      errorPattern: 'misc_cidr_boundary',
-      rootCause: 'لا يستطيع تحويل القناع العشري (Decimal) إلى صيغة البتات (CIDR)',
-      futureImpact: 'فشل تام في إعداد عناوين الـ IP للأجهزة',
-      remediationVideoQuery: 'حساب أقنعة الشبكة وصيغة CIDR'
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
     },
-    prerequisites: ['ipv4_length']
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_018',
-    question: 'ما هو الغرض من إعداد الـ Default Gateway في جهاز الكمبيوتر؟',
-    options: [
-      'لتوزيع عناوين IP تلقائياً',
-      'للتمكن من التواصل مع أجهزة خارج الشبكة المحلية',
-      'لمنع الفيروسات من دخول الشبكة',
-      'لتسريع نقل البيانات في نفس الـ VLAN'
+    "id": "gc_016",
+    "question": "ما هي التقنية المستخدمة لإنشاء VPN آمنة؟",
+    "options": [
+      "HTTP",
+      "FTP",
+      "IPsec",
+      "DHCP"
     ],
-    correct: 1,
-    topic: 'Routing',
-    subSkill: 'default_gateway',
-    cognitiveLevel: 'understanding',
-    difficulty: 1,
-    errorPattern: 'conceptual',
-    explanation: 'البوابة الافتراضية (Default Gateway) هي المخرج (الراوتر) الذي تلجأ إليه الأجهزة لإرسال بيانات لشبكات أخرى.',
-    irt: { a: 0.9, b: -1.8, c: 0.2 },
-    subSkills: ['routing_fund'],
-    diagnostic: {
-      errorPattern: 'misc_gateway_dns',
-      rootCause: 'يخلط بين وظيفة الـ Gateway ووظيفة الـ DNS',
-      futureImpact: 'لن يستطيع ربط الأجهزة بالإنترنت',
-      remediationVideoQuery: 'ما هي البوابة الافتراضية Default Gateway'
+    "correct": 2,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هي التقنية المستخدمة لإنشاء VPN آمنة؟",
+    "irt": {
+      "a": 1.000955352486124,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['ipv4_fund']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_019',
-    question: 'في شبكة 192.168.10.0/26، كم عدد الأجهزة (Hosts) المتاحة للاستخدام في هذا الـ Subnet؟',
-    options: [
-      '64',
-      '62',
-      '32',
-      '30'
+    "id": "gc_017",
+    "question": "في نموذج Client-Server، ما هو عيب الاعتماد على خادم مركزي؟",
+    "options": [
+      "تكلفة عالية",
+      "نقطة فشل وحيدة (Single Point of Failure)",
+      "صعوبة في الإدارة",
+      "بطء في الأداء دائماً"
     ],
-    correct: 1,
-    topic: 'Subnetting',
-    subSkill: 'host_calculation',
-    cognitiveLevel: 'applying',
-    difficulty: 4,
-    errorPattern: 'procedural',
-    explanation: '/26 يترك 6 بت للأجهزة (32 - 26 = 6). العدد الكلي 2^6 = 64، ونطرح 2 (عنوان الشبكة والبث)، الباقي 62.',
-    irt: { a: 1.4, b: 1.8, c: 0.2 },
-    subSkills: ['subnetting', 'binary_math'],
-    diagnostic: {
-      errorPattern: 'misc_subnet_minus2',
-      rootCause: 'النسيان الشائع لطرح عنوان الشبكة وعنوان البث (-2) أو خطأ في حساب القوى',
-      futureImpact: 'تصميم شبكات بعناوين ناقصة أو متداخلة',
-      remediationVideoQuery: 'كيفية حساب عدد الأجهزة المتاحة في الشبكات الفرعية'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: في نموذج Client-Server، ما هو عيب الاعتماد على خادم مركزي؟",
+    "irt": {
+      "a": 1.0336917587158163,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['cidr_basics']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_020',
-    question: 'ما هو عنوان الشبكة (Network Address) للعنوان 10.1.1.50/28؟',
-    options: [
-      '10.1.1.0',
-      '10.1.1.32',
-      '10.1.1.48',
-      '10.1.1.64'
+    "id": "gc_018",
+    "question": "ما هو نوع الشبكة الذي يستخدمه نظام التورنت (BitTorrent)؟",
+    "options": [
+      "Client-Server",
+      "P2P",
+      "VPN",
+      "Hybrid"
     ],
-    correct: 2,
-    topic: 'Subnetting',
-    subSkill: 'network_address_calc',
-    cognitiveLevel: 'applying',
-    difficulty: 5,
-    errorPattern: 'procedural',
-    explanation: '/28 تعني أن مقدار القفزة (Block Size) هو 16. مضاعفات 16 هي (0, 16, 32, 48, 64). العدد 50 يقع في شبكة 48.',
-    irt: { a: 1.5, b: 2.2, c: 0.2 },
-    subSkills: ['subnetting', 'binary_math'],
-    diagnostic: {
-      errorPattern: 'misc_block_size',
-      rootCause: 'عدم القدرة على حساب المضاعفات (Block Size) لاكتشاف بداية الشبكة الفرعية',
-      futureImpact: 'فشل في إعداد توجيه صحيح (Routing) للشبكة',
-      remediationVideoQuery: 'حساب عنوان الشبكة بطريقة سريعة'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو نوع الشبكة الذي يستخدمه نظام التورنت (BitTorrent)؟",
+    "irt": {
+      "a": 1.17375813243051,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['host_calculation']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_021',
-    question: 'في جدول توجيه الراوتر (Routing Table)، ماذا يعني الرمز "C" بجانب مسار معين؟',
-    options: [
-      'Connected (شبكة متصلة مباشرة بالراوتر)',
-      'Cisco (مسار مسجل عبر أجهزة سيسكو فقط)',
-      'Closed (مسار مغلق ومعطل)',
-      'Configured (مسار ثابت تم إعداده يدوياً)'
+    "id": "gc_019",
+    "question": "أي من التالي يمثل الفرق الرئيسي بين VPN و VLAN؟",
+    "options": [
+      "VPN مخصصة و VLAN آمنة",
+      "VPN تعمل عبر الإنترنت و VLAN داخل شبكة محلية",
+      "VPN للصوت و VLAN للبيانات",
+      "لا فرق بينهما"
     ],
-    correct: 0,
-    topic: 'Routing',
-    subSkill: 'routing_table',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'memorization',
-    explanation: 'الرمز C يشير إلى Directly Connected Network، أي أن الراوتر يمتلك منفذاً مباشراً في هذه الشبكة.',
-    irt: { a: 0.9, b: 0.3, c: 0.1 },
-    subSkills: ['routing_fund'],
-    diagnostic: {
-      errorPattern: 'misc_routing_codes',
-      rootCause: 'يجهل قراءة جدول التوجيه بشكل صحيح (خلط بين C و S)',
-      futureImpact: 'صعوبة في استكشاف أخطاء التوجيه',
-      remediationVideoQuery: 'قراءة جدول التوجيه للراوتر'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: أي من التالي يمثل الفرق الرئيسي بين VPN و VLAN؟",
+    "irt": {
+      "a": 1.2202093673079488,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['routing_fund']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_022',
-    question: 'ما هو مسار التوجيه الافتراضي (Default Route) الثابت الذي يمثل "أي شبكة غير معروفة" في IPv4؟',
-    options: [
-      '255.255.255.255 255.255.255.255',
-      '0.0.0.0 255.255.255.255',
-      '0.0.0.0 0.0.0.0',
-      '192.168.0.0 255.255.0.0'
+    "id": "gc_020",
+    "question": "ما هو عدد طبقات نموذج OSI مقارنة بنموذج TCP/IP؟",
+    "options": [
+      "OSI 7 طبقات، TCP/IP 4 طبقات",
+      "OSI 4 طبقات، TCP/IP 7 طبقات",
+      "كلاهما 7 طبقات",
+      "كلاهما 4 طبقات"
     ],
-    correct: 2,
-    topic: 'Routing',
-    subSkill: 'default_route',
-    cognitiveLevel: 'remembering',
-    difficulty: 2,
-    errorPattern: 'memorization',
-    explanation: 'المسار 0.0.0.0 0.0.0.0 هو المسار الافتراضي (Default Route) والذي يطابق جميع العناوين غير الموجودة في جدول التوجيه.',
-    irt: { a: 1.1, b: 0.0, c: 0.2 },
-    subSkills: ['routing_fund', 'static_routing'],
-    diagnostic: {
-      errorPattern: 'misc_default_route',
-      rootCause: 'عدم حفظ صيغة المسار الافتراضي',
-      futureImpact: 'الراوتر لن يتمكن من إرسال البيانات للإنترنت',
-      remediationVideoQuery: 'إعداد الـ Default Static Route'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو عدد طبقات نموذج OSI مقارنة بنموذج TCP/IP؟",
+    "irt": {
+      "a": 1.1799110190236957,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['routing_fund']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_023',
-    question: 'أي من عناوين IP التالية يعتبر عنواناً خاصاً (Private IP)؟',
-    options: [
-      '8.8.8.8',
-      '172.16.5.1',
-      '192.169.1.1',
-      '23.10.10.1'
+    "id": "gc_021",
+    "question": "أي من التالي يعد تحدياً رئيسياً في شبكات WAN؟",
+    "options": [
+      "سرعة عالية",
+      "تأخير (Latency) عالٍ",
+      "تكلفة منخفضة",
+      "سهولة الصيانة"
     ],
-    correct: 1,
-    topic: 'Subnetting',
-    subSkill: 'private_ips',
-    cognitiveLevel: 'remembering',
-    difficulty: 2,
-    errorPattern: 'memorization',
-    explanation: 'العنوان 172.16.5.1 يقع ضمن النطاق الخاص بالفئة B (من 172.16.0.0 إلى 172.31.255.255).',
-    irt: { a: 1.0, b: 0.2, c: 0.2 },
-    subSkills: ['ipv4_fund'],
-    diagnostic: {
-      errorPattern: 'misc_private_public',
-      rootCause: 'عدم حفظ نطاقات العناوين الخاصة (RFC 1918)',
-      futureImpact: 'إعداد أجهزة بعناوين غير صالحة للتوجيه الداخلي أو العكس',
-      remediationVideoQuery: 'الفرق بين الـ Public والـ Private IP'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: أي من التالي يعد تحدياً رئيسياً في شبكات WAN؟",
+    "irt": {
+      "a": 1.1338531487169803,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['ipv4_fund']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_024',
-    question: 'تم إعداد راوتر بمسارين لنفس الوجهة، المسار الأول Static بـ Admin Distance=1، والثاني OSPF بـ Admin Distance=110، أيهما سيختار الراوتر لجدول التوجيه؟',
-    options: [
-      'مسار الـ OSPF لأن بروتوكولات التوجيه الديناميكية أقوى',
-      'سيقوم بتوزيع الحمل (Load Balance) على المسارين',
-      'المسار الـ Static لأن الـ Admin Distance الأقل هو الأفضل',
-      'سيحدث تضارب ويتعطل التوجيه'
+    "id": "gc_022",
+    "question": "ما هو البروتوكول المستخدم عادةً في إنشاء VPN؟",
+    "options": [
+      "PPTP",
+      "L2TP",
+      "OpenVPN",
+      "جميع ما سبق"
     ],
-    correct: 2,
-    topic: 'Routing',
-    subSkill: 'admin_distance',
-    cognitiveLevel: 'understanding',
-    difficulty: 3,
-    errorPattern: 'conceptual',
-    explanation: 'الراوتر يفضل المسار ذو قيمة الـ Administrative Distance (AD) الأقل، وفي هذه الحالة المسار الثابت 1 يتفوق على 110.',
-    irt: { a: 1.2, b: 1.4, c: 0.2 },
-    subSkills: ['routing_fund'],
-    diagnostic: {
-      errorPattern: 'misc_admin_distance',
-      rootCause: 'الاعتقاد الخاطئ بأن القيم الأكبر تعني أولوية أعلى في التوجيه',
-      futureImpact: 'فشل في إعداد مسارات احتياطية (Floating Static Routes)',
-      remediationVideoQuery: 'ما هو الـ Administrative Distance'
+    "correct": 3,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو البروتوكول المستخدم عادةً في إنشاء VPN؟",
+    "irt": {
+      "a": 1.0134480909600068,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['routing_table']
-  },
-
-  // =============================================================
-  // Troubleshooting (Ping, Traceroute, Packet loss, DNS)
-  // =============================================================
-  {
-    id: 'net_025',
-    question: 'مستخدم يشتكي من عدم القدرة على تصفح موقع google.com، لكن عند قيامك بعمل ping لعنوان 8.8.8.8 فإنه ينجح. ما هو العطل المرجح؟',
-    options: [
-      'انقطاع سلك الشبكة بالكامل',
-      'عطل في بروتوكول DNS',
-      'الراوتر المحلي معطل',
-      'بطاقة الشبكة تالفة'
+    "subSkills": [
+      "net_fund"
     ],
-    correct: 1,
-    topic: 'Troubleshooting',
-    subSkill: 'troubleshoot_dns',
-    cognitiveLevel: 'analyzing',
-    difficulty: 3,
-    errorPattern: 'analytical',
-    explanation: 'بما أن الاتصال بـ IP خارجي ينجح، فالاتصال بالإنترنت سليم. الفشل في تصفح الموقع باسم النطاق يدل على مشكلة في تحليل الاسم (DNS).',
-    irt: { a: 1.3, b: 1.0, c: 0.2 },
-    subSkills: ['troubleshoot_fund', 'dns'],
-    diagnostic: {
-      errorPattern: 'misc_troubleshoot_logic',
-      rootCause: 'ضعف في مهارة حصر المشكلة (Isolation) بين الطبقات المختلفة',
-      futureImpact: 'ضياع الوقت في تبديل الأسلاك والمعدات لمشكلة برمجية',
-      remediationVideoQuery: 'خطوات استكشاف أخطاء الـ DNS'
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
     },
-    prerequisites: ['dns', 'ping']
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_026',
-    question: 'أي أمر تستخدمه لمعرفة المسار (الراوترات المتعاقبة) الذي تسلكه البيانات للوصول إلى سيرفر بعيد؟',
-    options: [
-      'ping',
-      'ipconfig',
-      'nslookup',
-      'tracert / traceroute'
+    "id": "gc_023",
+    "question": "في شبكة Hybrid، ما هو المزيج المستخدم؟",
+    "options": [
+      "سلكي ولاسلكي",
+      "P2P و Client-Server",
+      "LAN و WAN",
+      "VPN و VLAN"
     ],
-    correct: 3,
-    topic: 'Troubleshooting',
-    subSkill: 'traceroute',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'memorization',
-    explanation: 'أداة traceroute تُستخدم لتتبع المسار ومعرفة القفزات (Hops) التي تمر بها الحزمة للوصول للهدف.',
-    irt: { a: 0.9, b: -1.0, c: 0.1 },
-    subSkills: ['troubleshoot_fund'],
-    diagnostic: {
-      errorPattern: 'misc_ping_traceroute',
-      rootCause: 'يخلط بين أداة فحص الاتصال (Ping) وأداة تتبع المسار (Traceroute)',
-      futureImpact: 'عدم القدرة على تحديد أي راوتر بالتحديد هو المتسبب في قطع الاتصال',
-      remediationVideoQuery: 'استخدام أمر Traceroute لاكتشاف الأعطال'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: في شبكة Hybrid، ما هو المزيج المستخدم؟",
+    "irt": {
+      "a": 1.061690567885212,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_027',
-    question: 'عند قيامك بعمل Ping للمخرج الافتراضي (Default Gateway) وحصلت على رسالة "Request timed out"، ماذا يعني ذلك؟',
-    options: [
-      'جهاز الكمبيوتر الخاص بك لا يملك عنوان IP',
-      'لا يوجد مسار للوصول إلى الهدف أو الهدف لا يرد (عطل محلي أو جدار حماية)',
-      'خادم الـ DNS لا يعمل',
-      'اسم المستخدم أو كلمة المرور للشبكة خاطئة'
+    "id": "gc_024",
+    "question": "ما هو الفرق بين Intranet و Extranet؟",
+    "options": [
+      "Intranet داخلية و Extranet خارجية جزئياً",
+      "Extranet داخلية و Intranet خارجية",
+      "كلاهما داخلي",
+      "كلاهما خارجي"
     ],
-    correct: 1,
-    topic: 'Troubleshooting',
-    subSkill: 'ping',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'conceptual',
-    explanation: 'رسالة Timeout تعني أن الحزمة أُرسلت ولكن لم نستلم رداً خلال الوقت المحدد، قد يكون الجهاز مغلقاً أو مسدوداً بجدار حماية.',
-    irt: { a: 1.1, b: 0.2, c: 0.2 },
-    subSkills: ['troubleshoot_fund', 'ping'],
-    diagnostic: {
-      errorPattern: 'misc_timeout_unreachable',
-      rootCause: 'يخلط بين رسالة Destination Unreachable (لا يوجد مسار) و Request Timed Out (لا يوجد رد)',
-      futureImpact: 'تشخيص خاطئ لسبب انقطاع الشبكة',
-      remediationVideoQuery: 'شرح مخرجات أمر Ping'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو الفرق بين Intranet و Extranet؟",
+    "irt": {
+      "a": 1.0676541456578592,
+      "b": 0,
+      "c": 0.2
     },
-    prerequisites: ['default_gateway']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_028',
-    question: 'إذا كان عنوان جهاز المستخدم 169.254.1.15، ماذا يشير هذا العنوان (APIPA)؟',
-    options: [
-      'تم إعداد العنوان بشكل صحيح وصالح للإنترنت',
-      'الجهاز فشل في الحصول على عنوان من خادم الـ DHCP',
-      'هذا عنوان يخص خادم الـ DNS المحلي',
-      'تم إعداد الجهاز كـ Default Gateway للشبكة'
+    "id": "gc_025",
+    "question": "ما هي تقنية MPLS المستخدمة في؟",
+    "options": [
+      "شبكات LAN فقط",
+      "شبكات WAN عالية الأداء",
+      "شبكات P2P",
+      "الشبكات اللاسلكية"
     ],
-    correct: 1,
-    topic: 'Troubleshooting',
-    subSkill: 'apipa',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'conceptual',
-    explanation: 'نطاق 169.254.x.x هو APIPA، ويتم تخصيصه تلقائياً من قبل نظام التشغيل عندما يفشل في التواصل مع خادم DHCP.',
-    irt: { a: 1.0, b: -0.3, c: 0.2 },
-    subSkills: ['troubleshoot_fund', 'dhcp'],
-    diagnostic: {
-      errorPattern: 'misc_apipa',
-      rootCause: 'لا يميز عناوين فشل الـ DHCP (APIPA)',
-      futureImpact: 'فشل في تحديد أن المشكلة من خادم الـ DHCP وراء انقطاع الشبكة',
-      remediationVideoQuery: 'ما هو APIPA وكيف تحل مشكلته'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "applying",
+    "difficulty": 4,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هي تقنية MPLS المستخدمة في؟",
+    "irt": {
+      "a": 1.0765707122559716,
+      "b": 1.5,
+      "c": 0.2
     },
-    prerequisites: ['dhcp']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_029',
-    question: 'في منهجية استكشاف الأخطاء وإصلاحها (Troubleshooting Methodology)، ما هي الخطوة الأولى التي يجب عليك فعلها؟',
-    options: [
-      'تجربة الحلول الممكنة فوراً',
-      'اختبار نظرية السبب المحتمل (Test the Theory)',
-      'تحديد المشكلة بدقة (Identify the problem)',
-      'توثيق المشكلة'
+    "id": "gc_026",
+    "question": "أي من التالي يعتبر من عيوب نموذج P2P؟",
+    "options": [
+      "تكلفة عالية",
+      "صعوبة في الأمن والإدارة",
+      "يحتاج خادم قوي",
+      "بطء في الشبكات الصغيرة"
     ],
-    correct: 2,
-    topic: 'Troubleshooting',
-    subSkill: 'troubleshoot_methodology',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'memorization',
-    explanation: 'الخطوة الأولى والأهم في منهجية حل الأعطال هي جمع المعلومات وتحديد المشكلة بدقة قبل محاولة أي حل.',
-    irt: { a: 0.8, b: -2.0, c: 0.1 },
-    subSkills: ['troubleshoot_fund'],
-    diagnostic: {
-      errorPattern: 'misc_skip_verification',
-      rootCause: 'أسلوب حل المشاكل بطريقة التجربة والخطأ العشوائي (Random Trial)',
-      futureImpact: 'إضاعة الوقت في تغيير الإعدادات بدون خطة مما قد يكسر أجزاء أخرى',
-      remediationVideoQuery: 'منهجية حل أخطاء الشبكات خطوة بخطوة'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "applying",
+    "difficulty": 4,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: أي من التالي يعتبر من عيوب نموذج P2P؟",
+    "irt": {
+      "a": 1.095308619605285,
+      "b": 1.5,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_030',
-    question: 'لديك تداخل في شبكة اللاسلكي وضعف في الإشارة، وقمت بتغيير قناة البث (Channel) في جهاز التوجيه كحل. ما هي الخطوة التالية وفق منهجية حل الأعطال؟',
-    options: [
-      'تحديث نظام التشغيل للراوتر',
-      'إغلاق التذكرة فوراً',
-      'التحقق من الوظائف الكاملة للنظام (Verify full system functionality)',
-      'سؤال المستخدم عن كلمة مرور الشبكة'
+    "id": "gc_027",
+    "question": "ما هو الفرق بين شبكة PAN و LAN؟",
+    "options": [
+      "PAN تغطي مساحة أصغر (شخصية)",
+      "LAN تغطي مساحة أصغر",
+      "لا فرق بينهما",
+      "PAN تغطي مدينة"
     ],
-    correct: 2,
-    topic: 'Troubleshooting',
-    subSkill: 'troubleshoot_methodology',
-    cognitiveLevel: 'understanding',
-    difficulty: 2,
-    errorPattern: 'procedural',
-    explanation: 'بعد تطبيق الحل، يجب دائماً التحقق من أن الحل عمل بنجاح ولم يسبب مشاكل أخرى.',
-    irt: { a: 1.1, b: 0.5, c: 0.15 },
-    subSkills: ['troubleshoot_fund', 'verification'],
-    diagnostic: {
-      errorPattern: 'misc_skip_verification',
-      rootCause: 'يترك الموقع بعد تطبيق الحل دون التأكد من أن المشكلة زالت بالفعل للمستخدم',
-      futureImpact: 'عودة العطل مرة أخرى وعدم رضا المستخدمين',
-      remediationVideoQuery: 'أهمية خطوة التحقق Verification'
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "applying",
+    "difficulty": 4,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو الفرق بين شبكة PAN و LAN؟",
+    "irt": {
+      "a": 1.1292102513259497,
+      "b": 1.5,
+      "c": 0.2
     },
-    prerequisites: ['troubleshoot_methodology']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_031',
-    question: 'أي بروتوكول يتم استخدامه لتشغيل أوامر أداة الـ ping لاختبار الاتصال؟',
-    options: [
-      'TCP',
-      'UDP',
-      'ICMP',
-      'IGMP'
+    "id": "gc_028",
+    "question": "ما هي الطبقة في نموذج OSI المسؤولة عن تشفير البيانات؟",
+    "options": [
+      "Physical",
+      "Data Link",
+      "Presentation",
+      "Application"
     ],
-    correct: 2,
-    topic: 'Troubleshooting',
-    subSkill: 'icmp',
-    cognitiveLevel: 'remembering',
-    difficulty: 1,
-    errorPattern: 'memorization',
-    explanation: 'أوامر ping تعتمد على رسائل Echo Request و Echo Reply الخاصة ببروتوكول ICMP.',
-    irt: { a: 0.9, b: -1.5, c: 0.2 },
-    subSkills: ['ping', 'tcpip_model'],
-    diagnostic: {
-      errorPattern: 'misc_ping_tcp',
-      rootCause: 'يظن أن الـ ping يستخدم بروتوكول TCP للاتصال',
-      futureImpact: 'أخطاء في إعداد جدران الحماية (Firewall) للسماح بمرور الـ ping',
-      remediationVideoQuery: 'ما هو بروتوكول ICMP'
+    "correct": 2,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "applying",
+    "difficulty": 4,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هي الطبقة في نموذج OSI المسؤولة عن تشفير البيانات؟",
+    "irt": {
+      "a": 1.1528533604192552,
+      "b": 1.5,
+      "c": 0.2
     },
-    prerequisites: []
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
   },
   {
-    id: 'net_032',
-    question: 'في سياق استكشاف الأخطاء وإصلاحها (Bottom-Up Approach)، من أين ستبدأ فحص العطل؟',
-    options: [
-      'من إعدادات متصفح الويب (Application Layer)',
-      'من إعدادات الـ IP (Network Layer)',
-      'من التوصيلات الفيزيائية للأسلاك (Physical Layer)',
-      'من فحص نظام الـ DNS'
+    "id": "gc_029",
+    "question": "ما هي تقنية SD-WAN؟",
+    "options": [
+      "شبكة WAN تقليدية",
+      "شبكة WAN معتمدة على البرمجيات",
+      "شبكة LAN متطورة",
+      "شبكة VPN جديدة"
     ],
-    correct: 2,
-    topic: 'Troubleshooting',
-    subSkill: 'bottom_up',
-    cognitiveLevel: 'understanding',
-    difficulty: 1,
-    errorPattern: 'conceptual',
-    explanation: 'النهج من الأسفل للأعلى (Bottom-Up) يعني البدء من الطبقة المادية (الطبقة 1: فحص الأسلاك، الكهرباء) ثم الصعود للطبقات الأعلى.',
-    irt: { a: 0.8, b: -1.0, c: 0.1 },
-    subSkills: ['troubleshoot_fund', 'osi_model'],
-    diagnostic: {
-      errorPattern: 'misc_troubleshoot_approach',
-      rootCause: 'عدم فهم منهجيات حل المشاكل المرتبطة بنموذج OSI',
-      futureImpact: 'فشل في حل مشاكل البنية التحتية البسيطة والتوجه فوراً للمشاكل البرمجية المعقدة',
-      remediationVideoQuery: 'منهجيات استكشاف الأخطاء: Top-Down vs Bottom-Up'
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "applying",
+    "difficulty": 5,
+    "errorPattern": "calculation",
+    "explanation": "شرح: ما هي تقنية SD-WAN؟",
+    "irt": {
+      "a": 1.0674958169987165,
+      "b": 3,
+      "c": 0.2
     },
-    prerequisites: ['osi_model']
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "gc_030",
+    "question": "ما هو الفرق بين الشبكة النشطة والشبكة السلبية؟",
+    "options": [
+      "النشطة تحتوي على مكونات إلكترونية، السلبية لا",
+      "النشطة أسرع، السلبية أبطأ",
+      "النشطة لاسلكية، السلبية سلكية",
+      "لا فرق بينهما"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "applying",
+    "difficulty": 5,
+    "errorPattern": "calculation",
+    "explanation": "شرح: ما هو الفرق بين الشبكة النشطة والشبكة السلبية؟",
+    "irt": {
+      "a": 1.1429253968416475,
+      "b": 3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "gc_q01",
+    "question": "ما هو تعريف الشبكة؟",
+    "options": [
+      "مجموعة أجهزة متصلة لتبادل البيانات",
+      "جهاز واحد",
+      "برنامج",
+      "نظام تشغيل"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو تعريف الشبكة؟",
+    "irt": {
+      "a": 1.1929502091533788,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q02",
+    "question": "أي من التالي يمثل شبكة محلية؟",
+    "options": [
+      "LAN",
+      "WAN",
+      "MAN",
+      "VPN"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يمثل شبكة محلية؟",
+    "irt": {
+      "a": 1.0753463130130483,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q03",
+    "question": "نموذج Client-Server يعتمد على:",
+    "options": [
+      "خادم مركزي",
+      "أجهزة متساوية",
+      "اتصال لاسلكي فقط",
+      "شبكة خاصة"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: نموذج Client-Server يعتمد على:",
+    "irt": {
+      "a": 1.1164224456589684,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q04",
+    "question": "VPN تستخدم لـ:",
+    "options": [
+      "اتصال آمن عبر الإنترنت",
+      "شبكة محلية",
+      "شبكة لاسلكية",
+      "شبكة P2P"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: VPN تستخدم لـ:",
+    "irt": {
+      "a": 1.2066224899969964,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q05",
+    "question": "أي شبكة تغطي مدينة كاملة؟",
+    "options": [
+      "LAN",
+      "MAN",
+      "WAN",
+      "PAN"
+    ],
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي شبكة تغطي مدينة كاملة؟",
+    "irt": {
+      "a": 1.0896313294013453,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q06",
+    "question": "في P2P، الأجهزة تكون:",
+    "options": [
+      "متساوية",
+      "خادم وعميل",
+      "خادم فقط",
+      "عميل فقط"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: في P2P، الأجهزة تكون:",
+    "irt": {
+      "a": 1.121476481229315,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q07",
+    "question": "WAN تغطي مساحة:",
+    "options": [
+      "كبيرة",
+      "صغيرة",
+      "شخصية",
+      "محلية"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: WAN تغطي مساحة:",
+    "irt": {
+      "a": 1.079879740624173,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q08",
+    "question": "ميزة Client-Server هي:",
+    "options": [
+      "إدارة مركزية",
+      "لا يحتاج خادم",
+      "أجهزة متساوية",
+      "تنفيذ بسيط"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ميزة Client-Server هي:",
+    "irt": {
+      "a": 1.295233065323409,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q09",
+    "question": "أي شبكة أسرع LAN أم WAN؟",
+    "options": [
+      "LAN",
+      "WAN",
+      "متساوية",
+      "تعتمد على البروتوكول"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي شبكة أسرع LAN أم WAN؟",
+    "irt": {
+      "a": 1.1879674598056793,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q10",
+    "question": "VPN توفر:",
+    "options": [
+      "تشفير وأمان",
+      "سرعة عالية",
+      "اتصال مجاني",
+      "شبكة محلية"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: VPN توفر:",
+    "irt": {
+      "a": 1.1338829337224856,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q11",
+    "question": "P2P مناسب لـ:",
+    "options": [
+      "شبكات صغيرة",
+      "شبكات كبيرة",
+      "خوادم مركزية",
+      "شبكات WAN"
+    ],
+    "correct": 0,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: P2P مناسب لـ:",
+    "irt": {
+      "a": 1.119914795277821,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "gc_q12",
+    "question": "أي مما يلي ليس مكوناً أساسياً للشبكة؟",
+    "options": [
+      "الأجهزة",
+      "نظام التشغيل",
+      "وسائط النقل",
+      "البروتوكولات"
+    ],
+    "correct": 1,
+    "topic": "general-concepts",
+    "subSkill": "net_fund",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي مما يلي ليس مكوناً أساسياً للشبكة؟",
+    "irt": {
+      "a": 1.1802924234945267,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "net_fund"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_net_fund",
+      "rootCause": "سبب net_fund",
+      "futureImpact": "تأثير net_fund",
+      "remediationVideoQuery": "شرح net_fund"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_001",
+    "question": "ما هي بنية عنوان IPv4؟",
+    "options": [
+      "4 بايت (32 بت)",
+      "6 بايت (48 بت)",
+      "8 بايت (64 بت)",
+      "16 بايت (128 بت)"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هي بنية عنوان IPv4؟",
+    "irt": {
+      "a": 1.175983825184022,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_002",
+    "question": "كم عدد البتات في عنوان IPv4؟",
+    "options": [
+      "32 بت",
+      "64 بت",
+      "128 بت",
+      "16 بت"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد البتات في عنوان IPv4؟",
+    "irt": {
+      "a": 1.0859389880617056,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_003",
+    "question": "كم عدد الثمانيات (Octets) في عنوان IPv4؟",
+    "options": [
+      "4",
+      "2",
+      "8",
+      "16"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد الثمانيات (Octets) في عنوان IPv4؟",
+    "irt": {
+      "a": 1.0938785872510741,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_004",
+    "question": "أي فئة من فئات IPv4 تبدأ بـ 0 أو 10؟",
+    "options": [
+      "Class A",
+      "Class B",
+      "Class C",
+      "Class D"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي فئة من فئات IPv4 تبدأ بـ 0 أو 10؟",
+    "irt": {
+      "a": 1.1986934193551255,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_005",
+    "question": "أي فئة من فئات IPv4 تبدأ بـ 110؟",
+    "options": [
+      "Class A",
+      "Class B",
+      "Class C",
+      "Class D"
+    ],
+    "correct": 2,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي فئة من فئات IPv4 تبدأ بـ 110؟",
+    "irt": {
+      "a": 1.157385033349484,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_006",
+    "question": "ما هو نطاق عناوين Class A؟",
+    "options": [
+      "1.0.0.0 إلى 126.255.255.255",
+      "128.0.0.0 إلى 191.255.255.255",
+      "192.0.0.0 إلى 223.255.255.255",
+      "224.0.0.0 إلى 239.255.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو نطاق عناوين Class A؟",
+    "irt": {
+      "a": 1.1288240763612154,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_007",
+    "question": "ما هو نطاق عناوين Class B؟",
+    "options": [
+      "1.0.0.0 إلى 126.255.255.255",
+      "128.0.0.0 إلى 191.255.255.255",
+      "192.0.0.0 إلى 223.255.255.255",
+      "224.0.0.0 إلى 239.255.255.255"
+    ],
+    "correct": 1,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو نطاق عناوين Class B؟",
+    "irt": {
+      "a": 1.1587006005660159,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_008",
+    "question": "أي فئة محجوزة للبث المتعدد (Multicast)؟",
+    "options": [
+      "Class A",
+      "Class B",
+      "Class C",
+      "Class D"
+    ],
+    "correct": 3,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي فئة محجوزة للبث المتعدد (Multicast)؟",
+    "irt": {
+      "a": 1.241717462905851,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_009",
+    "question": "أي فئة محجوزة للبحث التجريبي (Experimental)؟",
+    "options": [
+      "Class A",
+      "Class B",
+      "Class C",
+      "Class E"
+    ],
+    "correct": 3,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي فئة محجوزة للبحث التجريبي (Experimental)؟",
+    "irt": {
+      "a": 1.0368108273865941,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_010",
+    "question": "ما هو عنوان loopback في IPv4؟",
+    "options": [
+      "127.0.0.1",
+      "192.168.1.1",
+      "10.0.0.1",
+      "224.0.0.1"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عنوان loopback في IPv4؟",
+    "irt": {
+      "a": 1.2284583000256737,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_011",
+    "question": "ما هو نطاق عناوين APIPA؟",
+    "options": [
+      "169.254.0.0 إلى 169.254.255.255",
+      "10.0.0.0 إلى 10.255.255.255",
+      "172.16.0.0 إلى 172.31.255.255",
+      "192.168.0.0 إلى 192.168.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو نطاق عناوين APIPA؟",
+    "irt": {
+      "a": 1.2894018829938378,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_012",
+    "question": "ما هي الفائدة من عنوان loopback؟",
+    "options": [
+      "اختبار التطبيقات والبروتوكولات محلياً",
+      "الاتصال بالإنترنت",
+      "توجيه الحزم بين الشبكات",
+      "تخصيص عنوان خاص"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هي الفائدة من عنوان loopback؟",
+    "irt": {
+      "a": 1.0543231047264694,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_013",
+    "question": "أي من التالي يعتبر عنواناً خاصاً (Private)؟",
+    "options": [
+      "10.0.0.1",
+      "8.8.8.8",
+      "1.1.1.1",
+      "127.0.0.1"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يعتبر عنواناً خاصاً (Private)؟",
+    "irt": {
+      "a": 1.0520353182384408,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_014",
+    "question": "أي من التالي يعتبر عنواناً عاماً (Public)؟",
+    "options": [
+      "8.8.8.8",
+      "192.168.1.1",
+      "10.0.0.1",
+      "172.16.0.1"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي من التالي يعتبر عنواناً عاماً (Public)؟",
+    "irt": {
+      "a": 1.0528065866606737,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_015",
+    "question": "ما هو نطاق عناوين Class C الخاصة؟",
+    "options": [
+      "192.168.0.0 إلى 192.168.255.255",
+      "10.0.0.0 إلى 10.255.255.255",
+      "172.16.0.0 إلى 172.31.255.255",
+      "169.254.0.0 إلى 169.254.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو نطاق عناوين Class C الخاصة؟",
+    "irt": {
+      "a": 1.110450662555126,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_016",
+    "question": "ما هو نطاق عناوين Class A الخاصة؟",
+    "options": [
+      "10.0.0.0 إلى 10.255.255.255",
+      "172.16.0.0 إلى 172.31.255.255",
+      "192.168.0.0 إلى 192.168.255.255",
+      "169.254.0.0 إلى 169.254.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو نطاق عناوين Class A الخاصة؟",
+    "irt": {
+      "a": 1.092401608487965,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_017",
+    "question": "ما هو نطاق عناوين Class B الخاصة؟",
+    "options": [
+      "172.16.0.0 إلى 172.31.255.255",
+      "10.0.0.0 إلى 10.255.255.255",
+      "192.168.0.0 إلى 192.168.255.255",
+      "169.254.0.0 إلى 169.254.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو نطاق عناوين Class B الخاصة؟",
+    "irt": {
+      "a": 1.1115896336210598,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_018",
+    "question": "ما هو الغرض من NAT (Network Address Translation)؟",
+    "options": [
+      "تحويل عناوين خاصة إلى عامة للوصول للإنترنت",
+      "تشفير البيانات",
+      "توجيه الحزم بين الشبكات",
+      "تخصيص العناوين تلقائياً"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو الغرض من NAT (Network Address Translation)؟",
+    "irt": {
+      "a": 1.2988929963109253,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_019",
+    "question": "ما هو الجهاز الذي يقوم عادةً بتنفيذ NAT؟",
+    "options": [
+      "Router",
+      "Switch",
+      "Hub",
+      "Firewall"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو الجهاز الذي يقوم عادةً بتنفيذ NAT؟",
+    "irt": {
+      "a": 1.1844821300393429,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_020",
+    "question": "ما هو Default Gateway؟",
+    "options": [
+      "عنوان IP للراوتر الذي يتصل به الجهاز",
+      "عنوان IP للخادم",
+      "عنوان loopback",
+      "عنوان البث"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو Default Gateway؟",
+    "irt": {
+      "a": 1.2063623245540933,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_021",
+    "question": "ما هو عنوان Broadcast في شبكة؟",
+    "options": [
+      "يصل إلى جميع الأجهزة في الشبكة",
+      "يصل إلى راوتر واحد فقط",
+      "يصل إلى خادم واحد",
+      "يصل إلى العميل فقط"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عنوان Broadcast في شبكة؟",
+    "irt": {
+      "a": 1.034545857467243,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_022",
+    "question": "ما هو عنوان الشبكة (Network Address)؟",
+    "options": [
+      "أول عنوان في الشبكة لا يمكن استخدامه",
+      "آخر عنوان في الشبكة",
+      "عنوان الراوتر",
+      "عنوان البث"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عنوان الشبكة (Network Address)؟",
+    "irt": {
+      "a": 1.2592858351961755,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_023",
+    "question": "ما هو عنوان أول جهاز قابل للاستخدام في الشبكة؟",
+    "options": [
+      "أول عنوان بعد عنوان الشبكة",
+      "عنوان الشبكة نفسه",
+      "عنوان البث",
+      "عنوان الراوتر"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عنوان أول جهاز قابل للاستخدام في الشبكة؟",
+    "irt": {
+      "a": 1.0658084987198755,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_024",
+    "question": "كم عدد العناوين القابلة للاستخدام في شبكة /24؟",
+    "options": [
+      "254",
+      "255",
+      "256",
+      "253"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم عدد العناوين القابلة للاستخدام في شبكة /24؟",
+    "irt": {
+      "a": 1.2383026485585011,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_025",
+    "question": "ما هي قناع الشبكة الافتراضية لـ Class A؟",
+    "options": [
+      "255.0.0.0",
+      "255.255.0.0",
+      "255.255.255.0",
+      "255.255.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هي قناع الشبكة الافتراضية لـ Class A؟",
+    "irt": {
+      "a": 1.0909218339563787,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_026",
+    "question": "ما هي قناع الشبكة الافتراضية لـ Class B؟",
+    "options": [
+      "255.0.0.0",
+      "255.255.0.0",
+      "255.255.255.0",
+      "255.255.255.255"
+    ],
+    "correct": 1,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هي قناع الشبكة الافتراضية لـ Class B؟",
+    "irt": {
+      "a": 1.106914026751384,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_027",
+    "question": "ما هي قناع الشبكة الافتراضية لـ Class C؟",
+    "options": [
+      "255.0.0.0",
+      "255.255.0.0",
+      "255.255.255.0",
+      "255.255.255.255"
+    ],
+    "correct": 2,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هي قناع الشبكة الافتراضية لـ Class C؟",
+    "irt": {
+      "a": 1.2524606617767404,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_028",
+    "question": "ماذا يعني وجود 1 في قناع الشبكة؟",
+    "options": [
+      "جزء من عنوان الشبكة",
+      "جزء من عنوان المضيف",
+      "جزء محجوز",
+      "لا معنى"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ماذا يعني وجود 1 في قناع الشبكة؟",
+    "irt": {
+      "a": 1.1069526138342713,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_029",
+    "question": "ماذا يعني وجود 0 في قناع الشبكة؟",
+    "options": [
+      "جزء من عنوان المضيف",
+      "جزء من عنوان الشبكة",
+      "جزء محجوز",
+      "لا معنى"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ماذا يعني وجود 0 في قناع الشبكة؟",
+    "irt": {
+      "a": 1.2658689773117393,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_030",
+    "question": "ما هو الفرق بين عنوان خاص وعام؟",
+    "options": [
+      "الخاص للاستخدام الداخلي والعام للإنترنت",
+      "لا فرق",
+      "العام أسرع",
+      "الخاص أكثر أماناً"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "applying",
+    "difficulty": 4,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو الفرق بين عنوان خاص وعام؟",
+    "irt": {
+      "a": 1.1468396700224162,
+      "b": 1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "ipv4_q01",
+    "question": "كم بت في عنوان IPv4؟",
+    "options": [
+      "32",
+      "64",
+      "128",
+      "16"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم بت في عنوان IPv4؟",
+    "irt": {
+      "a": 1.0662987584719554,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q02",
+    "question": "كم ثمانية (Octet) في IPv4؟",
+    "options": [
+      "4",
+      "2",
+      "8",
+      "16"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم ثمانية (Octet) في IPv4؟",
+    "irt": {
+      "a": 1.1822730494194096,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q03",
+    "question": "أي فئة تبدأ بـ 10؟",
+    "options": [
+      "Class A",
+      "Class B",
+      "Class C",
+      "Class D"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: أي فئة تبدأ بـ 10؟",
+    "irt": {
+      "a": 1.0787992909750839,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q04",
+    "question": "عنوان loopback هو:",
+    "options": [
+      "127.0.0.1",
+      "192.168.1.1",
+      "10.0.0.1",
+      "8.8.8.8"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عنوان loopback هو:",
+    "irt": {
+      "a": 1.2250129853433904,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q05",
+    "question": "نطاق APIPA هو:",
+    "options": [
+      "169.254.x.x",
+      "10.x.x.x",
+      "172.16.x.x",
+      "192.168.x.x"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: نطاق APIPA هو:",
+    "irt": {
+      "a": 1.0962123686192384,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q06",
+    "question": "NAT يحول عناوين:",
+    "options": [
+      "خاصة إلى عامة",
+      "عامة إلى خاصة",
+      "محلية إلى loopback",
+      "خاصة إلى loopback"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: NAT يحول عناوين:",
+    "irt": {
+      "a": 1.2851274507115624,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q07",
+    "question": "Default Gateway هو:",
+    "options": [
+      "عنوان الراوتر",
+      "عنوان الخادم",
+      "عنوان البث",
+      "عنوان الشبكة"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: Default Gateway هو:",
+    "irt": {
+      "a": 1.2262066856469542,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q08",
+    "question": "قناع Class C الافتراضية:",
+    "options": [
+      "255.255.255.0",
+      "255.255.0.0",
+      "255.0.0.0",
+      "255.255.255.255"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: قناع Class C الافتراضية:",
+    "irt": {
+      "a": 1.1254016881751645,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q09",
+    "question": "عدد العناوين القابلة للاستخدام في /24:",
+    "options": [
+      "254",
+      "255",
+      "256",
+      "253"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عدد العناوين القابلة للاستخدام في /24:",
+    "irt": {
+      "a": 1.216955807500443,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q10",
+    "question": "Class D مخصصة لـ:",
+    "options": [
+      "Multicast",
+      "Experimental",
+      "Private",
+      "Public"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: Class D مخصصة لـ:",
+    "irt": {
+      "a": 1.1975123099987357,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q11",
+    "question": "Class E مخصصة لـ:",
+    "options": [
+      "Experimental",
+      "Multicast",
+      "Private",
+      "Public"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: Class E مخصصة لـ:",
+    "irt": {
+      "a": 1.0726870484209197,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "ipv4_q12",
+    "question": "عنوان broadcast يصل إلى:",
+    "options": [
+      "جميع الأجهزة",
+      "الراوتر فقط",
+      "الخادم فقط",
+      "جهاز واحد"
+    ],
+    "correct": 0,
+    "topic": "ipv4",
+    "subSkill": "ipv4_addr",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عنوان broadcast يصل إلى:",
+    "irt": {
+      "a": 1.0677746183255494,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "ipv4_addr"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_ipv4_addr",
+      "rootCause": "سبب ipv4_addr",
+      "futureImpact": "تأثير ipv4_addr",
+      "remediationVideoQuery": "شرح ipv4_addr"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_001",
+    "question": "ما هو CIDR (Classless Inter-Domain Routing)؟",
+    "options": [
+      "طريقة تمثيل القناع باستخدام عدد البتات بعد /",
+      "نوع من أنواع عناوين IP",
+      "بروتوكول لتوجيه الحزم",
+      "نظام لتخصيص العناوين تلقائياً"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو CIDR (Classless Inter-Domain Routing)؟",
+    "irt": {
+      "a": 1.1958177314311733,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_002",
+    "question": "ماذا يعني /24 في CIDR؟",
+    "options": [
+      "24 بت لشبكة و 8 بت لمضيفين",
+      "24 بت لمضيفين و 8 بت لشبكة",
+      "32 بت كلها للشبكة",
+      "32 بت كلها للمضيفين"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ماذا يعني /24 في CIDR؟",
+    "irt": {
+      "a": 1.0737622723317857,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_003",
+    "question": "كم عدد المضيفين الممكنين في شبكة /24؟",
+    "options": [
+      "254",
+      "255",
+      "256",
+      "253"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /24؟",
+    "irt": {
+      "a": 1.2022845938976756,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_004",
+    "question": "كم عدد المضيفين الممكنين في شبكة /25؟",
+    "options": [
+      "126",
+      "127",
+      "128",
+      "125"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /25؟",
+    "irt": {
+      "a": 1.2617205608485975,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_005",
+    "question": "كم عدد المضيفين الممكنين في شبكة /26؟",
+    "options": [
+      "62",
+      "63",
+      "64",
+      "61"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /26؟",
+    "irt": {
+      "a": 1.073859964610231,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_006",
+    "question": "كم عدد المضيفين الممكنين في شبكة /30؟",
+    "options": [
+      "2",
+      "4",
+      "1",
+      "3"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /30؟",
+    "irt": {
+      "a": 1.1577565336788984,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_007",
+    "question": "كم عدد العناوين الكلية في شبكة /24؟",
+    "options": [
+      "256",
+      "254",
+      "255",
+      "253"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم عدد العناوين الكلية في شبكة /24؟",
+    "irt": {
+      "a": 1.1421470553843318,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_008",
+    "question": "ما هي Wildcard Mask للقناع 255.255.255.0؟",
+    "options": [
+      "0.0.0.255",
+      "255.255.255.0",
+      "0.0.255.255",
+      "255.255.0.0"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هي Wildcard Mask للقناع 255.255.255.0؟",
+    "irt": {
+      "a": 1.2546698147214748,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_009",
+    "question": "كيف نحسب Wildcard Mask من القناع؟",
+    "options": [
+      "نعكس البتات (255 - القناع)",
+      "نضيف 1 لكل بت",
+      "نضرب القناع في 256",
+      "نقسم القناع على 255"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كيف نحسب Wildcard Mask من القناع؟",
+    "irt": {
+      "a": 1.2108261017101494,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_010",
+    "question": "ما هو عنوان الشبكة (Network Address) لعنوان 192.168.1.10/24؟",
+    "options": [
+      "192.168.1.0",
+      "192.168.1.1",
+      "192.168.1.255",
+      "192.168.0.0"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عنوان الشبكة (Network Address) لعنوان 192.168.1.10/24؟",
+    "irt": {
+      "a": 1.1449892067900846,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_011",
+    "question": "ما هو عنوان Broadcast لعنوان 192.168.1.10/24؟",
+    "options": [
+      "192.168.1.255",
+      "192.168.1.0",
+      "192.168.2.255",
+      "192.168.0.255"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو عنوان Broadcast لعنوان 192.168.1.10/24؟",
+    "irt": {
+      "a": 1.0518632969057449,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_012",
+    "question": "كم عدد الأجزاء الفرعية (Subnets) الممكنة من /24 باستخدام /26؟",
+    "options": [
+      "4",
+      "2",
+      "8",
+      "16"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم عدد الأجزاء الفرعية (Subnets) الممكنة من /24 باستخدام /26؟",
+    "irt": {
+      "a": 1.2409064866250499,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_013",
+    "question": "ما هو VLSM (Variable Length Subnet Mask)؟",
+    "options": [
+      "استخدام أقنعة فرعية مختلفة الأحجام في الشبكة",
+      "قناع ثابت لجميع الأجزاء",
+      "طريقة لحساب العناوين الخاصة",
+      "بروتوكول لتوجيه الحزم"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو VLSM (Variable Length Subnet Mask)؟",
+    "irt": {
+      "a": 1.1264077737067848,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_014",
+    "question": "ما هو FLSM (Fixed Length Subnet Mask)؟",
+    "options": [
+      "استخدام قناع واحد لجميع الأجزاء",
+      "استخدام أقنعة مختلفة",
+      "طريقة لحساب المضيفين",
+      "بروتوكول لحساب الشبكات"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو FLSM (Fixed Length Subnet Mask)؟",
+    "irt": {
+      "a": 1.1792864767869304,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_015",
+    "question": "لماذا نستخدم VLSM بدلاً من FLSM؟",
+    "options": [
+      "لتوفير عناوين IP بشكل أكثر كفاءة",
+      "لأنه أسهل",
+      "لأنه أسرع",
+      "لأنه أكثر أماناً"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: لماذا نستخدم VLSM بدلاً من FLSM؟",
+    "irt": {
+      "a": 1.2318097429708856,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_016",
+    "question": "ما هو Supernetting؟",
+    "options": [
+      "تجميع شبكات متعددة في شبكة واحدة أكبر",
+      "تقسيم شبكة إلى شبكات أصغر",
+      "حذف شبكات غير مستخدمة",
+      "دمج عناوين IP"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو Supernetting؟",
+    "irt": {
+      "a": 1.0645535617353583,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_017",
+    "question": "ما هو الفرق بين Subnetting و Supernetting؟",
+    "options": [
+      "Subnetting يقسم شبكة كبيرة، Supernetting يجمع شبكات صغيرة",
+      "لا فرق",
+      "Supernetting يقسم و Subnetting يجمع",
+      "كلاهما يقسم الشبكات"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو الفرق بين Subnetting و Supernetting؟",
+    "irt": {
+      "a": 1.1029374830030674,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_018",
+    "question": "كم بت نستعير من المضيفين لإنشاء 8 أجزاء فرعية؟",
+    "options": [
+      "3",
+      "2",
+      "4",
+      "1"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم بت نستعير من المضيفين لإنشاء 8 أجزاء فرعية؟",
+    "irt": {
+      "a": 1.04511244093096,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_019",
+    "question": "كم بت نستعير من المضيفين لإنشاء 16 جزء فرعي؟",
+    "options": [
+      "4",
+      "3",
+      "2",
+      "5"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم بت نستعير من المضيفين لإنشاء 16 جزء فرعي؟",
+    "irt": {
+      "a": 1.0536166558617786,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_020",
+    "question": "كم بت نستعير من المضيفين لإنشاء 32 جزء فرعي؟",
+    "options": [
+      "5",
+      "4",
+      "3",
+      "6"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم بت نستعير من المضيفين لإنشاء 32 جزء فرعي؟",
+    "irt": {
+      "a": 1.1287558460208413,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_021",
+    "question": "كم بت نستعير من المضيفين لإنشاء 64 جزء فرعي؟",
+    "options": [
+      "6",
+      "5",
+      "4",
+      "7"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم بت نستعير من المضيفين لإنشاء 64 جزء فرعي؟",
+    "irt": {
+      "a": 1.1266212286533606,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_022",
+    "question": "ما هو أول عنوان قابل للاستخدام في شبكة فرعية؟",
+    "options": [
+      "أول عنوان بعد عنوان الشبكة",
+      "عنوان الشبكة",
+      "عنوان البث",
+      "عنوان الراوتر"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو أول عنوان قابل للاستخدام في شبكة فرعية؟",
+    "irt": {
+      "a": 1.0731618731851174,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_023",
+    "question": "ما هو آخر عنوان قابل للاستخدام في شبكة فرعية؟",
+    "options": [
+      "عنوان البث",
+      "عنوان الشبكة",
+      "أول عنوان",
+      "عنوان الراوتر"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 2,
+    "errorPattern": "memorization",
+    "explanation": "شرح: ما هو آخر عنوان قابل للاستخدام في شبكة فرعية؟",
+    "irt": {
+      "a": 1.217899689204775,
+      "b": -1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_024",
+    "question": "كم عدد المضيفين الممكنين في شبكة /23؟",
+    "options": [
+      "510",
+      "512",
+      "511",
+      "509"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /23؟",
+    "irt": {
+      "a": 1.1455377691919717,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_025",
+    "question": "كم عدد المضيفين الممكنين في شبكة /22؟",
+    "options": [
+      "1022",
+      "1024",
+      "1023",
+      "1021"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /22؟",
+    "irt": {
+      "a": 1.2159014639432928,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_026",
+    "question": "كم عدد المضيفين الممكنين في شبكة /21؟",
+    "options": [
+      "2046",
+      "2048",
+      "2047",
+      "2045"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: كم عدد المضيفين الممكنين في شبكة /21؟",
+    "irt": {
+      "a": 1.0970757814391818,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_027",
+    "question": "ما هو CIDR لقناع 255.255.254.0؟",
+    "options": [
+      "/23",
+      "/24",
+      "/22",
+      "/25"
+    ],
+    "correct": 2,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو CIDR لقناع 255.255.254.0؟",
+    "irt": {
+      "a": 1.0413407369066998,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_028",
+    "question": "ما هو CIDR لقناع 255.255.252.0؟",
+    "options": [
+      "/22",
+      "/21",
+      "/23",
+      "/24"
+    ],
+    "correct": 2,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو CIDR لقناع 255.255.252.0؟",
+    "irt": {
+      "a": 1.1095159950987696,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_029",
+    "question": "ما هو CIDR لقناع 255.255.248.0؟",
+    "options": [
+      "/21",
+      "/20",
+      "/22",
+      "/23"
+    ],
+    "correct": 2,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "understanding",
+    "difficulty": 3,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو CIDR لقناع 255.255.248.0؟",
+    "irt": {
+      "a": 1.056551670066434,
+      "b": 0,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_030",
+    "question": "ما هو CIDR لقناع 255.255.240.0؟",
+    "options": [
+      "/20",
+      "/19",
+      "/21",
+      "/22"
+    ],
+    "correct": 2,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "applying",
+    "difficulty": 4,
+    "errorPattern": "conceptual",
+    "explanation": "شرح: ما هو CIDR لقناع 255.255.240.0؟",
+    "irt": {
+      "a": 1.1244223843002452,
+      "b": 1.5,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": false
+  },
+  {
+    "id": "sub_q01",
+    "question": "CIDR يعني:",
+    "options": [
+      "Classless Inter-Domain Routing",
+      "Class ID Routing",
+      "CID Router",
+      "Computer ID Routing"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: CIDR يعني:",
+    "irt": {
+      "a": 1.1776931215725543,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q02",
+    "question": "/24 يعني:",
+    "options": [
+      "24 بت شبكة و 8 مضيف",
+      "24 مضيف و 8 شبكة",
+      "32 شبكة",
+      "32 مضيف"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: /24 يعني:",
+    "irt": {
+      "a": 1.2451613846318463,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q03",
+    "question": "عدد المضيفين في /24:",
+    "options": [
+      "254",
+      "255",
+      "256",
+      "253"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عدد المضيفين في /24:",
+    "irt": {
+      "a": 1.0584957051319683,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q04",
+    "question": "عدد المضيفين في /25:",
+    "options": [
+      "126",
+      "127",
+      "128",
+      "125"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عدد المضيفين في /25:",
+    "irt": {
+      "a": 1.2804953358399362,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q05",
+    "question": "عدد المضيفين في /26:",
+    "options": [
+      "62",
+      "63",
+      "64",
+      "61"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عدد المضيفين في /26:",
+    "irt": {
+      "a": 1.0787779670488262,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q06",
+    "question": "Wildcard Mask لـ 255.255.255.0:",
+    "options": [
+      "0.0.0.255",
+      "255.255.255.0",
+      "0.0.255.255",
+      "255.255.0.0"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: Wildcard Mask لـ 255.255.255.0:",
+    "irt": {
+      "a": 1.099984025005643,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q07",
+    "question": "كيف نحسب Wildcard:",
+    "options": [
+      "255 - القناع",
+      "255 + القناع",
+      "القناع × 2",
+      "القناع ÷ 2"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كيف نحسب Wildcard:",
+    "irt": {
+      "a": 1.224037146373246,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q08",
+    "question": "عنوان الشبكة لـ 192.168.1.10/24:",
+    "options": [
+      "192.168.1.0",
+      "192.168.1.1",
+      "192.168.1.255",
+      "192.168.0.0"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عنوان الشبكة لـ 192.168.1.10/24:",
+    "irt": {
+      "a": 1.1933651439132258,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q09",
+    "question": "عنوان Broadcast لـ 192.168.1.10/24:",
+    "options": [
+      "192.168.1.255",
+      "192.168.1.0",
+      "192.168.2.255",
+      "192.168.0.255"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: عنوان Broadcast لـ 192.168.1.10/24:",
+    "irt": {
+      "a": 1.2724930148578475,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q10",
+    "question": "كم جزء فرعي من /24 إلى /26:",
+    "options": [
+      "4",
+      "2",
+      "8",
+      "16"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: كم جزء فرعي من /24 إلى /26:",
+    "irt": {
+      "a": 1.2550352184315756,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q11",
+    "question": "VLSM تعني:",
+    "options": [
+      "أقنعة فرعية مختلفة الأحجام",
+      "قناع ثابت",
+      "طريقة حجز",
+      "بروتوكول توجيه"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: VLSM تعني:",
+    "irt": {
+      "a": 1.1158801672654024,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
+  },
+  {
+    "id": "sub_q12",
+    "question": "Supernetting هو:",
+    "options": [
+      "تجميع شبكات",
+      "تقسيم شبكة",
+      "حذف شبكات",
+      "دمج عناوين"
+    ],
+    "correct": 0,
+    "topic": "subnetting",
+    "subSkill": "subnet_calc",
+    "cognitiveLevel": "remembering",
+    "difficulty": 1,
+    "errorPattern": "memorization",
+    "explanation": "شرح: Supernetting هو:",
+    "irt": {
+      "a": 1.2261646324403488,
+      "b": -3,
+      "c": 0.2
+    },
+    "subSkills": [
+      "subnet_calc"
+    ],
+    "diagnostic": {
+      "errorPattern": "misc_subnet_calc",
+      "rootCause": "سبب subnet_calc",
+      "futureImpact": "تأثير subnet_calc",
+      "remediationVideoQuery": "شرح subnet_calc"
+    },
+    "prerequisites": [],
+    "isQuick": true
   }
 ];

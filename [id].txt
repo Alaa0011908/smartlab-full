@@ -1,0 +1,1087 @@
+// pages/scenarios/[id].js
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Navbar from "../../components/Navbar";
+
+const FIVE_STAGES = [
+  { id: 1, label: 'تحديد الاحتياجات', icon: '📋', color: '#0EA5E9' },
+  { id: 2, label: 'التفاوض على السعر', icon: '💰', color: '#F59E0B' },
+  { id: 3, label: 'أسئلة التسليم', icon: '📦', color: '#8B5CF6' },
+  { id: 4, label: 'رفع تصميم الشبكة', icon: '📤', color: '#10B981' },
+  { id: 5, label: 'التسليم النهائي', icon: '🎉', color: '#EF4444' }
+];
+
+const STAGE_QUESTIONS_HINTS = {
+  1: [
+    'كم عدد الأجهزة؟',
+    'ما نوع الإنترنت المتاح؟',
+    'هل تحتاج شبكة منفصلة للضيوف؟',
+    'ما الميزانية التقريبية؟',
+    'كم مساحة المكان أو عدد الطوابق؟'
+  ],
+  2: [],
+  3: [
+    'متى سيكون التسليم؟',
+    'كم مدة التعديلات المجانية؟',
+    'ما التعديلات المسموحة بعد التسليم؟'
+  ],
+  4: [],
+  5: []
+};
+
+export default function ScenarioDetail() {
+  const router = useRouter();
+  const { id } = router.query;
+  const fileInputRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
+  // ====== حالة المحادثة ======
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showTips, setShowTips] = useState(false);
+  const [conversationScore, setConversationScore] = useState({ total: 0, interactions: 0, average: 0 });
+  const [lastFeedback, setLastFeedback] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const [userLevel, setUserLevel] = useState('beginner');
+  const [userName, setUserName] = useState('زميلنا');
+
+  // ====== حالة المراحل ======
+  const [currentStage, setCurrentStage] = useState(1);
+  const [stageDataSnapshot, setStageDataSnapshot] = useState(null);
+  const [stageBanner, setStageBanner] = useState(null);
+
+  // ====== حالة رفع الملف (المرحلة 4) ======
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [confirmUploadMessage, setConfirmUploadMessage] = useState('');
+
+  // ====== قراءة بيانات المستخدم ======
+  useEffect(() => {
+    try {
+      const analysis = JSON.parse(localStorage.getItem('latestAnalysis') || 'null');
+      if (analysis && analysis.score) {
+        if (analysis.score >= 75) setUserLevel('advanced');
+        else if (analysis.score >= 50) setUserLevel('intermediate');
+        else setUserLevel('beginner');
+      }
+      const savedName = localStorage.getItem('userName') || 'زميلنا';
+      if (savedName) setUserName(savedName);
+    } catch (e) { console.error(e); }
+  }, []);
+
+  // ====== تمرير تلقائي للأسفل ======
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
+
+  const scenarios = {
+    cafe: {
+      title: 'ملف العميل',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&fit=crop&q=80',
+      clientName: 'أبو أحمد',
+      role: 'صاحب المقهى',
+      difficulty: 'سهل',
+      projectLabel: 'تصميم شبكة مقهى كوفي شوب ☕',
+      description: 'صاحب مقهى يطلب منك تصميم شبكة لـ 50 زبون يومياً + كاشير + مكاتب إدارة.',
+      personalityTags: [
+        { text: '⚡ متطلب', bg: '#FEE2E2', color: '#991B1B' },
+        { text: '⏱️ متردد', bg: '#E0F2FE', color: '#0369A1' },
+        { text: '📊 يركز على الميزانية', bg: '#F1F5F9', color: '#475569' }
+      ],
+      personality: 'يركز كثيراً على الميزانية المحدودة وتغطية كامل صالة الجلوس وضمان استقرار الإشارة.',
+      features: [
+        { icon: '⏱️', text: '50 زبون يومياً', highlight: true },
+        { icon: '📁', text: 'كاشير + مكاتب إدارة', highlight: false }
+      ],
+      tasks: [
+        'كم Access Point تحتاج؟',
+        'كيف تصمم الـ VLANs؟',
+        'ما هي التجهيزات المطلوبة؟'
+      ],
+      focus: 'طرح التجهيزات المناسبة وتأمين الشبكة',
+      greeting: 'مرحباً يا باش مهندس! أنا أبو أحمد صاحب مقهى كوفي شوب. عندي مشروع تصميم شبكة للمقهى وأنا متابع تفاصيلك بتمعن.\n\nأولاً: قبل أي شيء، أريدك أن تسألني عن متطلبات المشروع — كم عدد الأجهزة المتوقعة، نوع الإنترنت المتاح عندي، هل أحتاج شبكة ضيوف منفصلة، ميزانيتي التقريبية، وكم مساحة المكان وعدد الطوابق؟\n\nهذه التفاصيل مهمة جداً قبل ما نبدأ في أي عرض سعر أو تصميم. ابدأ وأنا معك خطوة بخطوة! 👋'
+    },
+    hospital: {
+      title: 'ملف العميل',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&fit=crop&q=80',
+      clientName: 'د. خالد',
+      role: 'مدير المركز الطبي',
+      difficulty: 'متوسط',
+      projectLabel: 'تصميم شبكة مركز طبي صغير 🏥',
+      description: 'مركز طبي يحتاج شبكة آمنة للأقسام الطبية، الاستقبال والعيادات الخارجية.',
+      personalityTags: [
+        { text: '⚡ دقيق للغاية', bg: '#FEE2E2', color: '#991B1B' },
+        { text: '⏱️ سريع الرد', bg: '#CCFBF1', color: '#0F766E' },
+        { text: '🔒 يركز على الأمن', bg: '#F1F5F9', color: '#475569' }
+      ],
+      personality: 'يهتم جداً بأمن البيانات وسرعة الوصول للملفات الطبية الحساسة ومنع أي تداخل خارجي.',
+      features: [
+        { icon: '🏥', text: 'عيادات ومختبرات متعددة', highlight: true },
+        { icon: '📁', text: 'شبكة أطباء وإدارة منفصلة', highlight: false }
+      ],
+      tasks: [
+        'كيف تفصل الأقسام أمنياً؟',
+        'ما هي متطلبات الأمان والـ Firewall؟',
+        'كيف تضمن استمرارية الخدمة والسرعة؟'
+      ],
+      focus: 'عزل الأقسام أمنياً وضمان استقرار وسرعة الخدمة',
+      greeting: 'أهلاً وسهلاً بك، أنا د. خالد مدير المركز الطبي. سعيد بالتعاقد معك على تصميم شبكتنا الجديدة.\n\nقبل الغوص في التفاصيل التقنية، أحتاج منك أن تسألني عن متطلبات المركز: كم عدد الأجهزة، نوع الإنترنت لدينا، شبكة الضيوف والمرضى، ميزانية المشروع، وكم عدد الطوابق ومساحة المركز.\n\nهذه المعلومات ضرورية جداً بالنسبة لي، لأننا نتعامل مع بيانات حساسة للمرضى. تفضل وابدأ أسئلتك!'
+    },
+    office: {
+      title: 'ملف العميل',
+      avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&fit=crop&q=80',
+      clientName: 'أ. سارة',
+      role: 'مسؤولة التقنية',
+      difficulty: 'متقدم',
+      projectLabel: 'تصميم شبكة شركة ناشئة 💻',
+      description: 'شركة ناشئة تطلب شبكة لـ 100 موظف في طابقين مع نظام VPN للعمل عن بعد.',
+      personalityTags: [
+        { text: '⚡ ملمة بالتقنية', bg: '#FEF3C7', color: '#92400E' },
+        { text: '⏱️ مواكبة للتطور', bg: '#E0F2FE', color: '#0369A1' },
+        { text: '📈 يركز على النتائج', bg: '#F1F5F9', color: '#475569' }
+      ],
+      personality: 'تهتم بقابلية التوسع مستقبلاً، سهولة الإدارة اللاسلكية، وتأمين الاتصالات البعيدة.',
+      features: [
+        { icon: '💻', text: '100 موظف + طابقين', highlight: true },
+        { icon: '🔒', text: 'اتصال VPN خارجي آمن', highlight: false }
+      ],
+      tasks: [
+        'ما هي طريقة توزيع الـ IPs الملائمة؟',
+        'كيف تعد الـ VPN لتأمين الموظفين بالخارج؟',
+        'ما هي التجهيزات المطلوبة لربط الطابقين؟'
+      ],
+      focus: 'توزيع الـ IPs وإعداد الـ VPN الآمن للموظفين',
+      greeting: 'مرحباً! أنا سارة، مسؤولة التقنية في الشركة الناشئة. سعيدة جداً بالتعاون معك.\n\nعندنا شركة تنمو بسرعة، ونحتاج شبكة مرنة وقابلة للتوسع. قبل ما نبدأ، عندي متطلبات: ابدأ بسؤالي الأساسية — كم عدد الأجهزة المتوقع، نوع الإنترنت لدينا، هل نحتاج شبكة ضيوف/موظفين منفصلة، ميزانيتنا التقريبية لهذا العام، وكم عدد الطوابق ومساحة المقر.\n\nأنا مهتمة جداً بالتفاصيل، لذا لا تتردد في السؤال عن أي شيء تريده. نبدأ!'
+    }
+  };
+
+  const scenario = scenarios[id] || scenarios.cafe;
+
+  const getDifficultyBadgeStyle = (difficulty) => {
+    switch (difficulty) {
+      case 'متقدم': return { backgroundColor: '#FEE2E2', color: '#991B1B' };
+      case 'متوسط': return { backgroundColor: '#FEF3C7', color: '#92400E' };
+      default: return { backgroundColor: 'rgba(254,221,190)', color: '#032639' };
+    }
+  };
+
+  const getFeedbackBadge = (type) => {
+    const map = {
+      excellent: { bg: '#D1FAE5', color: '#065F46', label: 'ممتاز 🌟' },
+      good_incomplete: { bg: '#FEF3C7', color: '#92400E', label: 'جيد مع نقص 🟡' },
+      positive: { bg: '#DBEAFE', color: '#1E40AF', label: 'إيجابي ✅' },
+      incorrect: { bg: '#FEE2E2', color: '#991B1B', label: 'بحاجة لمراجعة ❌' },
+      neutral: { bg: '#F1F5F9', color: '#475569', label: 'محايد ➖' },
+      default: { bg: '#F1F5F9', color: '#475569', label: '—' }
+    };
+    return map[type] || map.default;
+  };
+
+  // ====== فتح نافذة اختيار الملف ======
+  const openFileDialog = () => {
+    fileInputRef.current?.click();
+  };
+
+  // ====== اختيار الملف ======
+  const onFilePicked = (e) => {
+    const file = e.target.files?.[0];
+    if (file) handleSelectedFile(file);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleSelectedFile = (file) => {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (!['pkt', 'pka'].includes(ext)) {
+      setConfirmUploadMessage('⚠️ الرجاء اختيار ملف Packet Tracer (.pkt أو .pka) فقط.');
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      setConfirmUploadMessage('⚠️ حجم الملف كبير جداً (أكبر من 25 ميجابايت).');
+      return;
+    }
+    setUploadedFile(file);
+    setConfirmUploadMessage(`📎 تم اختيار الملف: ${file.name} (${Math.round(file.size / 1024)} كيلوبايت). اضغط على "إرسال الملف للعميل" للمتابعة.`);
+  };
+
+  // ====== أحداث السحب والإفلات ======
+  const onDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+  const onDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) handleSelectedFile(file);
+  };
+
+  // ====== إرسال الملف المرفوع إلى الذكاء الاصطناعي ======
+  const sendUploadedFile = async () => {
+    if (!uploadedFile || isLoading) return;
+    setIsLoading(true);
+
+    const userMsg = {
+      id: Date.now(),
+      sender: 'user',
+      text: `قمت برفع ملف تصميم الشبكة: ${uploadedFile.name}`,
+      file: uploadedFile.name,
+      isFileOnly: true
+    };
+    setMessages(prev => [...prev, userMsg]);
+
+    try {
+      const response = await fetch('/api/scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scenarioId: id,
+          message: `[ملف مرفوع بواسطة المستخدم] ${uploadedFile.name}`,
+          history: messages.map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text
+          })),
+          userLevel,
+          conversationStage: currentStage,
+          stageDataSnapshot,
+          fileInfo: { uploaded: true, name: uploadedFile.name, size: uploadedFile.size }
+        })
+      });
+
+      if (!response.ok) throw new Error('API HTTP error');
+      const data = await response.json();
+      applyApiResponse(data);
+      setConfirmUploadMessage('✅ تم إرسال الملف للعميل بنجاح!');
+    } catch (e) {
+      console.error(e);
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1, sender: 'client',
+        text: '✅ تم استلام ملف المشروع بنجاح! شكراً جزيلاً على الجهد المبذول. سأنتقل الآن إلى التسليم النهائي.'
+      }]);
+      setCurrentStage(prev => Math.min(5, prev + 1));
+      setStageBanner({ type: 'advance', text: '➡️ تم الانتقال إلى المرحلة 5: التسليم النهائي' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ====== تطبيق الرد من الـ API على الواجهة ======
+  const applyApiResponse = (data) => {
+    const reply = data.reply || data.message;
+    const fb = data.feedback;
+
+    const clientMsg = {
+      id: Date.now() + 1,
+      sender: 'client',
+      text: reply,
+      feedback: fb,
+      score: data.score,
+      meta: data.meta
+    };
+    setMessages(prev => [...prev, clientMsg]);
+
+    setLastFeedback(fb);
+    setSuggestions(data.suggestions || []);
+
+    if (typeof data.score === 'number') {
+      setConversationScore(prev => {
+        const interactions = prev.interactions + 1;
+        const total = prev.total + (data.score * 10);
+        return { interactions, total, average: Math.round((total / interactions) * 10) / 10 };
+      });
+    }
+
+    if (typeof data.stage === 'number' && data.stage !== currentStage) {
+      const oldStage = currentStage;
+      setCurrentStage(data.stage);
+      setStageBanner({
+        type: 'advance',
+        text: `➡️ تم الانتقال من المرحلة ${oldStage} إلى المرحلة ${data.stage}: ${FIVE_STAGES.find(s => s.id === data.stage)?.label || ''}`
+      });
+      setTimeout(() => setStageBanner(null), 5000);
+    } else if (data.stageChanged) {
+      setStageBanner({ type: 'advance', text: `المرحلة الحالية: ${data.stageName || ''}` });
+      setTimeout(() => setStageBanner(null), 4000);
+    }
+
+    if (data.stageDataSnapshot) {
+      setStageDataSnapshot(data.stageDataSnapshot);
+    }
+  };
+
+  // ====== إرسال رسالة عادية ======
+  const handleSend = async (directText = null) => {
+    const textToSend = (typeof directText === 'string' ? directText.trim() : inputValue.trim());
+    if (!textToSend && !uploadedFile || isLoading) return;
+    if (!textToSend) return;
+
+    // 🔥 Log للتحقق
+    console.log('[UI] Sending message, stage:', currentStage);
+
+    const userMessage = {
+      id: Date.now(),
+      sender: 'user',
+      text: textToSend,
+      file: null
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scenarioId: id,
+          message: textToSend,
+          history: messages.map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text
+          })),
+          userLevel,
+          conversationStage: currentStage,
+          stageDataSnapshot
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'API Error');
+      }
+      const data = await response.json();
+      applyApiResponse(data);
+    } catch (error) {
+      console.error('Chat fallback triggered:', error);
+      await new Promise(r => setTimeout(r, 900));
+      const fallbackReplies = {
+        1: 'سؤال جيد! الآن حاول أن تسألني عن: عدد الأجهزة، الإنترنت، شبكة الضيوف، الميزانية، أو مساحة المكان.',
+        2: '🤔 دعني أفكر في السعر الذي عرضته. حاول أن تشرح لماذا هذا السعر مناسب وكيف سيعود عليّ بفائدة.',
+        3: 'إجابة مقبولة. الآن أريد أن أسألك عن: موعد التسليم، مدة التعديلات المجانية، وما التعديلات المسموحة بعد التسليم؟',
+        4: 'حسناً. تفضل ارفق ملف تصميم الشبكة (.pkt أو .pka) لنرى التصميم العملي.',
+        5: 'تم تسليم المشروع بنجاح! 🎉 شكراً للتعاون، وأتمنى لك التوفيق في مشاريعك القادمة.'
+      };
+      const fallback = {
+        reply: fallbackReplies[currentStage] || 'ممتاز! استمر في التفاعل.',
+        feedback: { score: 0.5, type: 'neutral', note: 'رد احتياطي', points: ['جرب مجدداً عند توفر الاتصال بالإنترنت'] },
+        score: 0.5,
+        suggestions: [],
+        stage: currentStage,
+        stageChanged: false,
+        ok: true
+      };
+      applyApiResponse(fallback);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ====== رسالة ترحيب أولية ======
+  useEffect(() => {
+    if (messages.length === 0 && id) {
+      setMessages([{
+        id: 'welcome-' + Date.now(),
+        sender: 'client',
+        text: scenario.greeting
+      }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  // ====== ملخص حالة المرحلة 1 و3 ======
+  const getStageChecklist = () => {
+    if (currentStage === 1) {
+      const answered = new Set(stageDataSnapshot?.stage1?.answeredQuestionIds || []);
+      return STAGE_QUESTIONS_HINTS[1].map((q, idx) => {
+        const ids = ['devices', 'internet', 'guest_vlan', 'budget', 'space'];
+        const done = answered.has(ids[idx]);
+        return { text: q, done };
+      });
+    }
+    if (currentStage === 3) {
+      const answered = new Set(stageDataSnapshot?.stage3?.answeredQuestionIds || []);
+      return STAGE_QUESTIONS_HINTS[3].map((q, idx) => {
+        const ids = ['delivery_time', 'free_changes', 'allowed_changes'];
+        const done = answered.has(ids[idx]);
+        return { text: q, done };
+      });
+    }
+    return [];
+  };
+
+  const stageChecklist = getStageChecklist();
+
+  return (
+    <div style={styles.container}>
+      <style jsx global>{`
+        @media (max-width: 1024px) {
+          .workspace-layout { flex-direction: column !important; }
+          .sidebar-layout { width: 100% !important; order: -1; }
+          .chat-card-layout { height: auto !important; min-height: 60vh; }
+          .desktop-nav { display: none !important; }
+        }
+      `}</style>
+
+      <Navbar />
+
+      <main style={styles.mainContent}>
+        <div style={styles.workspace} className="workspace-layout">
+
+          {/* ====== قسم المحادثة ====== */}
+          <section style={styles.chatSection}>
+
+            {/* Stepper: 5 مراحل */}
+            <div style={styles.stepperContainer}>
+              <div style={styles.mainStepsRow}>
+                {FIVE_STAGES.map((step, idx) => {
+                  const active = step.id === currentStage;
+                  const done = step.id < currentStage;
+                  return (
+                    <React.Fragment key={step.id}>
+                      <div style={styles.stepWrapper}>
+                        <div style={{
+                          ...styles.stepCircle,
+                          width: '36px', height: '36px',
+                          backgroundColor: done ? '#10B981' : active ? step.color : '#E2E8F0',
+                          color: (done || active) ? 'white' : '#64748B',
+                          boxShadow: active ? `0 0 0 4px ${step.color}33` : 'none',
+                          transition: 'all 0.3s'
+                        }}>
+                          {done ? '✓' : <span>{step.icon}</span>}
+                        </div>
+                        <span style={{
+                          ...styles.stepLabel,
+                          fontWeight: active ? '700' : done ? '600' : '500',
+                          color: active ? '#0F172A' : done ? '#065F46' : '#64748B'
+                        }}>
+                          المرحلة {step.id}: {step.label}
+                        </span>
+                      </div>
+                      {idx < FIVE_STAGES.length - 1 && (
+                        <div style={{
+                          ...styles.stepLine,
+                          backgroundColor: currentStage > step.id ? '#10B981' : '#E2E8F0'
+                        }} />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+
+              {stageBanner && (
+                <div style={{
+                  padding: '10px 14px', borderRadius: '10px',
+                  backgroundColor: '#ECFDF5', color: '#065F46',
+                  fontWeight: '700', fontSize: '0.9rem',
+                  border: '1px solid #6EE7B7', textAlign: 'center'
+                }}>
+                  {stageBanner.text}
+                </div>
+              )}
+
+              {stageChecklist.length > 0 && (
+                <div style={{
+                  marginTop: '0.5rem',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#F8FAFC',
+                  border: '1px solid #E2E8F0',
+                  display: 'flex', flexDirection: 'column', gap: '6px'
+                }}>
+                  <div style={{ fontWeight: '700', color: '#0F172A', fontSize: '0.9rem', marginBottom: '4px' }}>
+                    ✅ قائمة المتطلبات الإلزامية لهذه المرحلة
+                  </div>
+                  {stageChecklist.map((item, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.88rem' }}>
+                      <span style={{
+                        width: '20px', height: '20px', borderRadius: '50%',
+                        border: `2px solid ${item.done ? '#10B981' : '#CBD5E1'}`,
+                        backgroundColor: item.done ? '#10B981' : 'white',
+                        color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '0.7rem', fontWeight: 'bold', transition: 'all 0.3s'
+                      }}>
+                        {item.done ? '✓' : i + 1}
+                      </span>
+                      <span style={{
+                        color: item.done ? '#065F46' : '#475569',
+                        textDecoration: item.done ? 'line-through' : 'none',
+                        opacity: item.done ? 0.85 : 1
+                      }}>
+                        {item.text}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* بطاقة المحادثة */}
+            <div style={styles.chatCard} className="chat-card-layout">
+              <div style={styles.chatCardHeader}>
+                <div style={styles.clientStatus}>
+                  <span style={styles.onlineDot}></span>
+                  الدردشة مع: <strong>{scenario.clientName}</strong> · المرحلة {currentStage}/5
+                </div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {conversationScore.interactions > 0 && (
+                    <div style={{
+                      padding: '4px 12px', borderRadius: '14px',
+                      backgroundColor: '#DBEAFE', color: '#1E40AF',
+                      fontSize: '0.8rem', fontWeight: '700'
+                    }}>
+                      المتوسط: {conversationScore.average.toFixed(1)} / 10
+                    </div>
+                  )}
+                  <div style={{ ...styles.difficultyBadge, ...getDifficultyBadgeStyle(scenario.difficulty) }}>
+                    الصعوبة: {scenario.difficulty}
+                  </div>
+                </div>
+              </div>
+
+              {/* منطقة الرسائل */}
+              <div style={styles.messagesArea}>
+                <div style={styles.simulationStartPill}>
+                  {scenario.projectLabel} · المحاكي يعمل حالياً بالذكاء الاصطناعي
+                </div>
+
+                {messages.map((msg) => {
+                  const isUser = msg.sender === 'user';
+                  const fb = msg.feedback;
+                  const fbBadge = fb ? getFeedbackBadge(fb.type) : null;
+                  return (
+                    <div key={msg.id} style={isUser ? styles.userMessageRow : styles.clientMessageRow}>
+                      {isUser ? (
+                        <div style={styles.messageBubbleUser}>
+                          {msg.text}
+                          {msg.file && <div style={styles.fileAttachedPill}>📎 {msg.file}</div>}
+                        </div>
+                      ) : (
+                        <>
+                          <img src={scenario.avatar} alt={scenario.clientName} style={styles.avatar} />
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <div style={styles.messageBubbleClient}>
+                              <div style={{ whiteSpace: 'pre-line', lineHeight: '1.7' }}>
+                                {msg.text}
+                              </div>
+                              {msg.file && <div style={styles.fileAttachedPill}>📎 {msg.file}</div>}
+                            </div>
+                            {fbBadge && (
+                              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                <span style={{
+                                  padding: '2px 10px', borderRadius: '12px', fontSize: '0.75rem',
+                                  fontWeight: '700', backgroundColor: fbBadge.bg, color: fbBadge.color
+                                }}>
+                                  {fbBadge.label} · {Math.round((msg.score || 0) * 100)}%
+                                </span>
+                                {fb?.note && (
+                                  <span style={{
+                                    fontSize: '0.78rem', color: '#64748B',
+                                    padding: '2px 10px', backgroundColor: '#F1F5F9', borderRadius: '10px'
+                                  }}>
+                                    💬 {fb.note}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* منطقة رفع الملف للمرحلة 4 */}
+                {currentStage === 4 && !uploadedFile && (
+                  <div
+                    onDragOver={onDragOver}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
+                    onClick={openFileDialog}
+                    style={{
+                      ...styles.dropZone,
+                      borderColor: isDragging ? '#10B981' : '#CBD5E1',
+                      backgroundColor: isDragging ? '#ECFDF5' : '#FFFFFF',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      accept=".pkt,.pka"
+                      onChange={onFilePicked}
+                    />
+                    <div style={{ fontSize: '56px', marginBottom: '8px' }}>📤</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: '700', color: '#0F172A' }}>
+                      منطقة رفع مشروع Packet Tracer
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#64748B', marginTop: '4px', textAlign: 'center', maxWidth: '420px' }}>
+                      اسحب وأفلت الملف هنا <strong>أو</strong> اضغط في أي مكان داخل المربع لاختيار الملف
+                    </div>
+                    <div style={{
+                      marginTop: '14px',
+                      padding: '6px 14px',
+                      backgroundColor: '#F0FDF4',
+                      color: '#065F46',
+                      borderRadius: '16px',
+                      fontSize: '0.8rem',
+                      fontWeight: '600',
+                      border: '1px solid #86EFAC'
+                    }}>
+                      ✅ الملفات المسموحة: .pkt  ·  .pka (Packet Tracer)
+                    </div>
+                  </div>
+                )}
+
+                {isLoading && (
+                  <div style={styles.clientMessageRow}>
+                    <img src={scenario.avatar} alt={scenario.clientName} style={styles.avatar} />
+                    <div style={styles.messageBubbleClient}>
+                      <span style={styles.typingText}>يقوم {scenario.clientName} بالرد وتحليل رسالتك بواسطة الذكاء الاصطناعي...</span>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* منطقة الاقتراحات أسفل الرسائل */}
+              {suggestions.length > 0 && (
+                <div style={styles.suggestionsBar}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: '700', color: '#475569', marginBottom: '8px' }}>
+                    💡 اقتراحات للمرحلة الحالية
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {suggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleSend(s)}
+                        disabled={isLoading}
+                        style={styles.suggestionPill}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* منطقة إدخال النص */}
+              <div style={styles.inputContainer}>
+
+                {currentStage === 4 && uploadedFile && (
+                  <div style={{
+                    marginBottom: '12px', padding: '12px 14px',
+                    borderRadius: '12px', backgroundColor: '#ECFDF5',
+                    border: '1px solid #6EE7B7',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap'
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: '700', color: '#065F46', fontSize: '0.92rem' }}>
+                        📎 الملف المختار: {uploadedFile.name}
+                      </div>
+                      <div style={{ fontSize: '0.82rem', color: '#047857', marginTop: '2px' }}>
+                        حجم الملف: {Math.round(uploadedFile.size / 1024)} كيلوبايت
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => { setUploadedFile(null); setConfirmUploadMessage(''); }}
+                        style={{
+                          padding: '6px 14px', borderRadius: '8px',
+                          border: '1px solid #D1D5DB', backgroundColor: 'white',
+                          color: '#374151', fontWeight: '600', cursor: 'pointer'
+                        }}
+                      >
+                        تغيير الملف
+                      </button>
+                      <button
+                        onClick={sendUploadedFile}
+                        disabled={isLoading}
+                        style={{
+                          padding: '6px 18px', borderRadius: '8px',
+                          backgroundColor: '#10B981', color: 'white',
+                          fontWeight: '700', border: 'none', cursor: isLoading ? 'not-allowed' : 'pointer',
+                          opacity: isLoading ? 0.6 : 1
+                        }}
+                      >
+                        إرسال الملف للعميل →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {confirmUploadMessage && (
+                  <div style={{
+                    marginBottom: '10px', fontSize: '0.85rem', color: '#1F2937',
+                    padding: '6px 12px', borderRadius: '8px', backgroundColor: '#FEF9C3',
+                    border: '1px solid #FDE047'
+                  }}>
+                    {confirmUploadMessage}
+                  </div>
+                )}
+
+                <textarea
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder={
+                    currentStage === 1 ? 'اكتب سؤالك للعميل... (مثال: كم عدد الأجهزة المتوقعة؟)' :
+                    currentStage === 2 ? 'اكتب عرض السعر والتبرير...' :
+                    currentStage === 3 ? 'أجب على سؤال التسليم الحالي...' :
+                    currentStage === 4 ? (uploadedFile ? 'اكتب تعليقاً إضافياً مع الملف...' : '💡 استخدم مربع رفع الملف بالأعلى لرفع مشروع Packet Tracer') :
+                    'اكتب رسالة ختامية...'
+                  }
+                  style={styles.textArea}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  disabled={isLoading}
+                />
+
+                <div style={styles.inputActionBar}>
+                  <div style={styles.rightActions}>
+                    <button onClick={openFileDialog} style={styles.toolBtn}>
+                      📎 إرفاق ملف Packet Tracer
+                    </button>
+                  </div>
+                  <div style={styles.leftActions}>
+                    <button onClick={() => setShowTips(!showTips)} style={styles.tipsBtn}>
+                      💡 تلميحات
+                    </button>
+                    <button
+                      onClick={() => handleSend()}
+                      style={styles.sendBtn}
+                      disabled={isLoading || (!inputValue.trim() && currentStage === 4 && !uploadedFile)}
+                    >
+                      {isLoading ? '...جاري المعالجة' : `إرسال إلى ${scenario.clientName} ◀`}
+                    </button>
+                  </div>
+                </div>
+
+                <div style={styles.evaluationFooterRow}>
+                  <span style={styles.evaluationText}>
+                    يتم تقييم:{' '}
+                    <strong style={{ color: '#032639' }}>
+                      {currentStage === 1 && 'شمولية أسئلتك للمتطلبات'}
+                      {currentStage === 2 && 'منطق التسعير وحججك التفاوضية'}
+                      {currentStage === 3 && 'وضوح إجاباتك عن أسئلة التسليم'}
+                      {currentStage === 4 && 'جودة ملف التصميم المرفوع'}
+                      {currentStage === 5 && 'إحترافية الختام والتعامل'}
+                    </strong>
+                  </span>
+                  <p style={styles.projectMiniLabel}>{scenario.projectLabel}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ====== الشريط الجانبي: ملف العميل ====== */}
+          <aside style={styles.sidebarSection} className="sidebar-layout">
+            <div style={styles.scenarioBriefCard}>
+              <div style={styles.scrollContainer}>
+                <h2 style={styles.briefTitle}>{scenario.title}</h2>
+
+                <div style={styles.clientProfileArea}>
+                  <img src={scenario.avatar} alt={scenario.clientName} style={styles.largeAvatar} />
+                  <h3 style={styles.clientNameTxt}>{scenario.clientName}</h3>
+                  <p style={styles.clientRoleTxt}>{scenario.role}</p>
+                </div>
+
+                <div style={styles.personalitySection}>
+                  <div style={styles.personalityHeader}>السمات الشخصية</div>
+                  <div style={styles.badgesWrapper}>
+                    {scenario.personalityTags.map((tag, tIdx) => (
+                      <span key={tIdx} style={{ ...styles.personalityBadgeItem, backgroundColor: tag.bg, color: tag.color }}>
+                        {tag.text}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{
+                  padding: '12px 14px', backgroundColor: '#EFF6FF',
+                  border: '1px solid #BFDBFE', borderRadius: '12px',
+                  marginBottom: '1rem', textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: '700', color: '#1E40AF' }}>
+                    🎯 المرحلة الحالية ({currentStage}/5)
+                  </div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#0F172A', marginTop: '4px' }}>
+                    {FIVE_STAGES[currentStage - 1]?.icon} {FIVE_STAGES[currentStage - 1]?.label}
+                  </div>
+                </div>
+
+                <div style={styles.projectContextBox}>
+                  <div style={styles.contextHeader}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginLeft: '6px' }}>
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    سياق المشروع
+                  </div>
+                  <p style={styles.contextText}>{scenario.description} {scenario.personality}</p>
+                </div>
+
+                <div style={styles.divider}></div>
+
+                <div style={styles.featuresSection}>
+                  <div style={styles.featuresHeader}>خصائص السيناريو</div>
+                  <div style={styles.featuresGrid}>
+                    {scenario.features.map((feat, idx) => (
+                      <div key={idx} style={feat.highlight ? styles.featurePillHighlight : styles.featurePillNormal}>
+                        <span style={{ marginLeft: '6px' }}>{feat.icon}</span>
+                        {feat.text}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={styles.divider}></div>
+
+                <div style={styles.tasksSection}>
+                  <h3 style={styles.tasksHeader}>📋 المطلوب العام:</h3>
+                  <ul style={styles.tasksList}>
+                    {scenario.tasks.map((task, index) => (
+                      <li key={index} style={styles.taskItem}>
+                        <span style={styles.taskDot}>•</span>
+                        <span style={styles.taskText}>{task}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div style={{
+                  marginTop: '16px', padding: '12px 16px',
+                  backgroundColor: '#F0F7F8', borderRadius: 12,
+                  border: '1px solid #17919e'
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0D1E3B' }}>
+                    🎯 مستواك الحالي:
+                    <span style={{
+                      backgroundColor: userLevel === 'advanced' ? '#2ECC71' : userLevel === 'intermediate' ? '#F39C12' : '#17919e',
+                      color: 'white', padding: '2px 12px', borderRadius: 12,
+                      marginRight: 8, fontSize: 12
+                    }}>
+                      {userLevel === 'advanced' ? 'متقدم' : userLevel === 'intermediate' ? 'متوسط' : 'مبتدئ'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#64748B', marginTop: 4 }}>
+                    {userLevel === 'advanced' && '🌟 مستوى عالٍ. استخدم حججاً تقنية متقدمة.'}
+                    {userLevel === 'intermediate' && '📈 مستوى جيد. استمر في التحدي.'}
+                    {userLevel === 'beginner' && '🌱 بداية رائعة! اسأل الأسئلة الخمس في المرحلة الأولى.'}
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.sidebarFooter}>
+                التركيز في هذه المرحلة: {scenario.focus}
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      {/* نافذة التلميحات */}
+      {showTips && (
+        <div style={styles.modalOverlay} onClick={() => setShowTips(false)}>
+          <div style={styles.interactiveTipsBox} onClick={e => e.stopPropagation()}>
+            <div style={styles.tipsHeaderRow}>
+              <div style={styles.tipsTitle}><span>💡 تلميحات للمرحلة {currentStage} · {FIVE_STAGES[currentStage - 1]?.label}</span></div>
+              <button onClick={() => setShowTips(false)} style={styles.closeTipsBtn}>✕</button>
+            </div>
+            <div style={styles.tipsContent}>
+              {currentStage === 1 && (
+                <>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>اسأل الأمانة الخمس الإلزامية: الأجهزة، الإنترنت، شبكة الضيوف، الميزانية، المساحة.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>لا تقدم عرض سعر قبل ما تكتشف كل متطلبات العميل — هذا خطأ مهني شائع.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>3.</span><p style={styles.tipText}>بعد كل سؤال، اسجل الإجابة عقلياً وانتقل للسؤال التالي حتى تكتمل الخمسة.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>4.</span><p style={styles.tipText}>إذا كنت متأكداً من إجاباتك على الخمسة، سيقودك الذكاء الاصطناعي آلياً للمرحلة الثانية.</p></div>
+                </>
+              )}
+              {currentStage === 2 && (
+                <>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>لا تعطِ السعر رقمًا فقط — ابدأ بتقديم قائمة التجهيزات ثم السعر الإجمالي.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>أبرز جودة الأجهزة والضمان والدعم الفني كحجج لتبرير السعر.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>3.</span><p style={styles.tipText}>إذا طلب العميل خصماً، لا ترفض مباشرة — اربط الخصم بشرط (مثل الدفع المسبق).</p></div>
+                </>
+              )}
+              {currentStage === 3 && (
+                <>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>أجب عن أسئلة التسليم الثلاثة بوضوح وتفاصيل عملية (موعد، مدة ضمان، نوع التعديلات).</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>مثال: "التسليم خلال أسبوعين، شهر تعديلات مجانية، وتعديلات البرمجة والضبط ضمن الضمان."</p></div>
+                </>
+              )}
+              {currentStage === 4 && (
+                <>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>استخدم منطقة رفع الملف في أعلى منطقة المحادثة.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>تأكد أن جميع الأجهزة متصلة، وأن عناوين IP مدخلة بشكل صحيح قبل الرفع.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>3.</span><p style={styles.tipText}>بعد الرفع، سيقول العميل "تم الاستلام" وينتقل معك للمرحلة النهائية.</p></div>
+                </>
+              )}
+              {currentStage === 5 && (
+                <>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>1.</span><p style={styles.tipText}>أغلق الصفقة بإيجابية، واشكر العميل، وأذكر أنك متاح للدعم المستقبلي.</p></div>
+                  <div style={styles.tipTextRow}><span style={styles.tipNumber}>2.</span><p style={styles.tipText}>يمكنك طلب مراجعة من العميل — هذه ممارسة مهنية جيدة تُظهر الثقة.</p></div>
+                </>
+              )}
+            </div>
+            <div style={styles.tipsFooter}>
+              <button onClick={() => setShowTips(false)} style={styles.understandBtn}>حسناً، فهمت</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* التذييل */}
+      <footer style={styles.footer}>
+        <div style={styles.footerContainer}>
+          <div style={styles.footerLeft}>
+            <p style={styles.footerBrand}>SmartLab</p>
+            <p style={styles.footerText}>منصة تعليمية متطورة — محاكي عميل ذكي مدعوم بالذكاء الاصطناعي عبر 5 مراحل متتالية.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+const styles = {
+  container: {
+    minHeight: '100vh',
+    backgroundColor: '#EEF2F6',
+    direction: 'rtl',
+    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box'
+  },
+  mainContent: { flex: 1, padding: '1.5rem 2.5rem', display: 'flex', boxSizing: 'border-box' },
+  workspace: { display: 'flex', width: '100%', gap: '1.5rem' },
+  chatSection: { flex: 2, display: 'flex', flexDirection: 'column', minWidth: 0, gap: '1rem' },
+  stepperContainer: {
+    backgroundColor: 'white',
+    borderRadius: '14px',
+    padding: '1.2rem 1.5rem',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
+    border: '1px solid #E2E8F0',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.8rem'
+  },
+  mainStepsRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', flexWrap: 'wrap', gap: '10px' },
+  stepWrapper: { display: 'flex', alignItems: 'center', gap: '0.6rem', position: 'relative' },
+  stepCircle: { borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '700', transition: 'all 0.3s' },
+  stepLabel: { fontSize: '0.9rem', whiteSpace: 'nowrap' },
+  stepLine: { width: '60px', height: '2px', backgroundColor: '#E2E8F0', margin: '0 0.5rem' },
+  chatCard: {
+    backgroundColor: 'white',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+    border: '1px solid #E2E8F0',
+    display: 'flex',
+    flexDirection: 'column',
+    height: 'calc(100vh - 210px)',
+    minHeight: '680px'
+  },
+  chatCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid #F1F5F9' },
+  difficultyBadge: { fontSize: '0.85rem', padding: '0.4rem 1rem', borderRadius: '14px', fontWeight: '600' },
+  clientStatus: { display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600', color: '#1E293B', fontSize: '0.95rem' },
+  onlineDot: { width: '8px', height: '8px', backgroundColor: '#10B981', borderRadius: '50%' },
+  messagesArea: { flex: 1, padding: '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.2rem', backgroundColor: '#F8FAFC' },
+  simulationStartPill: { alignSelf: 'center', backgroundColor: '#E2E8F0', color: '#475569', fontSize: '0.8rem', fontWeight: '600', padding: '0.4rem 1.2rem', borderRadius: '20px' },
+  clientMessageRow: { display: 'flex', alignItems: 'flex-start', gap: '0.8rem', alignSelf: 'flex-start', maxWidth: '88%' },
+  userMessageRow: { display: 'flex', alignItems: 'flex-start', gap: '0.8rem', alignSelf: 'flex-end', maxWidth: '88%' },
+  messageBubbleClient: { backgroundColor: 'white', color: '#334155', padding: '1rem 1.2rem', borderRadius: '0 16px 16px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)', fontSize: '0.95rem', lineHeight: '1.6', border: '1px solid #E2E8F0' },
+  messageBubbleUser: { backgroundColor: 'rgba(0,100,130)', color: 'white', padding: '1rem 1.2rem', borderRadius: '16px 0 16px 16px', fontSize: '0.95rem', lineHeight: '1.6' },
+  avatar: { width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' },
+  fileAttachedPill: { marginTop: '0.5rem', backgroundColor: 'rgba(255,255,255,0.2)', padding: '0.3rem 0.6rem', borderRadius: '6px', fontSize: '0.8rem' },
+  typingText: { fontStyle: 'italic', color: '#94A3B8' },
+  suggestionsBar: {
+    padding: '0.8rem 1.2rem',
+    borderTop: '1px solid #F1F5F9',
+    borderBottom: '1px solid #F1F5F9',
+    backgroundColor: '#F8FAFC'
+  },
+  suggestionPill: {
+    padding: '7px 14px', borderRadius: '20px',
+    border: '1px solid #0EA5E9', backgroundColor: '#F0F9FF',
+    color: '#0369A1', fontSize: '0.82rem', fontWeight: '600',
+    cursor: 'pointer', transition: 'all 0.2s'
+  },
+  dropZone: {
+    alignSelf: 'center',
+    width: '80%',
+    padding: '36px 20px',
+    border: '3px dashed #CBD5E1',
+    borderRadius: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s ease',
+    margin: '8px 0'
+  },
+  inputContainer: { padding: '1.2rem', borderTop: '1px solid #F1F5F9', backgroundColor: 'white', borderRadius: '0 0 16px 16px' },
+  textArea: { width: '100%', height: '68px', border: 'none', resize: 'none', outline: 'none', fontSize: '0.95rem', color: '#334155', fontFamily: 'inherit' },
+  inputActionBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.2rem', borderTop: '1px solid #F1F5F9', paddingTop: '0.6rem' },
+  rightActions: { display: 'flex', gap: '1rem' },
+  toolBtn: { background: 'none', border: 'none', color: '#64748B', fontSize: '0.85rem', cursor: 'pointer' },
+  leftActions: { display: 'flex', gap: '0.8rem' },
+  tipsBtn: { backgroundColor: 'transparent', color: '#475569', border: '2px solid rgba(2,103,113)', borderRadius: '8px', padding: '0.5rem 1.2rem', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer' },
+  sendBtn: { backgroundColor: 'rgba(2,103,113)', color: 'white', border: 'none', borderRadius: '8px', padding: '0.5rem 1.5rem', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer' },
+  evaluationFooterRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.8rem', borderTop: '1px solid #F1F5F9', paddingTop: '0.6rem' },
+  evaluationText: { fontSize: '0.82rem', color: '#64748B' },
+  projectMiniLabel: { fontSize: '0.82rem', color: '#94A3B8', margin: 0 },
+  sidebarSection: { width: '350px', display: 'flex', flexDirection: 'column', flexShrink: 0 },
+  scenarioBriefCard: { backgroundColor: 'white', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 140px)', overflow: 'hidden' },
+  scrollContainer: { flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column' },
+  briefTitle: { fontSize: '1.3rem', color: '#0D3D4E', fontWeight: '700', marginBottom: '1.5rem', textAlign: 'center' },
+  clientProfileArea: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem' },
+  largeAvatar: { width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #006482', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', marginBottom: '0.8rem' },
+  clientNameTxt: { fontSize: '1.3rem', color: '#0F172A', fontWeight: '800', margin: '0 0 0.2rem 0' },
+  clientRoleTxt: { fontSize: '0.9rem', color: '#64748B', fontWeight: '500', margin: 0 },
+  personalitySection: { width: '100%', textAlign: 'center', margin: '1rem 0 1.5rem 0' },
+  personalityHeader: { fontSize: '0.85rem', fontWeight: '600', color: '#94A3B8', marginBottom: '0.6rem' },
+  badgesWrapper: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' },
+  personalityBadgeItem: { padding: '0.4rem 0.9rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '700', whiteSpace: 'nowrap', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' },
+  projectContextBox: { backgroundColor: '#F4F6F8', borderRadius: '14px', padding: '1.2rem', border: '1px solid #E2E8F0', marginBottom: '1.5rem', textAlign: 'right' },
+  contextHeader: { fontSize: '1rem', fontWeight: '700', color: '#0D3D4E', marginBottom: '0.6rem', display: 'flex', alignItems: 'center' },
+  contextText: { fontSize: '0.9rem', color: '#475569', lineHeight: '1.6', margin: 0 },
+  featuresSection: { width: '100%', marginBottom: '1.2rem' },
+  featuresHeader: { fontSize: '0.85rem', fontWeight: '700', color: '#94A3B8', marginBottom: '0.6rem' },
+  featuresGrid: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  featurePillHighlight: { backgroundColor: '#E0F8F1', color: '#0F766E', padding: '0.5rem 1rem', borderRadius: '25px', fontSize: '0.85rem', fontWeight: '700', display: 'flex', alignItems: 'center' },
+  featurePillNormal: { backgroundColor: '#F1F5F9', color: '#475569', padding: '0.5rem 1rem', borderRadius: '25px', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center' },
+  divider: { height: '1px', backgroundColor: '#E2E8F0', margin: '1rem 0' },
+  tasksSection: { width: '100%' },
+  tasksHeader: { fontSize: '0.95rem', color: '#0F172A', fontWeight: '700', marginBottom: '0.6rem' },
+  tasksList: { listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  taskItem: { fontSize: '0.85rem', color: '#475569', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' },
+  taskDot: { color: '#0284C7', fontWeight: 'bold', fontSize: '1rem' },
+  taskText: { flex: 1 },
+  sidebarFooter: { padding: '1rem', borderTop: '1px solid #E2E8F0', backgroundColor: '#F8FAFC', fontSize: '0.8rem', color: '#64748B', textAlign: 'right', fontWeight: '600' },
+  modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, backdropFilter: 'blur(3px)' },
+  interactiveTipsBox: { backgroundColor: '#FFFFFF', borderTop: '7px solid rgb(13,61,78)', borderRadius: '16px', padding: '2rem', width: '480px', maxWidth: '90%', display: 'flex', flexDirection: 'column', gap: '1.2rem' },
+  tipsHeaderRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #E2E8F0', paddingBottom: '0.8rem' },
+  tipsTitle: { fontSize: '1.1rem', fontWeight: '800', color: '#0F172A' },
+  closeTipsBtn: { background: 'none', border: 'none', color: '#94A3B8', fontSize: '1.2rem', cursor: 'pointer' },
+  tipsContent: { display: 'flex', flexDirection: 'column', gap: '0.8rem' },
+  tipTextRow: { display: 'flex', gap: '0.5rem', alignItems: 'flex-start' },
+  tipNumber: { color: 'rgb(0,100,113)', fontWeight: '800' },
+  tipText: { fontSize: '0.95rem', color: '#475569', margin: 0, flex: 1 },
+  tipsFooter: { display: 'flex', justifyContent: 'flex-end', paddingTop: '1rem' },
+  understandBtn: { backgroundColor: 'rgba(2,103,113)', color: 'white', border: 'none', borderRadius: '8px', padding: '0.6rem 1.8rem', fontWeight: '700', cursor: 'pointer' },
+  footer: { backgroundColor: '#006482', color: 'white', padding: '25px 0', display: 'flex', justifyContent: 'center', width: '100%', marginTop: 'auto' },
+  footerContainer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '1200px', padding: '0 40px' },
+  footerLeft: { display: 'flex', flexDirection: 'column' },
+  footerBrand: { margin: '0 0 4px 0', fontWeight: 'bold', fontSize: '18px', textAlign: 'right' },
+  footerText: { margin: 0, fontSize: '13px', opacity: 0.7 }
+};

@@ -1,6 +1,6 @@
 // pages/assessment/categories.js
 // ============================================================
-// صفحة اختيار التقييم - حسب المحاور مع تقييم سريع وشامل
+// صفحة اختيار التقييم - 8 أقسام مع تقييم سريع وشامل
 // ============================================================
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -68,7 +68,7 @@ const styles = {
   },
   categoryTitle: { fontSize: '16px', fontWeight: 700, color: COLORS.navy, margin: 0 },
   categoryDesc: { fontSize: '13px', color: COLORS.muted, margin: '4px 0 0 0' },
-  categoryStats: { display: 'flex', gap: '16px', fontSize: '12px', color: COLORS.muted },
+  categoryStats: { display: 'flex', gap: '16px', fontSize: '12px', color: COLORS.muted, marginTop: '8px' },
   statItem: { display: 'flex', alignItems: 'center', gap: '4px' },
   buttonGroup: { display: 'flex', gap: '8px', marginTop: '12px' },
   btnQuick: {
@@ -121,7 +121,7 @@ export default function Categories() {
       const statusMap = {};
       
       const categoriesList = [
-        'fundamentals', 'switching', 'routing', 'troubleshooting', 'full'
+        'general-concepts', 'ipv4', 'subnetting', 'ipv6', 'osi-model', 'network-devices', 'email-protocols', 'tcp-ip', 'full'
       ];
       
       categoriesList.forEach(id => {
@@ -144,48 +144,84 @@ export default function Categories() {
 
   const categories = [
     {
-      id: 'fundamentals',
-      icon: '📡',
-      title: 'أساسيات الشبكات',
-      description: 'OSI Model, TCP/IP, MAC/IP, ARP, DNS, DHCP',
-      quickCount: 5,
-      fullCount: 15,
-      topics: ['OSI Layers', 'TCP vs UDP', 'DNS', 'DHCP', 'ARP'],
+      id: 'general-concepts',
+      icon: '📚',
+      title: 'المفاهيم العامة',
+      description: 'أساسيات الشبكات، التعريفات، والمفاهيم الأساسية',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['تعريف الشبكة', 'أنواع الشبكات', 'الخوادم', 'العميل', 'البروتوكولات'],
     },
     {
-      id: 'switching',
-      icon: '🔀',
-      title: 'التبديل (Switching)',
-      description: 'VLAN, STP, Trunk, Access Ports, MAC Learning',
-      quickCount: 4,
-      fullCount: 12,
-      topics: ['VLANs', 'STP', '802.1Q', 'Trunking', 'MAC Table'],
+      id: 'ipv4',
+      icon: '🌍',
+      title: 'IPv4',
+      description: 'عناوين IPv4، الفئات، والتوزيع',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['فئات العناوين', 'العناوين الخاصة', 'NAT', 'APIPA', 'التكوين'],
     },
     {
-      id: 'routing',
+      id: 'subnetting',
+      icon: '🔢',
+      title: 'Subnetting',
+      description: 'تقسيم الشبكات، CIDR، وحساب الشبكات الفرعية',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['CIDR', 'حساب الشبكات', 'الأقنعة', 'Hosts', 'VLSM'],
+    },
+    {
+      id: 'ipv6',
       icon: '🌐',
-      title: 'التوجيه (Routing)',
-      description: 'Subnetting, CIDR, Static Routes, Default Gateway',
-      quickCount: 5,
-      fullCount: 14,
-      topics: ['Subnetting', 'CIDR', 'Static Routes', 'Default Route', 'Admin Distance'],
+      title: 'IPv6',
+      description: 'عناوين IPv6، الأنواع، والتكوين',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['تنسيق العنوان', 'أنواع العناوين', 'EUI-64', 'التكوين', 'الانتقال'],
     },
     {
-      id: 'troubleshooting',
+      id: 'osi-model',
+      icon: '📊',
+      title: 'OSI Model',
+      description: 'نموذج OSI السبع طبقات ووظائفها',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['الطبقات السبع', 'الوظائف', 'البروتوكولات', 'Encapsulation', 'الأجهزة'],
+    },
+    {
+      id: 'network-devices',
       icon: '🔧',
-      title: 'استكشاف الأخطاء',
-      description: 'Ping, Traceroute, DNS Issues, APIPA, Methodology',
-      quickCount: 4,
-      fullCount: 10,
-      topics: ['Ping', 'Traceroute', 'DNS Troubleshooting', 'APIPA', 'Bottom-Up'],
+      title: 'أجهزة الشبكات',
+      description: 'Routers, Switches, Hubs, Access Points',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['Router', 'Switch', 'Hub', 'AP', 'Firewall'],
+    },
+    {
+      id: 'email-protocols',
+      icon: '📧',
+      title: 'بروتوكولات البريد',
+      description: 'SMTP, POP3, IMAP, والفروق بينها',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['SMTP', 'POP3', 'IMAP', 'المنافذ', 'التشفير'],
+    },
+    {
+      id: 'tcp-ip',
+      icon: '🔗',
+      title: 'TCP/IP',
+      description: 'بروتوكولات النقل، TCP vs UDP، المنافذ',
+      quickCount: 12,
+      fullCount: 30,
+      topics: ['TCP', 'UDP', 'Three-way Handshake', 'المنافذ', 'الاتصال'],
     },
     {
       id: 'full',
       icon: '🏆',
       title: 'التقييم الشامل',
-      description: 'جميع المحاور - تقييم كامل للمستوى',
-      quickCount: 10,
-      fullCount: 32,
+      description: 'جميع المحاور الثمانية - تقييم كامل للمستوى',
+      quickCount: 12,
+      fullCount: 240,
       topics: ['جميع المحاور'],
     },
   ];
@@ -200,12 +236,14 @@ export default function Categories() {
       <div style={styles.page}>
         <Navbar />
         <main style={styles.main}>
-          <Link href="/" style={styles.backButton}>← العودة للرئيسية</Link>
+          <Link href="/">
+            <a style={styles.backButton}>← العودة للرئيسية</a>
+          </Link>
           
           <div style={styles.pageHeader}>
             <h1 style={styles.pageTitle}>🎯 تقييم هندسة الشبكات</h1>
             <p style={styles.pageDesc}>
-              اختر المحور المناسب. التقييم السريع لمراجعة سريعة، والشامل لتحليل مفصل.
+              اختر المحور المناسب. التقييم السريع 12 سؤال، والشامل 30 سؤال لكل محور.
             </p>
           </div>
 
@@ -221,7 +259,7 @@ export default function Categories() {
                       </h3>
                       <p style={styles.categoryDesc}>{cat.description}</p>
                       <div style={styles.categoryStats}>
-                        <span style={styles.statItem}>📝 {cat.quickCount} سريع</span>
+                        <span style={styles.statItem}>⚡ {cat.quickCount} سريع</span>
                         <span style={styles.statItem}>📊 {cat.fullCount} شامل</span>
                       </div>
                     </div>
