@@ -14,6 +14,12 @@ export default function ScenarioDetail() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const fileInputRef = useRef(null);
+  
+  // ===== حالة التغذية الراجعة والاقتراحات (جديد) =====
+  const [conversationScore, setConversationScore] = useState({ total: 0, interactions: 0, average: 0 });
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [lastFeedback, setLastFeedback] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
 
   // ===== حالة المستخدم ومستواه (جديد) =====
   const [userLevel, setUserLevel] = useState('beginner');
