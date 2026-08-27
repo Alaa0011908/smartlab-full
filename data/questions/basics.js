@@ -9,31 +9,95 @@ export function getAllBasicsQuestions() {
   return QUESTIONS;
 }
 
-export function getAssessmentQuestions(assessmentId) {
-  const filtered = QUESTIONS.filter(q => {
-    if (assessmentId === 'net_basics') return q.topic === 'Fundamentals';
-    if (assessmentId === 'osi') return q.topic === 'OSI Model';
-    if (assessmentId === 'subnetting') return q.topic === 'Subnetting' || q.topic === 'Routing';
-    if (assessmentId === 'ipv4') return q.topic === 'Fundamentals';
-    if (assessmentId === 'devices') return q.topic === 'Switching';
-    if (assessmentId === 'tcpip') return q.topic === 'Fundamentals' || q.topic === 'Troubleshooting';
-    if (assessmentId === 'full') return true;
-    return true; // إرجاع جميع الأسئلة افتراضياً لضمان اكتمال العرض
-  });
-  return filtered.length > 0 ? filtered : QUESTIONS;
+// ===== تعيين المحاور للأسئلة =====
+const TOPIC_TO_CATEGORY = {
+  'Fundamentals': 'fundamentals',
+  'Switching': 'switching',
+  'Routing': 'routing',
+  'Troubleshooting': 'troubleshooting',
+};
+
+// ===== الحصول على الأسئلة حسب المحور والوضع =====
+export function getAssessmentQuestions(assessmentId, mode = 'full') {
+  let filtered = [];
+  
+  // فلترة حسب المحور
+  if (assessmentId === 'full') {
+    filtered = [...QUESTIONS];
+  } else {
+    filtered = QUESTIONS.filter(q => {
+      const category = TOPIC_TO_CATEGORY[q.topic];
+      return category === assessmentId;
+    });
+  }
+  
+  // إذا لم توجد أسئلة، أرجع كل الأسئلة
+  if (filtered.length === 0) {
+    filtered = [...QUESTIONS];
+  }
+  
+  // تحديد عدد الأسئلة حسب الوضع
+  if (mode === 'quick') {
+    // التقييم السريع: 5 أسئلة من كل محور أو 10 إجمالي
+    const quickCount = assessmentId === 'full' ? 10 : Math.min(5, filtered.length);
+    return shuffleArray(filtered).slice(0, quickCount);
+  }
+  
+  // التقييم الشامل: كل الأسئلة
+  return filtered;
+}
+
+// ===== الحصول على معلومات المحور =====
+export function getAssessmentInfo(assessmentId) {
+  const info = {
+    fundamentals: {
+      name: 'أساسيات الشبكات',
+      icon: '📡',
+      description: 'OSI Model, TCP/IP, MAC/IP, ARP, DNS, DHCP',
+      topics: ['OSI Layers', 'TCP vs UDP', 'DNS', 'DHCP', 'ARP'],
+    },
+    switching: {
+      name: 'التبديل (Switching)',
+      icon: '🔀',
+      description: 'VLAN, STP, Trunk, Access Ports, MAC Learning',
+      topics: ['VLANs', 'STP', '802.1Q', 'Trunking', 'MAC Table'],
+    },
+    routing: {
+      name: 'التوجيه (Routing)',
+      icon: '🌐',
+      description: 'Subnetting, CIDR, Static Routes, Default Gateway',
+      topics: ['Subnetting', 'CIDR', 'Static Routes', 'Default Route', 'Admin Distance'],
+    },
+    troubleshooting: {
+      name: 'استكشاف الأخطاء',
+      icon: '🔧',
+      description: 'Ping, Traceroute, DNS Issues, APIPA, Methodology',
+      topics: ['Ping', 'Traceroute', 'DNS Troubleshooting', 'APIPA', 'Bottom-Up'],
+    },
+    full: {
+      name: 'التقييم الشامل',
+      icon: '🏆',
+      description: 'جميع المحاور',
+      topics: ['أساسيات', 'تبديل', 'توجيه', 'استكشاف أخطاء'],
+    },
+  };
+  
+  return info[assessmentId] || { name: 'التقييم الشامل', icon: '📝', description: '', topics: [] };
 }
 
 export function getAssessmentName(assessmentId) {
-  const names = {
-    'net_basics': 'أساسيات الشبكات',
-    'osi': 'نموذج OSI',
-    'subnetting': 'حسابات الشبكات الفرعية',
-    'ipv4': 'بروتوكول IPv4',
-    'devices': 'أجهزة الشبكات',
-    'tcpip': 'نموذج TCP/IP',
-    'full': 'التقييم الشامل للشبكات'
-  };
-  return names[assessmentId] || 'التقييم الشامل';
+  const info = getAssessmentInfo(assessmentId);
+  return info.name;
+}
+
+// ===== خلط المصفوفة بشكل عشوائي =====
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 // ============================================================

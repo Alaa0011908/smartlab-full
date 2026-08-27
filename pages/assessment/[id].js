@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
 import Navbar from "../../components/Navbar";
-import { getAssessmentQuestions, getAssessmentName } from '../../data/questions/basics';
+import { getAssessmentQuestions, getAssessmentName, getAssessmentInfo } from '../../data/questions/basics';
 import TrackingEngine, { createTrackingSession } from '../../lib/trackingEngine';
 import UltraAdaptiveEngine, { createAdaptiveEngine, runAdaptiveCycle } from '../../lib/adaptiveEngine';
 
@@ -762,25 +762,21 @@ export default function Assessment() {
     }
 
     try {
-      let assessmentQuestions = getAssessmentQuestions(id);
+      const mode = router.query.mode || 'full';
+      let assessmentQuestions = getAssessmentQuestions(id, mode);
       if (!assessmentQuestions || assessmentQuestions.length === 0) {
         setError("لا توجد أسئلة لهذا التقييم");
         setLoading(false);
         return;
       }
 
-      // خلط الأسئلة
-      const shuffled = [...assessmentQuestions].sort(() => Math.random() - 0.5);
-      const limit = mode === "quick" ? 12 : 0;
-      const limited = limit > 0 ? shuffled.slice(0, limit) : shuffled;
-
-      setAllQuestions(limited);
-      setTotalQuestionsCount(limited.length);
+      setAllQuestions(assessmentQuestions);
+      setTotalQuestionsCount(assessmentQuestions.length);
 
       // تهيئة المحرك التكيفي
       const engine = new UltraAdaptiveEngine({
-        allQuestions: limited,
-        mode: mode || 'full',
+        allQuestions: assessmentQuestions,
+        mode: mode,
         theta: 0,
         learningStyle: 'visual',
         timeOfDay: new Date().getHours() >= 5 && new Date().getHours() < 12 ? 'morning' : 'afternoon',

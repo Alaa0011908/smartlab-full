@@ -1,11 +1,13 @@
-// pages/assessment/categories.js - النسخة المتوافقة مع النظام الجديد
+// pages/assessment/categories.js
+// ============================================================
+// صفحة اختيار التقييم - حسب المحاور مع تقييم سريع وشامل
+// ============================================================
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { getAssessmentName } from '../../data/questions/basics';
 
 const COLORS = {
   teal: "#17919e",
@@ -19,6 +21,7 @@ const COLORS = {
   border: "#bcd7db",
   success: "#2ECC71",
   warning: "#F39C12",
+  error: "#E74C3C",
 };
 
 const styles = {
@@ -33,48 +36,78 @@ const styles = {
   },
   main: {
     flex: 1,
-    maxWidth: '1200px',
+    maxWidth: '900px',
     width: '100%',
     margin: '0 auto',
-    padding: '40px 40px 60px',
+    padding: '30px 20px 60px',
     boxSizing: 'border-box',
   },
-  pageHeader: { textAlign: 'center', marginBottom: '32px' },
-  pageTitle: { fontSize: '32px', fontWeight: 800, color: COLORS.navy, margin: '0 0 8px 0' },
-  pageDesc: { fontSize: '15px', color: COLORS.muted, maxWidth: '570px', margin: '0 auto', lineHeight: 1.7 },
+  pageHeader: { textAlign: 'center', marginBottom: '30px' },
+  pageTitle: { fontSize: '28px', fontWeight: 800, color: COLORS.navy, margin: '0 0 8px 0' },
+  pageDesc: { fontSize: '14px', color: COLORS.muted, maxWidth: '500px', margin: '0 auto', lineHeight: 1.7 },
   backButton: {
     display: 'inline-flex', alignItems: 'center', gap: '8px', color: COLORS.teal,
-    textDecoration: 'none', fontSize: '15px', fontWeight: 600, marginBottom: '24px',
+    textDecoration: 'none', fontSize: '14px', fontWeight: 600, marginBottom: '20px',
     padding: '8px 16px', borderRadius: '8px', backgroundColor: COLORS.white,
-    border: '1px solid ' + COLORS.border, minHeight: 44,
+    border: '1px solid ' + COLORS.border,
   },
-  categoryList: { display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '20px' },
-  categoryRow: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
-    backgroundColor: COLORS.white, borderRadius: '16px', padding: '20px 24px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.04)', flexWrap: 'wrap',
+  categoryList: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  categoryCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: '16px',
+    padding: '20px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+    border: '1px solid ' + COLORS.border,
   },
-  categoryNumber: {
-    fontSize: '13px', fontWeight: 'bold', color: COLORS.teal,
-    backgroundColor: '#E6F5F4', padding: '6px 12px', borderRadius: '10px',
+  categoryHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '12px',
   },
-  categoryIcon: { fontSize: '28px' },
-  categoryInfo: { flex: 1, textAlign: 'right', minWidth: '200px' },
-  categoryTitle: { fontSize: '18px', color: COLORS.navy, margin: '0 0 4px 0' },
-  categoryDesc: { fontSize: '13px', color: COLORS.muted, margin: 0 },
-  categoryStatus: { fontSize: '13px', fontWeight: 600, marginTop: 4 },
-  categoryButtons: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
-  btnOutline: {
-    border: '1.5px solid ' + COLORS.orange, color: COLORS.orange, backgroundColor: COLORS.white,
-    padding: '8px 18px', borderRadius: '12px', fontSize: '13px', fontWeight: 'bold',
-    cursor: 'pointer', fontFamily: 'inherit', minHeight: 44,
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  categoryTitle: { fontSize: '16px', fontWeight: 700, color: COLORS.navy, margin: 0 },
+  categoryDesc: { fontSize: '13px', color: COLORS.muted, margin: '4px 0 0 0' },
+  categoryStats: { display: 'flex', gap: '16px', fontSize: '12px', color: COLORS.muted },
+  statItem: { display: 'flex', alignItems: 'center', gap: '4px' },
+  buttonGroup: { display: 'flex', gap: '8px', marginTop: '12px' },
+  btnQuick: {
+    flex: 1,
+    border: 'none',
+    color: COLORS.white,
+    backgroundColor: COLORS.teal,
+    padding: '10px 16px',
+    borderRadius: '10px',
+    fontSize: '13px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
   },
-  btnFilled: {
-    border: 'none', color: COLORS.white, backgroundColor: COLORS.teal,
-    padding: '8px 18px', borderRadius: '12px', fontSize: '13px', fontWeight: 'bold',
-    cursor: 'pointer', fontFamily: 'inherit', minHeight: 44,
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  btnFull: {
+    flex: 1,
+    border: '2px solid ' + COLORS.orange,
+    color: COLORS.orange,
+    backgroundColor: COLORS.white,
+    padding: '10px 16px',
+    borderRadius: '10px',
+    fontSize: '13px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+  },
+  statusBadge: {
+    fontSize: '12px',
+    fontWeight: 600,
+    padding: '4px 10px',
+    borderRadius: '12px',
   },
 };
 
@@ -86,39 +119,81 @@ export default function Categories() {
     try {
       const results = JSON.parse(localStorage.getItem('assessmentResults') || '[]');
       const statusMap = {};
-      const categoriesList = ['concepts', 'ipv4', 'subnetting', 'ipv6', 'osi', 'devices', 'email', 'tcpip'];
+      
+      const categoriesList = [
+        'fundamentals', 'switching', 'routing', 'troubleshooting', 'full'
+      ];
+      
       categoriesList.forEach(id => {
-        const completed = results.filter(r => r.assessmentName === getAssessmentName(id));
+        const completed = results.filter(r => r.assessmentId === id);
         if (completed.length > 0) {
           const last = completed[completed.length - 1];
-          if (last.score >= 80) statusMap[id] = { status: '✅ مكتمل', color: COLORS.success };
-          else if (last.score >= 50) statusMap[id] = { status: '🔄 قيد التقدم', color: COLORS.warning };
-          else statusMap[id] = { status: '⚠️ يحتاج إعادة', color: COLORS.orange };
+          if (last.score >= 80) statusMap[id] = { status: 'مكتمل', color: COLORS.success, bg: '#E8F5E9' };
+          else if (last.score >= 50) statusMap[id] = { status: 'قيد التقدم', color: COLORS.warning, bg: '#FFF8E1' };
+          else statusMap[id] = { status: 'يحتاج إعادة', color: COLORS.error, bg: '#FFEBEE' };
         } else {
-          statusMap[id] = { status: '▶️ جديد', color: COLORS.muted };
+          statusMap[id] = { status: 'جديد', color: COLORS.muted, bg: '#F5F5F5' };
         }
       });
+      
       setAssessmentStatus(statusMap);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error loading assessment status:', error);
     }
   }, []);
 
   const categories = [
-    { id: 'concepts', number: '01', title: '📘 المفاهيم العامة', description: 'تعريف الشبكة، أنواعها، نماذج Client-Server و P2P، الكابلات، VLAN، VPN.' },
-    { id: 'ipv4', number: '02', title: '🌍 IPv4', description: 'بنية العنوان، الفئات، العناوين العامة والخاصة، Gateway، Loopback.' },
-    { id: 'subnetting', number: '03', title: '🔢 Subnetting', description: 'حسابات الشبكات الفرعية، CIDR، المضيفين، عنوان البث.' },
-    { id: 'ipv6', number: '04', title: '🛜 IPv6', description: 'بنية IPv6، أنواع العناوين، الاختصار.' },
-    { id: 'osi', number: '05', title: '📡 OSI Model', description: 'الطبقات السبع، وظائف كل طبقة، البروتوكولات.' },
-    { id: 'devices', number: '06', title: '💻 أجهزة الشبكات', description: 'سويتش، راوتر، هاب، Firewall، Access Point.' },
-    { id: 'email', number: '07', title: '📧 بروتوكولات البريد', description: 'SMTP، POP3، IMAP، المنافذ.' },
-    { id: 'tcpip', number: '08', title: '🔗 TCP/IP', description: 'طبقات TCP/IP، TCP vs UDP، HTTP.' },
+    {
+      id: 'fundamentals',
+      icon: '📡',
+      title: 'أساسيات الشبكات',
+      description: 'OSI Model, TCP/IP, MAC/IP, ARP, DNS, DHCP',
+      quickCount: 5,
+      fullCount: 15,
+      topics: ['OSI Layers', 'TCP vs UDP', 'DNS', 'DHCP', 'ARP'],
+    },
+    {
+      id: 'switching',
+      icon: '🔀',
+      title: 'التبديل (Switching)',
+      description: 'VLAN, STP, Trunk, Access Ports, MAC Learning',
+      quickCount: 4,
+      fullCount: 12,
+      topics: ['VLANs', 'STP', '802.1Q', 'Trunking', 'MAC Table'],
+    },
+    {
+      id: 'routing',
+      icon: '🌐',
+      title: 'التوجيه (Routing)',
+      description: 'Subnetting, CIDR, Static Routes, Default Gateway',
+      quickCount: 5,
+      fullCount: 14,
+      topics: ['Subnetting', 'CIDR', 'Static Routes', 'Default Route', 'Admin Distance'],
+    },
+    {
+      id: 'troubleshooting',
+      icon: '🔧',
+      title: 'استكشاف الأخطاء',
+      description: 'Ping, Traceroute, DNS Issues, APIPA, Methodology',
+      quickCount: 4,
+      fullCount: 10,
+      topics: ['Ping', 'Traceroute', 'DNS Troubleshooting', 'APIPA', 'Bottom-Up'],
+    },
+    {
+      id: 'full',
+      icon: '🏆',
+      title: 'التقييم الشامل',
+      description: 'جميع المحاور - تقييم كامل للمستوى',
+      quickCount: 10,
+      fullCount: 32,
+      topics: ['جميع المحاور'],
+    },
   ];
 
   return (
     <>
       <Head>
-        <title>اختر تقييمك - Smart Lab</title>
+        <title>اختر تقييمك - SmartLab</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -126,34 +201,51 @@ export default function Categories() {
         <Navbar />
         <main style={styles.main}>
           <Link href="/" style={styles.backButton}>← العودة للرئيسية</Link>
+          
           <div style={styles.pageHeader}>
-            <h1 style={styles.pageTitle}>🌐 هندسة الشبكات - اختر تقييمك</h1>
-            <p style={styles.pageDesc}>ثمانية مجالات. كل مجال له تقييم سريع وتقييم شامل.</p>
+            <h1 style={styles.pageTitle}>🎯 تقييم هندسة الشبكات</h1>
+            <p style={styles.pageDesc}>
+              اختر المحور المناسب. التقييم السريع لمراجعة سريعة، والشامل لتحليل مفصل.
+            </p>
           </div>
+
           <div style={styles.categoryList}>
             {categories.map((cat) => {
-              const status = assessmentStatus[cat.id] || { status: '▶️ جديد', color: COLORS.muted };
+              const status = assessmentStatus[cat.id] || { status: 'جديد', color: COLORS.muted, bg: '#F5F5F5' };
               return (
-                <div key={cat.id} style={styles.categoryRow}>
-                  <span style={styles.categoryNumber}>{cat.number}</span>
-                  <span style={styles.categoryIcon}>{cat.title.split(' ')[0]}</span>
-                  <div style={styles.categoryInfo}>
-                    <h3 style={styles.categoryTitle}>{cat.title}</h3>
-                    <p style={styles.categoryDesc}>{cat.description}</p>
-                    <span style={{ ...styles.categoryStatus, color: status.color }}>{status.status}</span>
+                <div key={cat.id} style={styles.categoryCard}>
+                  <div style={styles.categoryHeader}>
+                    <div style={{ flex: 1 }}>
+                      <h3 style={styles.categoryTitle}>
+                        {cat.icon} {cat.title}
+                      </h3>
+                      <p style={styles.categoryDesc}>{cat.description}</p>
+                      <div style={styles.categoryStats}>
+                        <span style={styles.statItem}>📝 {cat.quickCount} سريع</span>
+                        <span style={styles.statItem}>📊 {cat.fullCount} شامل</span>
+                      </div>
+                    </div>
+                    <span style={{
+                      ...styles.statusBadge,
+                      color: status.color,
+                      backgroundColor: status.bg,
+                    }}>
+                      {status.status}
+                    </span>
                   </div>
-                  <div style={styles.categoryButtons}>
+                  
+                  <div style={styles.buttonGroup}>
                     <button
-                      style={styles.btnFilled}
+                      style={styles.btnQuick}
                       onClick={() => router.push(`/assessment/${cat.id}?mode=quick`)}
                     >
-                      ⚡ سريع
+                      ⚡ تقييم سريع ({cat.quickCount} أسئلة)
                     </button>
                     <button
-                      style={styles.btnOutline}
+                      style={styles.btnFull}
                       onClick={() => router.push(`/assessment/${cat.id}?mode=full`)}
                     >
-                      📊 شامل
+                      📊 تقييم شامل ({cat.fullCount} أسئلة)
                     </button>
                   </div>
                 </div>

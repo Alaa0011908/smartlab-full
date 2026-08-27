@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
 import SkillTree from "../components/SkillTree";
-import { getAssessmentName } from "../data/questions/basics";
+import { getAssessmentName, getAssessmentInfo } from "../data/questions/basics";
 
 // ============================================================
 // 🎨 الألوان والأنماط
@@ -695,10 +695,34 @@ export default function Result() {
 
   // ===== تبويب نظرة عامة =====
   const renderOverviewTab = () => {
-    const { score, quickStats, flatSkills, weakestSkills, insight, isQuick, correctAnswers, wrongAnswers, totalQuestions } = analysis;
+    const { score, quickStats, flatSkills, weakestSkills, insight, isQuick, correctAnswers, wrongAnswers, totalQuestions, assessmentId } = analysis;
+    const assessmentInfo = getAssessmentInfo(assessmentId);
 
     return (
       <div>
+        {/* بطاقة معلومات التقييم */}
+        <div style={{...styles.card, border: `2px solid ${COLORS.teal}`, backgroundColor: '#F0F9FF'}}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 32 }}>{assessmentInfo.icon}</span>
+            <div>
+              <h3 style={{ ...styles.cardTitle, margin: 0 }}>{assessmentInfo.name}</h3>
+              <p style={{ fontSize: 13, color: COLORS.muted, margin: 0 }}>{assessmentInfo.description}</p>
+            </div>
+            {isQuick && (
+              <span style={{...styles.levelBadge, backgroundColor: COLORS.warning, color: '#fff', marginRight: 'auto'}}>
+                ⚡ سريع
+              </span>
+            )}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {assessmentInfo.topics.map((topic, idx) => (
+              <span key={idx} style={{ fontSize: 12, backgroundColor: COLORS.white, padding: '4px 12px', borderRadius: 12, border: `1px solid ${COLORS.border}` }}>
+                {topic}
+              </span>
+            ))}
+          </div>
+        </div>
+
         {/* بطاقة الرؤية */}
         <div style={styles.card}>
           <h3 style={styles.cardTitle}>
