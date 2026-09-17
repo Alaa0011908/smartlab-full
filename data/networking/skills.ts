@@ -16,6 +16,30 @@ export const NETWORKING_SKILLS: Skill[] = [
     domain: 'networking', parent: undefined, prerequisites: [], difficulty: 0.15, tags: ['foundation'],
   },
   {
+    id: 'network_geographic_scope',
+    name: { en: 'Geographic Network Scope', ar: 'النطاق الجغرافي للشبكة' },
+    description: { en: 'Distinguishing LAN, WAN, MAN, and PAN by geographic scale', ar: 'التمييز بين LAN و WAN و MAN و PAN حسب النطاق الجغرافي' },
+    domain: 'networking', parent: 'net_fund', prerequisites: ['net_fund'], difficulty: 0.20, tags: ['foundation', 'taxonomy'],
+  },
+  {
+    id: 'client_server_architecture',
+    name: { en: 'Client–Server Architecture', ar: 'بنية العميل–الخادم' },
+    description: { en: 'Centralized service delivery, roles of client and server', ar: 'تقديم الخدمة مركزياً وأدوار العميل والخادم' },
+    domain: 'networking', parent: 'net_fund', prerequisites: ['net_fund'], difficulty: 0.25, tags: ['architecture'],
+  },
+  {
+    id: 'p2p_roles',
+    name: { en: 'Peer-to-Peer Roles', ar: 'أدوار الأجهزة في الند-للند' },
+    description: { en: 'Equal peer roles versus specialized hosts in P2P networks', ar: 'أدوار الندود المتساوية مقابل الأجهزة المتخصصة في شبكات الند-للند' },
+    domain: 'networking', parent: 'net_fund', prerequisites: ['net_fund'], difficulty: 0.25, tags: ['architecture'],
+  },
+  {
+    id: 'centralized_management',
+    name: { en: 'Centralized Administration Fit', ar: 'ملاءمة الإدارة المركزية للمتطلبات' },
+    description: { en: 'Choosing an architecture that matches the need for unified permissions and administration', ar: 'اختيار البنية التي تناسب الحاجة إلى صلاحيات وإدارة موحدة' },
+    domain: 'networking', parent: 'client_server_architecture', prerequisites: ['client_server_architecture', 'p2p_roles'], difficulty: 0.35, tags: ['architecture', 'decision'],
+  },
+  {
     id: 'osi_model',
     name: { en: 'OSI Model', ar: 'نموذج OSI' },
     description: { en: 'The 7 layers and their roles', ar: 'الطبقات السبع وأدوارها' },

@@ -26,7 +26,7 @@ export function getAssessmentQuestions(assessmentId, mode = 'full') {
   } else {
     filtered = QUESTIONS.filter(q => TOPIC_TO_CATEGORY[q.topic] === assessmentId);
   }
-  if (filtered.length === 0) filtered = [...QUESTIONS];
+  if (filtered.length === 0) return [];
   if (mode === 'quick') {
     const quick = filtered.filter(q => q.isQuick);
     return shuffleArray(quick).slice(0, assessmentId === 'full' ? 20 : 12);

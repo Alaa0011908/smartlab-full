@@ -6,6 +6,7 @@
 
 import { getAllBasicsQuestions } from '../../data/questions/basics';
 import { estimateTheta } from '../../lib/adaptiveEngine';
+import { buildProductionReport } from '../../lib/analysis/productionPipeline';
 
 // ============================================================
 // 🔷 الثوابت والإعدادات
@@ -904,6 +905,8 @@ export default async function handler(req, res) {
       mode,
       userId,
       historicalData,
+      attemptId,
+      hintedItemIds,
     } = req.body;
 
     if (!answers || !Array.isArray(answers) || answers.length === 0) {
@@ -972,122 +975,50 @@ export default async function handler(req, res) {
     });
     const score = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
 
-    // ============================================================
-    // 2. تحليل المهارات
-    // ============================================================
-    const skillStats = computeSkillStats(questions, numericAnswers, answers);
-
-    // ============================================================
-    // 3. التحليل الزمني
-    // ============================================================
+    const resolvedAttemptId = attemptId || `att_${Date.now()}`;
     const microTemporal = analyzeMicroTemporal(events, times);
-
-    // ============================================================
-    // 4. تحليل المسار المعرفي
-    // ============================================================
     const cognitivePath = analyzeCognitivePath(questions, numericAnswers, times);
-
-    // ============================================================
-    // 5. تحليل الأخطاء العميق
-    // ============================================================
     const deepErrors = analyzeDeepErrors(questions, numericAnswers, times);
-
-    // ============================================================
-    // 6. التحليل السياقي
-    // ============================================================
     const contextual = analyzeContext(questions, numericAnswers, times, events, timeOfDay);
-
-    // ============================================================
-    // 7. تحليل التعلم
-    // ============================================================
     const learningTrajectory = analyzeLearningTrajectory(historicalData);
-
-    // ============================================================
-    // 8. تحليل الثغرات الجذرية
-    // ============================================================
-    const rootCauses = analyzeRootCauses(skillStats, questions, numericAnswers);
-
-    // ============================================================
-    // 9. التحليل التنبؤي
-    // ============================================================
-    const predictions = analyzePredictions(skillStats, historicalData);
-
-    // ============================================================
-    // 10. التحليل العاطفي-السلوكي
-    // ============================================================
     const affective = analyzeAffectiveBehavior(events, numericAnswers, times, questions);
-
-    // ============================================================
-    // 11. التحليل التطوري
-    // ============================================================
     const evolution = analyzeEvolution(historicalData);
 
-    // ============================================================
-    // بناء التقرير النهائي
-    // ============================================================
-    const finalReport = {
-      success: true,
-      mode: mode || 'full',
-      isQuick: mode === 'quick',
-
-      // النتيجة الأساسية
-      score,
-      totalQuestions: questions.length,
-      correctAnswers: correctCount,
-      wrongAnswers: questions.length - correctCount,
-
-      // 1. التحليل الزمني الدقيق
-      microTemporal,
-
-      // 2. تحليل المسار المعرفي
-      cognitivePath,
-
-      // 3. تحليل الأخطاء العميق
-      deepErrors,
-
-      // 4. التحليل السياقي
-      contextual,
-
-      // 5. تحليل التعلم
-      learningTrajectory,
-
-      // 6. تحليل الثغرات الجذرية
-      rootCauses,
-
-      // 7. التحليل التنبؤي
-      predictions,
-
-      // 8. التحليل العاطفي-السلوكي
-      affective,
-
-      // 9. التحليل التطوري
-      evolution,
-
-      // المهارات المسطحة
-      flatSkills: skillStats,
-
-      // أضعف المهارات
-      weakestSkills: skillStats
-        .filter(s => s.percentage < 70)
-        .sort((a, b) => a.percentage - b.percentage)
-        .slice(0, 5),
-
-      // توليد رؤية مختصرة
-      insight: generateInsight(score, skillStats, deepErrors),
-
-      // إحصائيات سريعة
-      quickStats: {
-        score,
-        correct: correctCount,
-        wrong: questions.length - correctCount,
-        total: questions.length,
-        accuracy: Math.round((correctCount / questions.length) * 100),
-        timeSpent: times.reduce((a, b) => a + b, 0),
-        avgTimePerQuestion: times.length > 0 ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0,
+    const coreReport = buildProductionReport({
+      questions,
+      answers,
+      times,
+      events,
+      assessmentId,
+      mode,
+      userId: userId || 'anonymous',
+      attemptId: resolvedAttemptId,
+      hintedItemIds: Array.isArray(hintedItemIds) ? hintedItemIds : [],
+      historicalData,
+      tabAnalyses: {
+        microTemporal,
+        cognitivePath,
+        deepErrors,
+        contextual,
+        learningTrajectory,
+        affective,
+        evolution,
+        predictions: analyzePredictions([], historicalData),
       },
+    });
 
-      //timestamp
-      analyzedAt: new Date().toISOString(),
+    const predictions = analyzePredictions(coreReport.flatSkills, historicalData);
+    if (coreReport.predictions) {
+      coreReport.predictions.performancePrediction = predictions.performancePrediction;
+      coreReport.predictions.behaviorPrediction = predictions.behaviorPrediction;
+      if (coreReport.predictions.careerPrediction !== null) {
+        coreReport.predictions.careerPrediction = predictions.careerPrediction;
+      }
+    }
+
+    const finalReport = {
+      ...coreReport,
+      theta: typeof theta === 'string' ? JSON.parse(theta || '0') : (theta || 0),
     };
 
     return res.status(200).json(finalReport);

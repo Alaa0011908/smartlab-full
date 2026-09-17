@@ -344,6 +344,7 @@ export interface ItemSelectionConstraints {
   targetSkills?: string[];
   excludeItemIds?: string[];
   difficultyBounds?: { min: number; max: number };
+  discriminateHypothesisIds?: string[];
 }
 
 export interface ItemSelectionResult {
