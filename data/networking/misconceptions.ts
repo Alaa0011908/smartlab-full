@@ -3,6 +3,22 @@ import type { Misconception } from '../../lib/domain/types';
 
 export const NETWORKING_MISCONCEPTIONS: Misconception[] = [
   {
+    id: 'misc_net_bits_host_bits',
+    name: { en: 'Network Bits / Host Bits Confusion', ar: 'الخلط بين Network Bits و Host Bits' },
+    description: { en: 'Calculating host capacity from network bits instead of host bits, or swapping mask zeros and ones', ar: 'حساب سعة المضيفين من بتات الشبكة بدل بتات المضيف، أو عكس أصفار وواحدات القناع' },
+    associatedSkills: ['subnetting', 'subnet_mask', 'cidr', 'binary_math'],
+    evidenceThreshold: 2,
+    remediation: { en: 'Host count comes from host bits (zeros in the mask). Network bits define how many subnets exist.', ar: 'عدد المضيفين يأتي من بتات المضيف (الأصفار في القناع). بتات الشبكة تحدد عدد الشبكات الفرعية.' },
+  },
+  {
+    id: 'misc_architecture_choice',
+    name: { en: 'Architecture vs Requirement Mismatch', ar: 'صعوبة اختيار البنية المناسبة للمتطلبات' },
+    description: { en: 'Selecting P2P because peers are equal even when the organization needs centralized administration', ar: 'اختيار الند-للند لأن الأجهزة متساوية رغم حاجة المؤسسة لإدارة مركزية' },
+    associatedSkills: ['centralized_management', 'client_server_architecture', 'p2p_roles'],
+    evidenceThreshold: 2,
+    remediation: { en: 'Equal peer roles do not imply P2P is right when unified permissions and central control are required.', ar: 'تساوي أدوار الندود لا يعني أن الند-للند مناسب عند الحاجة إلى صلاحيات موحدة وتحكم مركزي.' },
+  },
+  {
     id: 'misc_l2_l3',
     name: { en: 'Layer 2 / Layer 3 Confusion', ar: 'الخلط بين الطبقة 2 والطبقة 3' },
     description: { en: 'Confusing MAC addressing (Layer 2) with IP addressing (Layer 3)', ar: 'الخلط بين عنونة MAC (الطبقة 2) وعنونة IP (الطبقة 3)' },

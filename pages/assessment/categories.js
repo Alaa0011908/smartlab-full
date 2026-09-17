@@ -236,7 +236,7 @@ export default function Categories() {
       <div style={styles.page}>
         <Navbar />
         <main style={styles.main}>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a style={styles.backButton}>← العودة للرئيسية</a>
           </Link>
           

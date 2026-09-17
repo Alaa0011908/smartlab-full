@@ -156,6 +156,16 @@ export class AdaptiveItemSelector {
         reasons.push(`Low evidence count for ${mapping.skillId}`);
       }
 
+      if (constraints.discriminateHypothesisIds?.length) {
+        const hitsHypothesis = item.options?.some(o =>
+          o.misconceptionId && constraints.discriminateHypothesisIds!.includes(o.misconceptionId)
+        );
+        if (hitsHypothesis) {
+          score += 1.2 * mapping.weight;
+          reasons.push(`Discriminates competing hypotheses: ${constraints.discriminateHypothesisIds.join(', ')}`);
+        }
+      }
+
       if (mapping.role === 'primary') targetedSkills.push(mapping.skillId);
     }
 

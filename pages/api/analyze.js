@@ -6,6 +6,7 @@
 
 import { getAllBasicsQuestions } from '../../data/questions/basics';
 import { estimateTheta } from '../../lib/adaptiveEngine';
+import { buildProductionReport } from '../../lib/analysis/productionPipeline';
 
 // ============================================================
 // 🔷 الثوابت والإعدادات
@@ -896,6 +897,7 @@ export default async function handler(req, res) {
     const {
       answers,
       questions: sentQuestions,
+      answeredIds,
       assessmentId,
       timePerQuestion,
       eventsLog,
@@ -903,6 +905,8 @@ export default async function handler(req, res) {
       mode,
       userId,
       historicalData,
+      attemptId,
+      hintedItemIds,
     } = req.body;
 
     if (!answers || !Array.isArray(answers) || answers.length === 0) {
@@ -910,12 +914,35 @@ export default async function handler(req, res) {
     }
 
     // جلب الأسئلة
-    const questions = sentQuestions?.length > 0 ? sentQuestions : getAllBasicsQuestions();
-    if (!questions || questions.length === 0) {
+    const questionPool = sentQuestions?.length > 0 ? sentQuestions : getAllBasicsQuestions();
+    if (!Array.isArray(questionPool) || questionPool.length === 0) {
       return res.status(404).json({ error: 'No questions found' });
     }
 
-    // تحويل الإجابات
+    // Adaptive answers are recorded in presentation order, not bank order.
+    let questions = questionPool;
+    if (answeredIds !== undefined && answeredIds !== null) {
+      let orderedIds;
+      try {
+        orderedIds = typeof answeredIds === 'string' ? JSON.parse(answeredIds) : answeredIds;
+      } catch {
+        return res.status(400).json({ error: 'Invalid answered question IDs' });
+      }
+      if (!Array.isArray(orderedIds) || orderedIds.length !== answers.length ||
+          new Set(orderedIds).size !== orderedIds.length) {
+        return res.status(400).json({ error: 'Answer order does not match the submitted answers' });
+      }
+      const byId = new Map(questionPool.map(question => [question.id, question]));
+      if (byId.size !== questionPool.length || orderedIds.some(id => !byId.has(id))) {
+        return res.status(400).json({ error: 'Unknown or duplicate question IDs' });
+      }
+      questions = orderedIds.map(id => byId.get(id));
+    }
+    if (questions.length !== answers.length) {
+      return res.status(400).json({ error: 'Question and answer counts do not match' });
+    }
+
+    // Keep the existing 1-based response format, then normalize to bank keys.
     const numericAnswers = answers.map((a, i) => {
       const q = questions[i];
       if (q?.isWriting) {
@@ -923,8 +950,13 @@ export default async function handler(req, res) {
         return isNaN(num) ? 1 : num === 1 ? 1 : 2;
       }
       const num = Number(a);
-      return isNaN(num) || num < 1 || num > 4 ? 1 : num;
+      const validType = typeof a === 'number' || (typeof a === 'string' && a.trim() !== '');
+      return validType && Number.isInteger(num) && Array.isArray(q.options) &&
+        num >= 1 && num <= q.options.length ? num - 1 : null;
     });
+    if (numericAnswers.some((answer, i) => !questions[i].isWriting && answer === null)) {
+      return res.status(400).json({ error: 'Invalid answer selection' });
+    }
 
     // تحليل الأحداث
     const events = typeof eventsLog === 'string' ? JSON.parse(eventsLog || '[]') : (eventsLog || []);
@@ -943,122 +975,50 @@ export default async function handler(req, res) {
     });
     const score = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
 
-    // ============================================================
-    // 2. تحليل المهارات
-    // ============================================================
-    const skillStats = computeSkillStats(questions, numericAnswers, answers);
-
-    // ============================================================
-    // 3. التحليل الزمني
-    // ============================================================
+    const resolvedAttemptId = attemptId || `att_${Date.now()}`;
     const microTemporal = analyzeMicroTemporal(events, times);
-
-    // ============================================================
-    // 4. تحليل المسار المعرفي
-    // ============================================================
     const cognitivePath = analyzeCognitivePath(questions, numericAnswers, times);
-
-    // ============================================================
-    // 5. تحليل الأخطاء العميق
-    // ============================================================
     const deepErrors = analyzeDeepErrors(questions, numericAnswers, times);
-
-    // ============================================================
-    // 6. التحليل السياقي
-    // ============================================================
     const contextual = analyzeContext(questions, numericAnswers, times, events, timeOfDay);
-
-    // ============================================================
-    // 7. تحليل التعلم
-    // ============================================================
     const learningTrajectory = analyzeLearningTrajectory(historicalData);
-
-    // ============================================================
-    // 8. تحليل الثغرات الجذرية
-    // ============================================================
-    const rootCauses = analyzeRootCauses(skillStats, questions, numericAnswers);
-
-    // ============================================================
-    // 9. التحليل التنبؤي
-    // ============================================================
-    const predictions = analyzePredictions(skillStats, historicalData);
-
-    // ============================================================
-    // 10. التحليل العاطفي-السلوكي
-    // ============================================================
     const affective = analyzeAffectiveBehavior(events, numericAnswers, times, questions);
-
-    // ============================================================
-    // 11. التحليل التطوري
-    // ============================================================
     const evolution = analyzeEvolution(historicalData);
 
-    // ============================================================
-    // بناء التقرير النهائي
-    // ============================================================
-    const finalReport = {
-      success: true,
-      mode: mode || 'full',
-      isQuick: mode === 'quick',
-
-      // النتيجة الأساسية
-      score,
-      totalQuestions: questions.length,
-      correctAnswers: correctCount,
-      wrongAnswers: questions.length - correctCount,
-
-      // 1. التحليل الزمني الدقيق
-      microTemporal,
-
-      // 2. تحليل المسار المعرفي
-      cognitivePath,
-
-      // 3. تحليل الأخطاء العميق
-      deepErrors,
-
-      // 4. التحليل السياقي
-      contextual,
-
-      // 5. تحليل التعلم
-      learningTrajectory,
-
-      // 6. تحليل الثغرات الجذرية
-      rootCauses,
-
-      // 7. التحليل التنبؤي
-      predictions,
-
-      // 8. التحليل العاطفي-السلوكي
-      affective,
-
-      // 9. التحليل التطوري
-      evolution,
-
-      // المهارات المسطحة
-      flatSkills: skillStats,
-
-      // أضعف المهارات
-      weakestSkills: skillStats
-        .filter(s => s.percentage < 70)
-        .sort((a, b) => a.percentage - b.percentage)
-        .slice(0, 5),
-
-      // توليد رؤية مختصرة
-      insight: generateInsight(score, skillStats, deepErrors),
-
-      // إحصائيات سريعة
-      quickStats: {
-        score,
-        correct: correctCount,
-        wrong: questions.length - correctCount,
-        total: questions.length,
-        accuracy: Math.round((correctCount / questions.length) * 100),
-        timeSpent: times.reduce((a, b) => a + b, 0),
-        avgTimePerQuestion: times.length > 0 ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0,
+    const coreReport = buildProductionReport({
+      questions,
+      answers,
+      times,
+      events,
+      assessmentId,
+      mode,
+      userId: userId || 'anonymous',
+      attemptId: resolvedAttemptId,
+      hintedItemIds: Array.isArray(hintedItemIds) ? hintedItemIds : [],
+      historicalData,
+      tabAnalyses: {
+        microTemporal,
+        cognitivePath,
+        deepErrors,
+        contextual,
+        learningTrajectory,
+        affective,
+        evolution,
+        predictions: analyzePredictions([], historicalData),
       },
+    });
 
-      //timestamp
-      analyzedAt: new Date().toISOString(),
+    const predictions = analyzePredictions(coreReport.flatSkills, historicalData);
+    if (coreReport.predictions) {
+      coreReport.predictions.performancePrediction = predictions.performancePrediction;
+      coreReport.predictions.behaviorPrediction = predictions.behaviorPrediction;
+      if (coreReport.predictions.careerPrediction !== null) {
+        coreReport.predictions.careerPrediction = predictions.careerPrediction;
+      }
+    }
+
+    const finalReport = {
+      ...coreReport,
+      theta: typeof theta === 'string' ? JSON.parse(theta || '0') : (theta || 0),
     };
 
     return res.status(200).json(finalReport);

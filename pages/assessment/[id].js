@@ -12,6 +12,7 @@ import Navbar from "../../components/Navbar";
 import { getAssessmentQuestions, getAssessmentName, getAssessmentInfo } from '../../data/questions/basics';
 import TrackingEngine, { createTrackingSession } from '../../lib/trackingEngine';
 import UltraAdaptiveEngine, { createAdaptiveEngine, runAdaptiveCycle } from '../../lib/adaptiveEngine';
+import { createAttemptId } from '../../lib/analysis/attemptClient';
 
 // ============================================================
 // 🎨 الألوان والأنماط
@@ -404,6 +405,7 @@ export default function Assessment() {
   const trackerRef = useRef(null);
   const engineRef = useRef(null);
   const questionStartTimeRef = useRef(Date.now());
+  const attemptIdRef = useRef(null);
 
   // ============================================================
   // 🔷 دوال مساعدة
@@ -518,13 +520,15 @@ export default function Assessment() {
     setSelectedOption(optionIndex);
     const timeTaken = (Date.now() - questionStartTimeRef.current) / 1000;
     setTimePerQuestion(prev => [...prev, timeTaken]);
-    const isCorrect = optionIndex === currentQuestion.correct;
+    // UI selections use 1–4; the question bank stores zero-based keys.
+    const isCorrect = optionIndex - 1 === currentQuestion.correct;
     setLastAnswerCorrect(isCorrect);
     setAnswers(prev => [...prev, optionIndex]);
 
     // تحديث الحالة النفسية
     const hesitation = timeTaken > 10 ? 70 : 30;
     if (engineRef.current) {
+      engineRef.current.recordDiagnostic(currentQuestion, isCorrect, optionIndex - 1, showHint);
       engineRef.current.updateEmotionalState(isCorrect, timeTaken, hesitation);
       const report = engineRef.current.getAdaptationReport();
       setEmotionalState(report.emotionalState.state);
@@ -713,6 +717,8 @@ export default function Assessment() {
       eventsLog: JSON.stringify(eventsLog),
       theta: JSON.stringify(theta),
       answeredIds: JSON.stringify(answeredIds),
+      attemptId: attemptIdRef.current,
+      hintedItemIds: JSON.stringify(engineRef.current?.hintedItemIds || []),
     };
 
     // إضافة تقرير التتبع
@@ -765,10 +771,11 @@ export default function Assessment() {
       const mode = router.query.mode || 'full';
       let assessmentQuestions = getAssessmentQuestions(id, mode);
       if (!assessmentQuestions || assessmentQuestions.length === 0) {
-        setError("لا توجد أسئلة لهذا التقييم");
+        setError("المجال غير متاح لنقص أسئلته");
         setLoading(false);
         return;
       }
+      attemptIdRef.current = createAttemptId();
 
       setAllQuestions(assessmentQuestions);
       setTotalQuestionsCount(assessmentQuestions.length);
@@ -1119,7 +1126,7 @@ export default function Assessment() {
                       )}
                       {!currentQuestion.isWriting && currentQuestion.options && (
                         <p style={styles.feedbackCorrectAnswer}>
-                          الإجابة الصحيحة: <strong>{currentQuestion.options[currentQuestion.correct - 1]}</strong>
+                          الإجابة الصحيحة: <strong>{currentQuestion.options[currentQuestion.correct]}</strong>
                         </p>
                       )}
                       <div style={{ marginTop: 4 }}>
