@@ -518,7 +518,8 @@ export default function Assessment() {
     setSelectedOption(optionIndex);
     const timeTaken = (Date.now() - questionStartTimeRef.current) / 1000;
     setTimePerQuestion(prev => [...prev, timeTaken]);
-    const isCorrect = optionIndex === currentQuestion.correct;
+    // UI selections use 1–4; the question bank stores zero-based keys.
+    const isCorrect = optionIndex - 1 === currentQuestion.correct;
     setLastAnswerCorrect(isCorrect);
     setAnswers(prev => [...prev, optionIndex]);
 
@@ -1119,7 +1120,7 @@ export default function Assessment() {
                       )}
                       {!currentQuestion.isWriting && currentQuestion.options && (
                         <p style={styles.feedbackCorrectAnswer}>
-                          الإجابة الصحيحة: <strong>{currentQuestion.options[currentQuestion.correct - 1]}</strong>
+                          الإجابة الصحيحة: <strong>{currentQuestion.options[currentQuestion.correct]}</strong>
                         </p>
                       )}
                       <div style={{ marginTop: 4 }}>

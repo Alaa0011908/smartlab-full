@@ -896,6 +896,7 @@ export default async function handler(req, res) {
     const {
       answers,
       questions: sentQuestions,
+      answeredIds,
       assessmentId,
       timePerQuestion,
       eventsLog,
@@ -910,12 +911,35 @@ export default async function handler(req, res) {
     }
 
     // جلب الأسئلة
-    const questions = sentQuestions?.length > 0 ? sentQuestions : getAllBasicsQuestions();
-    if (!questions || questions.length === 0) {
+    const questionPool = sentQuestions?.length > 0 ? sentQuestions : getAllBasicsQuestions();
+    if (!Array.isArray(questionPool) || questionPool.length === 0) {
       return res.status(404).json({ error: 'No questions found' });
     }
 
-    // تحويل الإجابات
+    // Adaptive answers are recorded in presentation order, not bank order.
+    let questions = questionPool;
+    if (answeredIds !== undefined && answeredIds !== null) {
+      let orderedIds;
+      try {
+        orderedIds = typeof answeredIds === 'string' ? JSON.parse(answeredIds) : answeredIds;
+      } catch {
+        return res.status(400).json({ error: 'Invalid answered question IDs' });
+      }
+      if (!Array.isArray(orderedIds) || orderedIds.length !== answers.length ||
+          new Set(orderedIds).size !== orderedIds.length) {
+        return res.status(400).json({ error: 'Answer order does not match the submitted answers' });
+      }
+      const byId = new Map(questionPool.map(question => [question.id, question]));
+      if (byId.size !== questionPool.length || orderedIds.some(id => !byId.has(id))) {
+        return res.status(400).json({ error: 'Unknown or duplicate question IDs' });
+      }
+      questions = orderedIds.map(id => byId.get(id));
+    }
+    if (questions.length !== answers.length) {
+      return res.status(400).json({ error: 'Question and answer counts do not match' });
+    }
+
+    // Keep the existing 1-based response format, then normalize to bank keys.
     const numericAnswers = answers.map((a, i) => {
       const q = questions[i];
       if (q?.isWriting) {
@@ -923,8 +947,13 @@ export default async function handler(req, res) {
         return isNaN(num) ? 1 : num === 1 ? 1 : 2;
       }
       const num = Number(a);
-      return isNaN(num) || num < 1 || num > 4 ? 1 : num;
+      const validType = typeof a === 'number' || (typeof a === 'string' && a.trim() !== '');
+      return validType && Number.isInteger(num) && Array.isArray(q.options) &&
+        num >= 1 && num <= q.options.length ? num - 1 : null;
     });
+    if (numericAnswers.some((answer, i) => !questions[i].isWriting && answer === null)) {
+      return res.status(400).json({ error: 'Invalid answer selection' });
+    }
 
     // تحليل الأحداث
     const events = typeof eventsLog === 'string' ? JSON.parse(eventsLog || '[]') : (eventsLog || []);
